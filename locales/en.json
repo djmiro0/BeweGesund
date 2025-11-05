@@ -1,0 +1,33 @@
+{
+  "header": {
+    "logo": "S.BeweGesund",
+    "nav": {
+      "kurse": "Courses",
+      "community": "Community",
+      "ernaehrung": "Nutrition"
+    },
+    "signIn": "Sign In"
+
+  },
+  "sections": {
+    "kurse": {
+      "title": "Our Courses",
+      "text": "Train with the best programs for strength, endurance, and health."
+    },
+    "community": {
+      "title": "Community",
+      "text": "Join an active and motivating community."
+    },
+    "ernaehrung": {
+      "title": "Nutrition",
+      "text": "Find balanced nutrition plans for your well-being."
+    },
+    "join": "Join Course"
+  },
+  "footer": {
+    "home": "Home",
+    "about": "About",
+    "join": "Join",
+    "copyright": "© 2025 S.BeweGesund. All rights reserved."
+  }
+}

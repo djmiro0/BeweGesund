@@ -1,0 +1,33 @@
+{
+  "header": {
+    "logo": "S.BeweGesund",
+    "nav": {
+      "kurse": "Kurse",
+      "community": "Community",
+      "ernaehrung": "Ernährung"
+    },
+    "signIn": "Anmelden"
+
+  },
+  "sections": {
+    "kurse": {
+      "title": "Unsere Kurse",
+      "text": "Trainiere mit den besten Programmen für Kraft, Ausdauer und Gesundheit."
+    },
+    "community": {
+      "title": "Community",
+      "text": "Werde Teil einer aktiven und motivierenden Gemeinschaft."
+    },
+    "ernaehrung": {
+      "title": "Ernährung",
+      "text": "Finde ausgewogene Ernährungspläne für dein Wohlbefinden."
+    },
+    "join": "Kurs beitreten"
+  },
+  "footer": {
+    "home": "Home",
+    "about": "Über uns",
+    "join": "Beitreten",
+    "copyright": "© 2025 S.BeweGesund. Alle Rechte vorbehalten."
+  }
+}
