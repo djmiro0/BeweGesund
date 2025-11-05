@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import style from "./Section.module.css"
 
 interface SectionProps {
   id: string;
@@ -18,13 +18,13 @@ const Section: React.FC<SectionProps> = ({ id, reverse }) => {
   };
 
   return (
-    <section id={id} className={`section ${reverse ? "reverse" : ""}`}>
-      <div className="section-inner">
-        <div className="section-image" />
-        <div className="section-text">
+    <section id={id} className={(reverse ? style.sectionReverse : style.section)}>
+      <div className={style.sectionInner}>
+        <div className={style.sectionImage} />
+        <div className={style.sectionText}>
           <h2>{t(`${id}.title`)}</h2>
           <p>{t(`${id}.text`)}</p>
-          <button className="join-btn" onClick={handleJoinClick}>
+          <button className={style.joinBtn} onClick={handleJoinClick}>
             {t("join")}
           </button>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import style from "./Footer.module.css";
 
 const Footer: React.FC = () => {
   const t = useTranslations("footer");
@@ -15,24 +16,24 @@ const Footer: React.FC = () => {
 
   if (isMobile) {
     return (
-      <footer className="footer-tab">
-        <a href="#home" className="tab">
-          <span className="icon">🏠</span>
-          <span className="label">{t("home")}</span>
+      <footer className={style.footerTab}>
+        <a href="#home" className={style.tab}>
+          <span className={style.icon}>🏠</span>
+          <span className={style.label}>{t("home")}</span>
         </a>
-        <a href="#about" className="tab">
-          <span className="icon">ℹ️</span>
-          <span className="label">{t("about")}</span>
+        <a href="#about" className={style.tab}>
+          <span className={style.icon}>ℹ️</span>
+          <span className={style.label}>{t("about")}</span>
         </a>
         <a href="#join" className="tab">
-          <span className="icon">💪</span>
-          <span className="label">{t("join")}</span>
+          <span className={style.icon}>💪</span>
+          <span className={style.label}>{t("join")}</span>
         </a>
       </footer>
     );
   }
 
-  return <footer className="footer">{t("copyright")}</footer>;
+  return <footer className={style.footer}>{t("copyright")}</footer>;
 };
 
 export default Footer;

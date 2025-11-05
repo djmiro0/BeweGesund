@@ -1,5 +1,6 @@
 "use client";
 import React, { JSX } from "react";
+import styles from "./Calendar.module.css";
 
 interface Course {
   name: string;
@@ -8,11 +9,11 @@ interface Course {
   color: string;
 }
 
-interface KursCalendarProps {
+interface CalendarProps {
   courses: Course[];
 }
 
-export const KursCalendar: React.FC<KursCalendarProps> = ({ courses }) => {
+export const Calendar: React.FC<CalendarProps> = ({ courses }) => {
   // Group courses by date
   const grouped: Record<string, Course[]> = {};
   courses.forEach((c) => {
@@ -26,25 +27,28 @@ export const KursCalendar: React.FC<KursCalendarProps> = ({ courses }) => {
   );
 
   return (
-    <div className="custom-calendar">
-      {days.map((day) => (
-        <div key={day} className="calendar-day">
-          <div className="calendar-date">{day}</div>
-          <div className="courses">
-            {grouped[day].map((c, idx) => (
-              <div
-                key={idx}
-                className="course-card"
-                style={{ backgroundColor: c.color }}
-                onClick={() => alert(`Course: ${c.name}`)}
-              >
-                {c.icon}
-                <span>{c.name}</span>
-              </div>
-            ))}
+    <div className={styles.calendarContainer}>
+      <h2 className={styles.title}>Available Courses</h2>
+      <div className={styles.calendarGrid}>
+        {days.map((day) => (
+          <div key={day} className={styles.calendarDay}>
+            <div className={styles.dateHeader}>{day}</div>
+            <div className={styles.courses}>
+              {grouped[day].map((c, idx) => (
+                <div
+                  key={idx}
+                  className={styles.courseCard}
+                  style={{ backgroundColor: c.color }}
+                  onClick={() => alert(`Course: ${c.name}`)}
+                >
+                  <div className={styles.icon}>{c.icon}</div>
+                  <div className={styles.name}>{c.name}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { KursCalendar } from "../Calendar/Calendar";
+import { Calendar} from "../components/Calendar/Calendar";
 import { FaDumbbell, FaRunning, FaAppleAlt } from "react-icons/fa";
 
 export default function CalendarPage() {
@@ -16,5 +16,5 @@ export default function CalendarPage() {
   // Optional: scroll to or highlight the course that was clicked
   // For simplicity, you can filter courses by id or use CSS highlight
 
-  return <KursCalendar courses={courses} />;
+  return <Calendar courses={courses} />;
 }

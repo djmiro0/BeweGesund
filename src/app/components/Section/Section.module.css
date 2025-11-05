@@ -1,0 +1,115 @@
+.section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  background: var(--gradient1);
+  transition: background var(--transition);
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.section:nth-of-type(even) {
+  background: var(--gradient2);
+}
+
+/* fix for reverse */
+.sectionReverse {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  background: var(--gradient2);
+  transition: background var(--transition);
+}
+
+.sectionInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+  max-width: 1200px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.sectionReverse .sectionInner {
+  flex-direction: row-reverse;
+}
+
+.sectionImage {
+  flex: 1 1 40%;
+  height: 280px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.sectionImage:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+.sectionText {
+  flex: 1 1 50%;
+  text-align: left;
+  min-width: 300px;
+  padding: 1rem;
+}
+
+.sectionText h2 {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.sectionText p {
+  color: #e0e0e0;
+  line-height: 1.7;
+  margin-bottom: 1.8rem;
+  font-size: 1.05rem;
+}
+
+.joinBtn {
+  background: var(--highlight);
+  color: var(--text-dark);
+  border: none;
+  padding: 0.9rem 2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.joinBtn:hover {
+  transform: translateY(-3px);
+  background: #ffc68a;
+  box-shadow: 0 5px 15px rgba(255, 179, 71, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .sectionInner {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .sectionReverse .sectionInner {
+    flex-direction: column;
+  }
+
+  .sectionText {
+    text-align: center;
+  }
+
+  .sectionImage {
+    width: 100%;
+  }
+}
