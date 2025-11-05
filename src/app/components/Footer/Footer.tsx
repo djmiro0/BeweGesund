@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
           <span className={style.icon}>ℹ️</span>
           <span className={style.label}>{t("about")}</span>
         </a>
-        <a href="#join" className="tab">
+        <a href="#join" className={style.tab}>
           <span className={style.icon}>💪</span>
           <span className={style.label}>{t("join")}</span>
         </a>
