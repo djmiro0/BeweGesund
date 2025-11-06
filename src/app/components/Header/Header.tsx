@@ -1,14 +1,26 @@
 "use client";
+
 import { useTranslations } from "next-intl";
-import style from "./Header.module.css"
+import style from "./Header.module.css";
+import { useRouter } from "next/navigation";
 
-export default function Header() {
+interface HeaderProps {
+  toggleLanguage: () => void;
+  locale: "en" | "de";
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleLanguage, locale }) => {
   const t = useTranslations("header");
-
   const handleSignIn = () => {
-    // Add your auth logic here (Firebase Auth, etc.)
     alert("Sign in clicked");
   };
+
+  const router = useRouter()
+
+const handleLanguageChange = () => {
+  router.push(`/${locale}`)
+  toggleLanguage()
+}
 
   return (
     <header className={style.header}>
@@ -18,9 +30,18 @@ export default function Header() {
         <a href="#community">{t("nav.community")}</a>
         <a href="#ernaehrung">{t("nav.ernaehrung")}</a>
       </nav>
-      <button className={style.signInBtn} onClick={handleSignIn}>
-        {t("signIn")}
-      </button>
+
+      <div className={style.actions}>
+        <button className={style.signInBtn} onClick={handleSignIn}>
+          {t("signIn")}
+        </button>
+
+        <button className={style.langBtn} onClick={handleLanguageChange}>
+          {locale === "de" ? "DE" : "EN"}
+        </button>
+      </div>
     </header>
   );
-}
+};
+
+export default Header;

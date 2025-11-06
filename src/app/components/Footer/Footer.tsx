@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Home, Info, Dumbbell } from "lucide-react"; // ✅ added Lucide icons
 import style from "./Footer.module.css";
 
 const Footer: React.FC = () => {
@@ -18,15 +19,15 @@ const Footer: React.FC = () => {
     return (
       <footer className={style.footerTab}>
         <a href="#home" className={style.tab}>
-          <span className={style.icon}>🏠</span>
+          <Home size={22} className={style.icon} />
           <span className={style.label}>{t("home")}</span>
         </a>
         <a href="#about" className={style.tab}>
-          <span className={style.icon}>ℹ️</span>
+          <Info size={22} className={style.icon} />
           <span className={style.label}>{t("about")}</span>
         </a>
         <a href="#join" className={style.tab}>
-          <span className={style.icon}>💪</span>
+          <Dumbbell size={22} className={style.icon} />
           <span className={style.label}>{t("join")}</span>
         </a>
       </footer>

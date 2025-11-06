@@ -7,7 +7,6 @@
       "ernaehrung": "Ernährung"
     },
     "signIn": "Anmelden"
-
   },
   "sections": {
     "kurse": {
@@ -23,6 +22,20 @@
       "text": "Finde ausgewogene Ernährungspläne für dein Wohlbefinden."
     },
     "join": "Kurs beitreten"
+  },
+  "banners": {
+    "training": {
+      "title": "Trainiere hart, bleib stark",
+      "subtitle": "Tritt unseren Kursen bei und erreiche dein Ziel"
+    },
+    "weights": {
+      "title": "Gemeinschaft & Motivation",
+      "subtitle": "Zusammen erreichen wir mehr"
+    },
+    "food": {
+      "title": "Gesunde Ernährung für Erfolg",
+      "subtitle": "Nähre Körper und Geist"
+    }
   },
   "footer": {
     "home": "Home",

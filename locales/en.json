@@ -24,6 +24,20 @@
     },
     "join": "Join Course"
   },
+  "banners": {
+    "training": {
+      "title": "Train hard, stay strong",
+      "subtitle": "Join our courses and achieve your goal"
+    },
+    "weights": {
+      "title": "Community & motivation",
+      "subtitle": "Together we can achieve more"
+    },
+    "food": {
+      "title": "Healthy nutrition for success",
+      "subtitle": "Nourish your body and mind"
+    }
+  },
   "footer": {
     "home": "Home",
     "about": "About",
