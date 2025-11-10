@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Calendar } from "../../components/Calendar/Calendar";
-import { Dumbbell, Activity, Apple } from "lucide-react"; // ✅ Activity instead of Running
+import { Dumbbell, Activity, Apple } from "lucide-react"; 
 
 export default function CalendarPage() {
   const searchParams = useSearchParams();

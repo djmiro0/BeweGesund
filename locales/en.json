@@ -2,15 +2,15 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "kurse": "Courses",
+      "courses": "Courses",
       "community": "Community",
-      "ernaehrung": "Nutrition"
+      "nutrition": "Nutrition",
+      "about": "About"
     },
     "signIn": "Sign In"
-
   },
   "sections": {
-    "kurse": {
+    "courses": {
       "title": "Our Courses",
       "text": "Train with the best programs for strength, endurance, and health."
     },
@@ -18,29 +18,45 @@
       "title": "Community",
       "text": "Join an active and motivating community."
     },
-    "ernaehrung": {
+    "nutrition": {
       "title": "Nutrition",
-      "text": "Find balanced nutrition plans for your well-being."
+      "text": "Find balanced meal plans for your well-being."
     },
     "join": "Join Course"
   },
+  "about": {
+    "title": "About S.BeweGesund",
+    "subtitle": "Your partner for fitness, wellness, and motivation",
+    "missionTitle": "Our Mission",
+    "missionText": "We help people achieve their fitness goals and lead a healthy, active life.",
+    "offerTitle": "What We Offer",
+    "features": {
+      "training": "Professional Training Programs",
+      "tracking": "Progress Tracking & Analytics",
+      "community": "Motivating Community",
+      "wellness": "Holistic Wellness Concept"
+    },
+    "visionTitle": "Our Vision",
+    "visionText": "We want to make fitness accessible to everyone and create a supportive community.",
+    "footer": "S.BeweGesund. All rights reserved."
+  },
   "banners": {
     "training": {
-      "title": "Train hard, stay strong",
-      "subtitle": "Join our courses and achieve your goal"
+      "title": "Train Hard, Stay Strong",
+      "subtitle": "Join our courses and reach your goals"
     },
     "weights": {
-      "title": "Community & motivation",
-      "subtitle": "Together we can achieve more"
+      "title": "Community & Motivation",
+      "subtitle": "Together we achieve more"
     },
     "food": {
-      "title": "Healthy nutrition for success",
+      "title": "Healthy Nutrition for Success",
       "subtitle": "Nourish your body and mind"
     }
   },
   "footer": {
     "home": "Home",
-    "about": "About",
+    "about": "About Us",
     "join": "Join",
     "copyright": "© 2025 S.BeweGesund. All rights reserved."
   }

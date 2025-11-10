@@ -1,0 +1,67 @@
+.aboutContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #1e1e1e;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  color: #0a74da;
+  margin-bottom: 0.5rem;
+}
+
+.text {
+  color: #333;
+}
+
+.list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  background: #f6f8fa;
+  border-left: 4px solid #0a74da;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.icon {
+  margin-right: 0.6rem;
+  color: #0a74da;
+  display: flex;
+  align-items: center;
+}
+
+.footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 3rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+}

@@ -1,5 +1,5 @@
 "use client";
-import React, { JSX } from "react";
+import { JSX } from "react";
 import styles from "./Calendar.module.css";
 
 interface Course {

@@ -22,9 +22,9 @@ export default function Home() {
       <Header toggleLanguage={toggleLanguage} locale={locale} />
       <main>
         <BannerSection />
-        <Section id="kurse" />
+        <Section id="courses" />
         <Section id="community" reverse />
-        <Section id="ernaehrung" />
+        <Section id="nutrition" />
       </main>
       <Footer />
     </I18nProvider>

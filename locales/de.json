@@ -2,14 +2,15 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "kurse": "Kurse",
+      "courses": "Kurse",
       "community": "Community",
-      "ernaehrung": "Ernährung"
+      "nutrition": "Ernährung",
+      "about": "Über mich"
     },
     "signIn": "Anmelden"
   },
   "sections": {
-    "kurse": {
+    "courses": {
       "title": "Unsere Kurse",
       "text": "Trainiere mit den besten Programmen für Kraft, Ausdauer und Gesundheit."
     },
@@ -17,11 +18,27 @@
       "title": "Community",
       "text": "Werde Teil einer aktiven und motivierenden Gemeinschaft."
     },
-    "ernaehrung": {
+    "nutrition": {
       "title": "Ernährung",
       "text": "Finde ausgewogene Ernährungspläne für dein Wohlbefinden."
     },
     "join": "Kurs beitreten"
+  },
+  "about": {
+    "title": "Über S.BeweGesund",
+    "subtitle": "Dein Partner für Fitness, Wellness und Motivation",
+    "missionTitle": "Unsere Mission",
+    "missionText": "Wir helfen Menschen, ihre Fitnessziele zu erreichen und ein gesundes, aktives Leben zu führen.",
+    "offerTitle": "Was wir bieten",
+    "features": {
+      "training": "Professionelle Trainingsprogramme",
+      "tracking": "Fortschrittstracking & Analyse",
+      "community": "Motivierende Gemeinschaft",
+      "wellness": "Ganzheitliches Wellness-Konzept"
+    },
+    "visionTitle": "Unsere Vision",
+    "visionText": "Wir wollen Fitness für jeden zugänglich machen und eine Community schaffen, die sich gegenseitig unterstützt.",
+    "footer": "S.BeweGesund. Alle Rechte vorbehalten."
   },
   "banners": {
     "training": {
