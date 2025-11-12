@@ -77,4 +77,22 @@
   font-size: 1.1rem;
 }
 
+.courseInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.time {
+  font-size: 0.9rem;
+  color: #0b2030;
+}
+
+.zoomLink {
+  font-size: 0.85rem;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
 

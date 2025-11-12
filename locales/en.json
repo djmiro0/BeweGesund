@@ -79,6 +79,11 @@
       }
     ]
   },
+  "calendar": {
+"courses": "Available Courses",
+"zoom": "Join via Zoom"
+
+  },
   "footer": {
     "home": "Home",
     "about": "About Us",

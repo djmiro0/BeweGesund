@@ -1,12 +1,15 @@
 "use client";
 import styles from "./CourseModal.module.css";
+import { JSX } from "react";
 
 interface Course {
   id: string;
   name: string;
   date: string;
-  time: string;
-  zoomLink: string;
+  time?: string;
+  zoomLink?: string;
+  icon?: JSX.Element;
+  color: string;
   description?: string;
 }
 

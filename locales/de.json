@@ -79,6 +79,10 @@
       }
     ]
   },
+    "calendar": {
+"courses": "Unsere Angebote",
+"zoom": "Telnehmen mit Zoom"
+  },
   "footer": {
     "home": "Startseite",
     "about": "Über Uns",
