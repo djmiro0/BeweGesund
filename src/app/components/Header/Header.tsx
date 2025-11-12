@@ -2,39 +2,51 @@
 
 import { useTranslations } from "next-intl";
 import style from "./Header.module.css";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 interface HeaderProps {
-  toggleLanguage: () => void;
-  locale: "en" | "de";
+  locale: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleLanguage, locale }) => {
+const Header: React.FC<HeaderProps> = ({  locale }) => {
   const t = useTranslations("header");
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const otherLocale = locale === "en" ? "de" : "en";
+
   const handleSignIn = () => {
     alert("Sign in clicked");
   };
 
-  const router = useRouter()
-
-const handleLanguageChange = () => {
-  router.push(`/${locale}`)
-  toggleLanguage()
-}
+  const handleLanguageChange = () => {
+    // Switch locale while preserving current path
+    const newPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
+    router.push(newPath);
+  };
 
   return (
     <header className={style.header}>
-      <div className={style.logo}>{t("logo")}</div>
-     
-<nav className={style.nav}>
-  <a href="#courses">{t("nav.courses")}</a>
-  <a href="#community">{t("nav.community")}</a>
-  <a href="#nutrition">{t("nav.nutrition")}</a>
-  <Link href={`${locale}/about`} className={style.link}>
-    {t("nav.about")}
-  </Link>
-</nav>
+             <Link href={`/${locale}`} className={style.link}>
+ <div className={style.logo}>{t("logo")}</div>
+        </Link>
+
+      <nav className={style.nav}>
+        {/* Use Link for SPA-like navigation and include locale */}
+        <Link href={`/${locale}/courses`} className={style.link}>
+          {t("nav.courses")}
+        </Link>
+        <Link href={`/${locale}#community`} className={style.link}>
+          {t("nav.community")}
+        </Link>
+        <Link href={`/${locale}#nutrition`} className={style.link}>
+          {t("nav.nutrition")}
+        </Link>
+        <Link href={`/${locale}/about`} className={style.link}>
+          {t("nav.about")}
+        </Link>
+      </nav>
 
       <div className={style.actions}>
         <button className={style.signInBtn} onClick={handleSignIn}>
@@ -42,7 +54,7 @@ const handleLanguageChange = () => {
         </button>
 
         <button className={style.langBtn} onClick={handleLanguageChange}>
-          {locale === "de" ? "DE" : "EN"}
+          {otherLocale.toUpperCase()}
         </button>
       </div>
     </header>

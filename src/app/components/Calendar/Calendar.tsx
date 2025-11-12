@@ -1,12 +1,17 @@
 "use client";
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import styles from "./Calendar.module.css";
+import { CourseModal } from "../CourseModal/CourseModal";
 
 interface Course {
+  id: string;
   name: string;
-  date: string; // ISO string
+  date: string;
+  time: string;
+  zoomLink: string;
   icon: JSX.Element;
   color: string;
+  description?: string;
 }
 
 interface CalendarProps {
@@ -14,7 +19,9 @@ interface CalendarProps {
 }
 
 export const Calendar: React.FC<CalendarProps> = ({ courses }) => {
-  // Group courses by date
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  // Group by day
   const grouped: Record<string, Course[]> = {};
   courses.forEach((c) => {
     const day = new Date(c.date).toDateString();
@@ -34,21 +41,41 @@ export const Calendar: React.FC<CalendarProps> = ({ courses }) => {
           <div key={day} className={styles.calendarDay}>
             <div className={styles.dateHeader}>{day}</div>
             <div className={styles.courses}>
-              {grouped[day].map((c, idx) => (
+              {grouped[day].map((c) => (
                 <div
-                  key={idx}
+                  key={c.id}
                   className={styles.courseCard}
                   style={{ backgroundColor: c.color }}
-                  onClick={() => alert(`Course: ${c.name}`)}
+                  onClick={() => setSelectedCourse(c)}
                 >
                   <div className={styles.icon}>{c.icon}</div>
-                  <div className={styles.name}>{c.name}</div>
+                  <div className={styles.courseInfo}>
+                    <div className={styles.name}>{c.name}</div>
+                    <div className={styles.time}>{c.time}</div>
+                    <a
+                      href={c.zoomLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()} // prevents modal open when clicking Zoom link
+                      className={styles.zoomLink}
+                    >
+                      Join on Zoom
+                    </a>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {selectedCourse && (
+        <CourseModal
+          course={selectedCourse}
+          onClose={() => setSelectedCourse(null)}
+        />
+      )}
     </div>
   );
 };

@@ -21,6 +21,17 @@
   cursor: pointer;
 }
 
+.logo:hover {
+  color: #ffa221ff;
+
+}
+
+.logo:active {
+  color: #ff9602ff;
+  letter-spacing: 1.5px;
+
+}
+
 .nav {
   display: flex;
   gap: 2rem;
@@ -93,6 +104,10 @@
 .langBtn:hover {
   background-color: var(--color-primary, #333);
   color: #fff;
+}
+
+.link {
+  text-decoration: none
 }
 
 

@@ -54,6 +54,31 @@
       "subtitle": "Nourish your body and mind"
     }
   },
+  "courses": {
+    "title": "Our Offers",
+    "plans": [
+      {
+        "name": "Muscle Building",
+        "description": "Develop strength, endurance, and confidence with guided strength training sessions.",
+        "price": "49€ / month"
+      },
+      {
+        "name": "Cardio Program",
+        "description": "Boost heart health and energy levels with personalized cardio sessions.",
+        "price": "39€ / month"
+      },
+      {
+        "name": "Corporate Fitness",
+        "description": "Bring fitness to your company and motivate your team with our workplace training packages.",
+        "price": "199€ / company package"
+      },
+      {
+        "name": "Nutrition Consultation",
+        "description": "Receive tailored advice to improve your nutrition, eating habits, and overall wellness.",
+        "price": "From 59€ / session"
+      }
+    ]
+  },
   "footer": {
     "home": "Home",
     "about": "About Us",

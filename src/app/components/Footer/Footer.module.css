@@ -2,7 +2,7 @@
 .footer {
   text-align: center;
   padding: 2rem;
-  background: #0b141a;
+  background:var(--gradient1);
   font-size: 0.9rem;
 }
 

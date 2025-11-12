@@ -20,7 +20,7 @@
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
-  background: var(--primary);
+  background: var(--gradient2);
   color: var(--text-light);
   scroll-behavior: smooth;
 }

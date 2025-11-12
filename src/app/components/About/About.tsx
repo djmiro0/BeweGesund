@@ -39,10 +39,6 @@ export const About: React.FC = () => {
         <h2 className={styles.sectionTitle}>{t("visionTitle")}</h2>
         <p className={styles.text}>{t("visionText")}</p>
       </section>
-
-      <footer className={styles.footer}>
-        <p>© {new Date().getFullYear()} {t("footer")}</p>
-      </footer>
     </div>
   );
 };

@@ -5,22 +5,22 @@
       "courses": "Kurse",
       "community": "Community",
       "nutrition": "Ernährung",
-      "about": "Über mich"
+      "about": "Über Uns"
     },
     "signIn": "Anmelden"
   },
   "sections": {
     "courses": {
-      "title": "Unsere Kurse",
+      "title": "Unsere Angebote",
       "text": "Trainiere mit den besten Programmen für Kraft, Ausdauer und Gesundheit."
     },
     "community": {
       "title": "Community",
-      "text": "Werde Teil einer aktiven und motivierenden Gemeinschaft."
+      "text": "Tritt einer aktiven und motivierenden Community bei."
     },
     "nutrition": {
       "title": "Ernährung",
-      "text": "Finde ausgewogene Ernährungspläne für dein Wohlbefinden."
+      "text": "Finde ausgewogene Mahlzeitenpläne für dein Wohlbefinden."
     },
     "join": "Kurs beitreten"
   },
@@ -29,34 +29,59 @@
     "subtitle": "Dein Partner für Fitness, Wellness und Motivation",
     "missionTitle": "Unsere Mission",
     "missionText": "Wir helfen Menschen, ihre Fitnessziele zu erreichen und ein gesundes, aktives Leben zu führen.",
-    "offerTitle": "Was wir bieten",
+    "offerTitle": "Was wir anbieten",
     "features": {
       "training": "Professionelle Trainingsprogramme",
-      "tracking": "Fortschrittstracking & Analyse",
-      "community": "Motivierende Gemeinschaft",
+      "tracking": "Fortschrittsverfolgung & Analysen",
+      "community": "Motivierende Community",
       "wellness": "Ganzheitliches Wellness-Konzept"
     },
     "visionTitle": "Unsere Vision",
-    "visionText": "Wir wollen Fitness für jeden zugänglich machen und eine Community schaffen, die sich gegenseitig unterstützt.",
+    "visionText": "Wir möchten Fitness für alle zugänglich machen und eine unterstützende Community schaffen.",
     "footer": "S.BeweGesund. Alle Rechte vorbehalten."
   },
   "banners": {
     "training": {
-      "title": "Trainiere hart, bleib stark",
-      "subtitle": "Tritt unseren Kursen bei und erreiche dein Ziel"
+      "title": "Hart trainieren, stark bleiben",
+      "subtitle": "Nimm an unseren Kursen teil und erreiche deine Ziele"
     },
     "weights": {
-      "title": "Gemeinschaft & Motivation",
-      "subtitle": "Zusammen erreichen wir mehr"
+      "title": "Community & Motivation",
+      "subtitle": "Gemeinsam erreichen wir mehr"
     },
     "food": {
       "title": "Gesunde Ernährung für Erfolg",
-      "subtitle": "Nähre Körper und Geist"
+      "subtitle": "Nähre deinen Körper und Geist"
     }
   },
+  "courses": {
+    "title": "Unsere Angebote",
+    "plans": [
+      {
+        "name": "Muskelaufbau",
+        "description": "Baue Kraft, Ausdauer und Selbstvertrauen mit betreuten Krafttrainingseinheiten auf.",
+        "price": "49€ / Monat"
+      },
+      {
+        "name": "Cardio-Programm",
+        "description": "Steigere deine Herzgesundheit und Energielevel mit individuellen Cardioeinheiten.",
+        "price": "39€ / Monat"
+      },
+      {
+        "name": "Firmenfitness",
+        "description": "Bringe Fitness ins Unternehmen und motiviere dein Team mit unseren Trainingspaketen am Arbeitsplatz.",
+        "price": "199€ / Firmenpaket"
+      },
+      {
+        "name": "Ernährungsberatung",
+        "description": "Erhalte maßgeschneiderte Tipps zur Verbesserung deiner Ernährung, Essgewohnheiten und deines Wohlbefindens.",
+        "price": "Ab 59€ / Sitzung"
+      }
+    ]
+  },
   "footer": {
-    "home": "Home",
-    "about": "Über uns",
+    "home": "Startseite",
+    "about": "Über Uns",
     "join": "Beitreten",
     "copyright": "© 2025 S.BeweGesund. Alle Rechte vorbehalten."
   }
