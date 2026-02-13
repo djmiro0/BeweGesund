@@ -1,79 +1,26 @@
+@import "tailwindcss";
+
 :root {
-  --primary: #0f2027;
-  --secondary: #203a43;
-  --accent: #2c5364;
-  --highlight: #f4a261;
-  --text-light: #f7f7f7;
-  --text-dark: #0e1a26;
-  --transition: 0.4s ease;
-    --gradient1: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  --gradient2: linear-gradient(135deg, #1c1c1c, #2a2a72, #009ffd);
-  --highlight: #ffb347;
-  --text-dark: #222;
-  --transition: 0.3s ease;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-* {
-  box-sizing: border-box;
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: var(--gradient2);
-  color: var(--text-light);
-  scroll-behavior: smooth;
-}
-
-/* CALENDAR */
-.custom-calendar {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 1rem;
-}
-
-.calendar-day {
-  margin-bottom: 2rem;
-}
-
-.calendar-date {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
-}
-
-.courses {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.course-card {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.course-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-  .section-inner {
-    flex-direction: column;
-    text-align: center;
-  }
-  .section-text {
-    text-align: center;
-  }
-  .section-image {
-    width: 90%;
-    height: 180px;
-  }
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }
