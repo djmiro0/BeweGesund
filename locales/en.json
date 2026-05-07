@@ -2,92 +2,257 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "courses": "Courses",
-      "community": "Community",
-      "nutrition": "Nutrition",
+      "courses": "Programs",
+      "calendar": "Live Calendar",
+      "consultation": "Consultation",
       "about": "About"
     },
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
   },
-  "sections": {
-    "courses": {
-      "title": "Our Courses",
-      "text": "Train with the best programs for strength, endurance, and health."
+  "home": {
+    "hero": {
+      "title": "MOVE TOWARD A HEALTHIER BODY",
+      "subtitle": "Online movement, rehabilitation, and educational support in German and English.",
+      "cta": "Get Started"
     },
-    "community": {
-      "title": "Community",
-      "text": "Join an active and motivating community."
+    "public": {
+      "eyebrow": "Movement. Rehab. Education.",
+      "title": "A clear path to stronger, safer everyday movement.",
+      "description": "Explore structured courses, long-term training, and expert-led education before unlocking live sessions and personal support.",
+      "primaryCta": "Explore Programs",
+      "secondaryCta": "Member Sign In",
+      "highlights": [
+        "10 guided course formats",
+        "Long-term twelve-month training",
+        "Nutrition and educational seminars"
+      ]
     },
-    "nutrition": {
-      "title": "Nutrition",
-      "text": "Find balanced meal plans for your well-being."
+    "dashboard": {
+      "greeting": "Hello, {name}",
+      "ready": "Ready for your next healthy training session?",
+      "stats": {
+        "programs": "Programs",
+        "thisWeek": "This Week"
+      }
     },
-    "join": "Join Course"
+    "loading": "LOADING..."
+  },
+  "auth": {
+    "signInTitle": "Member Sign In",
+    "registerTitle": "Create Account",
+    "supportText": "Access member-only live training, live seminars, and personal counseling.",
+    "email": "Email address",
+    "password": "Password",
+    "submitSignIn": "Sign In",
+    "submitRegister": "Create Account",
+    "switchToRegister": "New here? Create an account",
+    "switchToSignIn": "Already have an account? Sign in",
+    "close": "Close",
+    "errorPrefix": "Sign in failed:",
+    "providerDisabled": "Account creation is currently disabled in Firebase. Please enable Email/Password sign-in in the Firebase console.",
+    "invalidCredential": "The email or password is incorrect.",
+    "emailInUse": "An account with this email already exists.",
+    "weakPassword": "Please choose a stronger password.",
+    "invalidEmail": "Please enter a valid email address.",
+    "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
+    "genericError": "Something went wrong during sign-in. Please try again."
+  },
+  "memberAccess": {
+    "badge": "Members only",
+    "title": "Live training and counseling unlock after sign-in.",
+    "description": "The public site shows the full program overview. Sign in to access live calendars, live training formats, and personal counseling actions.",
+    "cta": "Sign In to Unlock",
+    "liveTrainingNote": "Sign in to access member live sessions and the full interactive calendar.",
+    "liveSeminarNote": "Live seminar participation becomes visible after sign-in.",
+    "consultationNote": "Personal counseling is available inside the member area after sign-in."
   },
   "about": {
     "title": "About S.BeweGesund",
-    "subtitle": "Your partner for fitness, wellness, and motivation",
+    "subtitle": "Movement, rehabilitation, and education for sustainable health",
     "missionTitle": "Our Mission",
-    "missionText": "We help people achieve their fitness goals and lead a healthy, active life.",
+    "missionText": "We support people who want to move safely, build strength gradually, and improve their quality of life through structured training and practical education.",
     "offerTitle": "What We Offer",
     "features": {
-      "training": "Professional Training Programs",
-      "tracking": "Progress Tracking & Analytics",
-      "community": "Motivating Community",
-      "wellness": "Holistic Wellness Concept"
+      "training": "Structured Online Courses",
+      "tracking": "Long-Term Training Support",
+      "community": "Live Sessions and Seminars",
+      "wellness": "Holistic Health Approach"
     },
     "visionTitle": "Our Vision",
-    "visionText": "We want to make fitness accessible to everyone and create a supportive community.",
+    "visionText": "We want health-oriented movement and understandable education to be accessible, practical, and sustainable for everyday life.",
     "footer": "S.BeweGesund. All rights reserved."
   },
   "banners": {
     "training": {
-      "title": "Train Hard, Stay Strong",
-      "subtitle": "Join our courses and reach your goals"
+      "title": "Move With Confidence",
+      "subtitle": "Build stability, mobility, and trust in your body"
     },
     "weights": {
-      "title": "Community & Motivation",
-      "subtitle": "Together we achieve more"
+      "title": "Live Guidance and Support",
+      "subtitle": "Train and learn with expert-led sessions"
     },
     "food": {
-      "title": "Healthy Nutrition for Success",
-      "subtitle": "Nourish your body and mind"
+      "title": "Knowledge That Fits Real Life",
+      "subtitle": "Nutrition and health education you can actually use"
     }
   },
   "courses": {
-    "title": "Our Offers",
-    "plans": [
+    "title": "Programs and Services",
+    "intro": "A complete offer covering guided movement, live sessions, education, individual support, and long-term training.",
+    "courseTypes": {
+      "title": "Course Types",
+      "items": [
+        "Pilates for Beginners",
+        "Rehabilitation Training for Beginners (Training Principles)",
+        "Rehabilitation Sport - Full Body",
+        "Rehabilitation Sport - Back",
+        "Rehabilitation Sport - Knee",
+        "Strengthening the Abdominal Wall as a Foundation for a Healthy Back",
+        "Morning Exercise",
+        "Principles of Nutrition",
+        "Ten-Minute Training for an Active Break",
+        "Educational Seminars"
+      ]
+    },
+    "liveTrainings": {
+      "title": "Live Trainings",
+      "description": "Join scheduled online training sessions through the live training calendar."
+    },
+    "liveSeminars": {
+      "title": "Live Educational Seminars",
+      "description": "Attend scheduled online educational seminars through the seminar calendar."
+    },
+    "consultation": {
+      "title": "Personal Consultation",
+      "description": "Book online without mandatory registration for a focused one-to-one session.",
+      "items": [
+        "Online scheduling",
+        "Registration is not required",
+        "30 minutes - 40 EUR"
+      ]
+    },
+    "annualTraining": {
+      "title": "Personal Twelve-Month Training",
+      "description": "A long-term individualized program built around your starting point, health history, goals, and practical needs.",
+      "questionnaireTitle": "Questionnaire Includes",
+      "questionnaire": [
+        "Personal information",
+        "Body measurements (waist, arms, legs, hips) with explanation",
+        "Medical history",
+        "Goals",
+        "Special requirements"
+      ]
+    },
+    "businessCooperation": {
+      "title": "Business Cooperation",
+      "description": "Partnership options for organizations that want health-oriented movement, preventive formats, or educational content for their teams."
+    }
+  },
+  "calendar": {
+    "title": "Live Calendar",
+    "join": "Join Session",
+    "subtitle": "A member view of the week’s live training and educational sessions.",
+    "liveTrainings": {
+      "title": "Live Trainings",
+      "entries": [
+        {
+          "date": "Monday, May 12",
+          "time": "18:00",
+          "title": "Pilates for Beginners",
+          "format": "Zoom"
+        },
+        {
+          "date": "Wednesday, May 14",
+          "time": "19:00",
+          "title": "Rehabilitation Sport - Back",
+          "format": "Zoom"
+        },
+        {
+          "date": "Friday, May 16",
+          "time": "08:00",
+          "title": "Morning Exercise",
+          "format": "Zoom"
+        }
+      ]
+    },
+    "liveSeminars": {
+      "title": "Live Educational Seminars",
+      "entries": [
+        {
+          "date": "Tuesday, May 13",
+          "time": "17:30",
+          "title": "Principles of Nutrition",
+          "format": "Online Seminar"
+        },
+        {
+          "date": "Thursday, May 15",
+          "time": "18:30",
+          "title": "Active Break in 10 Minutes",
+          "format": "Online Seminar"
+        }
+      ]
+    }
+  },
+  "liveSchedule": {
+    "title": "Live",
+    "highlight": "Sessions",
+    "viewAll": "View full calendar",
+    "book": "Book",
+    "spots": "{count} spots available",
+    "items": [
       {
-        "name": "Muscle Building",
-        "description": "Develop strength, endurance, and confidence with guided strength training sessions.",
-        "price": "49€ / month"
+        "day": "MON",
+        "date": "12 May",
+        "time": "18:00",
+        "title": "Pilates for Beginners",
+        "spots": 6
       },
       {
-        "name": "Cardio Program",
-        "description": "Boost heart health and energy levels with personalized cardio sessions.",
-        "price": "39€ / month"
+        "day": "WED",
+        "date": "14 May",
+        "time": "19:00",
+        "title": "Rehabilitation Sport - Back",
+        "spots": 8
       },
       {
-        "name": "Corporate Fitness",
-        "description": "Bring fitness to your company and motivate your team with our workplace training packages.",
-        "price": "199€ / company package"
-      },
-      {
-        "name": "Nutrition Consultation",
-        "description": "Receive tailored advice to improve your nutrition, eating habits, and overall wellness.",
-        "price": "From 59€ / session"
+        "day": "FRI",
+        "date": "16 May",
+        "time": "08:00",
+        "title": "Morning Exercise",
+        "spots": 12
       }
     ]
   },
-  "calendar": {
-"courses": "Available Courses",
-"zoom": "Join via Zoom"
-
+  "services": {
+    "title": "Individual Support",
+    "memberTitle": "Member Support",
+    "publicTitle": "Support Paths",
+    "cards": [
+      {
+        "id": "consultation",
+        "title": "Personal Consultation",
+        "desc": "Book a focused online consultation without mandatory registration. Duration 30 minutes, price 40 EUR.",
+        "cta": "Book Online"
+      },
+      {
+        "id": "annualTraining",
+        "title": "Twelve-Month Training",
+        "desc": "A structured personal program based on your measurements, medical history, goals, and specific requirements.",
+        "cta": "See Details"
+      },
+      {
+        "id": "businessCooperation",
+        "title": "Business Cooperation",
+        "desc": "Health-oriented movement and educational formats for teams, organizations, and workplace initiatives.",
+        "cta": "Request Cooperation"
+      }
+    ]
   },
   "footer": {
     "home": "Home",
-    "about": "About Us",
-    "join": "Join",
-    "copyright": "© 2025 S.BeweGesund. All rights reserved."
+    "about": "About",
+    "join": "Programs",
+    "copyright": "© 2026 S.BeweGesund. All rights reserved."
   }
 }

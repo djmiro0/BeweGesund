@@ -34,7 +34,7 @@ export default function BannerSection() {
       setCurrent((prev) => (prev + 1) % banners.length);
     }, 15000);
     return () => clearInterval(timer);
-  }, []);
+  }, [banners.length]);
 
   const nextBanner = () =>
     setCurrent((prev) => (prev + 1) % banners.length);

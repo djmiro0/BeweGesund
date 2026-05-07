@@ -9,7 +9,7 @@ import { LogOut, Globe } from 'lucide-react';
 
 interface HeaderProps {
     locale: string;
-    user?: any;
+    user?: { email?: string } | null;
     openAuth?: () => void;
 }
 
@@ -40,11 +40,11 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                 <Link href={`/${locale}/courses`} className="text-sm font-bold text-zinc-400 hover:text-white uppercase transition-colors">
                     {t("nav.courses")}
                 </Link>
-                <Link href={`/${locale}#community`} className="text-sm font-bold text-zinc-400 hover:text-white uppercase transition-colors">
-                    {t("nav.community")}
+                <Link href={`/${locale}/calendar`} className="text-sm font-bold text-zinc-400 hover:text-white uppercase transition-colors">
+                    {t("nav.calendar")}
                 </Link>
-                <Link href={`/${locale}#nutrition`} className="text-sm font-bold text-zinc-400 hover:text-white uppercase transition-colors">
-                    {t("nav.nutrition")}
+                <Link href={`/${locale}/courses#consultation`} className="text-sm font-bold text-zinc-400 hover:text-white uppercase transition-colors">
+                    {t("nav.consultation")}
                 </Link>
                 <Link href={`/${locale}/about`} className="text-sm font-bold text-zinc-400 hover:text-white uppercase transition-colors">
                     {t("nav.about")}
@@ -72,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                             className="text-red-500 flex items-center gap-2 text-sm font-black uppercase hover:text-red-400 transition-colors"
                         >
                             <LogOut size={18} />
-                            <span className="hidden sm:block">{t("signOut") || "Abmelden"}</span>
+                            <span className="hidden sm:block">{t("signOut")}</span>
                         </button>
                     </div>
                 ) : (
@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         className="bg-white text-black px-6 py-2 font-black uppercase text-sm skew-x-[-10deg] hover:bg-orange-500 hover:text-white transition-all duration-300 group"
                     >
             <span className="inline-block skew-x-[10deg]">
-              {t("signIn") || "Anmelden"}
+              {t("signIn")}
             </span>
                     </button>
                 )}

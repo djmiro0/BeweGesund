@@ -1,5 +1,5 @@
 // data.ts
-import { Dumbbell, Salad, Brain, Video, Calendar } from 'lucide-react';
+import { Salad, Brain } from 'lucide-react';
 
 export const contentText = {
     de: {
@@ -68,5 +68,4 @@ export const user =
         favorites: [1, 3], // IDs of favorite videos
         bookedClasses: [2], // IDs of scheduled classes
     }
-
 

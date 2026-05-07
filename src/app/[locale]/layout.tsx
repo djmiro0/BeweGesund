@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import Header from "../components/Header/Header";
-import Footer from "../components/Footer/Footer";
+import AppShell from "./components/AppShell";
 import "./globals.css";
 import enMessages from "../../../locales/en.json";
 import deMessages from "../../../locales/de.json";
@@ -24,9 +23,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Header locale={locale} />
-          <main>{children}</main>
-          <Footer />
+          <AppShell locale={locale}>{children}</AppShell>
         </NextIntlClientProvider>
       </body>
     </html>

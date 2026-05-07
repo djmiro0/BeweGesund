@@ -3,7 +3,12 @@ import { auth} from "../../../../firebase.config";
 import { signOut } from 'firebase/auth';
 import { LogOut } from 'lucide-react';
 
-export default function Navbar({ user, openAuth }: any) {
+interface NavbarProps {
+    user?: { email?: string } | null;
+    openAuth?: () => void;
+}
+
+export default function Navbar({ user, openAuth }: NavbarProps) {
     return (
         <nav className="fixed w-full z-40 bg-black/90 border-b border-white/10 h-20 px-6 flex items-center justify-between">
             <div className="text-2xl font-black text-orange-500 italic">S.BeweGesund</div>

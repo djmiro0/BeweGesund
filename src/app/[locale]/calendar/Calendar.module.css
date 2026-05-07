@@ -1,36 +1,51 @@
 .calendarContainer {
-  padding: 3rem 2rem;
-    margin: 5.5rem auto;
+  padding: 8rem 2rem 4rem;
+  margin: 0 auto;
   color: #f5f5f5;
-  background: var(--primary);
-  border-radius: 16px;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  background:
+    radial-gradient(circle at top right, rgba(249, 115, 22, 0.14), transparent 24%),
+    linear-gradient(180deg, #111114 0%, #09090b 100%);
   max-width: 1200px;
-  height: 73vh
+  min-height: 73vh;
 }
 
 .title {
   text-align: center;
-  font-size: 2.4rem;
-  margin-bottom: 3rem;
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  margin-bottom: 1rem;
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  line-height: 0.92;
+}
+
+.subtitle {
+  max-width: 760px;
+  margin: 0 auto 3rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.8;
 }
 
 .calendarGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
 }
 
 .calendarDay {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+    rgba(16, 16, 19, 0.88);
+  border-radius: 28px;
+  padding: 1.8rem;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: background-color 0.2s ease-in-out;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
 }
 
 .calendarDay:hover {
@@ -38,12 +53,14 @@
 }
 
 .dateHeader {
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  color: #a0c4ff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  padding-bottom: 0.5rem;
+  font-weight: 800;
+  font-size: 1rem;
+  margin-bottom: 1.3rem;
+  color: #fdba74;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
 
 .courses {
@@ -54,11 +71,13 @@
 
 .courseCard {
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.8rem 1rem;
-  border-radius: 10px;
-  cursor: pointer;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem;
+  border-radius: 22px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 237, 0.92));
   font-weight: 500;
   color: #081b26;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -69,12 +88,10 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
 }
 
-.icon {
-  font-size: 1.4rem;
-}
-
 .name {
   font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .courseInfo {
@@ -83,16 +100,37 @@
   gap: 0.3rem;
 }
 
+.meta {
+  font-size: 0.95rem;
+  color: #274256;
+}
+
 .time {
   font-size: 0.9rem;
   color: #0b2030;
 }
 
-.zoomLink {
-  font-size: 0.85rem;
-  color: var(--primary);
-  text-decoration: none;
+.joinButton {
+  border: 0;
+  background: var(--highlight);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
   font-weight: bold;
   cursor: pointer;
+  white-space: nowrap;
 }
 
+.joinButton:hover {
+  background: #ea580c;
+}
+
+@media (max-width: 768px) {
+  .calendarContainer {
+    padding: 7rem 1rem 3rem;
+  }
+
+  .courseCard {
+    flex-direction: column;
+  }
+}

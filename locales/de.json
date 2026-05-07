@@ -2,91 +2,257 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "courses": "Kurse",
-      "community": "Community",
-      "nutrition": "Ernährung",
+      "courses": "Angebote",
+      "calendar": "Live-Kalender",
+      "consultation": "Beratung",
       "about": "Über Uns"
     },
-    "signIn": "Anmelden"
+    "signIn": "Anmelden",
+    "signOut": "Abmelden"
   },
-  "sections": {
-    "courses": {
-      "title": "Unsere Angebote",
-      "text": "Trainiere mit den besten Programmen für Kraft, Ausdauer und Gesundheit."
+  "home": {
+    "hero": {
+      "title": "BEWEGE DICH IN RICHTUNG EINER GESÜNDEREN KÖRPERHALTUNG",
+      "subtitle": "Online-Bewegung, Rehabilitation und edukative Begleitung auf Deutsch und Englisch.",
+      "cta": "Jetzt Starten"
     },
-    "community": {
-      "title": "Community",
-      "text": "Tritt einer aktiven und motivierenden Community bei."
+    "public": {
+      "eyebrow": "Bewegung. Reha. Bildung.",
+      "title": "Ein klarer Weg zu stärkerer und sicherer Alltagsbewegung.",
+      "description": "Entdecke strukturierte Kurse, langfristiges Training und fachlich geführte Bildung, bevor du Live-Sessions und persönliche Begleitung freischaltest.",
+      "primaryCta": "Programme Entdecken",
+      "secondaryCta": "Mitglieder-Login",
+      "highlights": [
+        "10 geführte Kursformate",
+        "Langfristiges Zwölf-Monats-Training",
+        "Ernährung und edukative Seminare"
+      ]
     },
-    "nutrition": {
-      "title": "Ernährung",
-      "text": "Finde ausgewogene Mahlzeitenpläne für dein Wohlbefinden."
+    "dashboard": {
+      "greeting": "Hallo, {name}",
+      "ready": "Bereit für deine nächste gesunde Trainingseinheit?",
+      "stats": {
+        "programs": "Programme",
+        "thisWeek": "Diese Woche"
+      }
     },
-    "join": "Kurs beitreten"
+    "loading": "WIRD GELADEN..."
+  },
+  "auth": {
+    "signInTitle": "Mitglieder-Login",
+    "registerTitle": "Konto Erstellen",
+    "supportText": "Erhalte Zugriff auf Live-Training, Live-Seminare und persönliche Beratung nur für Mitglieder.",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "submitSignIn": "Anmelden",
+    "submitRegister": "Konto Erstellen",
+    "switchToRegister": "Neu hier? Konto erstellen",
+    "switchToSignIn": "Bereits ein Konto? Anmelden",
+    "close": "Schließen",
+    "errorPrefix": "Anmeldung fehlgeschlagen:",
+    "providerDisabled": "Die Kontoerstellung ist in Firebase derzeit deaktiviert. Bitte aktiviere Email/Passwort-Anmeldung in der Firebase-Konsole.",
+    "invalidCredential": "Die E-Mail-Adresse oder das Passwort ist nicht korrekt.",
+    "emailInUse": "Für diese E-Mail-Adresse existiert bereits ein Konto.",
+    "weakPassword": "Bitte wähle ein stärkeres Passwort.",
+    "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "tooManyRequests": "Zu viele Versuche. Bitte warte kurz und versuche es erneut.",
+    "genericError": "Bei der Anmeldung ist ein Fehler aufgetreten. Bitte versuche es erneut."
+  },
+  "memberAccess": {
+    "badge": "Nur für Mitglieder",
+    "title": "Live-Training und Beratung werden nach dem Login freigeschaltet.",
+    "description": "Die öffentliche Seite zeigt den vollständigen Programmüberblick. Nach dem Login erhältst du Zugriff auf Live-Kalender, Live-Trainingsformate und persönliche Beratungsaktionen.",
+    "cta": "Zum Freischalten Anmelden",
+    "liveTrainingNote": "Melde dich an, um Live-Sessions für Mitglieder und den vollständigen interaktiven Kalender zu sehen.",
+    "liveSeminarNote": "Die Teilnahme an Live-Seminaren wird nach dem Login sichtbar.",
+    "consultationNote": "Die persönliche Beratung ist im Mitgliederbereich nach dem Login verfügbar."
   },
   "about": {
     "title": "Über S.BeweGesund",
-    "subtitle": "Dein Partner für Fitness, Wellness und Motivation",
+    "subtitle": "Bewegung, Rehabilitation und Bildung für nachhaltige Gesundheit",
     "missionTitle": "Unsere Mission",
-    "missionText": "Wir helfen Menschen, ihre Fitnessziele zu erreichen und ein gesundes, aktives Leben zu führen.",
-    "offerTitle": "Was wir anbieten",
+    "missionText": "Wir begleiten Menschen, die sich sicher bewegen, schrittweise Kraft aufbauen und ihre Lebensqualität durch strukturiertes Training und verständliche Bildung verbessern möchten.",
+    "offerTitle": "Was Wir Anbieten",
     "features": {
-      "training": "Professionelle Trainingsprogramme",
-      "tracking": "Fortschrittsverfolgung & Analysen",
-      "community": "Motivierende Community",
-      "wellness": "Ganzheitliches Wellness-Konzept"
+      "training": "Strukturierte Online-Kurse",
+      "tracking": "Langfristige Trainingsbegleitung",
+      "community": "Live-Sessions und Seminare",
+      "wellness": "Ganzheitlicher Gesundheitsansatz"
     },
     "visionTitle": "Unsere Vision",
-    "visionText": "Wir möchten Fitness für alle zugänglich machen und eine unterstützende Community schaffen.",
+    "visionText": "Wir möchten gesundheitsorientierte Bewegung und verständliche Bildung zugänglich, praxisnah und alltagstauglich machen.",
     "footer": "S.BeweGesund. Alle Rechte vorbehalten."
   },
   "banners": {
     "training": {
-      "title": "Hart trainieren, stark bleiben",
-      "subtitle": "Nimm an unseren Kursen teil und erreiche deine Ziele"
+      "title": "Bewege dich mit Vertrauen",
+      "subtitle": "Baue Stabilität, Beweglichkeit und Vertrauen in deinen Körper auf"
     },
     "weights": {
-      "title": "Community & Motivation",
-      "subtitle": "Gemeinsam erreichen wir mehr"
+      "title": "Live-Begleitung und Unterstützung",
+      "subtitle": "Trainiere und lerne in fachlich geführten Sessions"
     },
     "food": {
-      "title": "Gesunde Ernährung für Erfolg",
-      "subtitle": "Nähre deinen Körper und Geist"
+      "title": "Wissen für den echten Alltag",
+      "subtitle": "Ernährungs- und Gesundheitsbildung, die wirklich nutzbar ist"
     }
   },
   "courses": {
-    "title": "Unsere Angebote",
-    "plans": [
+    "title": "Programme und Leistungen",
+    "intro": "Ein vollständiges Angebot aus geführter Bewegung, Live-Sessions, Bildung, individueller Begleitung und langfristigem Training.",
+    "courseTypes": {
+      "title": "Kursarten",
+      "items": [
+        "Pilates für Anfänger",
+        "Rehabilitations-Training für Anfänger (Trainingsprinzipien)",
+        "Reha-Sport - Ganzer Körper",
+        "Reha-Sport - Rücken",
+        "Reha-Sport - Knie",
+        "Stärkung der Bauchwand als Grundlage für einen gesunden Rücken",
+        "Morgengymnastik",
+        "Grundlagen der Ernährung",
+        "Zehn-Minuten-Training für die aktive Pause",
+        "Edukative Seminare"
+      ]
+    },
+    "liveTrainings": {
+      "title": "Live-Trainings",
+      "description": "Nimm an geplanten Online-Trainingseinheiten über den Live-Trainingskalender teil."
+    },
+    "liveSeminars": {
+      "title": "Live-Edukationsseminare",
+      "description": "Besuche geplante Online-Seminare über den Seminarkalender."
+    },
+    "consultation": {
+      "title": "Persönliche Beratung",
+      "description": "Buche online ohne verpflichtende Registrierung eine gezielte Eins-zu-eins-Beratung.",
+      "items": [
+        "Online-Terminbuchung",
+        "Registrierung ist nicht erforderlich",
+        "30 Minuten - 40 EUR"
+      ]
+    },
+    "annualTraining": {
+      "title": "Persönliches Zwölf-Monats-Training",
+      "description": "Ein langfristiges individuelles Programm, das auf deinem Ausgangspunkt, deiner Anamnese, deinen Zielen und praktischen Anforderungen basiert.",
+      "questionnaireTitle": "Der Fragebogen Umfasst",
+      "questionnaire": [
+        "Persönliche Angaben",
+        "Umfangsmaße (Taille, Arme, Beine, Hüfte) mit Erklärung",
+        "Anamnese",
+        "Ziele",
+        "Besondere Anforderungen"
+      ]
+    },
+    "businessCooperation": {
+      "title": "Geschäftliche Zusammenarbeit",
+      "description": "Kooperationsmöglichkeiten für Organisationen, die gesundheitsorientierte Bewegung, Präventionsformate oder Bildungsinhalte für ihre Teams anbieten möchten."
+    }
+  },
+  "calendar": {
+    "title": "Live-Kalender",
+    "join": "Teilnehmen",
+    "subtitle": "Eine Mitgliederansicht der Live-Trainings und edukativen Sessions dieser Woche.",
+    "liveTrainings": {
+      "title": "Live-Trainings",
+      "entries": [
+        {
+          "date": "Montag, 12. Mai",
+          "time": "18:00",
+          "title": "Pilates für Anfänger",
+          "format": "Zoom"
+        },
+        {
+          "date": "Mittwoch, 14. Mai",
+          "time": "19:00",
+          "title": "Reha-Sport - Rücken",
+          "format": "Zoom"
+        },
+        {
+          "date": "Freitag, 16. Mai",
+          "time": "08:00",
+          "title": "Morgengymnastik",
+          "format": "Zoom"
+        }
+      ]
+    },
+    "liveSeminars": {
+      "title": "Live-Edukationsseminare",
+      "entries": [
+        {
+          "date": "Dienstag, 13. Mai",
+          "time": "17:30",
+          "title": "Grundlagen der Ernährung",
+          "format": "Online-Seminar"
+        },
+        {
+          "date": "Donnerstag, 15. Mai",
+          "time": "18:30",
+          "title": "Aktive Pause in 10 Minuten",
+          "format": "Online-Seminar"
+        }
+      ]
+    }
+  },
+  "liveSchedule": {
+    "title": "Live",
+    "highlight": "Sessions",
+    "viewAll": "Gesamten Kalender ansehen",
+    "book": "Buchen",
+    "spots": "{count} Plätze frei",
+    "items": [
       {
-        "name": "Muskelaufbau",
-        "description": "Baue Kraft, Ausdauer und Selbstvertrauen mit betreuten Krafttrainingseinheiten auf.",
-        "price": "49€ / Monat"
+        "day": "MO",
+        "date": "12. Mai",
+        "time": "18:00",
+        "title": "Pilates für Anfänger",
+        "spots": 6
       },
       {
-        "name": "Cardio-Programm",
-        "description": "Steigere deine Herzgesundheit und Energielevel mit individuellen Cardioeinheiten.",
-        "price": "39€ / Monat"
+        "day": "MI",
+        "date": "14. Mai",
+        "time": "19:00",
+        "title": "Reha-Sport - Rücken",
+        "spots": 8
       },
       {
-        "name": "Firmenfitness",
-        "description": "Bringe Fitness ins Unternehmen und motiviere dein Team mit unseren Trainingspaketen am Arbeitsplatz.",
-        "price": "199€ / Firmenpaket"
-      },
-      {
-        "name": "Ernährungsberatung",
-        "description": "Erhalte maßgeschneiderte Tipps zur Verbesserung deiner Ernährung, Essgewohnheiten und deines Wohlbefindens.",
-        "price": "Ab 59€ / Sitzung"
+        "day": "FR",
+        "date": "16. Mai",
+        "time": "08:00",
+        "title": "Morgengymnastik",
+        "spots": 12
       }
     ]
   },
-    "calendar": {
-"courses": "Unsere Angebote",
-"zoom": "Telnehmen mit Zoom"
+  "services": {
+    "title": "Individuelle Begleitung",
+    "memberTitle": "Begleitung für Mitglieder",
+    "publicTitle": "Begleitangebote",
+    "cards": [
+      {
+        "id": "consultation",
+        "title": "Persönliche Beratung",
+        "desc": "Buche eine gezielte Online-Beratung ohne verpflichtende Registrierung. Dauer 30 Minuten, Preis 40 EUR.",
+        "cta": "Online Buchen"
+      },
+      {
+        "id": "annualTraining",
+        "title": "Zwölf-Monats-Training",
+        "desc": "Ein strukturiertes persönliches Programm auf Basis deiner Maße, Anamnese, Ziele und besonderen Anforderungen.",
+        "cta": "Details Ansehen"
+      },
+      {
+        "id": "businessCooperation",
+        "title": "Geschäftliche Zusammenarbeit",
+        "desc": "Gesundheitsorientierte Bewegungs- und Bildungsformate für Teams, Organisationen und betriebliche Initiativen.",
+        "cta": "Kooperation Anfragen"
+      }
+    ]
   },
   "footer": {
     "home": "Startseite",
     "about": "Über Uns",
-    "join": "Beitreten",
-    "copyright": "© 2025 S.BeweGesund. Alle Rechte vorbehalten."
+    "join": "Angebote",
+    "copyright": "© 2026 S.BeweGesund. Alle Rechte vorbehalten."
   }
 }
