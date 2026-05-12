@@ -1,109 +1,186 @@
+.aboutShell {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 7.5rem 1.25rem 4rem;
+  background: var(--gradient-hero);
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(var(--accent-rgb), 0.08) 48%, transparent 100%);
+  opacity: 0.65;
+}
+
 .aboutContainer {
-  max-width: 900px;
-  margin: 5.5rem auto;
-  padding: 2rem;
-  background:var(--secondary);
-  border-radius: 16px;
-  backdrop-filter: blur(6px);
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
   color: var(--text-light);
   animation: fadeIn 0.8s var(--transition);
 }
 
-/* TITLES */
-.title {
-  text-align: center;
-  font-size: 2.8rem;
-  font-weight: 700;
-  background: var(--highlight);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.hero {
+  max-width: 780px;
+  margin-bottom: 4rem;
+}
+
+.eyebrow {
   margin-bottom: 1rem;
+  color: var(--highlight-soft);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: clamp(3rem, 6vw, 6.3rem);
+  font-weight: 900;
+  line-height: 0.92;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  font-style: italic;
+  max-width: 11ch;
 }
 
 .subtitle {
-  text-align: center;
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 3rem;
-  line-height: 1.6;
+  max-width: 640px;
+  font-size: 1.12rem;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.8;
 }
 
-/* SECTIONS */
-.section {
+.storyGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
   margin-bottom: 2.5rem;
-  animation: fadeIn 1s ease;
 }
 
-.sectionTitle {
-  font-size: 1.6rem;
-  color: var(--highlight);
-  margin-bottom: 0.8rem;
-  font-weight: 600;
+.storyPanel,
+.offerSection {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid var(--border-soft);
+  background:
+    linear-gradient(180deg, rgba(var(--foreground-rgb), 0.04), rgba(var(--foreground-rgb), 0.02)),
+    var(--surface-1);
+  box-shadow: 0 24px 80px var(--shadow-color);
+  transition: transform 0.3s var(--transition), border-color 0.3s var(--transition);
+}
+
+.storyPanel {
+  padding: 2rem 2rem 2.2rem;
+}
+
+.storyPanel::before,
+.offerSection::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.6), transparent 70%);
+}
+
+.storyPanel:hover,
+.offerSection:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+}
+
+.panelLabel {
+  margin-bottom: 1rem;
+  color: var(--highlight-soft);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .text {
-  line-height: 1.7;
+  line-height: 1.85;
   color: rgba(255, 255, 255, 0.9);
+  font-size: 1.02rem;
 }
 
-/* FEATURE LIST */
+.offerSection {
+  padding: 2rem;
+}
+
+.offerIntro {
+  margin-bottom: 1.5rem;
+}
+
 .list {
   list-style: none;
   padding: 0;
-  margin: 1rem 0 0 0;
+  margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem 1.1rem;
 }
 
 .listItem {
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.9rem 1.2rem;
-  border-radius: 12px;
-  transition: transform 0.3s var(--transition), box-shadow 0.3s var(--transition);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 0 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .listItem:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
 }
 
 .icon {
   color: var(--highlight);
   flex-shrink: 0;
+  margin-top: 0.05rem;
 }
 
-/* FOOTER */
-.footer {
-  margin-top: 3rem;
-  text-align: center;
-  font-size: 0.9rem;
+.featureText {
+  line-height: 1.7;
+}
+
+.footerNote {
+  margin-top: 2rem;
+  font-size: 0.88rem;
   color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
-
-
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
-  .aboutContainer {
-    padding: 1.5rem;
-    margin: 2rem 1rem;
+@media (max-width: 900px) {
+  .storyGrid {
+    grid-template-columns: 1fr;
   }
+}
 
+@media (max-width: 768px) {
+  .aboutShell {
+    padding: 6.5rem 1rem 3rem;
+  }
   .title {
-    font-size: 2.2rem;
+    font-size: 2.7rem;
+    max-width: 12ch;
   }
 
   .subtitle {
     font-size: 1rem;
   }
 
-  .sectionTitle {
-    font-size: 1.3rem;
+  .storyPanel,
+  .offerSection {
+    padding: 1.45rem;
   }
 }

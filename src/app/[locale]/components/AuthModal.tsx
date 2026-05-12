@@ -64,48 +64,48 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/92 backdrop-blur-md p-4">
-            <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.2),_transparent_32%),linear-gradient(180deg,_rgba(24,24,27,0.98),_rgba(9,9,11,0.98))] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-                <button onClick={onClose} aria-label={t("close")} className="absolute right-4 top-4 rounded-full border border-white/10 bg-white/5 p-2 text-zinc-400 transition hover:bg-white/10 hover:text-white"><X size={18} /></button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(var(--navy-rgb),0.92)] backdrop-blur-md p-4">
+            <div className="relative w-full max-w-md overflow-hidden rounded-[2rem] border border-[var(--border-soft)] bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.2),_transparent_32%),linear-gradient(180deg,_rgba(var(--navy-rgb),0.98),_rgba(2,35,53,0.98))] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+                <button onClick={onClose} aria-label={t("close")} className="absolute right-4 top-4 rounded-full border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.05)] p-2 text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.1)] hover:text-[var(--text-light)]"><X size={18} /></button>
                 <div className="mb-6">
-                    <div className="mb-3 inline-flex rounded-full border border-orange-500/25 bg-orange-500/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-orange-200">
+                    <div className="mb-3 inline-flex rounded-full border border-[rgba(var(--accent-rgb),0.25)] bg-[rgba(var(--accent-rgb),0.1)] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[var(--highlight-soft)]">
                         S.BeweGesund
                     </div>
-                    <h2 className="text-3xl font-black italic uppercase text-white">
+                    <h2 className="text-3xl font-black italic uppercase text-[var(--text-light)]">
                         {isRegister ? t("registerTitle") : t("signInTitle")}
                     </h2>
-                    <p className="mt-2 text-sm leading-6 text-zinc-400">{t("supportText")}</p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-dim)]">{t("supportText")}</p>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <label className="block">
-                        <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">{t("email")}</span>
+                        <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("email")}</span>
                         <input
                             type="email" placeholder={t("email")} value={email} onChange={(e) => setEmail(e.target.value)}
-                            className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-orange-500 focus:bg-black"
+                            className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
                             autoComplete="email"
                         />
                     </label>
                     <label className="block">
-                        <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">{t("password")}</span>
+                        <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("password")}</span>
                         <input
                             type="password" placeholder={t("password")} value={password} onChange={(e) => setPassword(e.target.value)}
-                            className="w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-orange-500 focus:bg-black"
+                            className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
                             autoComplete={isRegister ? "new-password" : "current-password"}
                         />
                     </label>
                     {errorMessage ? (
-                        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                        <div className="rounded-2xl border border-[rgba(var(--accent-strong-rgb),0.2)] bg-[var(--status-danger-soft)] px-4 py-3 text-sm text-[var(--highlight-soft)]">
                             {errorMessage}
                         </div>
                     ) : null}
-                    <button disabled={isSubmitting} className="flex w-full items-center justify-center gap-2 rounded-full bg-white py-4 font-black uppercase tracking-[0.18em] text-black transition hover:bg-orange-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-70">
+                    <button disabled={isSubmitting} className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--text-light)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-70">
                         {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}
                         {isRegister ? t("submitRegister") : t("submitSignIn")}
                     </button>
                 </form>
                 <button
                     onClick={() => setIsRegister(!isRegister)}
-                    className="mt-5 w-full text-sm text-zinc-400 transition hover:text-white"
+                    className="mt-5 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
                 >
                     {isRegister ? t("switchToSignIn") : t("switchToRegister")}
                 </button>

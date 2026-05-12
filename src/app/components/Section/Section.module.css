@@ -7,7 +7,7 @@
   transition: background var(--transition);
   position: relative;
   overflow: hidden;
-  color: #fff;
+  color: var(--text-light);
 }
 
 .section:nth-of-type(even) {
@@ -42,8 +42,8 @@
   flex: 1 1 40%;
   height: 280px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(var(--foreground-rgb), 0.08);
+  box-shadow: 0 4px 20px var(--shadow-color);
   backdrop-filter: blur(8px);
   transition: transform var(--transition), box-shadow var(--transition);
 }
@@ -68,12 +68,12 @@
 .sectionText h2 {
   font-size: 2.2rem;
   margin-bottom: 1rem;
-  color: #fff;
+  color: var(--text-light);
   letter-spacing: 0.5px;
 }
 
 .sectionText p {
-  color: #e0e0e0;
+  color: var(--text-muted);
   line-height: 1.7;
   margin-bottom: 1.8rem;
   font-size: 1.05rem;
@@ -94,8 +94,8 @@
 
 .joinBtn:hover {
   transform: translateY(-3px);
-  background: #ffc68a;
-  box-shadow: 0 5px 15px rgba(255, 179, 71, 0.4);
+  background: var(--highlight-soft);
+  box-shadow: 0 5px 15px rgba(var(--accent-soft-rgb), 0.4);
 }
 
 /* Responsive */

@@ -33,7 +33,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-light);
   text-align: center;
   padding: 2rem;
 }
@@ -41,7 +41,7 @@
 .textBox {
   max-width: 700px;
   backdrop-filter: blur(6px);
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(var(--navy-rgb), 0.35);
   border-radius: 16px;
   padding: 2rem 3rem;
   animation: fadeIn 1s ease;
@@ -62,8 +62,8 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.4);
-  color: white;
+  background: rgba(var(--navy-rgb), 0.4);
+  color: var(--text-light);
   border: none;
   border-radius: 50%;
   padding: 0.6rem;
@@ -73,7 +73,7 @@
 }
 
 .arrow:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--foreground-rgb), 0.2);
 }
 
 .left {

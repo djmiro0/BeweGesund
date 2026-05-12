@@ -14,31 +14,43 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <div className={styles.aboutContainer}>
-      <h1 className={styles.title}>{t("title")}</h1>
-      <p className={styles.subtitle}>{t("subtitle")}</p>
+    <div className={styles.aboutShell}>
+      <div className={styles.glow} />
+      <div className={styles.aboutContainer}>
+        <header className={styles.hero}>
+          <p className={styles.eyebrow}>S.BeweGesund</p>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.subtitle}>{t("subtitle")}</p>
+        </header>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t("missionTitle")}</h2>
-        <p className={styles.text}>{t("missionText")}</p>
-      </section>
+        <div className={styles.storyGrid}>
+          <section className={styles.storyPanel}>
+            <p className={styles.panelLabel}>{t("missionTitle")}</p>
+            <p className={styles.text}>{t("missionText")}</p>
+          </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t("offerTitle")}</h2>
-        <ul className={styles.list}>
-          {features.map((item, i) => (
-            <li key={i} className={styles.listItem}>
-              <span className={styles.icon}>{item.icon}</span>
-              {item.text}
-            </li>
-          ))}
-        </ul>
-      </section>
+          <section className={styles.storyPanel}>
+            <p className={styles.panelLabel}>{t("visionTitle")}</p>
+            <p className={styles.text}>{t("visionText")}</p>
+          </section>
+        </div>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t("visionTitle")}</h2>
-        <p className={styles.text}>{t("visionText")}</p>
-      </section>
+        <section className={styles.offerSection}>
+          <div className={styles.offerIntro}>
+            <p className={styles.panelLabel}>{t("offerTitle")}</p>
+          </div>
+          <ul className={styles.list}>
+            {features.map((item, i) => (
+              <li key={i} className={styles.listItem}>
+                <span className={styles.icon}>{item.icon}</span>
+                <span className={styles.featureText}>{item.text}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <p className={styles.footerNote}>{t("footer")}</p>
+      </div>
     </div>
   );
 };

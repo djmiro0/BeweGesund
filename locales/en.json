@@ -100,8 +100,25 @@
   "courses": {
     "title": "Programs and Services",
     "intro": "A complete offer covering guided movement, live sessions, education, individual support, and long-term training.",
+    "overview": {
+      "items": [
+        {
+          "label": "Course formats",
+          "value": "10"
+        },
+        {
+          "label": "Live areas",
+          "value": "2"
+        },
+        {
+          "label": "Consultation",
+          "value": "30 min / 40 EUR"
+        }
+      ]
+    },
     "courseTypes": {
       "title": "Course Types",
+      "lead": "A structured library of movement, rehabilitation, and education formats designed for everyday accessibility.",
       "items": [
         "Pilates for Beginners",
         "Rehabilitation Training for Beginners (Training Principles)",
@@ -126,6 +143,7 @@
     "consultation": {
       "title": "Personal Consultation",
       "description": "Book online without mandatory registration for a focused one-to-one session.",
+      "lead": "A direct support format for individual questions, guidance, and orientation.",
       "items": [
         "Online scheduling",
         "Registration is not required",
@@ -136,6 +154,7 @@
       "title": "Personal Twelve-Month Training",
       "description": "A long-term individualized program built around your starting point, health history, goals, and practical needs.",
       "questionnaireTitle": "Questionnaire Includes",
+      "questionnaireLead": "The program starts with a structured intake so the plan reflects your body, history, and goals.",
       "questionnaire": [
         "Personal information",
         "Body measurements (waist, arms, legs, hips) with explanation",
@@ -147,6 +166,15 @@
     "businessCooperation": {
       "title": "Business Cooperation",
       "description": "Partnership options for organizations that want health-oriented movement, preventive formats, or educational content for their teams."
+    },
+    "labels": {
+      "memberAccess": "Member access",
+      "publicAccess": "Public overview",
+      "stepOne": "Step 01",
+      "stepTwo": "Step 02",
+      "stepThree": "Step 03",
+      "stepFour": "Step 04",
+      "stepFive": "Step 05"
     }
   },
   "calendar": {

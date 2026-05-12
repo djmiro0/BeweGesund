@@ -100,8 +100,25 @@
   "courses": {
     "title": "Programme und Leistungen",
     "intro": "Ein vollständiges Angebot aus geführter Bewegung, Live-Sessions, Bildung, individueller Begleitung und langfristigem Training.",
+    "overview": {
+      "items": [
+        {
+          "label": "Kursformate",
+          "value": "10"
+        },
+        {
+          "label": "Live-Bereiche",
+          "value": "2"
+        },
+        {
+          "label": "Beratung",
+          "value": "30 Min / 40 EUR"
+        }
+      ]
+    },
     "courseTypes": {
       "title": "Kursarten",
+      "lead": "Eine strukturierte Bibliothek aus Bewegung, Rehabilitation und Bildungsformaten für den alltagstauglichen Einstieg.",
       "items": [
         "Pilates für Anfänger",
         "Rehabilitations-Training für Anfänger (Trainingsprinzipien)",
@@ -126,6 +143,7 @@
     "consultation": {
       "title": "Persönliche Beratung",
       "description": "Buche online ohne verpflichtende Registrierung eine gezielte Eins-zu-eins-Beratung.",
+      "lead": "Ein direktes Unterstützungsformat für individuelle Fragen, Orientierung und Begleitung.",
       "items": [
         "Online-Terminbuchung",
         "Registrierung ist nicht erforderlich",
@@ -136,6 +154,7 @@
       "title": "Persönliches Zwölf-Monats-Training",
       "description": "Ein langfristiges individuelles Programm, das auf deinem Ausgangspunkt, deiner Anamnese, deinen Zielen und praktischen Anforderungen basiert.",
       "questionnaireTitle": "Der Fragebogen Umfasst",
+      "questionnaireLead": "Das Programm beginnt mit einer strukturierten Erfassung, damit der Plan zu Körper, Vorgeschichte und Zielen passt.",
       "questionnaire": [
         "Persönliche Angaben",
         "Umfangsmaße (Taille, Arme, Beine, Hüfte) mit Erklärung",
@@ -147,6 +166,15 @@
     "businessCooperation": {
       "title": "Geschäftliche Zusammenarbeit",
       "description": "Kooperationsmöglichkeiten für Organisationen, die gesundheitsorientierte Bewegung, Präventionsformate oder Bildungsinhalte für ihre Teams anbieten möchten."
+    },
+    "labels": {
+      "memberAccess": "Mitgliederzugang",
+      "publicAccess": "Öffentliche Übersicht",
+      "stepOne": "Schritt 01",
+      "stepTwo": "Schritt 02",
+      "stepThree": "Schritt 03",
+      "stepFour": "Schritt 04",
+      "stepFive": "Schritt 05"
     }
   },
   "calendar": {

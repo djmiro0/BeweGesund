@@ -1,10 +1,10 @@
 .calendarContainer {
   padding: 8rem 2rem 4rem;
   margin: 0 auto;
-  color: #f5f5f5;
+  color: var(--text-light);
   background:
-    radial-gradient(circle at top right, rgba(249, 115, 22, 0.14), transparent 24%),
-    linear-gradient(180deg, #111114 0%, #09090b 100%);
+    radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.14), transparent 24%),
+    linear-gradient(180deg, #0a3550 0%, #003049 100%);
   max-width: 1200px;
   min-height: 73vh;
 }
@@ -13,7 +13,7 @@
   text-align: center;
   font-size: clamp(2.8rem, 5vw, 5rem);
   margin-bottom: 1rem;
-  color: #ffffff;
+  color: var(--text-light);
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
@@ -24,7 +24,7 @@
   max-width: 760px;
   margin: 0 auto 3rem;
   text-align: center;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-muted);
   line-height: 1.8;
 }
 
@@ -36,28 +36,28 @@
 
 .calendarDay {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-    rgba(16, 16, 19, 0.88);
+    linear-gradient(180deg, rgba(var(--foreground-rgb), 0.04), rgba(var(--foreground-rgb), 0.02)),
+    var(--surface-1);
   border-radius: 28px;
   padding: 1.8rem;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-soft);
   transition: background-color 0.2s ease-in-out;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 24px 80px var(--shadow-color);
 }
 
 .calendarDay:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(var(--foreground-rgb), 0.08);
 }
 
 .dateHeader {
   font-weight: 800;
   font-size: 1rem;
   margin-bottom: 1.3rem;
-  color: #fdba74;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--highlight-soft);
+  border-bottom: 1px solid var(--border-soft);
   padding-bottom: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -77,9 +77,9 @@
   padding: 1.15rem;
   border-radius: 22px;
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.96), rgba(255, 247, 237, 0.92));
+    linear-gradient(160deg, rgba(var(--accent-soft-rgb), 0.92), rgba(var(--foreground-rgb), 0.96));
   font-weight: 500;
-  color: #081b26;
+  color: var(--text-on-warm);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -102,18 +102,18 @@
 
 .meta {
   font-size: 0.95rem;
-  color: #274256;
+  color: var(--palette-navy);
 }
 
 .time {
   font-size: 0.9rem;
-  color: #0b2030;
+  color: var(--text-dark);
 }
 
 .joinButton {
   border: 0;
   background: var(--highlight);
-  color: white;
+  color: var(--text-light);
   padding: 0.75rem 1rem;
   border-radius: 999px;
   font-weight: bold;
@@ -122,7 +122,7 @@
 }
 
 .joinButton:hover {
-  background: #ea580c;
+  background: var(--button-primary-hover);
 }
 
 @media (max-width: 768px) {
