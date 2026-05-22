@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -18,27 +17,15 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
     const t = useTranslations("header");
     const router = useRouter();
     const pathname = usePathname();
-    const [hash, setHash] = useState("");
 
     const otherLocale = locale === "en" ? "de" : "en";
-
-    useEffect(() => {
-        const syncHash = () => {
-            setHash(window.location.hash);
-        };
-
-        syncHash();
-        window.addEventListener("hashchange", syncHash);
-
-        return () => window.removeEventListener("hashchange", syncHash);
-    }, [pathname]);
 
     const navItems = [
         {
             key: "courses",
-            href: `/${locale}/courses`,
+            href: user ? `/${locale}` : `/${locale}/courses`,
             label: t("nav.courses"),
-            active: pathname === `/${locale}/courses` && hash !== "#consultation",
+            active: user ? pathname === `/${locale}` : pathname === `/${locale}/courses`,
         },
         {
             key: "calendar",
@@ -48,15 +35,15 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
         },
         {
             key: "consultation",
-            href: `/${locale}/courses#consultation`,
+            href: `/${locale}/consultation`,
             label: t("nav.consultation"),
-            active: pathname === `/${locale}/courses` && hash === "#consultation",
+            active: pathname === `/${locale}/consultation`,
         },
         {
-            key: "about",
-            href: `/${locale}/about`,
-            label: t("nav.about"),
-            active: pathname === `/${locale}/about`,
+            key: user ? "contact" : "about",
+            href: user ? `/${locale}/kontakt` : `/${locale}/about`,
+            label: user ? t("nav.contact") : t("nav.about"),
+            active: user ? pathname === `/${locale}/kontakt` : pathname === `/${locale}/about`,
         },
     ];
 
@@ -82,7 +69,6 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         key={item.key}
                         href={item.href}
                         aria-current={item.active ? "page" : undefined}
-                        onClick={() => setHash(item.href.includes("#") ? "#consultation" : "")}
                         className={`group relative overflow-hidden rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] transition-all duration-300 ${
                             item.active
                                 ? "text-[var(--text-light)]"

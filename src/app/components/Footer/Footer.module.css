@@ -1,46 +1,206 @@
-/* FOOTER */
 .footer {
-  text-align: center;
-  padding: 2rem;
-  background:var(--gradient1);
-  font-size: 0.9rem;
+  margin: 6rem 1rem 0;
+  border: 1px solid var(--border-soft);
+  border-bottom: 0;
+  border-radius: 2.25rem 2.25rem 0 0;
+  background:
+    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.22), transparent 24%),
+    radial-gradient(circle at 82% 22%, rgba(var(--accent-soft-rgb), 0.16), transparent 20%),
+    linear-gradient(180deg, rgba(var(--navy-rgb), 0.96), rgba(2, 35, 53, 1));
+  color: var(--text-light);
+  box-shadow:
+    0 -24px 80px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(var(--foreground-rgb), 0.06);
 }
 
-/* FOOTER TAB (MOBILE) */
-.footerTab {
-  position: fixed;
-  bottom: 1rem;
-  left: 1rem;
-  right: 1rem;
+.footerInner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 4.75rem 2.25rem 2.75rem;
   display: flex;
-  justify-content: space-around;
-  background: var(--gradient1);
-  padding: 0.8rem 0;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-  backdrop-filter: blur(12px);
-  transition: transform var(--transition), box-shadow var(--transition);
-  z-index: 100;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2.25rem;
+  align-items: flex-start;
 }
-.footerTab:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.3);
+
+.brandColumn {
+  flex: 1 1 21rem;
+  max-width: 23rem;
+  min-width: 10rem;
 }
-.footerTab .tab {
-    text-decoration: none;
+
+.brandEyebrow {
+  margin-bottom: 0.9rem;
+  color: var(--highlight-soft);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.brandTitle {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 0.95;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.brandText {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.linksGrid {
+  flex: 1 1 46rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 0.4rem 0;
+}
+
+.linkSection {
+  flex: 1 1 12rem;
+  min-width: 10rem;
+}
+
+.sectionTitle {
+  margin: 0 0 1rem;
+  color: var(--highlight-soft);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.linkList,
+.metaList {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.footerLink {
+  display: inline-flex;
+  width: fit-content;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.25s var(--transition), transform 0.25s var(--transition);
+}
+
+.footerLink:hover {
   color: var(--text-light);
-  font-size: 0.85rem;
-  display: flex;
-  flex-direction: column;
+  transform: translateX(4px);
+}
+
+.linkWithIcon {
+  display: inline-flex;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.metaItem {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.metaLabel {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.metaValue {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.footerBottom {
+  padding: 1.2rem 2.25rem 2rem;
+  border-top: 1px solid rgba(var(--foreground-rgb), 0.08);
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  width: 100%;
+  display: flex;
   justify-content: center;
-  transition: color var(--transition), transform var(--transition);
 }
-.footerTab .tab .icon {
-  font-size: 1.3rem;
-  margin-bottom: 0.2rem;
+
+
+@media (max-width: 1080px) {
+  .brandColumn {
+  }
+
+  .linksGrid {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
 }
-.footerTab .tab:hover {
-  color: var(--highlight);
-  transform: translateY(-2px);
+
+@media (max-width: 820px) {
+  .footerInner {
+    gap: 1.75rem;
+  }
+
+  .linksGrid {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .linkSection {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    margin: 4rem 0 0;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 2rem 2rem 0 0;
+  }
+
+  .footerInner {
+    padding: 3.5rem 1rem 2rem;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footerBottom {
+    padding: 0 1rem 1.5rem;
+  }
+
+  .brandColumn,
+  .linkSection {
+    max-width: 100%;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .linksGrid {
+    width: 100%;
+    align-items: center;
+  }
+
+  .linkList,
+  .metaList {
+    justify-items: center;
+  }
+
+  .footerLink {
+    width: auto;
+  }
+
+  .linkWithIcon {
+    justify-content: center;
+  }
+
+  .metaItem {
+    justify-items: center;
+  }
 }

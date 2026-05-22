@@ -1,64 +1,195 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { CalendarCheck2, Clock3, LockKeyhole, Video } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import styles from "./Calendar.module.css";
-import { useTranslations } from "next-intl";
+import { activeScheduleDays, memberDashboard, type MemberPackage } from "@/data";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 
-interface CalendarEntry {
-  date: string;
-  time: string;
-  title: string;
-  format: string;
-}
+const packageRank: Record<MemberPackage, number> = {
+  starter: 1,
+  "rehab-plus": 2,
+  "all-access": 3,
+};
 
 export default function CalendarPage() {
   const t = useTranslations("calendar");
+  const courseT = useTranslations("courseCatalog");
+  const packageT = useTranslations("packages");
+  const locale = useLocale();
   const { user, openAuth } = useAuth();
-  const trainingEntries = t.raw("liveTrainings.entries") as CalendarEntry[];
-  const seminarEntries = t.raw("liveSeminars.entries") as CalendarEntry[];
+  const [selectedDayId, setSelectedDayId] = useState(activeScheduleDays[0]?.id ?? "");
+
+  const selectedDay = useMemo(
+    () => activeScheduleDays.find((day) => day.id === selectedDayId) ?? activeScheduleDays[0],
+    [selectedDayId],
+  );
+
+  const dayFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      }),
+    [locale],
+  );
+
+  const dateFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      }),
+    [locale],
+  );
+
+  const timeFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(locale, {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    [locale],
+  );
+
+  if (!user) {
+    return (
+      <div className={styles.calendarContainer}>
+        <h2 className={styles.title}>{t("title")}</h2>
+        <p className={styles.subtitle}>{t("subtitle")}</p>
+        <MemberAccessCallout onSignIn={openAuth} />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.calendarContainer}>
-      <h2 className={styles.title}>{t("title")}</h2>
-      <p className={styles.subtitle}>{t("subtitle")}</p>
-      {user ? (
-        <div className={styles.calendarGrid}>
-          <section className={styles.calendarDay}>
-            <div className={styles.dateHeader}>{t("liveTrainings.title")}</div>
-            <div className={styles.courses}>
-              {trainingEntries.map((entry) => (
-                <div key={`${entry.date}-${entry.time}-${entry.title}`} className={styles.courseCard}>
-                  <div className={styles.courseInfo}>
-                    <div className={styles.name}>{entry.title}</div>
-                    <div className={styles.meta}>{entry.date}</div>
-                    <div className={styles.time}>{entry.time} • {entry.format}</div>
-                  </div>
-                  <button className={styles.joinButton}>{t("join")}</button>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className={styles.calendarDay}>
-            <div className={styles.dateHeader}>{t("liveSeminars.title")}</div>
-            <div className={styles.courses}>
-              {seminarEntries.map((entry) => (
-                <div key={`${entry.date}-${entry.time}-${entry.title}`} className={styles.courseCard}>
-                  <div className={styles.courseInfo}>
-                    <div className={styles.name}>{entry.title}</div>
-                    <div className={styles.meta}>{entry.date}</div>
-                    <div className={styles.time}>{entry.time} • {entry.format}</div>
-                  </div>
-                  <button className={styles.joinButton}>{t("join")}</button>
-                </div>
-              ))}
-            </div>
-          </section>
+      <div className={styles.headerBlock}>
+        <div>
+          <p className={styles.eyebrow}>{t("eyebrow")}</p>
+          <h2 className={styles.title}>{t("title")}</h2>
+          <p className={styles.subtitle}>{t("subtitle")}</p>
         </div>
-      ) : (
-        <MemberAccessCallout onSignIn={openAuth} />
-      )}
+        <div className={styles.planCard}>
+          <span className={styles.planLabel}>{t("memberPackage")}</span>
+          <strong className={styles.planValue}>{packageT(memberDashboard.package)}</strong>
+          <p className={styles.planHint}>{t("packageHint")}</p>
+        </div>
+      </div>
+
+      <div className={styles.dayRail} role="tablist" aria-label={t("daySelectorLabel")}>
+        {activeScheduleDays.map((day) => {
+          const isActive = day.id === selectedDay?.id;
+          return (
+            <button
+              key={day.id}
+              type="button"
+              className={`${styles.dayButton} ${isActive ? styles.dayButtonActive : ""}`}
+              onClick={() => setSelectedDayId(day.id)}
+              aria-pressed={isActive}
+            >
+              <span className={styles.dayButtonTop}>{dayFormatter.format(new Date(day.date))}</span>
+              <span className={styles.dayButtonCount}>
+                {t("sessionCount", { count: day.entries.length })}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <section className={styles.schedulePanel}>
+        <div className={styles.panelHeader}>
+          <div>
+            <p className={styles.panelLabel}>{t("selectedDay")}</p>
+            <h3 className={styles.panelTitle}>
+              {selectedDay ? dateFormatter.format(new Date(selectedDay.date)) : ""}
+            </h3>
+          </div>
+          <div className={styles.panelLegend}>
+            <span className={styles.legendItem}>
+              <CalendarCheck2 size={16} />
+              {t("included")}
+            </span>
+            <span className={styles.legendItem}>
+              <LockKeyhole size={16} />
+              {t("upgradeRequired")}
+            </span>
+          </div>
+        </div>
+
+        {selectedDay?.entries.length ? (
+          <div className={styles.sessionList}>
+            {selectedDay.entries.map((entry) => {
+              const included =
+                packageRank[memberDashboard.package] >= packageRank[entry.packageRequired];
+
+              return (
+                <article
+                  key={entry.id}
+                  className={`${styles.sessionCard} ${included ? styles.sessionIncluded : styles.sessionLocked}`}
+                >
+                  <div className={styles.sessionPrimary}>
+                    <div className={styles.sessionTimeBlock}>
+                      <span className={styles.sessionTime}>
+                        {timeFormatter.format(new Date(entry.startsAt))}
+                      </span>
+                      <span className={styles.sessionDuration}>
+                        <Clock3 size={14} />
+                        {t("duration", { count: entry.durationMinutes })}
+                      </span>
+                    </div>
+                    <div className={styles.sessionCopy}>
+                      <div className={styles.sessionBadges}>
+                        <span className={styles.formatBadge}>
+                          <Video size={14} />
+                          {t(`formats.${entry.formatKey}`)}
+                        </span>
+                        <span className={styles.packageBadge}>
+                          {packageT(entry.packageRequired)}
+                        </span>
+                      </div>
+                      <h4 className={styles.sessionTitle}>{courseT(entry.titleKey)}</h4>
+                      <div className={styles.sessionMeta}>
+                        <span>{t("coach", { name: entry.coach })}</span>
+                        <span>{t("startsLabel")}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.sessionAction}>
+                    <span className={included ? styles.statusIncluded : styles.statusLocked}>
+                      {included ? t("included") : t("upgradeRequired")}
+                    </span>
+                    <button
+                      type="button"
+                      className={`${styles.joinButton} ${included ? styles.joinButtonEnabled : styles.joinButtonDisabled}`}
+                      disabled={!included}
+                    >
+                      {included ? t("join") : t("unlockButton")}
+                    </button>
+                    {!included ? (
+                      <p className={styles.restrictionText}>
+                        {t("needsPackage", { package: packageT(entry.packageRequired) })}
+                      </p>
+                    ) : (
+                      <p className={styles.restrictionText}>{t("includedHint")}</p>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className={styles.emptyState}>
+            <h4>{t("emptyTitle")}</h4>
+            <p>{t("emptyDescription")}</p>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

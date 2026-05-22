@@ -2,10 +2,11 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "courses": "Angebote",
+      "courses": "Programme",
       "calendar": "Live-Kalender",
       "consultation": "Beratung",
-      "about": "Über Uns"
+      "about": "Über Uns",
+      "contact": "Kontakt"
     },
     "signIn": "Anmelden",
     "signOut": "Abmelden"
@@ -29,11 +30,39 @@
       ]
     },
     "dashboard": {
+      "eyebrow": "Mitgliederübersicht",
       "greeting": "Hallo, {name}",
-      "ready": "Bereit für deine nächste gesunde Trainingseinheit?",
-      "stats": {
-        "programs": "Programme",
-        "thisWeek": "Diese Woche"
+      "ready": "Hier ist dein aktueller Überblick mit bevorstehenden Live-Sessions, bereits absolvierten Formaten und passenden nächsten Programmen.",
+      "summary": {
+        "currentPackage": "Aktuelles Paket",
+        "packageDescription": "Dein aktiver Plan entscheidet, welche Sessions im Live-Kalender du diese Woche direkt besuchen kannst.",
+        "upcoming": "Bevorstehende Sessions",
+        "upcomingDescription": "Geplante Formate, die als Nächstes in deinem Mitgliederbereich anstehen.",
+        "completed": "Absolvierte Kurse",
+        "completedDescription": "Formate, die du in deinem Trainingsweg bereits durchlaufen hast."
+      },
+      "sections": {
+        "upcoming": {
+          "eyebrow": "Als Nächstes",
+          "title": "Bevorstehende Kurse",
+          "description": "Über deinen Live-Kalender mit deinem aktuellen Paket verfügbar."
+        },
+        "completed": {
+          "eyebrow": "Fortschritt",
+          "title": "Bereits besucht",
+          "done": "Abgeschlossen"
+        },
+        "explore": {
+          "eyebrow": "Mehr entdecken",
+          "title": "Programme entdecken",
+          "description": "Empfohlene nächste Formate passend zu deinem aktuellen Trainingsweg."
+        }
+      },
+      "actions": {
+        "openCalendar": "Live-Kalender öffnen",
+        "bookConsultation": "Beratung buchen",
+        "joinFromCalendar": "Im Kalender öffnen",
+        "explorePrograms": "Programm ansehen"
       }
     },
     "loading": "WIRD GELADEN..."
@@ -177,49 +206,45 @@
       "stepFive": "Schritt 05"
     }
   },
+  "courseCatalog": {
+    "pilates-beginners": "Pilates für Anfänger",
+    "full-body-rehab": "Reha-Sport - Ganzer Körper",
+    "rehab-back": "Reha-Sport - Rücken",
+    "rehab-knee": "Reha-Sport - Knie",
+    "core-back-foundation": "Stärkung der Bauchwand als Grundlage für einen gesunden Rücken",
+    "morning-exercise": "Morgengymnastik",
+    "nutrition-principles": "Grundlagen der Ernährung",
+    "active-break": "Zehn-Minuten-Training für die aktive Pause",
+    "educational-seminars": "Edukative Seminare"
+  },
+  "packages": {
+    "starter": "Starter",
+    "rehab-plus": "Reha Plus",
+    "all-access": "All Access"
+  },
   "calendar": {
+    "eyebrow": "Live-Zugang für Mitglieder",
     "title": "Live-Kalender",
-    "join": "Teilnehmen",
-    "subtitle": "Eine Mitgliederansicht der Live-Trainings und edukativen Sessions dieser Woche.",
-    "liveTrainings": {
-      "title": "Live-Trainings",
-      "entries": [
-        {
-          "date": "Montag, 12. Mai",
-          "time": "18:00",
-          "title": "Pilates für Anfänger",
-          "format": "Zoom"
-        },
-        {
-          "date": "Mittwoch, 14. Mai",
-          "time": "19:00",
-          "title": "Reha-Sport - Rücken",
-          "format": "Zoom"
-        },
-        {
-          "date": "Freitag, 16. Mai",
-          "time": "08:00",
-          "title": "Morgengymnastik",
-          "format": "Zoom"
-        }
-      ]
-    },
-    "liveSeminars": {
-      "title": "Live-Edukationsseminare",
-      "entries": [
-        {
-          "date": "Dienstag, 13. Mai",
-          "time": "17:30",
-          "title": "Grundlagen der Ernährung",
-          "format": "Online-Seminar"
-        },
-        {
-          "date": "Donnerstag, 15. Mai",
-          "time": "18:30",
-          "title": "Aktive Pause in 10 Minuten",
-          "format": "Online-Seminar"
-        }
-      ]
+    "subtitle": "Gehe Tag für Tag durch die Woche, prüfe die verfügbaren Sessions und tritt direkt den Formaten bei, die in deinem Paket enthalten sind.",
+    "memberPackage": "Aktives Paket",
+    "packageHint": "Wechsle zwischen den Tagen und sieh sofort, welche Sessions du direkt besuchen kannst.",
+    "daySelectorLabel": "Tag auswählen",
+    "selectedDay": "Ausgewählter Tag",
+    "sessionCount": "{count, plural, one {# Session} other {# Sessions}}",
+    "included": "Enthalten",
+    "upgradeRequired": "Upgrade nötig",
+    "join": "Session beitreten",
+    "unlockButton": "Paket nötig",
+    "needsPackage": "Für diese Session wird das Paket {package} benötigt.",
+    "includedHint": "Mit deinem aktuellen Plan direkt verfügbar.",
+    "duration": "{count} Min",
+    "coach": "Coach: {name}",
+    "startsLabel": "Live-Zugang verfügbar",
+    "emptyTitle": "Keine Sessions geplant",
+    "emptyDescription": "Für den ausgewählten Tag sind aktuell keine Live-Trainings oder Seminare geplant.",
+    "formats": {
+      "training": "Live-Training",
+      "seminar": "Live-Seminar"
     }
   },
   "liveSchedule": {
@@ -278,9 +303,116 @@
     ]
   },
   "footer": {
-    "home": "Startseite",
-    "about": "Über Uns",
-    "join": "Angebote",
+    "brand": "S.BeweGesund",
+    "tagline": "Bewegung, Rehabilitation und Bildung mit einem klareren Weg zu gesünderem Alltag.",
+    "navigationTitle": "Navigation",
+    "legalTitle": "Rechtliches",
+    "contactTitle": "Kontakt",
+    "contactCardText": "Fragen zu Programmen, Beratung oder geschäftlicher Zusammenarbeit? Nutze die Kontaktseite als zentralen Einstiegspunkt.",
+    "contactCardButton": "Kontakt Öffnen",
+    "links": {
+      "home": "Startseite",
+      "about": "Über Uns",
+      "programs": "Programme",
+      "calendar": "Live-Kalender",
+      "consultation": "Beratung",
+      "impressum": "Impressum",
+      "privacy": "Datenschutz",
+      "contact": "Kontakt"
+    },
+    "contactItems": {
+      "availabilityLabel": "Verfügbarkeit",
+      "availabilityValue": "Online nach Vereinbarung",
+      "languagesLabel": "Sprachen",
+      "languagesValue": "Deutsch und Englisch",
+      "responseLabel": "Anfragen",
+      "responseValue": "Geschäftliche und beratungsbezogene Anfragen"
+    },
     "copyright": "© 2026 S.BeweGesund. Alle Rechte vorbehalten."
+  },
+  "impressum": {
+    "title": "Impressum",
+    "intro": "Diese Seite ist als Bereich für die rechtlich erforderlichen Anbieterangaben von S.BeweGesund vorbereitet.",
+    "sections": [
+      {
+        "title": "Anbieterangaben",
+        "body": "Hier sollten vor dem Launch der finale Unternehmensname, die Anschrift und die gesetzlich erforderlichen Anbieterinformationen ergänzt werden."
+      },
+      {
+        "title": "Verantwortliche Person",
+        "body": "Ergänze hier den Namen der rechtlich verantwortlichen Person oder der vertretungsberechtigten Stelle für die veröffentlichten Inhalte."
+      },
+      {
+        "title": "Kontaktdaten",
+        "body": "Ergänze die offizielle E-Mail-Adresse, Telefonnummer und weitere rechtlich erforderliche Kontaktmöglichkeiten."
+      },
+      {
+        "title": "Weitere Pflichtangaben",
+        "body": "Falls erforderlich, ergänze Steuer-ID, Registernummer, Aufsichtsbehörde oder berufsspezifische Rechtsangaben."
+      }
+    ],
+    "note": "Die finalen rechtlichen Angaben sollten vor der Veröffentlichung mit echten Unternehmensdaten vervollständigt und geprüft werden."
+  },
+  "privacy": {
+    "title": "Datenschutz",
+    "intro": "Diese Seite bildet die Struktur für den Datenschutzhinweis der Website ab.",
+    "sections": [
+      {
+        "title": "Überblick",
+        "body": "Erkläre, welche personenbezogenen Daten verarbeitet werden, zu welchem Zweck und auf welcher Rechtsgrundlage."
+      },
+      {
+        "title": "Authentifizierung und Kontodaten",
+        "body": "Dokumentiere, wie Login, Registrierung und die über Firebase verarbeiteten Authentifizierungsdaten behandelt werden."
+      },
+      {
+        "title": "Kommunikation und Anfragen",
+        "body": "Beschreibe, wie Daten aus Beratungsanfragen, geschäftlichen Kontakten und Kommunikationsformularen gespeichert und verwendet werden."
+      },
+      {
+        "title": "Rechte der Nutzer",
+        "body": "Füge Informationen zu Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Beschwerderecht hinzu."
+      }
+    ],
+    "note": "Dieser Datenschutzhinweis sollte vor der Veröffentlichung mit projektspezifischer juristischer Formulierung finalisiert werden."
+  },
+  "contactPage": {
+    "title": "Kontakt",
+    "intro": "Nutze diesen Bereich für Beratungsanfragen, Kursfragen und Themen zur geschäftlichen Zusammenarbeit.",
+    "cards": [
+      {
+        "title": "Persönliche Beratung",
+        "body": "Für individuelle Begleitung starte mit dem Online-Beratungsangebot im Bereich der Programme."
+      },
+      {
+        "title": "Fragen zu Kursen",
+        "body": "Nutze den Beratungsweg für Fragen zu Kursformaten, Live-Zugängen und langfristigem Training."
+      },
+      {
+        "title": "Geschäftliche Zusammenarbeit",
+        "body": "Für Partnerschaften oder gesundheitsorientierte Formate für Teams dient die geschäftliche Zusammenarbeit als erster Kontaktpunkt."
+      }
+    ],
+    "cta": "Zur Beratung",
+    "note": "Direkte Kontaktdaten können hier ergänzt werden, sobald die finalen Kommunikationskanäle festgelegt sind."
+  },
+  "consultationPage": {
+    "title": "Persönliche Beratung",
+    "intro": "Ein fokussiertes Eins-zu-eins-Format für Orientierung, Begleitung und individuelle Unterstützung.",
+    "sections": [
+      {
+        "title": "Ablauf",
+        "body": "Nutze die Beratung für persönliche Fragen zu Programmen, Live-Zugängen, langfristigem Training oder zum passenden nächsten Schritt für deine Situation."
+      },
+      {
+        "title": "Buchung",
+        "body": "Termine werden online vereinbart und eine Registrierung ist vor der Beratung nicht verpflichtend."
+      },
+      {
+        "title": "Format und Preis",
+        "body": "Die Beratung dauert 30 Minuten und wird für 40 EUR angeboten."
+      }
+    ],
+    "note": "Für allgemeine Kommunikation oder geschäftliche Zusammenarbeit bleibt die Kontaktseite der richtige zentrale Einstiegspunkt."
   }
 }

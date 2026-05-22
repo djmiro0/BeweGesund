@@ -2,10 +2,11 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "courses": "Programs",
+      "courses": "Program",
       "calendar": "Live Calendar",
       "consultation": "Consultation",
-      "about": "About"
+      "about": "About",
+      "contact": "Contact"
     },
     "signIn": "Sign In",
     "signOut": "Sign Out"
@@ -29,11 +30,39 @@
       ]
     },
     "dashboard": {
+      "eyebrow": "Member overview",
       "greeting": "Hello, {name}",
-      "ready": "Ready for your next healthy training session?",
-      "stats": {
-        "programs": "Programs",
-        "thisWeek": "This Week"
+      "ready": "Here is your current overview with upcoming live sessions, completed formats, and the next programs worth exploring.",
+      "summary": {
+        "currentPackage": "Current package",
+        "packageDescription": "Your active plan determines which live calendar sessions you can join this week.",
+        "upcoming": "Upcoming sessions",
+        "upcomingDescription": "Planned formats that are next in your member schedule.",
+        "completed": "Completed courses",
+        "completedDescription": "Formats you have already worked through in your training path."
+      },
+      "sections": {
+        "upcoming": {
+          "eyebrow": "Next up",
+          "title": "Upcoming courses",
+          "description": "Available from your live calendar with your current package."
+        },
+        "completed": {
+          "eyebrow": "Progress",
+          "title": "Taken courses",
+          "done": "Completed"
+        },
+        "explore": {
+          "eyebrow": "Explore more",
+          "title": "Explore course options",
+          "description": "Recommended next formats based on your current training path."
+        }
+      },
+      "actions": {
+        "openCalendar": "Open live calendar",
+        "bookConsultation": "Book consultation",
+        "joinFromCalendar": "Join from calendar",
+        "explorePrograms": "View program"
       }
     },
     "loading": "LOADING..."
@@ -177,49 +206,45 @@
       "stepFive": "Step 05"
     }
   },
+  "courseCatalog": {
+    "pilates-beginners": "Pilates for Beginners",
+    "full-body-rehab": "Rehabilitation Sport - Full Body",
+    "rehab-back": "Rehabilitation Sport - Back",
+    "rehab-knee": "Rehabilitation Sport - Knee",
+    "core-back-foundation": "Strengthening the Abdominal Wall as a Foundation for a Healthy Back",
+    "morning-exercise": "Morning Exercise",
+    "nutrition-principles": "Principles of Nutrition",
+    "active-break": "Ten-Minute Training for an Active Break",
+    "educational-seminars": "Educational Seminars"
+  },
+  "packages": {
+    "starter": "Starter",
+    "rehab-plus": "Rehab Plus",
+    "all-access": "All Access"
+  },
   "calendar": {
+    "eyebrow": "Member live access",
     "title": "Live Calendar",
-    "join": "Join Session",
-    "subtitle": "A member view of the week’s live training and educational sessions.",
-    "liveTrainings": {
-      "title": "Live Trainings",
-      "entries": [
-        {
-          "date": "Monday, May 12",
-          "time": "18:00",
-          "title": "Pilates for Beginners",
-          "format": "Zoom"
-        },
-        {
-          "date": "Wednesday, May 14",
-          "time": "19:00",
-          "title": "Rehabilitation Sport - Back",
-          "format": "Zoom"
-        },
-        {
-          "date": "Friday, May 16",
-          "time": "08:00",
-          "title": "Morning Exercise",
-          "format": "Zoom"
-        }
-      ]
-    },
-    "liveSeminars": {
-      "title": "Live Educational Seminars",
-      "entries": [
-        {
-          "date": "Tuesday, May 13",
-          "time": "17:30",
-          "title": "Principles of Nutrition",
-          "format": "Online Seminar"
-        },
-        {
-          "date": "Thursday, May 15",
-          "time": "18:30",
-          "title": "Active Break in 10 Minutes",
-          "format": "Online Seminar"
-        }
-      ]
+    "subtitle": "Move through the week day by day, check what is available, and join sessions that are included in your active package.",
+    "memberPackage": "Active package",
+    "packageHint": "Switch days to review the week and see immediately which sessions you can join.",
+    "daySelectorLabel": "Choose day",
+    "selectedDay": "Selected day",
+    "sessionCount": "{count, plural, one {# session} other {# sessions}}",
+    "included": "Included",
+    "upgradeRequired": "Upgrade required",
+    "join": "Join session",
+    "unlockButton": "Package needed",
+    "needsPackage": "This session requires the {package} package.",
+    "includedHint": "Available with your current plan.",
+    "duration": "{count} min",
+    "coach": "Coach: {name}",
+    "startsLabel": "Live access available",
+    "emptyTitle": "No sessions planned",
+    "emptyDescription": "There are no live trainings or seminars for the selected day yet.",
+    "formats": {
+      "training": "Live training",
+      "seminar": "Live seminar"
     }
   },
   "liveSchedule": {
@@ -278,9 +303,116 @@
     ]
   },
   "footer": {
-    "home": "Home",
-    "about": "About",
-    "join": "Programs",
+    "brand": "S.BeweGesund",
+    "tagline": "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
+    "navigationTitle": "Navigation",
+    "legalTitle": "Legal",
+    "contactTitle": "Contact",
+    "contactCardText": "Questions about programs, consultation, or business cooperation? Use the contact page as your central starting point.",
+    "contactCardButton": "Open Contact",
+    "links": {
+      "home": "Home",
+      "about": "About",
+      "programs": "Program",
+      "calendar": "Live Calendar",
+      "consultation": "Consultation",
+      "impressum": "Imprint",
+      "privacy": "Privacy Policy",
+      "contact": "Contact"
+    },
+    "contactItems": {
+      "availabilityLabel": "Availability",
+      "availabilityValue": "Online by appointment",
+      "languagesLabel": "Languages",
+      "languagesValue": "German and English",
+      "responseLabel": "Response",
+      "responseValue": "Business and counseling inquiries"
+    },
     "copyright": "© 2026 S.BeweGesund. All rights reserved."
+  },
+  "impressum": {
+    "title": "Imprint",
+    "intro": "This page is prepared as the legal imprint area for S.BeweGesund.",
+    "sections": [
+      {
+        "title": "Provider Information",
+        "body": "The final business name, address, and legally required provider details should be added here before launch."
+      },
+      {
+        "title": "Responsible Person",
+        "body": "Add the name of the legally responsible person or business representative for the published content."
+      },
+      {
+        "title": "Contact Details",
+        "body": "Add the official email address, phone number, and any additional legally required contact options."
+      },
+      {
+        "title": "Regulatory Details",
+        "body": "If applicable, add tax ID, registration number, supervisory authority, or profession-specific legal references."
+      }
+    ],
+    "note": "Final legal information should be reviewed and completed with real business data before the site goes live."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "This page outlines the structure for the website privacy notice.",
+    "sections": [
+      {
+        "title": "Overview",
+        "body": "Explain which personal data is processed, for what purpose, and on what legal basis."
+      },
+      {
+        "title": "Authentication and Account Data",
+        "body": "Document how sign-in, account registration, and Firebase-based authentication data are handled."
+      },
+      {
+        "title": "Communication and Inquiries",
+        "body": "Describe how data from consultation requests, business inquiries, and communication forms is stored and used."
+      },
+      {
+        "title": "User Rights",
+        "body": "Include information on access, correction, deletion, restriction, objection, and complaint rights."
+      }
+    ],
+    "note": "This policy should be finalized with project-specific legal wording before publication."
+  },
+  "contactPage": {
+    "title": "Contact",
+    "intro": "Use this area for consultation requests, course questions, and business cooperation topics.",
+    "cards": [
+      {
+        "title": "Personal Consultation",
+        "body": "For individual guidance, start with the online consultation offer available in the programs area."
+      },
+      {
+        "title": "Course Questions",
+        "body": "Use the consultation route for questions about course formats, live access, and long-term training."
+      },
+      {
+        "title": "Business Cooperation",
+        "body": "For partnerships or team-focused health formats, use the business cooperation route as the first point of contact."
+      }
+    ],
+    "cta": "Go to Consultation",
+    "note": "Direct contact details can be added here once the final business communication channels are confirmed."
+  },
+  "consultationPage": {
+    "title": "Personal Consultation",
+    "intro": "A focused one-to-one format for guidance, orientation, and individual support.",
+    "sections": [
+      {
+        "title": "How It Works",
+        "body": "Use the consultation offer for personal questions about programs, live access, long-term training, or the right next step for your situation."
+      },
+      {
+        "title": "Booking",
+        "body": "Appointments are scheduled online and registration is not mandatory before the consultation."
+      },
+      {
+        "title": "Format and Price",
+        "body": "The consultation lasts 30 minutes and is offered at 40 EUR."
+      }
+    ],
+    "note": "If you need general communication or business partnership contact, the contact page remains the right central entry point."
   }
 }

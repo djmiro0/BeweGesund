@@ -5,9 +5,6 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useAuth } from "./components/AuthProvider";
 import Dashboard from "./components/Dashboard";
-import VideoSection from './components/VideoSection';
-import LiveSchedule from './components/LiveSchedule';
-import Services from './components/Services';
 import HeroSection from "./components/HeroSection";
 import BannerSection from "../components/BannerSection/BannerSection";
 
@@ -25,9 +22,6 @@ export default function HomePage() {
             {user ? (
                 <>
                     <Dashboard user={{ name: displayName }} />
-                    <VideoSection />
-                    <LiveSchedule />
-                    <Services isMember />
                 </>
             ) : (
                 <>

@@ -56,6 +56,136 @@ export const services = [
     }
 ];
 
+export type MemberPackage = "starter" | "rehab-plus" | "all-access";
+
+export interface MemberScheduleEntry {
+    id: string;
+    titleKey: string;
+    startsAt: string;
+    durationMinutes: number;
+    formatKey: "training" | "seminar";
+    coach: string;
+    packageRequired: MemberPackage;
+}
+
+export interface MemberScheduleDay {
+    id: string;
+    date: string;
+    entries: MemberScheduleEntry[];
+}
+
+export const memberDashboard = {
+    package: "rehab-plus" as MemberPackage,
+    upcomingCourseIds: ["pilates-beginners", "rehab-back", "nutrition-principles"],
+    completedCourseIds: ["morning-exercise", "active-break"],
+    recommendedCourseIds: ["rehab-knee", "core-back-foundation", "full-body-rehab"],
+};
+
+export const activeScheduleDays: MemberScheduleDay[] = [
+    {
+        id: "mon",
+        date: "2026-05-25",
+        entries: [
+            {
+                id: "mon-1",
+                titleKey: "pilates-beginners",
+                startsAt: "2026-05-25T08:00:00",
+                durationMinutes: 45,
+                formatKey: "training",
+                coach: "Sandra",
+                packageRequired: "starter",
+            },
+            {
+                id: "mon-2",
+                titleKey: "core-back-foundation",
+                startsAt: "2026-05-25T18:30:00",
+                durationMinutes: 50,
+                formatKey: "training",
+                coach: "Sandra",
+                packageRequired: "rehab-plus",
+            },
+        ],
+    },
+    {
+        id: "tue",
+        date: "2026-05-26",
+        entries: [
+            {
+                id: "tue-1",
+                titleKey: "nutrition-principles",
+                startsAt: "2026-05-26T17:30:00",
+                durationMinutes: 45,
+                formatKey: "seminar",
+                coach: "Sandra",
+                packageRequired: "starter",
+            },
+        ],
+    },
+    {
+        id: "wed",
+        date: "2026-05-27",
+        entries: [
+            {
+                id: "wed-1",
+                titleKey: "rehab-back",
+                startsAt: "2026-05-27T09:00:00",
+                durationMinutes: 50,
+                formatKey: "training",
+                coach: "Sandra",
+                packageRequired: "rehab-plus",
+            },
+            {
+                id: "wed-2",
+                titleKey: "full-body-rehab",
+                startsAt: "2026-05-27T18:00:00",
+                durationMinutes: 55,
+                formatKey: "training",
+                coach: "Sandra",
+                packageRequired: "all-access",
+            },
+        ],
+    },
+    {
+        id: "thu",
+        date: "2026-05-28",
+        entries: [
+            {
+                id: "thu-1",
+                titleKey: "educational-seminars",
+                startsAt: "2026-05-28T18:30:00",
+                durationMinutes: 60,
+                formatKey: "seminar",
+                coach: "Sandra",
+                packageRequired: "all-access",
+            },
+        ],
+    },
+    {
+        id: "fri",
+        date: "2026-05-29",
+        entries: [
+            {
+                id: "fri-1",
+                titleKey: "active-break",
+                startsAt: "2026-05-29T12:00:00",
+                durationMinutes: 10,
+                formatKey: "training",
+                coach: "Sandra",
+                packageRequired: "starter",
+            },
+            {
+                id: "fri-2",
+                titleKey: "rehab-knee",
+                startsAt: "2026-05-29T17:00:00",
+                durationMinutes: 45,
+                formatKey: "training",
+                coach: "Sandra",
+                packageRequired: "rehab-plus",
+            },
+        ],
+    },
+];
+
 // Mock user data
 export const user =
     {
@@ -68,4 +198,3 @@ export const user =
         favorites: [1, 3], // IDs of favorite videos
         bookedClasses: [2], // IDs of scheduled classes
     }
-

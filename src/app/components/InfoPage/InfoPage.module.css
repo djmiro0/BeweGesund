@@ -1,0 +1,125 @@
+.pageShell {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  padding: 7.5rem 1.25rem 4rem;
+  background:
+    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.16), transparent 26%),
+    linear-gradient(180deg, #0b3854 0%, #003049 100%);
+}
+
+.pageInner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.hero {
+  max-width: 760px;
+  margin-bottom: 3rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.9rem;
+  color: var(--highlight-soft);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 1rem;
+  color: var(--text-light);
+  font-size: clamp(2.9rem, 5.8vw, 5.8rem);
+  line-height: 0.92;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.intro {
+  color: var(--text-muted);
+  line-height: 1.85;
+  font-size: 1.06rem;
+  max-width: 650px;
+}
+
+.cta {
+  display: inline-flex;
+  margin-top: 1.4rem;
+  text-decoration: none;
+  border-radius: 999px;
+  background: var(--text-light);
+  color: var(--text-on-warm);
+  padding: 0.85rem 1.15rem;
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cta:hover {
+  background: var(--highlight);
+  color: var(--text-light);
+}
+
+.sectionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  border-radius: 1.9rem;
+  border: 1px solid var(--border-soft);
+  background:
+    linear-gradient(180deg, rgba(var(--foreground-rgb), 0.04), rgba(var(--foreground-rgb), 0.02)),
+    var(--surface-1);
+  padding: 1.7rem;
+  box-shadow: 0 20px 60px var(--shadow-color);
+}
+
+.cardTitle {
+  margin: 0 0 0.8rem;
+  color: var(--highlight-soft);
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cardBody {
+  margin: 0;
+  color: var(--text-light);
+  line-height: 1.75;
+}
+
+.noteBlock {
+  margin-top: 1.75rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--border-strong);
+  background: rgba(var(--accent-rgb), 0.08);
+  padding: 1.2rem 1.3rem;
+  color: var(--highlight-soft);
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .sectionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .pageShell {
+    padding: 6.5rem 1rem 3rem;
+  }
+
+  .title {
+    font-size: 2.8rem;
+  }
+
+  .card {
+    padding: 1.4rem;
+  }
+}
