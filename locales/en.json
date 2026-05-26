@@ -2,7 +2,8 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "courses": "Program",
+      "program": "Program",
+      "courses": "Courses",
       "calendar": "Live Calendar",
       "consultation": "Consultation",
       "about": "About",
@@ -133,11 +134,11 @@
       "items": [
         {
           "label": "Course formats",
-          "value": "10"
+          "value": "20"
         },
         {
-          "label": "Live areas",
-          "value": "2"
+          "label": "Member areas",
+          "value": "7"
         },
         {
           "label": "Consultation",
@@ -148,6 +149,48 @@
     "courseTypes": {
       "title": "Course Types",
       "lead": "A structured library of movement, rehabilitation, and education formats designed for everyday accessibility.",
+      "categories": {
+        "reha": {
+          "title": "Rehab",
+          "description": "Targeted rehab formats for knee, back, hip, and general stability, with added focus areas for osteoporosis and arthritis."
+        },
+        "healthy-living": {
+          "title": "Healthy Living",
+          "description": "Accessible formats for mobility, gentle entry points, and regular everyday movement."
+        },
+        "overweight": {
+          "title": "Weight Management",
+          "description": "Movement and nutrition formats focused on sustainable weight reduction."
+        },
+        "definition": {
+          "title": "Definition",
+          "description": "More intensive strength and definition formats for more advanced members."
+        },
+        "pre-post-birth": {
+          "title": "Pre & Post Birth",
+          "description": "Supportive formats around pelvic floor work, birth preparation, and training with your baby."
+        },
+        "corporate-fitness": {
+          "title": "Corporate Fitness",
+          "description": "Short, repeatable movement units designed for active breaks during the workday."
+        },
+        "paragraph-20": {
+          "title": "Paragraph 20",
+          "description": "Online-focused nutrition programs as an additional health support format."
+        }
+      },
+      "meta": {
+        "duration": "{count} min",
+        "unlocks": "{count, plural, one {Unlocks # session per week} other {Unlocks # sessions per week}}",
+        "coach": "Coach: {name}"
+      },
+      "notes": {
+        "package22": "Available as a 22-session package.",
+        "repeat2to3": "Ideally repeated two to three times per week.",
+        "repeatDaily": "Repeat at least two to three times per week, ideally every day during a break and best twice per day.",
+        "videoAndDocs": "Video format with supporting documentation.",
+        "onlineOnly": "Available online only."
+      },
       "items": [
         "Pilates for Beginners",
         "Rehabilitation Training for Beginners (Training Principles)",
@@ -207,15 +250,26 @@
     }
   },
   "courseCatalog": {
+    "reha-knee": "Rehab Knee",
+    "reha-back": "Rehab Back",
+    "reha-hip": "Rehab Hip",
+    "reha-general": "General Rehab",
+    "osteoporosis-training": "Training for Osteoporosis",
+    "arthritis-training": "Training for Arthritis",
+    "morning-gymnastics": "Morning Gymnastics",
+    "evening-gymnastics": "Evening Gymnastics",
     "pilates-beginners": "Pilates for Beginners",
-    "full-body-rehab": "Rehabilitation Sport - Full Body",
-    "rehab-back": "Rehabilitation Sport - Back",
-    "rehab-knee": "Rehabilitation Sport - Knee",
-    "core-back-foundation": "Strengthening the Abdominal Wall as a Foundation for a Healthy Back",
-    "morning-exercise": "Morning Exercise",
-    "nutrition-principles": "Principles of Nutrition",
-    "active-break": "Ten-Minute Training for an Active Break",
-    "educational-seminars": "Educational Seminars"
+    "heart-gymnastics": "Heart Gymnastics",
+    "weight-loss-program": "Weight Loss Program",
+    "nutrition-principles": "Nutrition Principles",
+    "abs-intensive": "Intensive Abs",
+    "glutes-intensive": "Intensive Glutes",
+    "full-body-strength-advanced": "Full Body Strength - Advanced",
+    "pelvic-floor": "Pelvic Floor",
+    "birth-preparation": "Birth Preparation",
+    "baby-training": "Baby Training",
+    "active-break": "Active Break",
+    "nutrition-program": "Nutrition Program"
   },
   "packages": {
     "starter": "Starter",

@@ -58,6 +58,21 @@ export const services = [
 
 export type MemberPackage = "starter" | "rehab-plus" | "all-access";
 
+export interface MemberCourseDefinition {
+    id: string;
+    categoryKey: string;
+    durationMinutes?: number;
+    unlocksPerWeek?: number;
+    noteKey?: string;
+    coach?: string;
+    packageRequired: MemberPackage;
+}
+
+export interface MemberCourseCategory {
+    id: string;
+    courseIds: string[];
+}
+
 export interface MemberScheduleEntry {
     id: string;
     titleKey: string;
@@ -74,11 +89,44 @@ export interface MemberScheduleDay {
     entries: MemberScheduleEntry[];
 }
 
+export const memberCourses: MemberCourseDefinition[] = [
+    { id: "reha-knee", categoryKey: "reha", durationMinutes: 30, unlocksPerWeek: 2, packageRequired: "rehab-plus" },
+    { id: "reha-back", categoryKey: "reha", durationMinutes: 30, unlocksPerWeek: 2, packageRequired: "rehab-plus" },
+    { id: "reha-hip", categoryKey: "reha", durationMinutes: 30, unlocksPerWeek: 2, packageRequired: "rehab-plus" },
+    { id: "reha-general", categoryKey: "reha", durationMinutes: 30, unlocksPerWeek: 2, packageRequired: "rehab-plus" },
+    { id: "osteoporosis-training", categoryKey: "reha", unlocksPerWeek: 1, packageRequired: "all-access" },
+    { id: "arthritis-training", categoryKey: "reha", unlocksPerWeek: 1, packageRequired: "all-access" },
+    { id: "morning-gymnastics", categoryKey: "healthy-living", durationMinutes: 15, unlocksPerWeek: 1, packageRequired: "starter" },
+    { id: "evening-gymnastics", categoryKey: "healthy-living", durationMinutes: 10, unlocksPerWeek: 1, packageRequired: "starter" },
+    { id: "pilates-beginners", categoryKey: "healthy-living", durationMinutes: 30, unlocksPerWeek: 1, noteKey: "package22", coach: "Nevena", packageRequired: "starter" },
+    { id: "heart-gymnastics", categoryKey: "healthy-living", durationMinutes: 25, unlocksPerWeek: 1, packageRequired: "starter" },
+    { id: "weight-loss-program", categoryKey: "overweight", durationMinutes: 35, unlocksPerWeek: 1, noteKey: "repeat2to3", packageRequired: "rehab-plus" },
+    { id: "nutrition-principles", categoryKey: "overweight", noteKey: "videoAndDocs", packageRequired: "starter" },
+    { id: "abs-intensive", categoryKey: "definition", durationMinutes: 30, unlocksPerWeek: 1, packageRequired: "all-access" },
+    { id: "glutes-intensive", categoryKey: "definition", durationMinutes: 30, unlocksPerWeek: 1, packageRequired: "all-access" },
+    { id: "full-body-strength-advanced", categoryKey: "definition", durationMinutes: 25, noteKey: "package22", coach: "Ivana", packageRequired: "all-access" },
+    { id: "pelvic-floor", categoryKey: "pre-post-birth", durationMinutes: 20, unlocksPerWeek: 1, packageRequired: "starter" },
+    { id: "birth-preparation", categoryKey: "pre-post-birth", packageRequired: "starter" },
+    { id: "baby-training", categoryKey: "pre-post-birth", packageRequired: "starter" },
+    { id: "active-break", categoryKey: "corporate-fitness", durationMinutes: 10, unlocksPerWeek: 1, noteKey: "repeatDaily", packageRequired: "starter" },
+    { id: "nutrition-program", categoryKey: "paragraph-20", noteKey: "onlineOnly", packageRequired: "starter" },
+];
+
+export const memberCourseCategories: MemberCourseCategory[] = [
+    { id: "reha", courseIds: ["reha-knee", "reha-back", "reha-hip", "reha-general", "osteoporosis-training", "arthritis-training"] },
+    { id: "healthy-living", courseIds: ["morning-gymnastics", "evening-gymnastics", "pilates-beginners", "heart-gymnastics"] },
+    { id: "overweight", courseIds: ["weight-loss-program", "nutrition-principles"] },
+    { id: "definition", courseIds: ["abs-intensive", "glutes-intensive", "full-body-strength-advanced"] },
+    { id: "pre-post-birth", courseIds: ["pelvic-floor", "birth-preparation", "baby-training"] },
+    { id: "corporate-fitness", courseIds: ["active-break"] },
+    { id: "paragraph-20", courseIds: ["nutrition-program"] },
+];
+
 export const memberDashboard = {
     package: "rehab-plus" as MemberPackage,
-    upcomingCourseIds: ["pilates-beginners", "rehab-back", "nutrition-principles"],
-    completedCourseIds: ["morning-exercise", "active-break"],
-    recommendedCourseIds: ["rehab-knee", "core-back-foundation", "full-body-rehab"],
+    upcomingCourseIds: ["pilates-beginners", "reha-back", "nutrition-principles"],
+    completedCourseIds: ["morning-gymnastics", "active-break"],
+    recommendedCourseIds: ["reha-knee", "weight-loss-program", "heart-gymnastics"],
 };
 
 export const activeScheduleDays: MemberScheduleDay[] = [
@@ -90,16 +138,16 @@ export const activeScheduleDays: MemberScheduleDay[] = [
                 id: "mon-1",
                 titleKey: "pilates-beginners",
                 startsAt: "2026-05-25T08:00:00",
-                durationMinutes: 45,
+                durationMinutes: 30,
                 formatKey: "training",
-                coach: "Sandra",
+                coach: "Nevena",
                 packageRequired: "starter",
             },
             {
                 id: "mon-2",
-                titleKey: "core-back-foundation",
+                titleKey: "reha-back",
                 startsAt: "2026-05-25T18:30:00",
-                durationMinutes: 50,
+                durationMinutes: 30,
                 formatKey: "training",
                 coach: "Sandra",
                 packageRequired: "rehab-plus",
@@ -114,7 +162,7 @@ export const activeScheduleDays: MemberScheduleDay[] = [
                 id: "tue-1",
                 titleKey: "nutrition-principles",
                 startsAt: "2026-05-26T17:30:00",
-                durationMinutes: 45,
+                durationMinutes: 35,
                 formatKey: "seminar",
                 coach: "Sandra",
                 packageRequired: "starter",
@@ -127,20 +175,20 @@ export const activeScheduleDays: MemberScheduleDay[] = [
         entries: [
             {
                 id: "wed-1",
-                titleKey: "rehab-back",
+                titleKey: "reha-knee",
                 startsAt: "2026-05-27T09:00:00",
-                durationMinutes: 50,
+                durationMinutes: 30,
                 formatKey: "training",
                 coach: "Sandra",
                 packageRequired: "rehab-plus",
             },
             {
                 id: "wed-2",
-                titleKey: "full-body-rehab",
+                titleKey: "full-body-strength-advanced",
                 startsAt: "2026-05-27T18:00:00",
-                durationMinutes: 55,
+                durationMinutes: 25,
                 formatKey: "training",
-                coach: "Sandra",
+                coach: "Ivana",
                 packageRequired: "all-access",
             },
         ],
@@ -151,7 +199,7 @@ export const activeScheduleDays: MemberScheduleDay[] = [
         entries: [
             {
                 id: "thu-1",
-                titleKey: "educational-seminars",
+                titleKey: "nutrition-program",
                 startsAt: "2026-05-28T18:30:00",
                 durationMinutes: 60,
                 formatKey: "seminar",
@@ -175,12 +223,12 @@ export const activeScheduleDays: MemberScheduleDay[] = [
             },
             {
                 id: "fri-2",
-                titleKey: "rehab-knee",
+                titleKey: "osteoporosis-training",
                 startsAt: "2026-05-29T17:00:00",
-                durationMinutes: 45,
+                durationMinutes: 30,
                 formatKey: "training",
                 coach: "Sandra",
-                packageRequired: "rehab-plus",
+                packageRequired: "all-access",
             },
         ],
     },

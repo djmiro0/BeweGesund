@@ -2,7 +2,8 @@
   "header": {
     "logo": "S.BeweGesund",
     "nav": {
-      "courses": "Programme",
+      "program": "Programme",
+      "courses": "Kurse",
       "calendar": "Live-Kalender",
       "consultation": "Beratung",
       "about": "Über Uns",
@@ -133,11 +134,11 @@
       "items": [
         {
           "label": "Kursformate",
-          "value": "10"
+          "value": "20"
         },
         {
-          "label": "Live-Bereiche",
-          "value": "2"
+          "label": "Mitgliederbereiche",
+          "value": "7"
         },
         {
           "label": "Beratung",
@@ -148,6 +149,48 @@
     "courseTypes": {
       "title": "Kursarten",
       "lead": "Eine strukturierte Bibliothek aus Bewegung, Rehabilitation und Bildungsformaten für den alltagstauglichen Einstieg.",
+      "categories": {
+        "reha": {
+          "title": "Reha",
+          "description": "Gezielte Reha-Formate für Knie, Rücken, Hüfte und allgemeine Stabilität mit ergänzenden Schwerpunkten für Osteoporose und Arthritis."
+        },
+        "healthy-living": {
+          "title": "Lebe Gesund",
+          "description": "Alltagstaugliche Formate für Mobilität, sanften Einstieg und regelmäßige Bewegung."
+        },
+        "overweight": {
+          "title": "Übergewicht",
+          "description": "Bewegungs- und Ernährungsformate mit Fokus auf nachhaltige Gewichtsreduktion."
+        },
+        "definition": {
+          "title": "Definition",
+          "description": "Intensivere Kraft- und Definitionsformate für fortgeschrittenere Mitglieder."
+        },
+        "pre-post-birth": {
+          "title": "Pre & Postgeburt",
+          "description": "Begleitende Formate rund um Beckenboden, Geburtsvorbereitung und Training mit dem Baby."
+        },
+        "corporate-fitness": {
+          "title": "Firmenfitness",
+          "description": "Kurze, wiederholbare Bewegungseinheiten für aktive Arbeitspausen im Berufsalltag."
+        },
+        "paragraph-20": {
+          "title": "Paragraf 20",
+          "description": "Online-orientierte Ernährungsprogramme als ergänzender Gesundheitsbaustein."
+        }
+      },
+      "meta": {
+        "duration": "{count} Min",
+        "unlocks": "{count, plural, one {#x pro Woche freigeschaltet} other {#x pro Woche freigeschaltet}}",
+        "coach": "Coach: {name}"
+      },
+      "notes": {
+        "package22": "22 Trainings in einem Paket verfügbar.",
+        "repeat2to3": "Ideal zum Wiederholen, zwei- bis dreimal pro Woche.",
+        "repeatDaily": "Mindestens zwei- bis dreimal pro Woche wiederholen, idealerweise täglich in der Pause und am besten zweimal pro Tag.",
+        "videoAndDocs": "Videoformat mit begleitender Dokumentation.",
+        "onlineOnly": "Ausschließlich online verfügbar."
+      },
       "items": [
         "Pilates für Anfänger",
         "Rehabilitations-Training für Anfänger (Trainingsprinzipien)",
@@ -207,15 +250,26 @@
     }
   },
   "courseCatalog": {
+    "reha-knee": "Reha Knie",
+    "reha-back": "Reha Rücken",
+    "reha-hip": "Reha Hüfte",
+    "reha-general": "Reha Allgemein",
+    "osteoporosis-training": "Training bei Osteoporose",
+    "arthritis-training": "Training bei Arthritis",
+    "morning-gymnastics": "Morgengymnastik",
+    "evening-gymnastics": "Abendgymnastik",
     "pilates-beginners": "Pilates für Anfänger",
-    "full-body-rehab": "Reha-Sport - Ganzer Körper",
-    "rehab-back": "Reha-Sport - Rücken",
-    "rehab-knee": "Reha-Sport - Knie",
-    "core-back-foundation": "Stärkung der Bauchwand als Grundlage für einen gesunden Rücken",
-    "morning-exercise": "Morgengymnastik",
-    "nutrition-principles": "Grundlagen der Ernährung",
-    "active-break": "Zehn-Minuten-Training für die aktive Pause",
-    "educational-seminars": "Edukative Seminare"
+    "heart-gymnastics": "Herzgymnastik",
+    "weight-loss-program": "Abnehmprogramm",
+    "nutrition-principles": "Ernährungsprinzipien",
+    "abs-intensive": "Bauchmuskeln intensiv",
+    "glutes-intensive": "Pomuskeln intensiv",
+    "full-body-strength-advanced": "Ganzkörpertraining Kraft - fortgeschritten",
+    "pelvic-floor": "Beckenboden",
+    "birth-preparation": "Geburtsvorbereitung",
+    "baby-training": "Babytraining",
+    "active-break": "Aktive Pause",
+    "nutrition-program": "Ernährungsprogramm"
   },
   "packages": {
     "starter": "Starter",

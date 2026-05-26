@@ -1,40 +1,60 @@
-<<<<<<< HEAD
 # S.BeweGesund
-=======
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+S.BeweGesund is a bilingual health and movement platform built with Next.js. The frontend handles the member experience, while Firebase and Cloud Functions own authentication, protected data updates, gamification, and subscription logic.
 
-First, run the development server:
+## Stack
+
+- Next.js for frontend and UI
+- Firebase Auth for authentication
+- Firestore for application data
+- Firebase Cloud Functions v2 for trusted backend logic
+- Firestore Security Rules for client write protection
+- Contentful for articles and research content
+- Mux or Cloudflare Stream for video and live training
+- Stripe for subscriptions
+- Vercel for hosting
+
+## Backend Principle
+
+The frontend must not directly update:
+
+- xp
+- points
+- premium status
+- subscription status
+- rewards
+- weekly leaderboard
+- monthly leaderboard
+
+All gamification and subscription logic belongs in Cloud Functions.
+
+## Included Scaffold
+
+- `firebase.json`
+- `firestore.rules`
+- `firestore.indexes.json`
+- `functions/` Cloud Functions v2 scaffold
+- `docs/backend-architecture.md`
+
+## Important Functions
+
+- `createUserProfile`
+- `completeLesson`
+- `completeWorkout`
+- `updateStreak`
+- `updateWeeklyLeaderboard`
+- `updateMonthlyLeaderboard`
+- `claimReward`
+- `createStripeCheckoutSession`
+- `stripeWebhook`
+
+## Local Frontend
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Next Backend Step
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
->>>>>>> e70a78b (Initial commit from Create Next App)
+Install the Firebase Functions dependencies in `functions/`, connect the first authenticated user flow to `createUserProfile`, and start reading protected member state from Firestore instead of mock data.

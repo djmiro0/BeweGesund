@@ -4,6 +4,10 @@
   margin: 0 auto;
   padding: 8rem 2rem 4rem;
   color: var(--text-light);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(var(--accent-rgb), 0.12), transparent 20%),
+    radial-gradient(circle at 88% 14%, rgba(var(--accent-soft-rgb), 0.1), transparent 18%),
+    linear-gradient(180deg, rgba(var(--navy-rgb), 0.18), transparent 26%);
 }
 
 .headerBlock {
@@ -41,11 +45,12 @@
 
 .planCard {
   min-width: 260px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid rgba(var(--accent-soft-rgb), 0.26);
   border-radius: 28px;
   padding: 1.4rem 1.5rem;
-  background: linear-gradient(180deg, rgba(var(--foreground-rgb), 0.05), rgba(var(--foreground-rgb), 0.02));
-  box-shadow: 0 24px 60px var(--shadow-color);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
 }
 
 .planLabel {
@@ -87,25 +92,27 @@
   min-width: 140px;
   flex-direction: column;
   gap: 0.45rem;
-  border: 1px solid var(--border-soft);
+  border: 1px solid rgba(var(--foreground-rgb), 0.12);
   border-radius: 24px;
   padding: 1rem 1.1rem;
-  background: rgba(var(--foreground-rgb), 0.03);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
   color: var(--text-light);
   text-align: left;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.14);
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dayButton:hover {
   transform: translateY(-2px);
-  border-color: var(--border-strong);
-  background: rgba(var(--foreground-rgb), 0.05);
+  border-color: rgba(var(--accent-soft-rgb), 0.28);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.2);
 }
 
 .dayButtonActive {
-  border-color: rgba(var(--accent-soft-rgb), 0.48);
-  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.18), rgba(var(--accent-soft-rgb), 0.12));
-  box-shadow: 0 18px 40px rgba(var(--accent-rgb), 0.16);
+  border-color: rgba(var(--accent-soft-rgb), 0.54);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.26), rgba(var(--accent-soft-rgb), 0.18));
+  box-shadow: 0 24px 56px rgba(var(--accent-rgb), 0.22);
 }
 
 .dayButtonTop {
@@ -120,13 +127,14 @@
 }
 
 .schedulePanel {
-  border: 1px solid var(--border-soft);
+  border: 1px solid rgba(var(--foreground-rgb), 0.16);
   border-radius: 34px;
   padding: 1.8rem;
   background:
-    radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.12), transparent 28%),
-    linear-gradient(180deg, rgba(var(--foreground-rgb), 0.04), rgba(var(--foreground-rgb), 0.02));
-  box-shadow: 0 30px 80px var(--shadow-color);
+    radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  box-shadow: 0 34px 84px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(18px);
 }
 
 .panelHeader {
@@ -166,12 +174,12 @@
   align-items: center;
   gap: 0.5rem;
   border-radius: 999px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid rgba(var(--foreground-rgb), 0.14);
   padding: 0.55rem 0.9rem;
   color: var(--text-muted);
   font-size: 0.8rem;
   font-weight: 700;
-  background: rgba(var(--foreground-rgb), 0.03);
+  background: rgba(var(--navy-rgb), 0.34);
 }
 
 .sessionList {
@@ -187,16 +195,19 @@
   justify-content: space-between;
   gap: 1.4rem;
   border-radius: 26px;
-  padding: 1.2rem;
-  border: 1px solid var(--border-soft);
+  padding: 1.3rem;
+  border: 1px solid rgba(var(--foreground-rgb), 0.12);
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.16);
 }
 
 .sessionIncluded {
-  background: linear-gradient(135deg, rgba(var(--accent-soft-rgb), 0.18), rgba(var(--foreground-rgb), 0.04));
+  border-color: rgba(var(--accent-soft-rgb), 0.26);
+  background: linear-gradient(135deg, rgba(var(--accent-soft-rgb), 0.26), rgba(var(--navy-rgb), 0.32));
 }
 
 .sessionLocked {
-  background: linear-gradient(180deg, rgba(var(--foreground-rgb), 0.03), rgba(var(--foreground-rgb), 0.015));
+  border-color: rgba(var(--accent-strong-rgb), 0.18);
+  background: linear-gradient(180deg, rgba(var(--foreground-rgb), 0.08), rgba(var(--navy-rgb), 0.3));
 }
 
 .sessionPrimary {
@@ -214,7 +225,8 @@
   gap: 0.55rem;
   border-radius: 20px;
   padding: 1rem 0.9rem;
-  background: rgba(var(--navy-rgb), 0.48);
+  border: 1px solid rgba(var(--foreground-rgb), 0.1);
+  background: linear-gradient(180deg, rgba(var(--navy-rgb), 0.76), rgba(var(--navy-rgb), 0.56));
 }
 
 .sessionTime {
@@ -260,12 +272,12 @@
 }
 
 .formatBadge {
-  background: rgba(var(--foreground-rgb), 0.08);
+  background: rgba(var(--navy-rgb), 0.42);
   color: var(--text-light);
 }
 
 .packageBadge {
-  background: rgba(var(--accent-soft-rgb), 0.18);
+  background: rgba(var(--accent-soft-rgb), 0.2);
   color: var(--highlight-soft);
 }
 
@@ -325,6 +337,7 @@
   background: var(--text-light);
   color: var(--text-on-warm);
   cursor: pointer;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
 }
 
 .joinButtonEnabled:hover {
@@ -334,8 +347,8 @@
 }
 
 .joinButtonDisabled {
-  border: 1px solid rgba(var(--foreground-rgb), 0.12);
-  background: rgba(var(--foreground-rgb), 0.06);
+  border: 1px solid rgba(var(--accent-strong-rgb), 0.16);
+  background: rgba(var(--accent-strong-rgb), 0.1);
   color: var(--text-dim);
   cursor: not-allowed;
 }
@@ -350,9 +363,10 @@
 .emptyState {
   margin-top: 1.5rem;
   border-radius: 24px;
-  border: 1px dashed var(--border-soft);
+  border: 1px dashed rgba(var(--foreground-rgb), 0.18);
   padding: 2rem;
   text-align: center;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
 }
 
 .emptyState h4 {

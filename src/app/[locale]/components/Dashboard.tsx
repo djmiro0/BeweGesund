@@ -16,7 +16,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     const locale = useLocale();
 
     return (
-        <section className="border-b border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(var(--navy-rgb),0.98)_0%,rgba(var(--navy-rgb),0.94)_100%)] px-6 pb-16 pt-32 text-[var(--text-light)]">
+        <section className="border-b border-[var(--border-soft)] bg-[radial-gradient(circle_at_top_left,rgba(var(--accent-rgb),0.16),transparent_24%),radial-gradient(circle_at_85%_18%,rgba(var(--accent-soft-rgb),0.1),transparent_18%),linear-gradient(180deg,rgba(var(--navy-rgb),0.99)_0%,rgba(var(--navy-rgb),0.93)_100%)] px-6 pb-16 pt-32 text-[var(--text-light)]">
             <div className="mx-auto flex max-w-7xl flex-col gap-14">
                 <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
                     <div className="max-w-3xl">
@@ -50,7 +50,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
-                    <div className="rounded-[1.8rem] border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.04)] p-6 backdrop-blur-sm">
+                    <div className="rounded-[1.8rem] border border-[rgba(var(--accent-soft-rgb),0.22)] bg-[linear-gradient(180deg,rgba(var(--foreground-rgb),0.09),rgba(var(--foreground-rgb),0.04))] p-6 shadow-[0_28px_70px_rgba(0,0,0,0.22)] backdrop-blur-sm">
                         <p className="text-xs font-black uppercase tracking-[0.22em] text-[var(--text-dim)]">
                             {t("summary.currentPackage")}
                         </p>
@@ -61,7 +61,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             {t("summary.packageDescription")}
                         </p>
                     </div>
-                    <div className="rounded-[1.8rem] border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.04)] p-6 backdrop-blur-sm">
+                    <div className="rounded-[1.8rem] border border-[rgba(var(--foreground-rgb),0.18)] bg-[linear-gradient(180deg,rgba(var(--foreground-rgb),0.08),rgba(var(--foreground-rgb),0.03))] p-6 shadow-[0_28px_70px_rgba(0,0,0,0.2)] backdrop-blur-sm">
                         <p className="text-xs font-black uppercase tracking-[0.22em] text-[var(--text-dim)]">
                             {t("summary.upcoming")}
                         </p>
@@ -72,7 +72,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             {t("summary.upcomingDescription")}
                         </p>
                     </div>
-                    <div className="rounded-[1.8rem] border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.04)] p-6 backdrop-blur-sm">
+                    <div className="rounded-[1.8rem] border border-[rgba(var(--foreground-rgb),0.18)] bg-[linear-gradient(180deg,rgba(var(--foreground-rgb),0.08),rgba(var(--foreground-rgb),0.03))] p-6 shadow-[0_28px_70px_rgba(0,0,0,0.2)] backdrop-blur-sm">
                         <p className="text-xs font-black uppercase tracking-[0.22em] text-[var(--text-dim)]">
                             {t("summary.completed")}
                         </p>
@@ -86,7 +86,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 </div>
 
                 <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-                    <section className="rounded-[2rem] border border-[var(--border-soft)] bg-[linear-gradient(180deg,rgba(var(--foreground-rgb),0.04),rgba(var(--foreground-rgb),0.02))] p-7">
+                    <section className="rounded-[2rem] border border-[rgba(var(--foreground-rgb),0.18)] bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.025))] p-7 shadow-[0_36px_90px_rgba(0,0,0,0.24)] backdrop-blur-md">
                         <div className="flex items-center justify-between gap-4 border-b border-[var(--border-soft)] pb-5">
                             <div>
                                 <p className="text-xs font-black uppercase tracking-[0.26em] text-[var(--highlight-soft)]">
@@ -102,10 +102,10 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             {memberDashboard.upcomingCourseIds.map((courseId, index) => (
                                 <div
                                     key={courseId}
-                                    className="flex flex-col gap-4 rounded-[1.5rem] border border-[rgba(var(--foreground-rgb),0.08)] bg-[rgba(var(--foreground-rgb),0.03)] p-5 md:flex-row md:items-center md:justify-between"
+                                    className="flex flex-col gap-4 rounded-[1.5rem] border border-[rgba(var(--accent-soft-rgb),0.16)] bg-[linear-gradient(180deg,rgba(var(--navy-rgb),0.78),rgba(var(--navy-rgb),0.58))] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.18)] md:flex-row md:items-center md:justify-between"
                                 >
                                     <div className="flex items-start gap-4">
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[rgba(var(--accent-soft-rgb),0.18)] text-sm font-black uppercase text-[var(--highlight-soft)]">
+                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[rgba(var(--accent-soft-rgb),0.22)] bg-[rgba(var(--accent-soft-rgb),0.14)] text-sm font-black uppercase text-[var(--highlight-soft)]">
                                             {String(index + 1).padStart(2, "0")}
                                         </div>
                                         <div>
@@ -130,7 +130,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                     </section>
 
                     <section className="flex flex-col gap-6">
-                        <div className="rounded-[2rem] border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.03)] p-7">
+                        <div className="rounded-[2rem] border border-[rgba(var(--foreground-rgb),0.18)] bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-7 shadow-[0_34px_84px_rgba(0,0,0,0.22)] backdrop-blur-md">
                             <div className="flex items-center justify-between gap-4 border-b border-[var(--border-soft)] pb-5">
                                 <div>
                                     <p className="text-xs font-black uppercase tracking-[0.26em] text-[var(--highlight-soft)]">
@@ -146,7 +146,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                 {memberDashboard.completedCourseIds.map((courseId) => (
                                     <div
                                         key={courseId}
-                                        className="flex items-center justify-between gap-4 rounded-[1.35rem] border border-[rgba(var(--foreground-rgb),0.08)] bg-[rgba(var(--foreground-rgb),0.02)] px-4 py-4"
+                                        className="flex items-center justify-between gap-4 rounded-[1.35rem] border border-[rgba(var(--foreground-rgb),0.12)] bg-[rgba(var(--navy-rgb),0.5)] px-4 py-4 shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                                     >
                                         <span className="font-bold text-[var(--text-light)]">
                                             {courseT(courseId)}
@@ -159,7 +159,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             </div>
                         </div>
 
-                        <div className="rounded-[2rem] border border-[var(--border-strong)] bg-[linear-gradient(135deg,rgba(var(--accent-rgb),0.18),rgba(var(--accent-soft-rgb),0.16))] p-7 text-[var(--text-light)]">
+                        <div className="rounded-[2rem] border border-[rgba(var(--accent-rgb),0.34)] bg-[linear-gradient(135deg,rgba(var(--accent-rgb),0.28),rgba(var(--accent-soft-rgb),0.2))] p-7 text-[var(--text-light)] shadow-[0_34px_88px_rgba(0,0,0,0.24)]">
                             <div className="flex items-center justify-between gap-4">
                                 <div>
                                     <p className="text-xs font-black uppercase tracking-[0.26em] text-[var(--text-light)]">
@@ -178,7 +178,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                 {memberDashboard.recommendedCourseIds.map((courseId) => (
                                     <div
                                         key={courseId}
-                                        className="flex items-center justify-between gap-4 rounded-[1.35rem] border border-[rgba(var(--foreground-rgb),0.18)] bg-[rgba(var(--foreground-rgb),0.08)] px-4 py-4"
+                                        className="flex items-center justify-between gap-4 rounded-[1.35rem] border border-[rgba(var(--foreground-rgb),0.22)] bg-[rgba(var(--navy-rgb),0.24)] px-4 py-4 shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                                     >
                                         <span className="font-bold">{courseT(courseId)}</span>
                                         <Link

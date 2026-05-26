@@ -22,11 +22,19 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
 
     const navItems = [
         {
-            key: "courses",
+            key: "program",
             href: user ? `/${locale}` : `/${locale}/courses`,
-            label: t("nav.courses"),
+            label: t("nav.program"),
             active: user ? pathname === `/${locale}` : pathname === `/${locale}/courses`,
         },
+        ...(user
+            ? [{
+                key: "courses",
+                href: `/${locale}/courses`,
+                label: t("nav.courses"),
+                active: pathname === `/${locale}/courses`,
+            }]
+            : []),
         {
             key: "calendar",
             href: `/${locale}/calendar`,

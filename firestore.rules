@@ -1,0 +1,92 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function profileImmutableFieldsUnchanged() {
+      return request.resource.data.xp == resource.data.xp
+        && request.resource.data.points == resource.data.points
+        && request.resource.data.premiumStatus == resource.data.premiumStatus
+        && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus
+        && request.resource.data.currentStreak == resource.data.currentStreak
+        && request.resource.data.longestStreak == resource.data.longestStreak
+        && request.resource.data.weeklyLeaderboardRank == resource.data.weeklyLeaderboardRank
+        && request.resource.data.monthlyLeaderboardRank == resource.data.monthlyLeaderboardRank
+        && request.resource.data.weeklyScore == resource.data.weeklyScore
+        && request.resource.data.monthlyScore == resource.data.monthlyScore
+        && request.resource.data.claimedRewardIds == resource.data.claimedRewardIds
+        && request.resource.data.roles == resource.data.roles;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if false;
+      allow update: if isOwner(userId)
+        && profileImmutableFieldsUnchanged()
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.email == resource.data.email;
+      allow delete: if false;
+
+      match /lessonCompletions/{completionId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+
+      match /workoutCompletions/{completionId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+
+      match /rewards/{rewardId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+
+      match /subscriptions/{subscriptionId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+    }
+
+    match /leaderboards/{period} {
+      allow read: if isSignedIn();
+      allow write: if false;
+
+      match /entries/{entryId} {
+        allow read: if isSignedIn();
+        allow write: if false;
+      }
+    }
+
+    match /rewards/{rewardId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /articles/{articleId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /research/{entryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
