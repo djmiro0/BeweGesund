@@ -3,7 +3,10 @@
   overflow: hidden;
   min-height: 100vh;
   padding: 7.5rem 1.25rem 4rem;
-  background: var(--gradient-hero);
+  background:
+          radial-gradient(circle at 12% 10%, rgba(var(--page-accent-rgb), 0.12), transparent 20%),
+          radial-gradient(circle at 88% 14%, rgba(var(--page-olive-rgb), 0.14), transparent 18%),
+          linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
 }
 
 .glow {

@@ -1,13 +1,6 @@
 @import "../theme.css";
 @import "tailwindcss";
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--primary);
-    --foreground: #f7f3ea;
-  }
-}
-
 * {
   box-sizing: border-box;
 }

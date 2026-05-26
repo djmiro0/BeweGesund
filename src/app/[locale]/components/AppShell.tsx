@@ -4,6 +4,7 @@ import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
+import { ThemeProvider } from "./ThemeProvider";
 
 function ShellFrame({
   children,
@@ -32,8 +33,10 @@ export default function AppShell({
   locale: string;
 }) {
   return (
-    <AuthProvider>
-      <ShellFrame locale={locale}>{children}</ShellFrame>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ShellFrame locale={locale}>{children}</ShellFrame>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

@@ -6,62 +6,166 @@
 }
 
 :root {
-  --primary: #003049;
-  --secondary: #d62828;
-  --tertiary: #f77f00;
-  --quaternary: #fcbf49;
+  --primary: #f7f1e6;
+  --secondary: #e23d4f;
+  --tertiary: #88992d;
+  --quaternary: #f6c764;
 
-  --primary-rgb: 0, 48, 73;
-  --secondary-rgb: 214, 40, 40;
-  --tertiary-rgb: 247, 127, 0;
-  --quaternary-rgb: 252, 191, 73;
-  --foreground-rgb: 247, 243, 234;
+  --primary-rgb: 247, 241, 230;
+  --secondary-rgb: 226, 61, 79;
+  --tertiary-rgb: 136, 153, 45;
+  --quaternary-rgb: 246, 199, 100;
 
-  --background: var(--primary);
-  --foreground: #f7f3ea;
+  --page-ink: #2f2618;
+  --page-ink-rgb: 47, 38, 24;
+  --page-soft: #fffaf0;
+  --page-soft-rgb: 255, 250, 240;
+  --page-soft-alt: #fff7e7;
+  --page-soft-alt-rgb: 255, 247, 231;
+  --page-cream-1: #fcf7ee;
+  --page-cream-1-rgb: 252, 247, 238;
+  --page-cream-2: #f6efdf;
+  --page-cream-2-rgb: 246, 239, 223;
 
-  --surface-0: #41424C;
-  --surface-1: #36454F;
-  --surface-2: #5D5F5D;
-  --surface-overlay: rgba(0, 24, 37, 0.82);
+  --page-base: var(--primary);
+  --page-base-rgb: var(--primary-rgb);
+  --page-accent: var(--secondary);
+  --page-accent-rgb: var(--secondary-rgb);
+  --page-olive: var(--tertiary);
+  --page-olive-rgb: var(--tertiary-rgb);
+  --page-warm: var(--quaternary);
+  --page-warm-rgb: var(--quaternary-rgb);
+  --page-muted: rgba(var(--page-ink-rgb), 0.72);
+  --page-border: rgba(var(--page-ink-rgb), 0.12);
+  --page-border-soft: rgba(var(--page-ink-rgb), 0.08);
+  --page-shadow: rgba(83, 57, 20, 0.12);
+
+  --shell-bg: #1f1912;
+  --shell-bg-rgb: 31, 25, 18;
+  --shell-bg-alt: #2a2218;
+  --shell-bg-alt-rgb: 42, 34, 24;
+  --shell-surface: #3a2f22;
+  --shell-surface-rgb: 58, 47, 34;
+  --shell-text: var(--page-base);
+  --shell-text-rgb: var(--page-base-rgb);
+  --shell-text-muted: rgba(var(--page-base-rgb), 0.72);
+  --shell-text-dim: rgba(var(--page-base-rgb), 0.46);
+  --shell-border: rgba(var(--page-base-rgb), 0.08);
+
+  --foreground-rgb: var(--page-ink-rgb);
+  --background: var(--page-base);
+  --foreground: var(--page-ink);
+
+  --surface-0: var(--shell-bg);
+  --surface-1: var(--shell-bg-alt);
+  --surface-2: var(--shell-surface);
+  --surface-overlay: rgba(var(--shell-bg-rgb), 0.82);
 
   --surface-primary: var(--surface-0);
   --surface-secondary: var(--surface-1);
-  --highlight: var(--tertiary);
-  --highlight-strong: var(--secondary);
+  --highlight: var(--secondary);
+  --highlight-strong: var(--tertiary);
   --highlight-soft: var(--quaternary);
 
-  --text-light: #f7f3ea;
-  --text-dark: #07263a;
-  --text-muted: rgba(247, 243, 234, 0.74);
-  --text-dim: rgba(247, 243, 234, 0.56);
-  --text-on-warm: #18222b;
+  --text-light: var(--shell-text);
+  --text-dark: var(--page-ink);
+  --text-muted: var(--shell-text-muted);
+  --text-dim: rgba(var(--page-base-rgb), 0.56);
+  --text-on-warm: var(--page-ink);
 
-  --border-soft: rgba(247, 243, 234, 0.12);
-  --border-strong: rgba(247, 127, 0, 0.28);
+  --border-soft: var(--shell-border);
+  --border-strong: rgba(var(--page-accent-rgb), 0.28);
   --shadow-color: rgba(0, 0, 0, 0.28);
 
-  --accent-rgb: var(--tertiary-rgb);
-  --accent-strong-rgb: var(--secondary-rgb);
+  --accent-rgb: var(--secondary-rgb);
+  --accent-strong-rgb: var(--tertiary-rgb);
   --accent-soft-rgb: var(--quaternary-rgb);
-  --navy-rgb: var(--primary-rgb);
+  --navy-rgb: var(--shell-bg-rgb);
 
-  --gradient1: linear-gradient(135deg, #0b3854 0%, #00263a 100%);
+  --gradient1: linear-gradient(135deg, var(--shell-bg) 0%, var(--shell-bg-alt) 100%);
   --gradient2:
     radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
-    linear-gradient(160deg, #0a3550 0%, #003049 100%);
+    linear-gradient(160deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
   --gradient-hero:
     radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
     radial-gradient(circle at 85% 18%, rgba(var(--accent-soft-rgb), 0.12), transparent 20%),
-    linear-gradient(180deg, #0b3854 0%, #003049 100%);
+    linear-gradient(180deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
 
   --button-primary-bg: var(--highlight);
   --button-primary-hover: var(--highlight-strong);
-  --button-secondary-bg: rgba(var(--foreground-rgb), 0.08);
-  --button-secondary-hover: rgba(var(--foreground-rgb), 0.14);
+  --button-secondary-bg: rgba(var(--page-base-rgb), 0.08);
+  --button-secondary-hover: rgba(var(--page-base-rgb), 0.14);
 
   --status-danger: var(--highlight-strong);
   --status-danger-soft: rgba(var(--accent-strong-rgb), 0.14);
 
   --transition: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --page-base: #19140f;
+  --page-base-rgb: 25, 20, 15;
+  --page-accent: #e23d4f;
+  --page-accent-rgb: 226, 61, 79;
+  --page-olive: #a5b44a;
+  --page-olive-rgb: 165, 180, 74;
+  --page-warm: #f6c764;
+  --page-warm-rgb: 246, 199, 100;
+  --page-ink: #f7f1e6;
+  --page-ink-rgb: 247, 241, 230;
+  --page-soft: #2b2219;
+  --page-soft-rgb: 43, 34, 25;
+  --page-soft-alt: #33291f;
+  --page-soft-alt-rgb: 51, 41, 31;
+  --page-cream-1: #241c15;
+  --page-cream-1-rgb: 36, 28, 21;
+  --page-cream-2: #19140f;
+  --page-cream-2-rgb: 25, 20, 15;
+  --page-muted: rgba(var(--page-ink-rgb), 0.72);
+  --page-border: rgba(var(--page-ink-rgb), 0.14);
+  --page-border-soft: rgba(var(--page-ink-rgb), 0.08);
+  --page-shadow: rgba(0, 0, 0, 0.28);
+
+  --shell-bg: #120e0a;
+  --shell-bg-rgb: 18, 14, 10;
+  --shell-bg-alt: #1b1510;
+  --shell-bg-alt-rgb: 27, 21, 16;
+  --shell-surface: #2d241b;
+  --shell-surface-rgb: 45, 36, 27;
+  --shell-text: #f7f1e6;
+  --shell-text-rgb: 247, 241, 230;
+  --shell-text-muted: rgba(var(--shell-text-rgb), 0.72);
+  --shell-text-dim: rgba(var(--shell-text-rgb), 0.46);
+  --shell-border: rgba(var(--shell-text-rgb), 0.08);
+
+  --background: var(--page-base);
+  --foreground: var(--page-ink);
+  --foreground-rgb: var(--page-ink-rgb);
+
+  --surface-0: var(--shell-bg);
+  --surface-1: var(--shell-bg-alt);
+  --surface-2: var(--shell-surface);
+  --surface-overlay: rgba(var(--shell-bg-rgb), 0.82);
+
+  --text-light: var(--shell-text);
+  --text-dark: var(--page-ink);
+  --text-muted: var(--shell-text-muted);
+  --text-dim: rgba(var(--shell-text-rgb), 0.56);
+  --text-on-warm: var(--page-ink);
+
+  --border-soft: var(--shell-border);
+  --border-strong: rgba(var(--page-accent-rgb), 0.28);
+  --shadow-color: rgba(0, 0, 0, 0.34);
+
+  --gradient1: linear-gradient(135deg, var(--shell-bg) 0%, var(--shell-bg-alt) 100%);
+  --gradient2:
+    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
+    linear-gradient(160deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
+  --gradient-hero:
+    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(var(--accent-soft-rgb), 0.12), transparent 20%),
+    linear-gradient(180deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
+
+  color-scheme: dark;
 }

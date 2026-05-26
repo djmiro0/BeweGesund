@@ -1,0 +1,330 @@
+.dashboardSection {
+  padding: 8rem 1.5rem 4rem;
+  background:
+    radial-gradient(circle at top left, rgba(var(--page-accent-rgb), 0.14), transparent 22%),
+    radial-gradient(circle at 86% 16%, rgba(var(--page-olive-rgb), 0.15), transparent 18%),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
+  color: var(--page-ink);
+}
+
+.shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.heroMain,
+.heroAside,
+.panel,
+.accentPanel {
+  border: 1px solid var(--page-border);
+  border-radius: 2rem;
+  box-shadow: 0 24px 60px rgba(83, 57, 20, 0.1);
+}
+
+.heroMain {
+  padding: 2rem;
+  background: rgba(var(--page-soft-rgb), 0.88);
+}
+
+.eyebrow {
+  color: var(--page-accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin-top: 1rem;
+  font-size: clamp(2.8rem, 5vw, 5.2rem);
+  line-height: 0.94;
+  font-style: italic;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.description {
+  margin-top: 1rem;
+  max-width: 54ch;
+  color: var(--page-muted);
+  line-height: 1.85;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+}
+
+.primaryButton,
+.secondaryButton,
+.sectionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: transform 0.28s var(--transition), background 0.28s var(--transition), color 0.28s var(--transition);
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 0.95rem 1.25rem;
+}
+
+.primaryButton {
+  background: var(--page-ink);
+  color: var(--page-base);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  background: var(--page-accent);
+}
+
+.secondaryButton {
+  border: 1px solid rgba(var(--page-ink-rgb), 0.1);
+  background: rgba(var(--page-soft-rgb), 0.52);
+  color: var(--page-ink);
+}
+
+.secondaryButton:hover {
+  transform: translateY(-2px);
+  background: rgba(var(--page-olive-rgb), 0.12);
+}
+
+.heroAside {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  background: rgba(var(--page-soft-rgb), 0.74);
+}
+
+.metricCard {
+  border-radius: 1.4rem;
+  border: 1px solid var(--page-border-soft);
+  padding: 1.25rem;
+  background: rgba(var(--page-soft-rgb), 0.6);
+}
+
+.metricCardAccent {
+  background: linear-gradient(180deg, rgba(var(--page-accent-rgb), 0.12), rgba(var(--page-soft-rgb), 0.66));
+}
+
+.metricLabel {
+  color: rgba(var(--page-ink-rgb), 0.58);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.metricValue {
+  margin-top: 0.85rem;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--page-ink);
+}
+
+.metricHint {
+  margin-top: 0.55rem;
+  color: var(--page-muted);
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 1.5rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.panel {
+  padding: 1.6rem;
+  background: rgba(var(--page-soft-rgb), 0.86);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--page-border-soft);
+}
+
+.panelEyebrow {
+  color: var(--page-olive);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.panelTitle {
+  margin-top: 0.45rem;
+  font-size: 1.4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.panelIcon {
+  color: var(--page-accent);
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+}
+
+.courseCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1.35rem;
+  border: 1px solid var(--page-border-soft);
+  background: rgba(var(--page-soft-rgb), 0.6);
+}
+
+.courseMain {
+  display: flex;
+  gap: 0.85rem;
+}
+
+.courseIndex {
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--page-warm-rgb), 0.22);
+  color: var(--page-ink);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.courseName {
+  color: var(--page-ink);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.courseHint {
+  margin-top: 0.3rem;
+  color: var(--page-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.sectionLink {
+  color: var(--page-accent);
+}
+
+.sectionLink:hover {
+  transform: translateX(4px);
+}
+
+.completedList,
+.exploreList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1.15rem;
+}
+
+.completedCard,
+.exploreCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1.25rem;
+}
+
+.completedCard {
+  border: 1px solid var(--page-border-soft);
+  background: rgba(var(--page-soft-rgb), 0.6);
+}
+
+.completedBadge {
+  border-radius: 999px;
+  background: rgba(var(--page-olive-rgb), 0.14);
+  padding: 0.45rem 0.8rem;
+  color: var(--page-olive);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.accentPanel {
+  padding: 1.6rem;
+  background: linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.14), rgba(var(--page-warm-rgb), 0.2));
+}
+
+.accentCopy {
+  margin-top: 0.8rem;
+  color: rgba(var(--page-ink-rgb), 0.8);
+  line-height: 1.8;
+}
+
+.exploreCard {
+  border: 1px solid var(--page-border-soft);
+  background: rgba(var(--page-soft-rgb), 0.52);
+}
+
+@media (max-width: 1024px) {
+  .hero,
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardSection {
+    padding: 7rem 1rem 3rem;
+  }
+
+  .heroMain,
+  .panel,
+  .accentPanel {
+    padding: 1.35rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .courseCard,
+  .completedCard,
+  .exploreCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { auth } from "../../../../firebase.config";
 import { signOut } from 'firebase/auth';
-import { LogOut, Globe } from 'lucide-react';
+import { LogOut, Globe, Moon, Sun } from 'lucide-react';
+import { useTheme } from "@/app/[locale]/components/ThemeProvider";
 
 interface HeaderProps {
     locale: string;
@@ -17,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
     const t = useTranslations("header");
     const router = useRouter();
     const pathname = usePathname();
+    const { theme, toggleTheme } = useTheme();
 
     const otherLocale = locale === "en" ? "de" : "en";
 
@@ -62,16 +64,16 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
     };
 
     return (
-        <header className="fixed top-0 w-full z-40 border-b border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.92)] h-20 px-6 flex items-center justify-between backdrop-blur-md">
+        <header className="fixed top-0 z-40 flex h-20 w-full items-center justify-between border-b border-[var(--shell-border)] bg-[linear-gradient(180deg,rgba(var(--shell-bg-rgb),0.96),rgba(var(--shell-bg-alt-rgb),0.94))] px-6 text-[var(--shell-text)] shadow-[0_16px_40px_rgba(20,16,11,0.18)] backdrop-blur-xl">
             {/* LOGO */}
             <Link href={`/${locale}`} className="transition-opacity hover:opacity-80">
-                <div className="text-2xl font-black text-[var(--highlight)] italic uppercase tracking-tighter">
-                    S.BeweGesund<span className="text-[var(--text-light)]">.</span>
+                <div className="text-2xl font-black italic uppercase tracking-tighter text-[var(--shell-text)]">
+                    <span className="text-[var(--page-warm)]">S</span>.Bewe<span className="text-[var(--page-warm)]">Gesund</span>
                 </div>
             </Link>
 
             {/* NAVIGACIJA - Skrivena na mobilnom */}
-            <nav className="hidden md:flex items-center gap-3 rounded-full border border-[rgba(var(--foreground-rgb),0.08)] bg-[rgba(var(--foreground-rgb),0.03)] px-3 py-2 backdrop-blur-md">
+            <nav className="hidden items-center gap-3 rounded-full border border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.04)] px-3 py-2 shadow-[inset_0_1px_0_rgba(var(--shell-text-rgb),0.04)] backdrop-blur-md md:flex">
                 {navItems.map((item) => (
                     <Link
                         key={item.key}
@@ -79,19 +81,19 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         aria-current={item.active ? "page" : undefined}
                         className={`group relative overflow-hidden rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.08em] transition-all duration-300 ${
                             item.active
-                                ? "text-[var(--text-light)]"
-                                : "text-[var(--text-dim)] hover:text-[var(--text-light)]"
+                                ? "text-[var(--shell-text)]"
+                                : "text-[rgba(var(--shell-text-rgb),0.62)] hover:text-[var(--shell-text)]"
                         }`}
                     >
                         <span
-                            className={`absolute inset-x-3 bottom-[0.38rem] h-[2px] origin-left rounded-full bg-[linear-gradient(90deg,var(--highlight),var(--highlight-soft))] transition-transform duration-300 ${
+                            className={`absolute inset-x-3 bottom-[0.38rem] h-[2px] origin-left rounded-full bg-[linear-gradient(90deg,var(--page-accent),var(--page-warm),var(--page-olive))] transition-transform duration-300 ${
                                 item.active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                             }`}
                         />
                         <span
                             className={`absolute inset-0 rounded-full transition-all duration-300 ${
                                 item.active
-                                    ? "bg-[radial-gradient(circle_at_bottom,_rgba(var(--accent-rgb),0.18),_transparent_68%)] shadow-[inset_0_0_0_1px_rgba(var(--accent-rgb),0.18)]"
+                                    ? "bg-[radial-gradient(circle_at_bottom,_rgba(var(--page-accent-rgb),0.16),_transparent_68%)] shadow-[inset_0_0_0_1px_rgba(var(--shell-text-rgb),0.08)]"
                                     : "bg-transparent"
                             }`}
                         />
@@ -105,20 +107,35 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                 {/* Language Switcher */}
                 <button
                     onClick={handleLanguageChange}
-                    className="flex items-center gap-1 text-xs font-black text-[var(--text-light)] bg-[rgba(var(--foreground-rgb),0.08)] px-3 py-1.5 rounded hover:bg-[rgba(var(--foreground-rgb),0.14)] transition-all border border-[var(--border-soft)]"
+                    className="flex items-center gap-1 rounded-full border border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.09)] px-3 py-1.5 text-xs font-black text-[var(--shell-text)] transition-all hover:bg-[rgba(var(--shell-text-rgb),0.12)]"
                 >
                     <Globe size={14} />
                     {otherLocale.toUpperCase()}
                 </button>
 
-                <div className="h-6 w-[1px] bg-[rgba(var(--foreground-rgb),0.2)] mx-2" />
+                <button
+                    onClick={toggleTheme}
+                    aria-label={theme === "light" ? t("themeDark") : t("themeLight")}
+                    title={theme === "light" ? t("themeDark") : t("themeLight")}
+                    className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-black transition-all
+        ${
+                        theme === "dark"
+                            ? "border-[var(--background)] bg-[var(--primary)] text-[var(--background)] hover:opacity-90"
+                            : "border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.09)] text-[var(--shell-text)] hover:bg-[rgba(var(--shell-text-rgb),0.12)]"
+                    }`}
+                >
+                    {theme === "light" ? <Moon size={14} /> : <Sun size={14} />}
+                    <span className="hidden sm:inline">{theme === "light" ? t("darkMode") : t("lightMode")}</span>
+                </button>
+
+                <div className="mx-2 h-6 w-[1px] bg-[rgba(var(--shell-text-rgb),0.14)]" />
 
                 {user ? (
                     <div className="flex items-center gap-6">
-                        <span className="hidden lg:block text-sm font-bold text-[var(--text-dim)]">{user.email}</span>
+                        <span className="hidden text-sm font-bold text-[rgba(var(--shell-text-rgb),0.56)] lg:block">{user.email}</span>
                         <button
                             onClick={() => signOut(auth)}
-                            className="text-[var(--highlight-strong)] flex items-center gap-2 text-sm font-black uppercase hover:text-[var(--highlight-soft)] transition-colors"
+                            className="flex items-center gap-2 text-sm font-black uppercase text-[var(--page-accent)] transition-colors hover:text-[var(--page-warm)]"
                         >
                             <LogOut size={18} />
                             <span className="hidden sm:block">{t("signOut")}</span>
@@ -127,9 +144,9 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                 ) : (
                     <button
                         onClick={openAuth}
-                        className="bg-[var(--text-light)] text-[var(--text-on-warm)] px-6 py-2 font-black uppercase text-sm skew-x-[-10deg] hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] transition-all duration-300 group"
+                        className="group rounded-full bg-[var(--shell-text)] px-6 py-2 text-sm font-black uppercase text-[var(--shell-bg)] transition-all duration-300 hover:bg-[var(--page-accent)] hover:text-[var(--shell-text)]"
                     >
-            <span className="inline-block skew-x-[10deg]">
+            <span className="inline-block">
               {t("signIn")}
             </span>
                     </button>

@@ -10,7 +10,11 @@
       "contact": "Contact"
     },
     "signIn": "Sign In",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "lightMode": "Light",
+    "darkMode": "Dark",
+    "themeLight": "Switch to light mode",
+    "themeDark": "Switch to dark mode"
   },
   "home": {
     "hero": {

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { CalendarCheck2, Clock3, LockKeyhole, Video } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -12,6 +13,11 @@ const packageRank: Record<MemberPackage, number> = {
   starter: 1,
   "rehab-plus": 2,
   "all-access": 3,
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
 };
 
 export default function CalendarPage() {
@@ -67,8 +73,20 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className={styles.calendarContainer}>
-      <div className={styles.headerBlock}>
+    <motion.div
+      className={styles.calendarContainer}
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren: 0.08,
+          },
+        },
+      }}
+    >
+      <motion.div className={styles.headerBlock} variants={fadeUp}>
         <div>
           <p className={styles.eyebrow}>{t("eyebrow")}</p>
           <h2 className={styles.title}>{t("title")}</h2>
@@ -79,29 +97,31 @@ export default function CalendarPage() {
           <strong className={styles.planValue}>{packageT(memberDashboard.package)}</strong>
           <p className={styles.planHint}>{t("packageHint")}</p>
         </div>
-      </div>
+      </motion.div>
 
-      <div className={styles.dayRail} role="tablist" aria-label={t("daySelectorLabel")}>
+      <motion.div className={styles.dayRail} role="tablist" aria-label={t("daySelectorLabel")} variants={fadeUp}>
         {activeScheduleDays.map((day) => {
           const isActive = day.id === selectedDay?.id;
           return (
-            <button
+            <motion.button
               key={day.id}
               type="button"
               className={`${styles.dayButton} ${isActive ? styles.dayButtonActive : ""}`}
               onClick={() => setSelectedDayId(day.id)}
               aria-pressed={isActive}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.98 }}
             >
               <span className={styles.dayButtonTop}>{dayFormatter.format(new Date(day.date))}</span>
               <span className={styles.dayButtonCount}>
                 {t("sessionCount", { count: day.entries.length })}
               </span>
-            </button>
+            </motion.button>
           );
         })}
-      </div>
+      </motion.div>
 
-      <section className={styles.schedulePanel}>
+      <motion.section className={styles.schedulePanel} variants={fadeUp}>
         <div className={styles.panelHeader}>
           <div>
             <p className={styles.panelLabel}>{t("selectedDay")}</p>
@@ -128,9 +148,13 @@ export default function CalendarPage() {
                 packageRank[memberDashboard.package] >= packageRank[entry.packageRequired];
 
               return (
-                <article
+                <motion.article
                   key={entry.id}
                   className={`${styles.sessionCard} ${included ? styles.sessionIncluded : styles.sessionLocked}`}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.32 }}
+                  whileHover={{ y: -4 }}
                 >
                   <div className={styles.sessionPrimary}>
                     <div className={styles.sessionTimeBlock}>
@@ -179,7 +203,7 @@ export default function CalendarPage() {
                       <p className={styles.restrictionText}>{t("includedHint")}</p>
                     )}
                   </div>
-                </article>
+                </motion.article>
               );
             })}
           </div>
@@ -189,7 +213,7 @@ export default function CalendarPage() {
             <p>{t("emptyDescription")}</p>
           </div>
         )}
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }

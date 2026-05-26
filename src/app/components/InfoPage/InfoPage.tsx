@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useLocale } from "next-intl";
 import styles from "./InfoPage.module.css";
 
@@ -30,8 +31,23 @@ export default function InfoPage({
 
   return (
     <section className={styles.pageShell}>
-      <div className={styles.pageInner}>
-        <header className={styles.hero}>
+      <motion.div
+        className={styles.pageInner}
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.08,
+            },
+          },
+        }}
+      >
+        <motion.header
+          className={styles.hero}
+          variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}
+        >
           <p className={styles.eyebrow}>S.BeweGesund</p>
           <h1 className={styles.title}>{title}</h1>
           <p className={styles.intro}>{intro}</p>
@@ -40,21 +56,38 @@ export default function InfoPage({
               {ctaLabel}
             </Link>
           ) : null}
-        </header>
+        </motion.header>
 
-        <div className={styles.sectionGrid}>
+        <motion.div
+          className={styles.sectionGrid}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.08,
+              },
+            },
+          }}
+        >
           {sections.map((section) => (
-            <article key={section.title} className={styles.card}>
+            <motion.article
+              key={section.title}
+              className={styles.card}
+              variants={{ hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }}
+            >
               <h2 className={styles.cardTitle}>{section.title}</h2>
               <p className={styles.cardBody}>{section.body}</p>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
 
-        <div className={styles.noteBlock}>
+        <motion.div
+          className={styles.noteBlock}
+          variants={{ hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }}
+        >
           <p>{note}</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

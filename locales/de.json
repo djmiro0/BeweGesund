@@ -10,7 +10,11 @@
       "contact": "Kontakt"
     },
     "signIn": "Anmelden",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "lightMode": "Hell",
+    "darkMode": "Dunkel",
+    "themeLight": "Zum hellen Modus wechseln",
+    "themeDark": "Zum dunklen Modus wechseln"
   },
   "home": {
     "hero": {

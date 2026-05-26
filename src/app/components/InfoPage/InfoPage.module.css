@@ -1,11 +1,55 @@
 .pageShell {
+  --info-bg-top: var(--page-cream-1);
+  --info-bg-bottom: var(--page-cream-2);
+  --info-glow-a: rgba(var(--page-accent-rgb), 0.16);
+  --info-glow-b: rgba(var(--page-olive-rgb), 0.14);
+  --info-surface-border: var(--page-border-soft);
+  --info-surface-bg: linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.72), rgba(var(--page-soft-rgb), 0.46));
+  --info-surface-shadow: rgba(83, 57, 20, 0.14);
+  --info-eyebrow: var(--page-accent);
+  --info-title: var(--page-ink);
+  --info-intro: var(--page-muted);
+  --info-cta-bg: var(--page-ink);
+  --info-cta-text: var(--page-base);
+  --info-cta-hover: var(--page-accent);
+  --info-card-border: var(--page-border-soft);
+  --info-card-bg: linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.78), rgba(var(--page-soft-alt-rgb), 0.5));
+  --info-card-title: var(--page-olive);
+  --info-card-text: rgba(var(--page-ink-rgb), 0.88);
+  --info-note-border: rgba(var(--page-accent-rgb), 0.18);
+  --info-note-bg: linear-gradient(180deg, rgba(var(--page-accent-rgb), 0.08), rgba(var(--page-soft-rgb), 0.34));
+  --info-note-text: rgba(var(--page-ink-rgb), 0.88);
   position: relative;
   overflow: hidden;
   min-height: 100vh;
   padding: 7.5rem 1.25rem 4rem;
   background:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.16), transparent 26%),
-    linear-gradient(180deg, #0b3854 0%, #003049 100%);
+    radial-gradient(circle at top left, var(--info-glow-a), transparent 24%),
+    radial-gradient(circle at 84% 18%, var(--info-glow-b), transparent 18%),
+    linear-gradient(180deg, var(--info-bg-top) 0%, var(--info-bg-bottom) 100%);
+}
+
+:global(:root[data-theme="dark"]) .pageShell {
+  --info-bg-top: var(--shell-bg-alt);
+  --info-bg-bottom: var(--shell-bg);
+  --info-glow-a: rgba(var(--page-accent-rgb), 0.16);
+  --info-glow-b: rgba(var(--page-olive-rgb), 0.14);
+  --info-surface-border: var(--shell-border);
+  --info-surface-bg: linear-gradient(180deg, rgba(var(--shell-text-rgb), 0.05), rgba(var(--shell-text-rgb), 0.02));
+  --info-surface-shadow: rgba(8, 7, 5, 0.22);
+  --info-eyebrow: var(--page-warm);
+  --info-title: var(--shell-text);
+  --info-intro: var(--shell-text-muted);
+  --info-cta-bg: var(--shell-text);
+  --info-cta-text: var(--shell-bg);
+  --info-cta-hover: var(--page-accent);
+  --info-card-border: var(--shell-border);
+  --info-card-bg: linear-gradient(180deg, rgba(var(--shell-text-rgb), 0.06), rgba(var(--shell-text-rgb), 0.025));
+  --info-card-title: var(--page-warm);
+  --info-card-text: rgba(var(--shell-text-rgb), 0.88);
+  --info-note-border: rgba(var(--page-accent-rgb), 0.18);
+  --info-note-bg: linear-gradient(180deg, rgba(var(--page-accent-rgb), 0.08), rgba(var(--shell-text-rgb), 0.03));
+  --info-note-text: rgba(var(--shell-text-rgb), 0.88);
 }
 
 .pageInner {
@@ -14,22 +58,28 @@
 }
 
 .hero {
-  max-width: 760px;
+  max-width: 880px;
   margin-bottom: 3rem;
+  padding: 2rem;
+  border-radius: 2rem;
+  border: 1px solid var(--info-surface-border);
+  background: var(--info-surface-bg);
+  box-shadow: 0 24px 64px var(--info-surface-shadow);
+  backdrop-filter: blur(12px);
 }
 
 .eyebrow {
   margin-bottom: 0.9rem;
-  color: var(--highlight-soft);
+  color: var(--info-eyebrow);
   font-size: 0.76rem;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.26em;
   text-transform: uppercase;
 }
 
 .title {
   margin: 0 0 1rem;
-  color: var(--text-light);
+  color: var(--info-title);
   font-size: clamp(2.9rem, 5.8vw, 5.8rem);
   line-height: 0.92;
   font-weight: 900;
@@ -38,9 +88,9 @@
 }
 
 .intro {
-  color: var(--text-muted);
+  color: var(--info-intro);
   line-height: 1.85;
-  font-size: 1.06rem;
+  font-size: 1.05rem;
   max-width: 650px;
 }
 
@@ -49,18 +99,20 @@
   margin-top: 1.4rem;
   text-decoration: none;
   border-radius: 999px;
-  background: var(--text-light);
-  color: var(--text-on-warm);
+  background: var(--info-cta-bg);
+  color: var(--info-cta-text);
   padding: 0.85rem 1.15rem;
   font-size: 0.84rem;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  transition: transform 0.28s var(--transition), background 0.28s var(--transition), color 0.28s var(--transition);
 }
 
 .cta:hover {
-  background: var(--highlight);
-  color: var(--text-light);
+  transform: translateY(-2px);
+  background: var(--info-cta-hover);
+  color: var(--page-base);
 }
 
 .sectionGrid {
@@ -71,36 +123,41 @@
 
 .card {
   border-radius: 1.9rem;
-  border: 1px solid var(--border-soft);
-  background:
-    linear-gradient(180deg, rgba(var(--foreground-rgb), 0.04), rgba(var(--foreground-rgb), 0.02)),
-    var(--surface-1);
+  border: 1px solid var(--info-card-border);
+  background: var(--info-card-bg);
   padding: 1.7rem;
-  box-shadow: 0 20px 60px var(--shadow-color);
+  box-shadow: 0 20px 60px var(--info-surface-shadow);
+  transition: transform 0.35s var(--transition), box-shadow 0.35s var(--transition), border-color 0.35s var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(var(--page-warm-rgb), 0.18);
+  box-shadow: 0 28px 70px var(--info-surface-shadow);
 }
 
 .cardTitle {
   margin: 0 0 0.8rem;
-  color: var(--highlight-soft);
-  font-size: 1.08rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  color: var(--info-card-title);
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .cardBody {
   margin: 0;
-  color: var(--text-light);
-  line-height: 1.75;
+  color: var(--info-card-text);
+  line-height: 1.8;
 }
 
 .noteBlock {
   margin-top: 1.75rem;
   border-radius: 1.5rem;
-  border: 1px solid var(--border-strong);
-  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid var(--info-note-border);
+  background: var(--info-note-bg);
   padding: 1.2rem 1.3rem;
-  color: var(--highlight-soft);
+  color: var(--info-note-text);
   line-height: 1.7;
 }
 
@@ -115,11 +172,12 @@
     padding: 6.5rem 1rem 3rem;
   }
 
-  .title {
-    font-size: 2.8rem;
-  }
-
+  .hero,
   .card {
     padding: 1.4rem;
+  }
+
+  .title {
+    font-size: 2.8rem;
   }
 }

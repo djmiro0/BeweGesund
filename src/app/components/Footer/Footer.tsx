@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
     { href: `/${locale}/about`, label: t("links.about") },
     { href: `/${locale}/courses`, label: t("links.programs") },
     { href: `/${locale}/calendar`, label: t("links.calendar") },
-    { href: `/${locale}/courses#consultation`, label: t("links.consultation") },
+    { href: `/${locale}/consultation`, label: t("links.consultation") },
   ];
 
   const legalLinks = [
