@@ -8,7 +8,6 @@ import { auth } from "../../../../firebase.config";
 import { signOut } from 'firebase/auth';
 import { LogOut, Globe, Menu, Moon, Sun, X } from 'lucide-react';
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
-import { memberProfile } from "@/data";
 
 interface HeaderProps {
     locale: string;
@@ -24,8 +23,8 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const otherLocale = locale === "en" ? "de" : "en";
-    const profileName = user?.displayName || memberProfile.name || user?.email?.split("@")[0] || t("profileFallback");
-    const profilePhoto = user?.photoURL || memberProfile.avatar;
+    const profileName = user?.displayName || user?.email?.split("@")[0] || t("profileFallback");
+    const profilePhoto = user?.photoURL;
     const profileInitial = profileName.charAt(0).toUpperCase();
 
     const navItems = [

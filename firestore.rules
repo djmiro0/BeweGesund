@@ -15,6 +15,7 @@ service cloud.firestore {
         && request.resource.data.points == resource.data.points
         && request.resource.data.premiumStatus == resource.data.premiumStatus
         && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus
+        && request.resource.data.memberPackage == resource.data.memberPackage
         && request.resource.data.currentStreak == resource.data.currentStreak
         && request.resource.data.longestStreak == resource.data.longestStreak
         && request.resource.data.weeklyLeaderboardRank == resource.data.weeklyLeaderboardRank
@@ -22,17 +23,83 @@ service cloud.firestore {
         && request.resource.data.weeklyScore == resource.data.weeklyScore
         && request.resource.data.monthlyScore == resource.data.monthlyScore
         && request.resource.data.claimedRewardIds == resource.data.claimedRewardIds
+        && request.resource.data.startedCourseIds == resource.data.startedCourseIds
+        && request.resource.data.completedCourseIds == resource.data.completedCourseIds
+        && request.resource.data.recommendedCourseIds == resource.data.recommendedCourseIds
+        && request.resource.data.consentAcceptedAt == resource.data.consentAcceptedAt
         && request.resource.data.roles == resource.data.roles;
+    }
+
+    function hasOnlyProfileFields() {
+      return request.resource.data.keys().hasOnly([
+        "uid",
+        "email",
+        "displayName",
+        "photoURL",
+        "dateOfBirth",
+        "heightCm",
+        "weightKg",
+        "occupationKey",
+        "averageStepsPerDay",
+        "primaryGoalKey",
+        "memberPackage",
+        "startedCourseIds",
+        "completedCourseIds",
+        "recommendedCourseIds",
+        "anamnesisStatusKey",
+        "consentAcceptedAt",
+        "createdAt",
+        "updatedAt",
+        "xp",
+        "points",
+        "premiumStatus",
+        "subscriptionStatus",
+        "currentStreak",
+        "longestStreak",
+        "weeklyScore",
+        "monthlyScore",
+        "weeklyLeaderboardRank",
+        "monthlyLeaderboardRank",
+        "claimedRewardIds",
+        "roles"
+      ]);
+    }
+
+    function isValidProfileCreate(userId) {
+      return isOwner(userId)
+        && hasOnlyProfileFields()
+        && request.resource.data.uid == userId
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.memberPackage == "starter"
+        && request.resource.data.startedCourseIds == []
+        && request.resource.data.completedCourseIds == []
+        && request.resource.data.recommendedCourseIds == []
+        && request.resource.data.anamnesisStatusKey == "pending"
+        && request.resource.data.consentAcceptedAt == request.time
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        && request.resource.data.xp == 0
+        && request.resource.data.points == 0
+        && request.resource.data.premiumStatus == "free"
+        && request.resource.data.subscriptionStatus == "free"
+        && request.resource.data.currentStreak == 0
+        && request.resource.data.longestStreak == 0
+        && request.resource.data.weeklyScore == 0
+        && request.resource.data.monthlyScore == 0
+        && request.resource.data.weeklyLeaderboardRank == null
+        && request.resource.data.monthlyLeaderboardRank == null
+        && request.resource.data.claimedRewardIds == []
+        && request.resource.data.roles == ["member"];
     }
 
     match /users/{userId} {
       allow read: if isOwner(userId);
-      allow create: if false;
+      allow create: if isValidProfileCreate(userId);
       allow update: if isOwner(userId)
         && profileImmutableFieldsUnchanged()
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.email == resource.data.email;
-      allow delete: if false;
+      allow delete: if isOwner(userId);
 
       match /lessonCompletions/{completionId} {
         allow read: if isOwner(userId);

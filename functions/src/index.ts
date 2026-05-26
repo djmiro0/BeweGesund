@@ -4,7 +4,7 @@ import { logger } from "firebase-functions";
 import Stripe from "stripe";
 import { increment, LEADERBOARDS_COLLECTION, REWARDS_COLLECTION, serverTimestamp, userRef, db } from "./firestore";
 import { stripeSecretKey, stripeWebhookSecret } from "./config";
-import type { CompletionPayload, RewardClaimPayload, StripeCheckoutPayload, UserProfile } from "./types";
+import type { CompletionPayload, RegistrationProfilePayload, RewardClaimPayload, StripeCheckoutPayload, UserProfile } from "./types";
 
 const REGION = "europe-west3";
 
@@ -38,6 +38,71 @@ function computeStreak(lastCompletedAt: Date | null, completedAt: Date) {
   }
 
   return "reset";
+}
+
+function requireString(value: unknown, field: string) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new HttpsError("invalid-argument", `${field} is required.`);
+  }
+
+  return value.trim();
+}
+
+function requireNumberInRange(value: unknown, field: string, min: number, max: number) {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < min || value > max) {
+    throw new HttpsError("invalid-argument", `${field} must be between ${min} and ${max}.`);
+  }
+
+  return value;
+}
+
+function optionalString(value: unknown) {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+}
+
+function optionalNumberInRange(value: unknown, field: string, min: number, max: number) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  return requireNumberInRange(value, field, min, max);
+}
+
+function normalizeRegistrationPayload(data: unknown) {
+  const payload = (data ?? {}) as RegistrationProfilePayload;
+  const occupationKeys = ["sedentary", "standing", "physical"];
+  const anamnesisStatusKeys = ["pending", "completed", "review-required"];
+  const occupationKey = optionalString(payload.occupationKey);
+  const anamnesisStatusKey = payload.anamnesisStatusKey ?? "pending";
+
+  if (occupationKey && !occupationKeys.includes(occupationKey)) {
+    throw new HttpsError("invalid-argument", "occupationKey is invalid.");
+  }
+
+  if (!anamnesisStatusKeys.includes(anamnesisStatusKey)) {
+    throw new HttpsError("invalid-argument", "anamnesisStatusKey is invalid.");
+  }
+
+  if (payload.consentAccepted !== true) {
+    throw new HttpsError("failed-precondition", "Registration consent is required.");
+  }
+
+  return {
+    displayName: requireString(payload.displayName, "displayName"),
+    photoURL: optionalString(payload.photoURL),
+    dateOfBirth: optionalString(payload.dateOfBirth),
+    heightCm: optionalNumberInRange(payload.heightCm, "heightCm", 80, 240),
+    weightKg: optionalNumberInRange(payload.weightKg, "weightKg", 25, 300),
+    occupationKey,
+    averageStepsPerDay:
+      typeof payload.averageStepsPerDay === "number" && Number.isFinite(payload.averageStepsPerDay)
+        ? Math.max(0, payload.averageStepsPerDay)
+        : null,
+    primaryGoalKey: typeof payload.primaryGoalKey === "string" && payload.primaryGoalKey.trim()
+      ? payload.primaryGoalKey.trim()
+      : null,
+    anamnesisStatusKey,
+  };
 }
 
 async function applyCompletion(userId: string, kind: "lesson" | "workout", payload: CompletionPayload) {
@@ -111,19 +176,49 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
 
 export const createUserProfile = onCall({ region: REGION }, async (request) => {
   const uid = requireAuth(request.auth);
-  const authUser = request.auth;
+  const authUser = request.auth!;
+  const registrationProfile = normalizeRegistrationPayload(request.data);
   const ref = userRef(uid);
   const snapshot = await ref.get();
 
   if (snapshot.exists) {
+    await ref.set(
+      {
+        displayName: registrationProfile.displayName,
+        photoURL: registrationProfile.photoURL,
+        dateOfBirth: registrationProfile.dateOfBirth,
+        heightCm: registrationProfile.heightCm,
+        weightKg: registrationProfile.weightKg,
+        occupationKey: registrationProfile.occupationKey,
+        averageStepsPerDay: registrationProfile.averageStepsPerDay,
+        primaryGoalKey: registrationProfile.primaryGoalKey,
+        anamnesisStatusKey: registrationProfile.anamnesisStatusKey,
+        consentAcceptedAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
+
     return { ok: true, created: false };
   }
 
   const profile: UserProfile = {
     uid,
     email: authUser.token.email ?? "",
-    displayName: authUser.token.name ?? null,
-    photoURL: null,
+    displayName: registrationProfile.displayName,
+    photoURL: registrationProfile.photoURL,
+    dateOfBirth: registrationProfile.dateOfBirth,
+    heightCm: registrationProfile.heightCm,
+    weightKg: registrationProfile.weightKg,
+    occupationKey: registrationProfile.occupationKey,
+    averageStepsPerDay: registrationProfile.averageStepsPerDay,
+    primaryGoalKey: registrationProfile.primaryGoalKey,
+    memberPackage: "starter",
+    startedCourseIds: [],
+    completedCourseIds: [],
+    recommendedCourseIds: [],
+    anamnesisStatusKey: registrationProfile.anamnesisStatusKey,
+    consentAcceptedAt: serverTimestamp(),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     xp: 0,
@@ -229,12 +324,16 @@ async function rebuildLeaderboard(period: "weekly" | "monthly") {
 
 export const updateWeeklyLeaderboard = onSchedule(
   { region: REGION, schedule: "0 * * * *", timeZone: "Europe/Berlin" },
-  async () => rebuildLeaderboard("weekly"),
+  async () => {
+    await rebuildLeaderboard("weekly");
+  },
 );
 
 export const updateMonthlyLeaderboard = onSchedule(
   { region: REGION, schedule: "30 0 * * *", timeZone: "Europe/Berlin" },
-  async () => rebuildLeaderboard("monthly"),
+  async () => {
+    await rebuildLeaderboard("monthly");
+  },
 );
 
 export const claimReward = onCall({ region: REGION }, async (request) => {
@@ -306,7 +405,7 @@ export const createStripeCheckoutSession = onCall(
     }
 
     const stripe = new Stripe(stripeSecretKey.value(), {
-      apiVersion: "2025-04-30.basil",
+      apiVersion: "2025-08-27.basil",
     });
 
     const session = await stripe.checkout.sessions.create({
@@ -341,7 +440,7 @@ export const stripeWebhook = onRequest(
     }
 
     const stripe = new Stripe(stripeSecretKey.value(), {
-      apiVersion: "2025-04-30.basil",
+      apiVersion: "2025-08-27.basil",
     });
 
     let event: Stripe.Event;

@@ -81,8 +81,38 @@
     "signInTitle": "Mitglieder-Login",
     "registerTitle": "Konto Erstellen",
     "supportText": "Erhalte Zugriff auf Live-Training, Live-Seminare und persönliche Beratung nur für Mitglieder.",
+    "registerSupportText": "Erstelle zuerst dein Konto. Gesundheits- und Profildaten sind vorerst optional und helfen später bei einer genaueren Trainingsauswahl.",
+    "requiredLabel": "{label} *",
+    "optionalLabel": "{label} (optional)",
+    "fullName": "Vollständiger Name",
     "email": "E-Mail-Adresse",
     "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "dateOfBirth": "Geburtsdatum",
+    "heightCm": "Körpergröße (cm)",
+    "weightKg": "Gewicht (kg)",
+    "occupation": "Beruf",
+    "selectPlaceholder": "Option auswählen",
+    "occupations": {
+      "sedentary": "Überwiegend sitzend",
+      "standing": "Überwiegend stehend",
+      "physical": "Körperliche Arbeit"
+    },
+    "consentText": "Ich akzeptiere die Nutzungsbedingungen und verstehe, dass das Programm edukativ und trainingsorientiert ist.",
+    "terms": {
+      "link": "Nutzungsbedingungen ansehen",
+      "title": "Nutzungsbedingungen",
+      "intro": "Diese allgemeinen Bedingungen sind eine vorläufige Version für den aktuellen Prototyp und werden vor dem Launch weiter ausgearbeitet.",
+      "items": [
+        "S.BeweGesund stellt edukative Inhalte für Bewegung, Rehabilitation und Training bereit. Dies ersetzt keine medizinische Diagnose, Behandlung oder Notfallversorgung.",
+        "Du bist dafür verantwortlich, Konto- und gesundheitsbezogene Angaben korrekt einzugeben. Optionale Daten helfen bei späterer Personalisierung und können nachgetragen werden.",
+        "Bei akutem Schmerz, Schwindel, Brustschmerz, Atemnot, neurologischen Symptomen oder anderen Warnzeichen solltest du das Training beenden und medizinischen Rat einholen.",
+        "Deine Kontodaten werden in Firebase gespeichert und innerhalb der Anwendung für Profilanzeige, Zugriff, Trainingsfortschritt und spätere Empfehlungen genutzt.",
+        "Gib deine Zugangsdaten nicht weiter. Du bist für Aktivitäten über dein Konto verantwortlich.",
+        "Programme, Empfehlungen und Live-Sessions können sich im Zuge der Weiterentwicklung des Angebots ändern."
+      ],
+      "close": "Schließen"
+    },
     "submitSignIn": "Anmelden",
     "submitRegister": "Konto Erstellen",
     "switchToRegister": "Neu hier? Konto erstellen",
@@ -93,8 +123,11 @@
     "invalidCredential": "Die E-Mail-Adresse oder das Passwort ist nicht korrekt.",
     "emailInUse": "Für diese E-Mail-Adresse existiert bereits ein Konto.",
     "weakPassword": "Bitte wähle ein stärkeres Passwort.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+    "consentRequired": "Bitte bestätige den Einwilligungshinweis, um fortzufahren.",
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "tooManyRequests": "Zu viele Versuche. Bitte warte kurz und versuche es erneut.",
+    "profileSavePermissionDenied": "Dein Konto wurde erstellt, aber das Profil konnte nicht gespeichert werden, weil die Firestore-Berechtigungen noch nicht aktualisiert sind. Bitte versuche es erneut, nachdem die Regeln deployt wurden.",
     "genericError": "Bei der Anmeldung ist ein Fehler aufgetreten. Bitte versuche es erneut."
   },
   "memberAccess": {
@@ -310,10 +343,13 @@
     "values": {
       "height": "{count} cm",
       "weight": "{count} kg",
-      "steps": "{count} Schritte/Tag"
+      "steps": "{count} Schritte/Tag",
+      "notProvided": "Noch nicht angegeben"
     },
     "occupations": {
-      "sedentary": "Überwiegend sitzend"
+      "sedentary": "Überwiegend sitzend",
+      "standing": "Überwiegend stehend",
+      "physical": "Körperliche Arbeit"
     },
     "goals": {
       "backPain": "Weniger Rückenschmerzen und sicherere Bewegung"
@@ -352,7 +388,28 @@
     },
     "courseMeta": {
       "duration": "{count} Min",
-      "flexible": "Flexibles Format"
+      "flexible": "Flexibles Format",
+      "empty": "Hier wurden noch keine Kurse gespeichert."
+    },
+    "delete": {
+      "eyebrow": "Kontoverwaltung",
+      "title": "Profil löschen",
+      "description": "Lösche deine Profildaten und dein Firebase-Login-Konto dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+      "open": "Profil löschen",
+      "confirmEyebrow": "Dauerhafte Aktion",
+      "confirmTitle": "Konto löschen?",
+      "confirmText": "Gib zum Schutz deines Kontos dein Passwort ein. Wir löschen zuerst dein Firestore-Profil und danach dein Firebase-Auth-Konto.",
+      "passwordLabel": "Aktuelles Passwort",
+      "passwordPlaceholder": "Passwort eingeben",
+      "cancel": "Abbrechen",
+      "confirm": "Dauerhaft löschen",
+      "deleting": "Wird gelöscht...",
+      "errors": {
+        "invalidPassword": "Das Passwort ist nicht korrekt. Bitte versuche es erneut.",
+        "recentLogin": "Firebase benötigt eine aktuelle Anmeldung, bevor das Konto gelöscht werden kann. Bitte melde dich ab, melde dich erneut an und versuche es noch einmal.",
+        "permissionDenied": "Das Konto konnte nicht gelöscht werden, weil die Firestore-Berechtigungen noch nicht aktualisiert sind. Bitte deploye die aktuellen Regeln und versuche es erneut.",
+        "generic": "Das Konto konnte nicht gelöscht werden. Bitte versuche es erneut."
+      }
     }
   },
   "calendar": {

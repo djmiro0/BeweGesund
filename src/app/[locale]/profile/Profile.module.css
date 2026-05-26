@@ -42,12 +42,18 @@
 }
 
 .avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: min(42vw, 11rem);
   height: min(42vw, 11rem);
   border: 5px solid rgba(var(--page-soft-rgb), 0.92);
   border-radius: 999px;
   background-position: center;
   background-size: cover;
+  color: var(--page-soft);
+  font-size: 4rem;
+  font-weight: 900;
   box-shadow: 0 20px 46px rgba(83, 57, 20, 0.16);
 }
 
@@ -258,6 +264,184 @@
   line-height: 1.7;
 }
 
+.dangerPanel {
+  border-color: rgba(var(--accent-strong-rgb), 0.28);
+  background: linear-gradient(135deg, rgba(var(--accent-strong-rgb), 0.1), rgba(var(--page-soft-rgb), 0.88));
+}
+
+.dangerIcon {
+  color: var(--accent-strong);
+}
+
+.dangerText {
+  margin-top: 1rem;
+  color: rgba(var(--page-ink-rgb), 0.74);
+  font-size: 0.96rem;
+  line-height: 1.7;
+}
+
+.deleteButton,
+.confirmDeleteButton,
+.cancelButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 180ms ease, opacity 180ms ease, background 180ms ease;
+}
+
+.deleteButton {
+  margin-top: 1.1rem;
+  background: var(--accent-strong);
+  padding: 0.9rem 1.15rem;
+  color: var(--text-light);
+}
+
+.deleteButton:hover,
+.confirmDeleteButton:hover,
+.cancelButton:hover {
+  transform: translateY(-1px);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(var(--navy-rgb), 0.76);
+  backdrop-filter: blur(10px);
+}
+
+.deleteModal {
+  position: relative;
+  width: min(100%, 34rem);
+  border: 1px solid rgba(var(--accent-strong-rgb), 0.25);
+  border-radius: 1.8rem;
+  background:
+    radial-gradient(circle at top left, rgba(var(--accent-strong-rgb), 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-cream-2-rgb), 0.98));
+  padding: 1.6rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.modalClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.68);
+  color: var(--page-muted);
+  cursor: pointer;
+}
+
+.modalIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin-bottom: 1rem;
+  border-radius: 999px;
+  background: rgba(var(--accent-strong-rgb), 0.12);
+  color: var(--accent-strong);
+}
+
+.modalTitle {
+  margin-top: 0.5rem;
+  color: var(--page-ink);
+  font-size: 1.65rem;
+  font-style: italic;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.modalText {
+  margin-top: 0.85rem;
+  color: rgba(var(--page-ink-rgb), 0.75);
+  line-height: 1.7;
+}
+
+.passwordLabel {
+  display: block;
+  margin-top: 1.2rem;
+  color: rgba(var(--page-ink-rgb), 0.62);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.passwordLabel input {
+  width: 100%;
+  margin-top: 0.55rem;
+  border: 1px solid var(--page-border);
+  border-radius: 1rem;
+  background: rgba(var(--page-soft-rgb), 0.74);
+  padding: 0.95rem 1rem;
+  color: var(--page-ink);
+  font-size: 1rem;
+  font-weight: 800;
+  outline: none;
+}
+
+.passwordLabel input:focus {
+  border-color: rgba(var(--accent-strong-rgb), 0.45);
+}
+
+.deleteError {
+  margin-top: 0.8rem;
+  border-radius: 1rem;
+  background: rgba(var(--accent-strong-rgb), 0.1);
+  padding: 0.85rem 1rem;
+  color: var(--accent-strong);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.25rem;
+}
+
+.cancelButton,
+.confirmDeleteButton {
+  flex: 1;
+  padding: 0.95rem 1rem;
+}
+
+.cancelButton {
+  background: rgba(var(--page-ink-rgb), 0.08);
+  color: var(--page-ink);
+}
+
+.confirmDeleteButton {
+  background: var(--accent-strong);
+  color: var(--text-light);
+}
+
+.confirmDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
 @media (max-width: 1024px) {
   .hero,
   .contentGrid {
@@ -282,6 +466,10 @@
   }
 
   .courseItem {
+    flex-direction: column;
+  }
+
+  .modalActions {
     flex-direction: column;
   }
 }

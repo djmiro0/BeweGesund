@@ -5,6 +5,18 @@ export interface UserProfile {
   email: string;
   displayName: string | null;
   photoURL: string | null;
+  dateOfBirth: string | null;
+  heightCm: number | null;
+  weightKg: number | null;
+  occupationKey: string | null;
+  averageStepsPerDay: number | null;
+  primaryGoalKey: string | null;
+  memberPackage: "starter" | "rehab-plus" | "all-access";
+  startedCourseIds: string[];
+  completedCourseIds: string[];
+  recommendedCourseIds: string[];
+  anamnesisStatusKey: "pending" | "completed" | "review-required";
+  consentAcceptedAt: FirebaseFirestore.FieldValue;
   createdAt: FirebaseFirestore.FieldValue;
   updatedAt: FirebaseFirestore.FieldValue;
   xp: number;
@@ -25,6 +37,19 @@ export interface CompletionPayload {
   lessonId?: string;
   workoutId?: string;
   completedAt?: string;
+}
+
+export interface RegistrationProfilePayload {
+  displayName?: string;
+  photoURL?: string | null;
+  dateOfBirth?: string;
+  heightCm?: number | null;
+  weightKg?: number | null;
+  occupationKey?: "sedentary" | "standing" | "physical" | null;
+  averageStepsPerDay?: number;
+  primaryGoalKey?: string;
+  anamnesisStatusKey?: "pending" | "completed" | "review-required";
+  consentAccepted?: boolean;
 }
 
 export interface RewardClaimPayload {

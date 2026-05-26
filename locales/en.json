@@ -81,8 +81,38 @@
     "signInTitle": "Member Sign In",
     "registerTitle": "Create Account",
     "supportText": "Access member-only live training, live seminars, and personal counseling.",
+    "registerSupportText": "Create your account first. Health and profile details are optional for now and help us personalize training later.",
+    "requiredLabel": "{label} *",
+    "optionalLabel": "{label} (optional)",
+    "fullName": "Full name",
     "email": "Email address",
     "password": "Password",
+    "confirmPassword": "Confirm password",
+    "dateOfBirth": "Date of birth",
+    "heightCm": "Height (cm)",
+    "weightKg": "Weight (kg)",
+    "occupation": "Occupation",
+    "selectPlaceholder": "Select an option",
+    "occupations": {
+      "sedentary": "Mostly seated",
+      "standing": "Mostly standing",
+      "physical": "Physical work"
+    },
+    "consentText": "I accept the terms of use and understand that the program is educational and training-oriented.",
+    "terms": {
+      "link": "View terms of use",
+      "title": "Terms of Use",
+      "intro": "These general terms are a temporary version for the current prototype and will be refined before launch.",
+      "items": [
+        "S.BeweGesund provides educational movement, rehabilitation, and training content. It does not replace medical diagnosis, treatment, or emergency care.",
+        "You are responsible for entering accurate account and health-related information. Optional data helps personalize recommendations but can be added later.",
+        "If you experience acute pain, dizziness, chest pain, shortness of breath, neurological symptoms, or other warning signs, stop training and contact a medical professional.",
+        "Your account data is stored in Firebase and used inside the application for profile display, access control, training progress, and future recommendations.",
+        "Do not share your login credentials. You are responsible for activity performed through your account.",
+        "Programs, recommendations, and live sessions may change as the service develops."
+      ],
+      "close": "Close"
+    },
     "submitSignIn": "Sign In",
     "submitRegister": "Create Account",
     "switchToRegister": "New here? Create an account",
@@ -93,8 +123,11 @@
     "invalidCredential": "The email or password is incorrect.",
     "emailInUse": "An account with this email already exists.",
     "weakPassword": "Please choose a stronger password.",
+    "passwordMismatch": "The passwords do not match.",
+    "consentRequired": "Please confirm the consent note to continue.",
     "invalidEmail": "Please enter a valid email address.",
     "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
+    "profileSavePermissionDenied": "Your account was created, but the profile could not be saved because Firestore permissions are not updated yet. Please try again after the rules are deployed.",
     "genericError": "Something went wrong during sign-in. Please try again."
   },
   "memberAccess": {
@@ -310,10 +343,13 @@
     "values": {
       "height": "{count} cm",
       "weight": "{count} kg",
-      "steps": "{count} steps/day"
+      "steps": "{count} steps/day",
+      "notProvided": "Not provided yet"
     },
     "occupations": {
-      "sedentary": "Mostly seated"
+      "sedentary": "Mostly seated",
+      "standing": "Mostly standing",
+      "physical": "Physical work"
     },
     "goals": {
       "backPain": "Less back pain and safer movement"
@@ -352,7 +388,28 @@
     },
     "courseMeta": {
       "duration": "{count} min",
-      "flexible": "Flexible format"
+      "flexible": "Flexible format",
+      "empty": "No courses have been saved here yet."
+    },
+    "delete": {
+      "eyebrow": "Account control",
+      "title": "Delete profile",
+      "description": "Permanently delete your profile data and Firebase login account. This action cannot be undone.",
+      "open": "Delete profile",
+      "confirmEyebrow": "Permanent action",
+      "confirmTitle": "Delete your account?",
+      "confirmText": "To protect your account, enter your password. We will delete your Firestore profile first and then remove your Firebase Auth account.",
+      "passwordLabel": "Current password",
+      "passwordPlaceholder": "Enter your password",
+      "cancel": "Cancel",
+      "confirm": "Delete permanently",
+      "deleting": "Deleting...",
+      "errors": {
+        "invalidPassword": "The password is not correct. Please try again.",
+        "recentLogin": "Firebase needs a recent sign-in before deleting the account. Please sign out, sign in again, and retry.",
+        "permissionDenied": "The account could not be deleted because Firestore permissions are not updated yet. Please deploy the latest rules and try again.",
+        "generic": "The account could not be deleted. Please try again."
+      }
     }
   },
   "calendar": {
