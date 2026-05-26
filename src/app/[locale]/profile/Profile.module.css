@@ -1,0 +1,287 @@
+.profileSection {
+  min-height: 78vh;
+  padding: 8rem 1.5rem 4rem;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(var(--page-accent-rgb), 0.12), transparent 22%),
+    radial-gradient(circle at 86% 14%, rgba(var(--page-olive-rgb), 0.14), transparent 18%),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
+  color: var(--page-ink);
+}
+
+.shell {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.identityPanel,
+.metricPanel,
+.panel,
+.recommendationPanel {
+  border: 1px solid var(--page-border);
+  border-radius: 2rem;
+  box-shadow: 0 24px 60px rgba(83, 57, 20, 0.1);
+}
+
+.identityPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2rem;
+  background: rgba(var(--page-soft-rgb), 0.88);
+}
+
+.avatar {
+  width: min(42vw, 11rem);
+  height: min(42vw, 11rem);
+  border: 5px solid rgba(var(--page-soft-rgb), 0.92);
+  border-radius: 999px;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 20px 46px rgba(83, 57, 20, 0.16);
+}
+
+.eyebrow {
+  margin-top: 1.4rem;
+  color: var(--page-accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin-top: 0.85rem;
+  font-size: 2rem;
+  line-height: 0.94;
+  color: var(--page-ink);
+  font-style: italic;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.email {
+  margin-top: 0.7rem;
+  color: var(--page-muted);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.statusBadge {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--page-olive-rgb), 0.18);
+  background: rgba(var(--page-olive-rgb), 0.12);
+  padding: 0.65rem 0.95rem;
+  color: var(--page-olive);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.metricPanel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  padding: 1rem;
+  background: rgba(var(--page-soft-rgb), 0.74);
+}
+
+.metricCard {
+  border: 1px solid var(--page-border-soft);
+  border-radius: 1.35rem;
+  padding: 1.2rem;
+  background: rgba(var(--page-soft-rgb), 0.62);
+}
+
+.metricCardAccent {
+  background: linear-gradient(180deg, rgba(var(--page-accent-rgb), 0.12), rgba(var(--page-soft-rgb), 0.68));
+}
+
+.metricLabel,
+.panelEyebrow {
+  color: rgba(var(--page-ink-rgb), 0.58);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.metricValue {
+  margin-top: 0.8rem;
+  color: var(--page-ink);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 900;
+}
+
+.metricHint {
+  margin-top: 0.5rem;
+  color: var(--page-muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.panel,
+.recommendationPanel {
+  padding: 1.6rem;
+  background: rgba(var(--page-soft-rgb), 0.86);
+}
+
+.recommendationPanel {
+  background: linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.13), rgba(var(--page-warm-rgb), 0.19));
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--page-border-soft);
+}
+
+.panelTitle {
+  margin-top: 0.45rem;
+  font-size: 1.35rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.panelIcon {
+  color: var(--page-accent);
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.15rem;
+}
+
+.detailItem,
+.courseItem,
+.recommendationNote {
+  border: 1px solid var(--page-border-soft);
+  border-radius: 1.25rem;
+  background: rgba(var(--page-soft-rgb), 0.6);
+}
+
+.detailItem {
+  padding: 1rem;
+}
+
+.detailLabel {
+  color: rgba(var(--page-ink-rgb), 0.56);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.detailValue {
+  margin-top: 0.55rem;
+  color: var(--page-ink);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1.15rem;
+}
+
+.courseItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.courseName {
+  color: var(--page-ink);
+  font-weight: 850;
+}
+
+.courseMeta {
+  margin-top: 0.35rem;
+  color: var(--page-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.courseBadge {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: rgba(var(--page-olive-rgb), 0.13);
+  padding: 0.45rem 0.75rem;
+  color: var(--page-olive);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.recommendationNote {
+  margin-top: 1rem;
+  padding: 1rem;
+  color: rgba(var(--page-ink-rgb), 0.76);
+  font-size: 0.94rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 1024px) {
+  .hero,
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .profileSection {
+    padding: 7rem 1rem 3rem;
+  }
+
+  .identityPanel,
+  .panel,
+  .recommendationPanel {
+    padding: 1.35rem;
+  }
+
+  .metricPanel,
+  .detailsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .courseItem {
+    flex-direction: column;
+  }
+}

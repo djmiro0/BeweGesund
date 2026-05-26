@@ -129,6 +129,19 @@ export const memberDashboard = {
     recommendedCourseIds: ["reha-knee", "weight-loss-program", "heart-gymnastics"],
 };
 
+export const memberProfile = {
+    name: "Max Mustermann",
+    email: "max@example.com",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    dateOfBirth: "1988-04-18",
+    heightCm: 178,
+    weightKg: 84,
+    occupationKey: "sedentary",
+    averageStepsPerDay: 6200,
+    primaryGoalKey: "backPain",
+    anamnesisStatusKey: "pending",
+};
+
 export const activeScheduleDays: MemberScheduleDay[] = [
     {
         id: "mon",

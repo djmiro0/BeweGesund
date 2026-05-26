@@ -11,6 +11,11 @@
     },
     "signIn": "Anmelden",
     "signOut": "Abmelden",
+    "profileLink": "Profil öffnen",
+    "profileFallback": "Mitglied",
+    "profileAvatarAlt": "Profilfoto von {name}",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
     "lightMode": "Hell",
     "darkMode": "Dunkel",
     "themeLight": "Zum hellen Modus wechseln",
@@ -279,6 +284,76 @@
     "starter": "Starter",
     "rehab-plus": "Reha Plus",
     "all-access": "All Access"
+  },
+  "profile": {
+    "eyebrow": "Mitgliederprofil",
+    "avatarAlt": "Profilfoto von {name}",
+    "metrics": {
+      "weight": "Gewicht",
+      "weightHint": "Aus dem aktuellen Mitgliederprofil gespeichert.",
+      "bmi": "BMI",
+      "bmiHint": "Aus Körpergröße und Gewicht berechnet.",
+      "started": "Gestartet",
+      "startedHint": "Aktuell geöffnete oder geplante Kurse.",
+      "completed": "Absolviert",
+      "completedHint": "Bereits besuchte Kurse."
+    },
+    "details": {
+      "dateOfBirth": "Geburtsdatum",
+      "height": "Körpergröße",
+      "weight": "Gewicht",
+      "occupation": "Beruf",
+      "steps": "Durchschnittliche Schritte",
+      "goal": "Hauptziel",
+      "package": "Paket"
+    },
+    "values": {
+      "height": "{count} cm",
+      "weight": "{count} kg",
+      "steps": "{count} Schritte/Tag"
+    },
+    "occupations": {
+      "sedentary": "Überwiegend sitzend"
+    },
+    "goals": {
+      "backPain": "Weniger Rückenschmerzen und sicherere Bewegung"
+    },
+    "anamnesisStatus": {
+      "pending": "Anamnese ausstehend"
+    },
+    "sections": {
+      "personal": {
+        "eyebrow": "Basisdaten",
+        "title": "Profildaten"
+      },
+      "started": {
+        "eyebrow": "In Bearbeitung",
+        "title": "Gestartete Kurse"
+      },
+      "completed": {
+        "eyebrow": "Verlauf",
+        "title": "Besuchte Kurse"
+      },
+      "recommended": {
+        "eyebrow": "Nächste Optionen",
+        "title": "Empfohlene Kurse",
+        "note": "Diese Empfehlungen sind vorläufig. Später sollten sie aus den Anamnese-Ergebnissen abgeleitet werden, inklusive Ziele, Red Flags, Trainingserfahrung, Erholungsgewohnheiten und Einwilligung."
+      },
+      "anamnesis": {
+        "eyebrow": "Gesundheitsaufnahme",
+        "title": "Anamnese-Basis",
+        "note": "Der zukünftige Fragebogen sollte den Fortschritt blockieren, bis das Mitglied die Einwilligung bestätigt, und medizinische Risikoantworten zur fachlichen Prüfung markieren."
+      }
+    },
+    "badges": {
+      "started": "Gestartet",
+      "completed": "Erledigt",
+      "recommended": "Empfohlen"
+    },
+    "courseMeta": {
+      "duration": "{count} Min",
+      "flexible": "Flexibles Format"
+    }
   },
   "calendar": {
     "eyebrow": "Live-Zugang für Mitglieder",

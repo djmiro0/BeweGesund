@@ -11,6 +11,11 @@
     },
     "signIn": "Sign In",
     "signOut": "Sign Out",
+    "profileLink": "Open profile",
+    "profileFallback": "Member",
+    "profileAvatarAlt": "{name}'s profile photo",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
     "lightMode": "Light",
     "darkMode": "Dark",
     "themeLight": "Switch to light mode",
@@ -279,6 +284,76 @@
     "starter": "Starter",
     "rehab-plus": "Rehab Plus",
     "all-access": "All Access"
+  },
+  "profile": {
+    "eyebrow": "Member profile",
+    "avatarAlt": "{name}'s profile photo",
+    "metrics": {
+      "weight": "Weight",
+      "weightHint": "Stored from the current member profile.",
+      "bmi": "BMI",
+      "bmiHint": "Calculated from profile height and weight.",
+      "started": "Started",
+      "startedHint": "Courses currently opened or planned.",
+      "completed": "Completed",
+      "completedHint": "Courses already attended."
+    },
+    "details": {
+      "dateOfBirth": "Date of birth",
+      "height": "Height",
+      "weight": "Weight",
+      "occupation": "Occupation",
+      "steps": "Average steps",
+      "goal": "Main goal",
+      "package": "Package"
+    },
+    "values": {
+      "height": "{count} cm",
+      "weight": "{count} kg",
+      "steps": "{count} steps/day"
+    },
+    "occupations": {
+      "sedentary": "Mostly seated"
+    },
+    "goals": {
+      "backPain": "Less back pain and safer movement"
+    },
+    "anamnesisStatus": {
+      "pending": "Anamnesis pending"
+    },
+    "sections": {
+      "personal": {
+        "eyebrow": "Basic data",
+        "title": "Profile data"
+      },
+      "started": {
+        "eyebrow": "In progress",
+        "title": "Started courses"
+      },
+      "completed": {
+        "eyebrow": "History",
+        "title": "Attended courses"
+      },
+      "recommended": {
+        "eyebrow": "Next options",
+        "title": "Recommended courses",
+        "note": "These recommendations are temporary. Later they should be selected from the anamnesis results, including goals, red flags, training history, recovery habits, and consent."
+      },
+      "anamnesis": {
+        "eyebrow": "Health intake",
+        "title": "Anamnesis basis",
+        "note": "The future questionnaire should block progress until the member confirms consent and should flag medical risk answers for professional review."
+      }
+    },
+    "badges": {
+      "started": "Started",
+      "completed": "Done",
+      "recommended": "Recommended"
+    },
+    "courseMeta": {
+      "duration": "{count} min",
+      "flexible": "Flexible format"
+    }
   },
   "calendar": {
     "eyebrow": "Member live access",
