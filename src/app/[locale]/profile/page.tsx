@@ -21,7 +21,6 @@ import {
   UserRound,
   Wind,
   X,
-  ArrowBigRightDash,
 } from "lucide-react";
 import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, type AuthError } from "firebase/auth";
 import { useLocale, useTranslations } from "next-intl";
@@ -32,6 +31,7 @@ import { db } from "../../../../firebase.config";
 import { activeScheduleDays, memberCourses, type MemberPackage } from "@/data";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
+import ProfileSettingsAccess from "./ProfileSettingsAccess";
 import styles from "./Profile.module.css";
 
 const fadeUp = {
@@ -289,7 +289,6 @@ export default function ProfilePage() {
     >
       <div className={styles.shell}>
         <motion.header className={styles.mobileHeader} variants={fadeUp}>
-          <ArrowBigRightDash/>
           <div
             className={styles.avatar}
             role="img"
@@ -303,6 +302,14 @@ export default function ProfilePage() {
             <h1 className={styles.title}>{displayName}</h1>
             <p className={styles.email}>{email}</p>
           </div>
+          <ProfileSettingsAccess
+            locale={locale}
+            openLabel={t("settings.open")}
+            closeLabel={t("settings.close")}
+            title={t("settings.title")}
+            description={t("settings.description")}
+            settingsLabel={t("settings.link")}
+          />
         </motion.header>
 
         <motion.details className={`${styles.mobileCard} ${styles.bodyCard}`} variants={fadeUp} open>

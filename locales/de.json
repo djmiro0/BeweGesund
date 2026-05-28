@@ -4,6 +4,7 @@
     "nav": {
       "program": "Programme",
       "courses": "Kurse",
+      "settings": "Einstellungen",
       "calendar": "Live-Kalender",
       "consultation": "Beratung",
       "about": "Über Uns",
@@ -326,6 +327,13 @@
       "menu": "Profilmenü öffnen",
       "seeMore": "Mehr sehen",
       "closeTraining": "Trainingsübersicht schließen"
+    },
+    "settings": {
+      "open": "Profileinstellungen öffnen",
+      "close": "Profileinstellungen schließen",
+      "title": "Profileinstellungen",
+      "description": "Öffne den vollständigen Einstellungsbereich, um Profil, Training, Ernährung, Datenschutz und App-Optionen anzupassen.",
+      "link": "Einstellungen öffnen"
     },
     "metrics": {
       "weight": "Gewicht",

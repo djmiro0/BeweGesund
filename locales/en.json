@@ -4,6 +4,7 @@
     "nav": {
       "program": "Program",
       "courses": "Courses",
+      "settings": "Settings",
       "calendar": "Live Calendar",
       "consultation": "Consultation",
       "about": "About",
@@ -326,6 +327,13 @@
       "menu": "Open profile menu",
       "seeMore": "See more",
       "closeTraining": "Close training overview"
+    },
+    "settings": {
+      "open": "Open profile settings",
+      "close": "Close profile settings",
+      "title": "Profile settings",
+      "description": "Open the full settings area to update profile, training, nutrition, privacy, and app preferences.",
+      "link": "Open settings"
     },
     "metrics": {
       "weight": "Weight",

@@ -41,6 +41,12 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                 href: `/${locale}/courses`,
                 label: t("nav.courses"),
                 active: pathname === `/${locale}/courses`,
+            },
+            {
+                key: "settings",
+                href: `/${locale}/settings`,
+                label: t("nav.settings"),
+                active: pathname === `/${locale}/settings`,
             }]
             : []),
         {

@@ -26,6 +26,7 @@ vi.mock("next-intl", () => ({
       themeDark: "Switch to dark mode",
       "nav.program": "Program",
       "nav.courses": "Courses",
+      "nav.settings": "Settings",
       "nav.calendar": "Calendar",
       "nav.consultation": "Consultation",
       "nav.contact": "Contact",
