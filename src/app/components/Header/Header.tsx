@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { auth } from "../../../../firebase.config";
@@ -75,7 +76,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
             onClick={() => setIsMenuOpen(false)}
             aria-label={t("profileLink")}
             aria-current={pathname === `/${locale}/profile` ? "page" : undefined}
-            className={`group flex min-w-0 items-center gap-2 rounded-full border p-1 pr-2 transition-all sm:pr-3 ${
+            className={`group flex min-w-0 items-center gap-2 rounded-full border p-1 transition-all sm:pr-3 ${
                 pathname === `/${locale}/profile`
                     ? "border-[rgba(var(--page-accent-rgb),0.35)] bg-[rgba(var(--page-accent-rgb),0.12)]"
                     : "border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.07)] hover:bg-[rgba(var(--shell-text-rgb),0.12)]"
@@ -98,8 +99,25 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
     return (
         <>
             <header className="fixed top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[var(--shell-border)] bg-[linear-gradient(180deg,rgba(var(--shell-bg-rgb),0.97),rgba(var(--shell-bg-alt-rgb),0.95))] px-3 text-[var(--shell-text)] shadow-[0_16px_40px_rgba(20,16,11,0.18)] backdrop-blur-xl sm:h-20 sm:px-6">
-                <Link href={`/${locale}`} className="min-w-0 shrink transition-opacity hover:opacity-80" onClick={() => setIsMenuOpen(false)}>
-                    <div className="truncate text-lg font-black italic uppercase tracking-normal text-[var(--shell-text)] sm:text-2xl">
+                <Link
+                    href={`/${locale}`}
+                    aria-label={t("logo")}
+                    data-testid="header-brand-link"
+                    className="min-w-0 shrink-0 transition-opacity hover:opacity-80"
+                    onClick={() => setIsMenuOpen(false)}
+                >
+                    <Image
+                        src="/favicon.ico"
+                        alt=""
+                        width={36}
+                        height={36}
+                        data-testid="header-mobile-logo"
+                        className="block h-9 w-9 rounded-full sm:hidden"
+                    />
+                    <div
+                        data-testid="header-desktop-wordmark"
+                        className="hidden truncate text-lg font-black italic uppercase tracking-normal text-[var(--shell-text)] sm:block sm:text-2xl"
+                    >
                         <span className="text-[var(--page-warm)]">S</span>.Bewe<span className="text-[var(--page-warm)]">Gesund</span>
                     </div>
                 </Link>
@@ -145,6 +163,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
 
                     <button
                         onClick={toggleTheme}
+                        data-testid="theme-toggle"
                         aria-label={theme === "light" ? t("themeDark") : t("themeLight")}
                         title={theme === "light" ? t("themeDark") : t("themeLight")}
                         className={`flex h-9 w-9 items-center justify-center rounded-full border text-xs font-black transition-all sm:w-auto sm:gap-2 sm:px-3 ${
@@ -179,6 +198,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                     <button
                         type="button"
                         onClick={() => setIsMenuOpen((open) => !open)}
+                        data-testid="mobile-menu-trigger"
                         aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
                         aria-expanded={isMenuOpen}
                         className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.09)] text-[var(--shell-text)] transition-all hover:bg-[rgba(var(--shell-text-rgb),0.12)] lg:hidden"
@@ -188,7 +208,18 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                 </div>
             </header>
 
+            {isMenuOpen ? (
+                <button
+                    type="button"
+                    aria-label={t("closeMenu")}
+                    data-testid="mobile-menu-backdrop"
+                    className="fixed inset-x-0 bottom-0 top-16 z-20 cursor-default bg-[rgba(var(--shell-bg-rgb),0.18)] backdrop-blur-sm sm:top-20 lg:hidden"
+                    onClick={() => setIsMenuOpen(false)}
+                />
+            ) : null}
+
             <div
+                data-testid="mobile-menu"
                 className={`fixed left-0 right-0 top-16 z-30 border-b border-[var(--shell-border)] bg-[linear-gradient(180deg,rgba(var(--shell-bg-rgb),0.98),rgba(var(--shell-bg-alt-rgb),0.98))] px-3 py-4 text-[var(--shell-text)] shadow-[0_18px_42px_rgba(20,16,11,0.24)] backdrop-blur-xl transition-all duration-300 sm:top-20 sm:px-6 lg:hidden ${
                     isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-3 opacity-0"
                 }`}
@@ -198,6 +229,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         <Link
                             key={item.key}
                             href={item.href}
+                            onClick={() => setIsMenuOpen(false)}
                             aria-current={item.active ? "page" : undefined}
                             className={`rounded-2xl border px-4 py-3 text-sm font-black uppercase tracking-[0.1em] ${
                                 item.active

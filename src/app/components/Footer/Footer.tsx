@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { FileText, Mail, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, CalendarDays, FileText, Languages, Mail, ShieldCheck } from "lucide-react";
 import style from "./Footer.module.css";
 
 const Footer: React.FC = () => {
@@ -30,66 +31,86 @@ const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className={style.footer}>
+    <footer className={style.footer} data-testid="site-footer">
       <div className={style.footerInner}>
         <div className={style.brandColumn}>
-          <p className={style.brandEyebrow}>{t("brand")}</p>
-          <h2 className={style.brandTitle}>{t("brand")}</h2>
+          <Link href={`/${locale}`} className={style.brandMark} data-testid="footer-brand-link">
+            <Image
+              src="/favicon.ico"
+              alt=""
+              width={42}
+              height={42}
+              className={style.brandIcon}
+              data-testid="footer-brand-icon"
+            />
+            <span className={style.brandTitle}>{t("brand")}</span>
+          </Link>
           <p className={style.brandText}>{t("tagline")}</p>
+          <Link href={`/${locale}/kontakt`} className={style.contactButton} data-testid="footer-contact-cta">
+            {t("contactCardButton")}
+            <ArrowUpRight size={17} />
+          </Link>
         </div>
 
-        <div className={style.linksGrid}>
-          <section className={style.linkSection}>
-            <h3 className={style.sectionTitle}>{t("navigationTitle")}</h3>
-            <div className={style.linkList}>
-              {navigationLinks.map((link) => (
-                <Link key={link.href} href={link.href} className={style.footerLink}>
-                  <span>{link.label}</span>
-                </Link>
-              ))}
+        <div className={style.footerContent}>
+          <div className={style.contactPanel} data-testid="footer-contact-panel">
+            <div>
+              <p className={style.panelLabel}>{t("contactTitle")}</p>
+              <p className={style.panelText}>{t("contactCardText")}</p>
             </div>
-          </section>
-
-          <section className={style.linkSection}>
-            <h3 className={style.sectionTitle}>{t("legalTitle")}</h3>
-            <div className={style.linkList}>
-              {legalLinks.map((link) => {
-                const Icon = link.icon;
+            <div className={style.metaList}>
+              {contactItems.map((item, index) => {
+                const Icon = index === 0 ? CalendarDays : index === 1 ? Languages : Mail;
                 return (
-                  <Link key={link.href} href={link.href} className={style.footerLink}>
-                    <span className={style.linkWithIcon}>
-                      <Icon size={15} />
-                      {link.label}
+                  <div key={item.label} className={style.metaItem}>
+                    <span className={style.metaIcon}>
+                      <Icon size={16} />
                     </span>
-                  </Link>
+                    <span>
+                      <span className={style.metaLabel}>{item.label}</span>
+                      <span className={style.metaValue}>{item.value}</span>
+                    </span>
+                  </div>
                 );
               })}
             </div>
-          </section>
+          </div>
 
-          <section className={style.linkSection}>
-            <h3 className={style.sectionTitle}>{t("contactTitle")}</h3>
-            <div className={style.linkList}>
-              <Link href={`/${locale}/kontakt`} className={style.footerLink}>
-                <span className={style.linkWithIcon}>
-                  <Mail size={15} />
-                  {t("links.contact")}
-                </span>
-              </Link>
-            </div>
-            <div className={style.metaList}>
-              {contactItems.map((item) => (
-                <div key={item.label} className={style.metaItem}>
-                  <span className={style.metaLabel}>{item.label}</span>
-                  <span className={style.metaValue}>{item.value}</span>
-                </div>
-              ))}
-            </div>
-          </section>
+          <div className={style.linksGrid} data-testid="footer-link-grid">
+            <section className={style.linkSection}>
+              <h3 className={style.sectionTitle}>{t("navigationTitle")}</h3>
+              <div className={style.linkList}>
+                {navigationLinks.map((link) => (
+                  <Link key={link.href} href={link.href} className={style.footerLink} data-testid="footer-navigation-link">
+                    <span>{link.label}</span>
+                    <ArrowUpRight size={14} />
+                  </Link>
+                ))}
+              </div>
+            </section>
+
+            <section className={style.linkSection}>
+              <h3 className={style.sectionTitle}>{t("legalTitle")}</h3>
+              <div className={style.linkList}>
+                {legalLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Link key={link.href} href={link.href} className={style.footerLink} data-testid="footer-legal-link">
+                      <span className={style.linkWithIcon}>
+                        <Icon size={15} />
+                        {link.label}
+                      </span>
+                      <ArrowUpRight size={14} />
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
         </div>
       </div>
 
-      <div className={style.footerBottom}>
+      <div className={style.footerBottom} data-testid="footer-bottom">
         <p>{t("copyright")}</p>
       </div>
     </footer>

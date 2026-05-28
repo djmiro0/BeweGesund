@@ -1,17 +1,34 @@
 .bannerSection {
   position: relative;
   width: 100%;
-  height: 80vh;
+  min-height: 82svh;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: clamp(1rem, 3vw, 2rem);
+  background: var(--page-soft);
+  color: var(--page-base);
+}
+
+.sectionIntro {
+  position: absolute;
+  left: clamp(1.5rem, 4vw, 4rem);
+  top: clamp(1.5rem, 4vw, 4rem);
+  z-index: 12;
+  color: rgba(var(--page-base-rgb), 0.74);
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
 }
 
 .bannerWrapper {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: min(78svh, 54rem);
+  min-height: 34rem;
+  overflow: hidden;
+  border-radius: 2rem;
+  background: var(--shell-bg);
+  box-shadow: 0 28px 70px rgba(20, 16, 11, 0.18);
 }
 
 .banner {
@@ -24,56 +41,73 @@
 
 .image {
   object-fit: cover;
-  filter: brightness(0.6);
+  filter: saturate(1.03) contrast(1.04);
+  transform: scale(1.02);
 }
 
 .overlay {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex-start;
   color: var(--text-light);
-  text-align: center;
-  padding: 2rem;
+  padding: clamp(1.25rem, 5vw, 4rem);
+  background:
+    linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.78) 0%, rgba(var(--shell-bg-rgb), 0.42) 46%, transparent 100%),
+    linear-gradient(180deg, transparent 20%, rgba(var(--shell-bg-rgb), 0.72) 100%);
 }
 
 .textBox {
-  max-width: 700px;
-  backdrop-filter: blur(6px);
-  background: rgba(var(--navy-rgb), 0.35);
-  border-radius: 16px;
-  padding: 2rem 3rem;
-  animation: fadeIn 1s ease;
+  max-width: 48rem;
 }
 
 .textBox h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
+  max-width: 11ch;
+  margin: 0;
+  color: var(--secondary);
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-style: italic;
+  font-weight: 950;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-wrap: balance;
 }
 
 .textBox p {
-  font-size: 1.2rem;
-  opacity: 0.9;
+  max-width: 34rem;
+  margin: 1.2rem 0 0;
+  color: rgba(var(--primary), 0.78);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.75;
 }
 
 .arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(var(--navy-rgb), 0.4);
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--page-base-rgb), 0.12);
   color: var(--text-light);
-  border: none;
+  border: 1px solid rgba(var(--page-base-rgb), 0.2);
   border-radius: 50%;
-  padding: 0.6rem;
   cursor: pointer;
   z-index: 10;
-  transition: background 0.3s;
+  backdrop-filter: blur(16px);
+  transition:
+    transform 0.25s var(--transition),
+    background 0.25s var(--transition),
+    color 0.25s var(--transition);
 }
 
 .arrow:hover {
-  background: rgba(var(--foreground-rgb), 0.2);
+  transform: translateY(-50%) scale(1.06);
+  background: var(--page-base);
+  color: var(--shell-bg);
 }
 
 .left {
@@ -84,7 +118,71 @@
   right: 2rem;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.dots {
+  position: absolute;
+  right: clamp(1.4rem, 4vw, 3rem);
+  bottom: clamp(1.4rem, 4vw, 3rem);
+  z-index: 12;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: rgba(var(--page-base-rgb), 0.38);
+  transition: width 0.3s var(--transition), background 0.3s var(--transition);
+}
+
+.dotActive {
+  width: 2rem;
+  background: var(--page-warm);
+}
+
+@media (max-width: 760px) {
+  .bannerSection {
+    min-height: 72svh;
+    padding: 0;
+  }
+
+  .bannerWrapper {
+    height: 72svh;
+    min-height: 31rem;
+    border-radius: 0;
+  }
+
+  .sectionIntro {
+    top: 1.25rem;
+    left: 1.25rem;
+  }
+
+  .overlay {
+    align-items: flex-end;
+    padding: 1.25rem;
+  }
+
+  .arrow {
+    top: auto;
+    bottom: 1.25rem;
+    transform: none;
+  }
+
+  .arrow:hover {
+    transform: scale(1.06);
+  }
+
+  .left {
+    left: 1.25rem;
+  }
+
+  .right {
+    left: 4.75rem;
+    right: auto;
+  }
+
+  .dots {
+    right: 1.25rem;
+    bottom: 2.15rem;
+  }
 }

@@ -1,14 +1,35 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, AlertTriangle, CheckCircle2, ClipboardList, HeartPulse, Ruler, Scale, Sparkles, Trash2, UserRound, X } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  Award,
+  BookOpen,
+  CalendarDays,
+  ChevronDown,
+  Crown,
+  Dumbbell,
+  HeartPulse,
+  Medal,
+  PersonStanding,
+  Ruler,
+  Scale,
+  Sparkles,
+  Trophy,
+  Trash2,
+  UserRound,
+  Wind,
+  X,
+  ArrowBigRightDash,
+} from "lucide-react";
 import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, type AuthError } from "firebase/auth";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../firebase.config";
-import { memberCourses, type MemberPackage } from "@/data";
+import { activeScheduleDays, memberCourses, type MemberPackage } from "@/data";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import styles from "./Profile.module.css";
@@ -58,6 +79,8 @@ const emptyProfile: ProfileData = {
 
 const isKnownCourse = (courseId: string) => memberCourses.some((course) => course.id === courseId);
 const translatedGoalKeys = ["backPain"];
+const recommendedBmiMax = 24.9;
+const recommendedBmiMin = 18.5;
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
@@ -71,6 +94,7 @@ export default function ProfilePage() {
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isTrainingOpen, setIsTrainingOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -102,6 +126,10 @@ export default function ProfilePage() {
   const bmi = profile.heightCm && profile.weightKg
     ? profile.weightKg / ((profile.heightCm / 100) * (profile.heightCm / 100))
     : null;
+  const heightMeters = profile.heightCm ? profile.heightCm / 100 : null;
+  const recommendedWeightMin = heightMeters ? recommendedBmiMin * heightMeters * heightMeters : null;
+  const recommendedWeightMax = heightMeters ? recommendedBmiMax * heightMeters * heightMeters : null;
+  const flexibleWeightMax = recommendedWeightMax ? recommendedWeightMax * 1.1 : null;
   const numberFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
   const integerFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
   const dateFormatter = new Intl.DateTimeFormat(locale, {
@@ -115,37 +143,90 @@ export default function ProfilePage() {
       : profile.primaryGoalKey
     : t("values.notProvided");
 
-  const personalDetails = [
+  const recommendedWeightValue = recommendedWeightMin && recommendedWeightMax
+    ? t("values.weightRange", {
+      min: numberFormatter.format(recommendedWeightMin),
+      max: numberFormatter.format(recommendedWeightMax),
+    })
+    : t("values.notProvided");
+  const flexibleWeightValue = flexibleWeightMax
+    ? t("values.weight", { count: numberFormatter.format(flexibleWeightMax) })
+    : t("values.notProvided");
+  const bodyDetails = [
     {
-      label: t("details.dateOfBirth"),
-      value: profile.dateOfBirth ? dateFormatter.format(new Date(profile.dateOfBirth)) : t("values.notProvided"),
+      label: t("details.weight"),
+      value: profile.weightKg ? t("values.weight", { count: profile.weightKg }) : t("values.notProvided"),
+      icon: Scale,
     },
     {
       label: t("details.height"),
       value: profile.heightCm ? t("values.height", { count: profile.heightCm }) : t("values.notProvided"),
+      icon: Ruler,
+    },
+    {
+      label: t("metrics.bmi"),
+      value: bmi ? numberFormatter.format(bmi) : t("values.notProvided"),
+      icon: Activity,
+    },
+    {
+      label: t("details.recommendedWeight"),
+      value: recommendedWeightValue,
+      icon: HeartPulse,
+    },
+    {
+      label: t("details.flexibleWeight"),
+      value: flexibleWeightValue,
+      icon: Sparkles,
+    },
+    {
+      label: t("details.dateOfBirth"),
+      value: profile.dateOfBirth ? dateFormatter.format(new Date(profile.dateOfBirth)) : t("values.notProvided"),
+      icon: UserRound,
     },
     {
       label: t("details.occupation"),
       value: profile.occupationKey ? t(`occupations.${profile.occupationKey}`) : t("values.notProvided"),
+      icon: PersonStanding,
     },
     {
       label: t("details.steps"),
       value: profile.averageStepsPerDay
         ? t("values.steps", { count: integerFormatter.format(profile.averageStepsPerDay) })
         : t("values.notProvided"),
+      icon: Activity,
     },
     {
       label: t("details.goal"),
       value: goalValue,
+      icon: Trophy,
     },
-    { label: t("details.package"), value: profile.memberPackage ? packageT(profile.memberPackage) : t("values.notProvided") },
+    {
+      label: t("details.package"),
+      value: profile.memberPackage ? packageT(profile.memberPackage) : t("values.notProvided"),
+      icon: Crown,
+    },
   ];
+  const livePremiumItems = activeScheduleDays.flatMap((day) => day.entries.map((entry) => ({
+    id: `${day.id}-${entry.id}`,
+    titleKey: entry.titleKey,
+    formatKey: entry.formatKey,
+    packageRequired: entry.packageRequired,
+  })));
+  const calmItems = [
+    { label: t("calm.meditation"), icon: Sparkles },
+    { label: t("calm.breathTraining"), icon: Wind },
+    { label: t("calm.breathSimulation"), icon: Activity },
+    { label: t("calm.journal"), icon: BookOpen },
+  ];
+  const currentBadgePoints = 420;
+  const nextBadgePoints = 600;
+  const badgeProgress = Math.round((currentBadgePoints / nextBadgePoints) * 100);
 
   const renderCourse = (courseId: string, badge: string) => {
     const course = getCourseMeta(courseId);
 
     return (
-      <motion.article key={courseId} className={styles.courseItem} variants={fadeUp} whileHover={{ y: -4 }}>
+      <article key={courseId} className={styles.courseItem}>
         <div>
           <h3 className={styles.courseName}>{isKnownCourse(courseId) ? courseT(courseId) : courseId}</h3>
           <p className={styles.courseMeta}>
@@ -154,16 +235,8 @@ export default function ProfilePage() {
           </p>
         </div>
         <span className={styles.courseBadge}>{badge}</span>
-      </motion.article>
+      </article>
     );
-  };
-
-  const renderCourseList = (courseIds: string[], badge: string) => {
-    if (courseIds.length === 0) {
-      return <p className={styles.recommendationNote}>{t("courseMeta.empty")}</p>;
-    }
-
-    return courseIds.map((courseId) => renderCourse(courseId, badge));
   };
 
   const getDeleteErrorMessage = (error: unknown) => {
@@ -215,155 +288,203 @@ export default function ProfilePage() {
       }}
     >
       <div className={styles.shell}>
-        <div className={styles.hero}>
-          <motion.div className={styles.identityPanel} variants={fadeUp}>
-            <div>
-              <div
-                className={styles.avatar}
-                role="img"
-                aria-label={t("avatarAlt", { name: displayName })}
-                style={avatar ? { backgroundImage: `url("${avatar}")` } : undefined}
-              >
-                {avatar ? null : profileInitial}
-              </div>
-              <p className={styles.eyebrow}>{t("eyebrow")}</p>
-              <h1 className={styles.title}>{displayName}</h1>
-              <p className={styles.email}>{email}</p>
-            </div>
-            <div className={styles.statusBadge}>
-              <ClipboardList size={16} />
-              {t(`anamnesisStatus.${profile.anamnesisStatusKey}`)}
-            </div>
-          </motion.div>
-
-          <motion.div className={styles.metricPanel} variants={fadeUp}>
-            <div className={`${styles.metricCard} ${styles.metricCardAccent}`}>
-              <p className={styles.metricLabel}>{t("metrics.weight")}</p>
-              <p className={styles.metricValue}>{profile.weightKg ? t("values.weight", { count: profile.weightKg }) : t("values.notProvided")}</p>
-              <p className={styles.metricHint}>{t("metrics.weightHint")}</p>
-            </div>
-            <div className={`${styles.metricCard} ${styles.metricCardAccent}`}>
-              <p className={styles.metricLabel}>{t("metrics.bmi")}</p>
-              <p className={styles.metricValue}>{bmi ? numberFormatter.format(bmi) : t("values.notProvided")}</p>
-              <p className={styles.metricHint}>{t("metrics.bmiHint")}</p>
-            </div>
-            <div className={styles.metricCard}>
-              <p className={styles.metricLabel}>{t("metrics.started")}</p>
-              <p className={styles.metricValue}>{profile.startedCourseIds.length}</p>
-              <p className={styles.metricHint}>{t("metrics.startedHint")}</p>
-            </div>
-            <div className={styles.metricCard}>
-              <p className={styles.metricLabel}>{t("metrics.completed")}</p>
-              <p className={styles.metricValue}>{profile.completedCourseIds.length}</p>
-              <p className={styles.metricHint}>{t("metrics.completedHint")}</p>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className={styles.contentGrid}>
-          <motion.section className={styles.panel} variants={fadeUp}>
-            <div className={styles.panelHeader}>
-              <div>
-                <p className={styles.panelEyebrow}>{t("sections.personal.eyebrow")}</p>
-                <h2 className={styles.panelTitle}>{t("sections.personal.title")}</h2>
-              </div>
-              <UserRound className={styles.panelIcon} size={22} />
-            </div>
-            <div className={styles.detailsGrid}>
-              {personalDetails.map((item) => (
-                <div key={item.label} className={styles.detailItem}>
-                  <p className={styles.detailLabel}>{item.label}</p>
-                  <p className={styles.detailValue}>{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </motion.section>
-
-          <div className={styles.stack}>
-            <motion.section className={styles.panel} variants={fadeUp}>
-              <div className={styles.panelHeader}>
-                <div>
-                  <p className={styles.panelEyebrow}>{t("sections.started.eyebrow")}</p>
-                  <h2 className={styles.panelTitle}>{t("sections.started.title")}</h2>
-                </div>
-                <Activity className={styles.panelIcon} size={22} />
-              </div>
-              <div className={styles.courseList}>
-                {renderCourseList(profile.startedCourseIds, t("badges.started"))}
-              </div>
-            </motion.section>
-
-            <motion.section className={styles.panel} variants={fadeUp}>
-              <div className={styles.panelHeader}>
-                <div>
-                  <p className={styles.panelEyebrow}>{t("sections.completed.eyebrow")}</p>
-                  <h2 className={styles.panelTitle}>{t("sections.completed.title")}</h2>
-                </div>
-                <CheckCircle2 className={styles.panelIcon} size={22} />
-              </div>
-              <div className={styles.courseList}>
-                {renderCourseList(profile.completedCourseIds, t("badges.completed"))}
-              </div>
-            </motion.section>
+        <motion.header className={styles.mobileHeader} variants={fadeUp}>
+          <ArrowBigRightDash/>
+          <div
+            className={styles.avatar}
+            role="img"
+            aria-label={t("avatarAlt", { name: displayName })}
+            style={avatar ? { backgroundImage: `url("${avatar}")` } : undefined}
+          >
+            {avatar ? null : profileInitial}
           </div>
+          <div className={styles.identityText}>
+            <p className={styles.eyebrow}>{t("eyebrow")}</p>
+            <h1 className={styles.title}>{displayName}</h1>
+            <p className={styles.email}>{email}</p>
+          </div>
+        </motion.header>
 
-          <motion.section className={styles.recommendationPanel} variants={fadeUp}>
-            <div className={styles.panelHeader}>
-              <div>
-                <p className={styles.panelEyebrow}>{t("sections.recommended.eyebrow")}</p>
-                <h2 className={styles.panelTitle}>{t("sections.recommended.title")}</h2>
-              </div>
-              <Sparkles className={styles.panelIcon} size={22} />
-            </div>
-            <div className={styles.courseList}>
-              {renderCourseList(profile.recommendedCourseIds, t("badges.recommended"))}
-            </div>
-            <p className={styles.recommendationNote}>{t("sections.recommended.note")}</p>
-          </motion.section>
+        <motion.details className={`${styles.mobileCard} ${styles.bodyCard}`} variants={fadeUp} open>
+          <summary className={styles.cardSummary}>
+            <span>{t("cards.body.title")}</span>
+            <Scale size={34} />
+            <ChevronDown className={styles.chevron} size={20} />
+          </summary>
+          <div className={styles.bodyPreview}>
+            {bodyDetails.slice(0, 4).map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className={styles.iconLine}>
+                  <Icon size={26} />
+                  <p>
+                    <span>{item.label}</span>
+                    {item.value}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+          <div className={styles.expandedBlock}>
+            {bodyDetails.slice(4).map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className={styles.detailRow}>
+                  <Icon size={20} />
+                  <span>{item.label}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              );
+            })}
+            <p className={styles.note}>{t("cards.body.note")}</p>
+          </div>
+        </motion.details>
 
-          <motion.section className={styles.panel} variants={fadeUp}>
-            <div className={styles.panelHeader}>
+        <div className={styles.twoColumnRow}>
+          <motion.details className={`${styles.mobileCard} ${styles.trainingCard}`} variants={fadeUp}>
+            <summary className={styles.cardSummary}>
+              <span>{t("cards.training.title")}</span>
+              <Dumbbell size={30} />
+              <ChevronDown className={styles.chevron} size={19} />
+            </summary>
+            <div className={styles.compactMedia}>
+              <PersonStanding size={52} />
               <div>
-                <p className={styles.panelEyebrow}>{t("sections.anamnesis.eyebrow")}</p>
-                <h2 className={styles.panelTitle}>{t("sections.anamnesis.title")}</h2>
-              </div>
-              <HeartPulse className={styles.panelIcon} size={22} />
-            </div>
-            <div className={styles.detailsGrid}>
-              <div className={styles.detailItem}>
-                <p className={styles.detailLabel}>
-                  <Scale size={14} />
-                  {t("details.weight")}
-                </p>
-                <p className={styles.detailValue}>{profile.weightKg ? t("values.weight", { count: profile.weightKg }) : t("values.notProvided")}</p>
-              </div>
-              <div className={styles.detailItem}>
-                <p className={styles.detailLabel}>
-                  <Ruler size={14} />
-                  {t("details.height")}
-                </p>
-                <p className={styles.detailValue}>{profile.heightCm ? t("values.height", { count: profile.heightCm }) : t("values.notProvided")}</p>
+                <h3>{t("cards.training.summaryTitle")}</h3>
+                <p>{t("cards.training.summaryText")}</p>
               </div>
             </div>
-            <p className={styles.recommendationNote}>{t("sections.anamnesis.note")}</p>
-          </motion.section>
-
-          <motion.section className={`${styles.panel} ${styles.dangerPanel}`} variants={fadeUp}>
-            <div className={styles.panelHeader}>
-              <div>
-                <p className={styles.panelEyebrow}>{t("delete.eyebrow")}</p>
-                <h2 className={styles.panelTitle}>{t("delete.title")}</h2>
-              </div>
-              <AlertTriangle className={styles.dangerIcon} size={22} />
-            </div>
-            <p className={styles.dangerText}>{t("delete.description")}</p>
-            <button type="button" className={styles.deleteButton} onClick={() => setIsDeleteOpen(true)}>
-              <Trash2 size={17} />
-              {t("delete.open")}
+            <button
+              type="button"
+              className={styles.moreButton}
+              onClick={() => setIsTrainingOpen(true)}
+            >
+              {t("actions.seeMore")}
             </button>
-          </motion.section>
+          </motion.details>
+
+          <motion.details className={`${styles.mobileCard} ${styles.calmCard}`} variants={fadeUp}>
+            <summary className={styles.cardSummary}>
+              <span>{t("cards.calm.title")}</span>
+              <Wind size={30} />
+              <ChevronDown className={styles.chevron} size={19} />
+            </summary>
+            <div className={styles.calmList}>
+              {calmItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.label} className={styles.calmItem}>
+                    <Icon size={22} />
+                    <span>{item.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className={styles.breathCircle}>
+              <span>{t("cards.calm.breathe")}</span>
+            </div>
+          </motion.details>
         </div>
+
+        <div className={styles.twoColumnRow}>
+          <motion.details className={`${styles.mobileCard} ${styles.badgeCard}`} variants={fadeUp}>
+            <summary className={styles.cardSummary}>
+              <span>{t("cards.badges.title")}</span>
+              <Medal size={30} />
+              <ChevronDown className={styles.chevron} size={19} />
+            </summary>
+            <div className={styles.badgeBody}>
+              <Award size={42} />
+              <div>
+                <h3>{t("cards.badges.current")}</h3>
+                <p>{t("cards.badges.next", { count: nextBadgePoints - currentBadgePoints })}</p>
+              </div>
+            </div>
+            <div className={styles.progressTrack}>
+              <span style={{ width: `${badgeProgress}%` }} />
+            </div>
+          </motion.details>
+
+          <motion.details className={`${styles.mobileCard} ${styles.leagueCard}`} variants={fadeUp}>
+            <summary className={styles.cardSummary}>
+              <span>{t("cards.league.title")}</span>
+              <Trophy size={30} />
+              <ChevronDown className={styles.chevron} size={19} />
+            </summary>
+            <div className={styles.leagueBody}>
+              <CalendarDays size={38} />
+              <div>
+                <h3>{t("cards.league.subtitle")}</h3>
+                <p>{t("cards.league.description")}</p>
+              </div>
+            </div>
+          </motion.details>
+        </div>
+
+        <motion.section className={`${styles.mobileCard} ${styles.dangerPanel}`} variants={fadeUp}>
+          <div className={styles.staticHeader}>
+            <div>
+              <p className={styles.panelEyebrow}>{t("delete.eyebrow")}</p>
+              <h2>{t("delete.title")}</h2>
+            </div>
+            <AlertTriangle className={styles.dangerIcon} size={22} />
+          </div>
+          <p className={styles.dangerText}>{t("delete.description")}</p>
+          <button type="button" className={styles.deleteButton} onClick={() => setIsDeleteOpen(true)}>
+            <Trash2 size={17} />
+            {t("delete.open")}
+          </button>
+        </motion.section>
       </div>
+
+      {isTrainingOpen ? (
+        <div className={styles.modalOverlay}>
+          <div className={styles.trainingModal} role="dialog" aria-modal="true" aria-labelledby="training-modal-title">
+            <button
+              type="button"
+              className={styles.modalClose}
+              aria-label={t("actions.closeTraining")}
+              onClick={() => setIsTrainingOpen(false)}
+            >
+              <X size={18} />
+            </button>
+            <div className={styles.trainingModalHeader}>
+              <Dumbbell size={28} />
+              <div>
+                <p className={styles.panelEyebrow}>{t("cards.training.title")}</p>
+                <h2 id="training-modal-title">{t("cards.training.modalTitle")}</h2>
+                <p>{t("cards.training.modalDescription")}</p>
+              </div>
+            </div>
+
+            <div className={styles.trainingModalContent}>
+              <section className={styles.trainingModalSection}>
+                <h3>{t("cards.training.allCourses")}</h3>
+                <div className={styles.modalCourseGrid}>
+                  {memberCourses.map((course) => renderCourse(course.id, packageT(course.packageRequired)))}
+                </div>
+              </section>
+
+              <section className={styles.trainingModalSection}>
+                <h3>{t("cards.training.premiumTitle")}</h3>
+                <div className={styles.modalCourseGrid}>
+                  {livePremiumItems.map((item) => (
+                    <article key={item.id} className={styles.courseItem}>
+                      <div>
+                        <h3 className={styles.courseName}>{courseT(item.titleKey)}</h3>
+                        <p className={styles.courseMeta}>
+                          {t(`liveFormats.${item.formatKey}`)} / {packageT(item.packageRequired)}
+                        </p>
+                      </div>
+                      <span className={`${styles.courseBadge} ${styles.premiumBadge}`}>{t("badges.premium")}</span>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {isDeleteOpen ? (
         <div className={styles.modalOverlay}>

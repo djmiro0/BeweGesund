@@ -1,12 +1,16 @@
 "use client";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, ShieldCheck, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useAuth } from "./components/AuthProvider";
 import Dashboard from "./components/Dashboard";
 import HeroSection from "./components/HeroSection";
 import BannerSection from "../components/BannerSection/BannerSection";
+import styles from "./page.module.css";
+
+const highlightIcons = [ShieldCheck, CalendarDays, Sparkles];
 
 export default function HomePage() {
     const t = useTranslations("home");
@@ -26,40 +30,62 @@ export default function HomePage() {
             ) : (
                 <>
                     <HeroSection openAuth={openAuth} />
-                    <section className="relative overflow-hidden border-y border-[var(--page-border)] bg-[var(--page-base)] px-6 py-24">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(var(--page-accent-rgb),0.12),_transparent_28%),radial-gradient(circle_at_bottom_right,_rgba(var(--page-warm-rgb),0.14),_transparent_30%)]" />
-                        <div className="relative mx-auto grid max-w-7xl gap-12 md:grid-cols-[1.2fr_0.8fr] md:items-end">
-                            <div>
-                                <p className="mb-4 text-xs font-black uppercase tracking-[0.3em] text-[var(--page-warm)]">{t("public.eyebrow")}</p>
-                                <h2 className="max-w-3xl text-4xl font-black uppercase italic text-[var(--page-ink)] md:text-6xl">
+                    <section className={styles.publicSection}>
+                        <div className={styles.publicInner}>
+                            <motion.div
+                                initial={{ opacity: 0, y: 28 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.35 }}
+                                transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                                <p className={styles.eyebrow}>{t("public.eyebrow")}</p>
+                                <h2 className={styles.publicTitle}>
                                     {t("public.title")}
                                 </h2>
-                                <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--page-muted)]">
+                                <p className={styles.publicDescription}>
                                     {t("public.description")}
                                 </p>
-                                <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                                    <Link href={`/${locale}/courses`} className="inline-flex items-center justify-center gap-3 rounded-full bg-[var(--page-ink)] px-7 py-4 text-sm font-black uppercase tracking-[0.2em] text-[var(--page-base)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--page-base)]">
+                                <div className={styles.publicActions}>
+                                    <Link href={`/${locale}/courses`} className={styles.primaryLink}>
                                         {t("public.primaryCta")}
                                         <ArrowRight size={16} />
                                     </Link>
-                                    <button onClick={openAuth} className="inline-flex items-center justify-center gap-3 rounded-full border border-[var(--page-border)] bg-[rgba(var(--page-ink-rgb),0.05)] px-7 py-4 text-sm font-black uppercase tracking-[0.2em] text-[var(--page-ink)] transition hover:border-[rgba(var(--page-accent-rgb),0.3)] hover:bg-[rgba(var(--page-accent-rgb),0.1)]">
+                                    <button onClick={openAuth} className={styles.secondaryLink}>
                                         {t("public.secondaryCta")}
                                         <Sparkles size={16} />
                                     </button>
                                 </div>
-                            </div>
-                            <div className="grid gap-4">
+                            </motion.div>
+                            <motion.div
+                                className={styles.highlightGrid}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, amount: 0.25 }}
+                                variants={{
+                                    hidden: {},
+                                    visible: { transition: { staggerChildren: 0.09 } },
+                                }}
+                            >
                                 {highlights.map((item, index) => {
-                                    const icons = [ShieldCheck, CalendarDays, Sparkles];
-                                    const Icon = icons[index] ?? Sparkles;
+                                    const Icon = highlightIcons[index] ?? Sparkles;
                                     return (
-                                        <div key={item} className="rounded-[1.75rem] border border-[var(--page-border)] bg-[rgba(var(--page-soft-rgb),0.72)] p-5 shadow-[0_18px_44px_rgba(83,57,20,0.08)] backdrop-blur-sm">
-                                            <Icon className="mb-4 text-[var(--page-warm)]" size={20} />
-                                            <p className="text-lg font-bold text-[var(--page-ink)]">{item}</p>
-                                        </div>
+                                        <motion.div
+                                            key={item}
+                                            className={styles.highlightItem}
+                                            variants={{
+                                                hidden: { opacity: 0, y: 20 },
+                                                visible: { opacity: 1, y: 0 },
+                                            }}
+                                            whileHover={{ y: -6 }}
+                                        >
+                                            <span className={styles.highlightIcon}>
+                                                <Icon size={20} />
+                                            </span>
+                                            <p>{item}</p>
+                                        </motion.div>
                                     );
                                 })}
-                            </div>
+                            </motion.div>
                         </div>
                     </section>
                     <BannerSection />

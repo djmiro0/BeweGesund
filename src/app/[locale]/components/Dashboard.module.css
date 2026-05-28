@@ -1,9 +1,8 @@
 .dashboardSection {
-  padding: 8rem 1.5rem 4rem;
+  min-height: 100svh;
+  padding: 8rem clamp(1rem, 3vw, 2rem) 4rem;
   background:
-    radial-gradient(circle at top left, rgba(var(--page-accent-rgb), 0.14), transparent 22%),
-    radial-gradient(circle at 86% 16%, rgba(var(--page-olive-rgb), 0.15), transparent 18%),
-    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
+    linear-gradient(135deg, rgba(var(--page-base-rgb), 0.98) 0%, rgba(var(--page-soft-alt-rgb), 0.96) 46%, rgba(var(--page-cream-2-rgb), 0.94) 100%);
   color: var(--page-ink);
 }
 
@@ -12,13 +11,13 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+  gap: 1rem;
   align-items: stretch;
 }
 
@@ -27,13 +26,27 @@
 .panel,
 .accentPanel {
   border: 1px solid var(--page-border);
-  border-radius: 2rem;
-  box-shadow: 0 24px 60px rgba(83, 57, 20, 0.1);
+  border-radius: 1.6rem;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
 }
 
 .heroMain {
-  padding: 2rem;
-  background: rgba(var(--page-soft-rgb), 0.88);
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background:
+    linear-gradient(135deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-base-rgb), 0.86));
+}
+
+.heroMain::after {
+  content: "";
+  position: absolute;
+  right: -10%;
+  bottom: -26%;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 999px;
+  border: 3rem solid rgba(var(--page-accent-rgb), 0.08);
 }
 
 .eyebrow {
@@ -46,11 +59,14 @@
 
 .title {
   margin-top: 1rem;
-  font-size: 3rem;
+  max-width: 11ch;
+  font-size: clamp(3rem, 7vw, 6.6rem);
   line-height: 0.94;
   font-style: italic;
   font-weight: 900;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
 }
 
 .description {
@@ -58,6 +74,8 @@
   max-width: 54ch;
   color: var(--page-muted);
   line-height: 1.85;
+  position: relative;
+  z-index: 1;
 }
 
 .actions {
@@ -65,6 +83,8 @@
   flex-wrap: wrap;
   gap: 0.8rem;
   margin-top: 1.6rem;
+  position: relative;
+  z-index: 1;
 }
 
 .primaryButton,
@@ -94,6 +114,7 @@
 .primaryButton:hover {
   transform: translateY(-2px);
   background: var(--page-accent);
+  box-shadow: 0 16px 38px rgba(var(--page-accent-rgb), 0.24);
 }
 
 .secondaryButton {
@@ -110,19 +131,21 @@
 .heroAside {
   display: grid;
   gap: 0.8rem;
-  padding: 1rem;
-  background: rgba(var(--page-soft-rgb), 0.74);
+  padding: 0.85rem;
+  background: rgba(var(--page-soft-rgb), 0.78);
+  border-color: var(--page-border);
+  backdrop-filter: blur(18px);
 }
 
 .metricCard {
   border-radius: 1.4rem;
   border: 1px solid var(--page-border-soft);
   padding: 1.25rem;
-  background: rgba(var(--page-soft-rgb), 0.6);
+  background: rgba(var(--page-base-rgb), 0.62);
 }
 
 .metricCardAccent {
-  background: linear-gradient(180deg, rgba(var(--page-accent-rgb), 0.12), rgba(var(--page-soft-rgb), 0.66));
+  background: linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.36), rgba(var(--page-warm-rgb), 0.16));
 }
 
 .metricLabel {
@@ -142,7 +165,7 @@
 
 .metricHint {
   margin-top: 0.55rem;
-  color: var(--page-muted);
+  color: rgba(var(--page-ink-rgb), 0.68);
   line-height: 1.7;
   font-size: 0.9rem;
 }
@@ -150,18 +173,18 @@
 .contentGrid {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .stack {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .panel {
   padding: 1.6rem;
-  background: rgba(var(--page-soft-rgb), 0.86);
+  background: rgba(var(--page-soft-rgb), 0.96);
 }
 
 .panelHeader {
@@ -205,9 +228,19 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem;
-  border-radius: 1.35rem;
+  border-radius: 1.1rem;
   border: 1px solid var(--page-border-soft);
-  background: rgba(var(--page-soft-rgb), 0.6);
+  background: rgba(var(--page-base-rgb), 0.52);
+  transition:
+    border-color 0.28s var(--transition),
+    box-shadow 0.28s var(--transition),
+    background 0.28s var(--transition);
+}
+
+.courseCard:hover {
+  border-color: rgba(var(--page-accent-rgb), 0.24);
+  background: rgba(var(--page-soft-rgb), 0.86);
+  box-shadow: 0 18px 46px rgba(83, 57, 20, 0.1);
 }
 
 .courseMain {
@@ -285,7 +318,9 @@
 
 .accentPanel {
   padding: 1.6rem;
-  background: linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.14), rgba(var(--page-warm-rgb), 0.2));
+  background:
+    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.16), rgba(var(--page-warm-rgb), 0.24)),
+    rgba(var(--page-soft-rgb), 0.96);
 }
 
 .accentCopy {

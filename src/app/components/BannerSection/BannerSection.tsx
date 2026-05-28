@@ -45,14 +45,17 @@ export default function BannerSection() {
 
   return (
     <section className={styles.bannerSection}>
+      <div className={styles.sectionIntro}>
+        <span>S.BeweGesund</span>
+      </div>
       <div className={styles.bannerWrapper}>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeBanner.id}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.985 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className={styles.banner}
           >
             <Image
@@ -63,10 +66,15 @@ export default function BannerSection() {
               priority
             />
             <div className={styles.overlay}>
-              <div className={styles.textBox}>
+              <motion.div
+                className={styles.textBox}
+                initial={{ opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.16, duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <h2>{t(`${activeBanner.key}.title`)}</h2>
                 <p>{t(`${activeBanner.key}.subtitle`)}</p>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </AnimatePresence>
@@ -76,15 +84,23 @@ export default function BannerSection() {
           onClick={prevBanner}
           aria-label="Previous banner"
         >
-          <ChevronLeft size={32} />
+          <ChevronLeft size={24} />
         </button>
         <button
           className={`${styles.arrow} ${styles.right}`}
           onClick={nextBanner}
           aria-label="Next banner"
         >
-          <ChevronRight size={32} />
+          <ChevronRight size={24} />
         </button>
+        <div className={styles.dots} aria-hidden="true">
+          {banners.map((banner, index) => (
+            <span
+              key={banner.id}
+              className={`${styles.dot} ${index === current ? styles.dotActive : ""}`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

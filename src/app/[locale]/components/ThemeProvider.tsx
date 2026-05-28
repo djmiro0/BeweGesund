@@ -56,9 +56,9 @@ function subscribe(callback: () => void) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const theme = useSyncExternalStore(subscribe, readTheme, () => "light");
+  const theme = useSyncExternalStore(subscribe, readTheme, (): ThemeMode => "light");
 
-  const value = useMemo(
+  const value = useMemo<ThemeContextValue>(
     () => ({
       theme,
       toggleTheme: () => {
