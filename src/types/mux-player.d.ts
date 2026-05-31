@@ -1,0 +1,14 @@
+declare global {
+  namespace React.JSX {
+    interface IntrinsicElements {
+      "mux-player": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        "playback-id"?: string;
+        poster?: string;
+        "metadata-video-title"?: string;
+        "stream-type"?: "on-demand" | "live";
+      };
+    }
+  }
+}
+
+export {};

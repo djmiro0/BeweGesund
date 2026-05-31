@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 import { useAuth } from "./components/AuthProvider";
 import Dashboard from "./components/Dashboard";
 import HeroSection from "./components/HeroSection";
+import VideoSection from "./components/VideoSection";
 import BannerSection from "../components/BannerSection/BannerSection";
 import styles from "./page.module.css";
 
@@ -89,6 +90,7 @@ export default function HomePage() {
                         </div>
                     </section>
                     <BannerSection />
+                    <VideoSection />
                 </>
             )}
         </div>
