@@ -36,7 +36,7 @@ export default function ComingSoon({ openAuth }: ComingSoonProps) {
 
                 <div className={styles.heroCopy}>
                     <motion.p className={styles.eyebrow} variants={fadeIn}>
-                        S.BeweGesund
+                        BeweGesund
                     </motion.p>
                     <motion.h1 className={styles.title} variants={fadeIn}>
                         Website in Vorbereitung
