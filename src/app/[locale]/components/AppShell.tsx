@@ -4,6 +4,7 @@ import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
+import ComingSoon from "./ComingSoon";
 import MobileTabBar from "./MobileTabBar";
 import { ThemeProvider } from "./ThemeProvider";
 import styles from "./AppShell.module.css";
@@ -15,7 +16,20 @@ function ShellFrame({
   children: React.ReactNode;
   locale: string;
 }) {
-  const { user, isAuthOpen, openAuth, closeAuth } = useAuth();
+  const { user, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
+
+  if (loading) {
+    return <main className={styles.loadingScreen}>Loading</main>;
+  }
+
+  if (!user) {
+    return (
+      <>
+        <ComingSoon openAuth={openAuth} />
+        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      </>
+    );
+  }
 
   return (
     <>

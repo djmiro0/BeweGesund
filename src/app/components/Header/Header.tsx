@@ -108,6 +108,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         alt=""
                         width={36}
                         height={36}
+                        priority
                         data-testid="header-mobile-logo"
                         className={styles.mobileLogo}
                     />
@@ -115,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         data-testid="header-desktop-wordmark"
                         className={styles.wordmark}
                     >
-                        <span className={styles.wordmarkAccent}>S</span>.Bewe<span className={styles.wordmarkAccent}>Gesund</span>
+                        Bewe<span className={styles.wordmarkAccent}>Gesund</span>
                     </div>
                 </Link>
 

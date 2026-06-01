@@ -97,6 +97,7 @@ export const memberCourses: MemberCourseDefinition[] = [
     { id: "osteoporosis-training", categoryKey: "reha", unlocksPerWeek: 1, packageRequired: "all-access" },
     { id: "arthritis-training", categoryKey: "reha", unlocksPerWeek: 1, packageRequired: "all-access" },
     { id: "morning-gymnastics", categoryKey: "healthy-living", durationMinutes: 15, unlocksPerWeek: 1, packageRequired: "starter" },
+    { id: "morning-gymnastics-gentle", categoryKey: "healthy-living", durationMinutes: 15, unlocksPerWeek: 1, packageRequired: "starter" },
     { id: "evening-gymnastics", categoryKey: "healthy-living", durationMinutes: 10, unlocksPerWeek: 1, packageRequired: "starter" },
     { id: "pilates-beginners", categoryKey: "healthy-living", durationMinutes: 30, unlocksPerWeek: 1, noteKey: "package22", coach: "Nevena", packageRequired: "starter" },
     { id: "heart-gymnastics", categoryKey: "healthy-living", durationMinutes: 25, unlocksPerWeek: 1, packageRequired: "starter" },
@@ -114,7 +115,7 @@ export const memberCourses: MemberCourseDefinition[] = [
 
 export const memberCourseCategories: MemberCourseCategory[] = [
     { id: "reha", courseIds: ["reha-knee", "reha-back", "reha-hip", "reha-general", "osteoporosis-training", "arthritis-training"] },
-    { id: "healthy-living", courseIds: ["morning-gymnastics", "evening-gymnastics", "pilates-beginners", "heart-gymnastics"] },
+    { id: "healthy-living", courseIds: ["morning-gymnastics", "morning-gymnastics-gentle", "evening-gymnastics", "pilates-beginners", "heart-gymnastics"] },
     { id: "overweight", courseIds: ["weight-loss-program", "nutrition-principles"] },
     { id: "definition", courseIds: ["abs-intensive", "glutes-intensive", "full-body-strength-advanced"] },
     { id: "pre-post-birth", courseIds: ["pelvic-floor", "birth-preparation", "baby-training"] },

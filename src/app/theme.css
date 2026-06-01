@@ -16,8 +16,8 @@
   --tertiary-rgb: 136, 153, 45;
   --quaternary-rgb: 246, 199, 100;
 
-  --page-ink: #2f2618;
-  --page-ink-rgb: 47, 38, 24;
+  --page-ink: #0b1627;
+  --page-ink-rgb: 11, 22, 39;
   --page-soft: #fffaf0;
   --page-soft-rgb: 255, 250, 240;
   --page-soft-alt: #fff7e7;
@@ -38,14 +38,14 @@
   --page-muted: rgba(var(--page-ink-rgb), 0.72);
   --page-border: rgba(var(--page-ink-rgb), 0.12);
   --page-border-soft: rgba(var(--page-ink-rgb), 0.08);
-  --page-shadow: rgba(83, 57, 20, 0.12);
+  --page-shadow: rgba(8, 17, 31, 0.12);
 
-  --shell-bg: #1f1912;
-  --shell-bg-rgb: 31, 25, 18;
-  --shell-bg-alt: #2a2218;
-  --shell-bg-alt-rgb: 42, 34, 24;
-  --shell-surface: #3a2f22;
-  --shell-surface-rgb: 58, 47, 34;
+  --shell-bg: #0b1627;
+  --shell-bg-rgb: 11, 22, 39;
+  --shell-bg-alt: #111f34;
+  --shell-bg-alt-rgb: 17, 31, 52;
+  --shell-surface: #1b2d49;
+  --shell-surface-rgb: 27, 45, 73;
   --shell-text: var(--page-base);
   --shell-text-rgb: var(--page-base-rgb);
   --shell-text-muted: rgba(var(--page-base-rgb), 0.72);
@@ -104,8 +104,8 @@
 }
 
 :root[data-theme="dark"] {
-  --page-base: #19140f;
-  --page-base-rgb: 25, 20, 15;
+  --page-base: #08111f;
+  --page-base-rgb: 8, 17, 31;
   --page-accent: #e23d4f;
   --page-accent-rgb: 226, 61, 79;
   --page-olive: #a5b44a;
@@ -114,25 +114,25 @@
   --page-warm-rgb: 246, 199, 100;
   --page-ink: #f7f1e6;
   --page-ink-rgb: 247, 241, 230;
-  --page-soft: #2b2219;
-  --page-soft-rgb: 43, 34, 25;
-  --page-soft-alt: #33291f;
-  --page-soft-alt-rgb: 51, 41, 31;
-  --page-cream-1: #241c15;
-  --page-cream-1-rgb: 36, 28, 21;
-  --page-cream-2: #19140f;
-  --page-cream-2-rgb: 25, 20, 15;
+  --page-soft: #111f34;
+  --page-soft-rgb: 17, 31, 52;
+  --page-soft-alt: #14233a;
+  --page-soft-alt-rgb: 20, 35, 58;
+  --page-cream-1: #0d1728;
+  --page-cream-1-rgb: 13, 23, 40;
+  --page-cream-2: #08111f;
+  --page-cream-2-rgb: 8, 17, 31;
   --page-muted: rgba(var(--page-ink-rgb), 0.72);
   --page-border: rgba(var(--page-ink-rgb), 0.14);
   --page-border-soft: rgba(var(--page-ink-rgb), 0.08);
   --page-shadow: rgba(0, 0, 0, 0.28);
 
-  --shell-bg: #120e0a;
-  --shell-bg-rgb: 18, 14, 10;
-  --shell-bg-alt: #1b1510;
-  --shell-bg-alt-rgb: 27, 21, 16;
-  --shell-surface: #2d241b;
-  --shell-surface-rgb: 45, 36, 27;
+  --shell-bg: #07101d;
+  --shell-bg-rgb: 7, 16, 29;
+  --shell-bg-alt: #0d1728;
+  --shell-bg-alt-rgb: 13, 23, 40;
+  --shell-surface: #14233a;
+  --shell-surface-rgb: 20, 35, 58;
   --shell-text: #f7f1e6;
   --shell-text-rgb: 247, 241, 230;
   --shell-text-muted: rgba(var(--shell-text-rgb), 0.72);

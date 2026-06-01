@@ -451,7 +451,6 @@
     align-items: flex-start;
     justify-content: space-between;
   }
-
   .catalogAside {
     text-align: right;
   }
@@ -474,8 +473,10 @@
   .title {
     font-size: 1.95rem;
   }
-
   .overviewGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .overviewValue {
+    font-size: 1.12rem;
   }
 }

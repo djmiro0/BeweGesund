@@ -34,7 +34,6 @@
 
 .wordmark {
   display: none;
-  overflow: hidden;
   color: var(--shell-text);
   font-size: 1.125rem;
   font-style: italic;
