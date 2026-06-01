@@ -29,7 +29,6 @@ vi.mock("next-intl", () => ({
       "nav.courses": "Courses",
       "nav.settings": "Settings",
       "nav.calendar": "Calendar",
-      "nav.consultation": "Consultation",
       "nav.contact": "Contact",
       "nav.about": "About",
     })[key] ?? key,
@@ -90,7 +89,7 @@ describe("Header", () => {
 
     expect(screen.getByTestId("header-mobile-logo")).toHaveAttribute("src", "/favicon.ico");
     expect(screen.getByTestId("header-mobile-logo")).toHaveClass(styles.mobileLogo);
-    expect(screen.getByTestId("header-desktop-wordmark")).toHaveTextContent("Bewegesund");
+    expect(screen.getByTestId("header-desktop-wordmark")).toHaveTextContent("BeweGesund");
     expect(screen.getByTestId("header-desktop-wordmark")).toHaveClass(styles.wordmark);
   });
 

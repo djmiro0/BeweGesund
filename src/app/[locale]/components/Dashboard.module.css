@@ -6,9 +6,9 @@
   --app-surface: rgba(var(--page-soft-rgb), 0.82);
   --app-surface-strong: rgba(var(--page-soft-rgb), 0.96);
   --app-card: rgba(var(--page-soft-rgb), 0.72);
-  --app-border: rgba(var(--page-ink-rgb), 0.1);
+  --app-border: var(--page-border);
   --app-text: var(--page-ink);
-  --app-muted: rgba(var(--page-ink-rgb), 0.62);
+  --app-muted: var(--page-muted);
   --app-shadow: var(--page-shadow);
   min-height: 100svh;
   padding: 6.35rem clamp(0.75rem, 2.4vw, 1.4rem) 3rem;
@@ -24,10 +24,10 @@
   --app-surface: rgba(var(--shell-surface-rgb), 0.72);
   --app-surface-strong: rgba(var(--shell-surface-rgb), 0.9);
   --app-card: rgba(var(--shell-bg-alt-rgb), 0.72);
-  --app-border: rgba(var(--page-base-rgb), 0.11);
+  --app-border: var(--shell-border);
   --app-text: var(--shell-text);
-  --app-muted: rgba(var(--page-base-rgb), 0.64);
-  --app-shadow: rgba(0, 0, 0, 0.34);
+  --app-muted: var(--shell-text-muted);
+  --app-shadow: var(--shadow-color);
 }
 
 .shell {
@@ -87,7 +87,7 @@
   border: 1px solid var(--app-border);
   border-radius: 999px;
   background: linear-gradient(135deg, var(--shell-bg), var(--shell-surface));
-  color: var(--page-base);
+  color: var(--shell-text);
   font-size: 0.92rem;
   font-weight: 950;
   text-transform: uppercase;
@@ -136,7 +136,7 @@
 .statusItem strong {
   margin-top: 0.16rem;
   color: var(--app-text);
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   font-weight: 950;
   line-height: 1.08;
 }
@@ -183,7 +183,7 @@
   height: 1.8rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(var(--page-ink-rgb), 0.1);
+  border: 1px solid var(--app-border);
   border-radius: 999px;
   background: var(--app-surface-strong);
   box-shadow: 0 10px 24px var(--app-shadow);
@@ -217,7 +217,7 @@
 }
 
 :global(:root[data-theme="dark"]) .tabScrollButton {
-  border-color: rgba(var(--page-base-rgb), 0.14);
+  border-color: var(--app-border);
 }
 
 :global(:root[data-theme="dark"]) .tabsShell::before {
@@ -307,7 +307,7 @@
   min-height: 13rem;
   border-radius: 1.15rem;
   background: var(--shell-bg);
-  color: white;
+  color: var(--media-text);
 }
 
 .featureCardLarge {
@@ -340,7 +340,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(var(--media-text-rgb), 0.9);
   color: var(--shell-bg);
 }
 
@@ -364,7 +364,7 @@
 .cardKicker {
   display: inline-flex;
   margin-bottom: 0.36rem;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(var(--media-text-rgb), 0.78);
   font-size: 0.58rem;
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -381,7 +381,7 @@
 
 .cardCopy p {
   margin: 0.32rem 0 0;
-  color: rgba(255, 255, 255, 0.76);
+  color: rgba(var(--media-text-rgb), 0.76);
   font-size: 0.72rem;
   font-weight: 700;
 }

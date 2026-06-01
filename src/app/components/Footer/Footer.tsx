@@ -15,13 +15,12 @@ const Footer: React.FC = () => {
     { href: `/${locale}/about`, label: t("links.about") },
     { href: `/${locale}/courses`, label: t("links.programs") },
     { href: `/${locale}/calendar`, label: t("links.calendar") },
-    { href: `/${locale}/consultation`, label: t("links.consultation") },
+    { href: `/${locale}/kontakt`, label: t("links.contact") },
   ];
 
   const legalLinks = [
     { href: `/${locale}/impressum`, label: t("links.impressum"), icon: FileText },
     { href: `/${locale}/datenschutz`, label: t("links.privacy"), icon: ShieldCheck },
-    { href: `/${locale}/kontakt`, label: t("links.contact"), icon: Mail },
   ];
 
   const contactItems = [

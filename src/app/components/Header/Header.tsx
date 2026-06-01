@@ -51,16 +51,10 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
             active: pathname === `/${locale}/calendar`,
         },
         {
-            key: "consultation",
-            href: `/${locale}/consultation`,
-            label: t("nav.consultation"),
-            active: pathname === `/${locale}/consultation`,
-        },
-        {
             key: user ? "contact" : "about",
             href: user ? `/${locale}/kontakt` : `/${locale}/about`,
             label: user ? t("nav.contact") : t("nav.about"),
-            active: user ? pathname === `/${locale}/kontakt` : pathname === `/${locale}/about`,
+            active: user ? pathname === `/${locale}/kontakt` || pathname === `/${locale}/consultation` : pathname === `/${locale}/about`,
         },
     ];
 

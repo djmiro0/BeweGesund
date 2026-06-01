@@ -15,7 +15,7 @@
     radial-gradient(circle at 50% 42%, rgba(var(--page-warm-rgb), 0.16), transparent 16rem),
     radial-gradient(circle at 18% 12%, rgba(var(--page-accent-rgb), 0.12), transparent 18rem),
     linear-gradient(180deg, var(--shell-bg-alt), var(--shell-bg));
-  color: #ffffff;
+  color: var(--media-text);
 }
 
 .loadingScreen::before {
@@ -23,7 +23,7 @@
   position: absolute;
   width: min(68vw, 34rem);
   aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(var(--media-text-rgb), 0.08);
   border-radius: 50%;
   animation: loadingOrbit 8s linear infinite;
 }
@@ -43,14 +43,14 @@
 
 .loadingMark span:nth-child(1) {
   inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(var(--media-text-rgb), 0.18);
   border-top-color: var(--page-warm);
   animation: loadingSpin 1.15s linear infinite;
 }
 
 .loadingMark span:nth-child(2) {
   inset: 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(var(--media-text-rgb), 0.14);
   border-right-color: var(--page-accent);
   animation: loadingSpin 1.8s linear infinite reverse;
 }
@@ -76,7 +76,7 @@
 .loadingText {
   position: relative;
   margin: 0;
-  color: rgba(255, 255, 255, 0.76);
+  color: rgba(var(--media-text-rgb), 0.76);
   font-size: 0.82rem;
   font-weight: 750;
 }

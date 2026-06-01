@@ -50,6 +50,7 @@ export default function InfoPage({
         >
           <p className={styles.eyebrow}>Bewegesund</p>
           <h1 className={styles.title}>{title}</h1>
+          <span className={styles.email}>Email: info@bewegesund.de</span>
           <p className={styles.intro}>{intro}</p>
           {ctaLabel && ctaHref ? (
             <Link href={`/${locale}${ctaHref}`} className={styles.cta}>
