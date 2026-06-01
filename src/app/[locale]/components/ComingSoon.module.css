@@ -1,0 +1,218 @@
+.comingSoon {
+  min-height: 100svh;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.94) 0%, rgba(var(--shell-bg-rgb), 0.82) 45%, rgba(var(--shell-bg-rgb), 0.36) 100%),
+    url("/training.jpg") center / cover;
+  color: var(--shell-text);
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: end;
+  padding: clamp(6.5rem, 10vw, 9rem) clamp(1.25rem, 6vw, 6rem) clamp(2rem, 5vw, 4rem);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: clamp(0.75rem, 2vw, 1.5rem);
+  pointer-events: none;
+  border: 1px solid rgba(var(--page-base-rgb), 0.12);
+}
+
+.heroCopy,
+.statusRail {
+  position: relative;
+  z-index: 1;
+}
+
+.heroCopy {
+  max-width: 55rem;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: var(--page-warm);
+  font-size: clamp(0.78rem, 1vw, 0.9rem);
+  font-weight: 950;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 11ch;
+  margin: 0;
+  color: var(--shell-text);
+  font-size: clamp(3.15rem, 9.2vw, 8.8rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.82;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.description {
+  max-width: 42rem;
+  margin: 1.4rem 0 0;
+  color: rgba(var(--page-base-rgb), 0.78);
+  font-size: clamp(1rem, 1.45vw, 1.22rem);
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.primaryButton,
+.statusPill {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.62rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.primaryButton {
+  border: 0;
+  background: var(--page-warm);
+  color: var(--shell-bg);
+  cursor: pointer;
+  padding: 0.92rem 1.15rem;
+  transition:
+    background 0.24s var(--transition),
+    transform 0.24s var(--transition);
+}
+
+.primaryButton:hover {
+  background: var(--page-base);
+  transform: translateY(-2px);
+}
+
+.statusPill {
+  border: 1px solid rgba(var(--page-base-rgb), 0.14);
+  background: rgba(var(--shell-surface-rgb), 0.5);
+  color: rgba(var(--page-base-rgb), 0.82);
+  padding: 0.88rem 1rem;
+  backdrop-filter: blur(18px);
+}
+
+.heroMedia {
+  position: absolute;
+  right: clamp(1rem, 7vw, 7rem);
+  top: clamp(6rem, 13vw, 10rem);
+  width: min(32vw, 24rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+
+.orbit {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(var(--page-base-rgb), 0.2);
+  border-radius: 50%;
+}
+
+.orbit::before {
+  content: "";
+  position: absolute;
+  top: -0.25rem;
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--page-warm);
+  box-shadow: 0 0 28px rgba(var(--page-warm-rgb), 0.65);
+}
+
+.pulseLine {
+  position: absolute;
+  right: 8%;
+  bottom: 22%;
+  left: 8%;
+  height: 1px;
+  transform-origin: center;
+  background: linear-gradient(90deg, transparent, var(--page-warm), transparent);
+}
+
+.statusRail {
+  display: grid;
+  gap: 0.75rem;
+  align-self: end;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(var(--page-base-rgb), 0.14);
+  padding: 0 0 0.85rem;
+  color: rgba(var(--page-base-rgb), 0.8);
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.statusItem svg {
+  flex: 0 0 auto;
+  color: var(--page-warm);
+}
+
+@media (max-width: 900px) {
+  .comingSoon {
+    background:
+      linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.92) 0%, rgba(var(--shell-bg-rgb), 0.78) 58%, rgba(var(--shell-bg-rgb), 0.48) 100%),
+      url("/training.jpg") center / cover;
+  }
+
+  .hero {
+    min-height: 100svh;
+    grid-template-columns: 1fr;
+    align-content: end;
+    gap: 2.25rem;
+    padding: 6.2rem 1.05rem 1.5rem;
+  }
+
+  .heroMedia {
+    top: 5.5rem;
+    right: 1.25rem;
+    width: 11rem;
+    opacity: 0.72;
+  }
+
+  .title {
+    max-width: 9.5ch;
+  }
+
+  .description {
+    max-width: 32rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero::before {
+    inset: 0.55rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primaryButton,
+  .statusPill {
+    width: 100%;
+  }
+}

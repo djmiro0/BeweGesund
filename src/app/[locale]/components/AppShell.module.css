@@ -1,0 +1,21 @@
+.main {
+  min-height: 100svh;
+}
+
+.loadingScreen {
+  display: flex;
+  min-height: 100svh;
+  align-items: center;
+  justify-content: center;
+  background: var(--page-base);
+  color: var(--page-accent);
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  .main {
+    padding-bottom: calc(5.75rem + env(safe-area-inset-bottom));
+  }
+}

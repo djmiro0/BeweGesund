@@ -1,9 +1,9 @@
 "use client";
+
 import Link from "next/link";
 import { ArrowRight, CalendarDays, ShieldCheck, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "./components/AuthProvider";
 import Dashboard from "./components/Dashboard";
 import HeroSection from "./components/HeroSection";
@@ -20,14 +20,12 @@ export default function HomePage() {
     const highlights = t.raw("public.highlights") as string[];
     const displayName = user?.displayName || user?.email?.split("@")[0] || "Member";
 
-    if (loading) return <div className="bg-[var(--background)] h-screen flex items-center justify-center text-[var(--highlight)] font-bold">{t("loading")}</div>;
+    if (loading) return <div className={styles.loadingScreen}>{t("loading")}</div>;
 
     return (
-        <div className="min-h-screen bg-[var(--page-base)] text-[var(--page-ink)]">
+        <div className={styles.homePage}>
             {user ? (
-                <>
-                    <Dashboard user={{ name: displayName }} />
-                </>
+                <Dashboard user={{ name: displayName }} />
             ) : (
                 <>
                     <HeroSection openAuth={openAuth} />
@@ -40,12 +38,8 @@ export default function HomePage() {
                                 transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
                             >
                                 <p className={styles.eyebrow}>{t("public.eyebrow")}</p>
-                                <h2 className={styles.publicTitle}>
-                                    {t("public.title")}
-                                </h2>
-                                <p className={styles.publicDescription}>
-                                    {t("public.description")}
-                                </p>
+                                <h2 className={styles.publicTitle}>{t("public.title")}</h2>
+                                <p className={styles.publicDescription}>{t("public.description")}</p>
                                 <div className={styles.publicActions}>
                                     <Link href={`/${locale}/courses`} className={styles.primaryLink}>
                                         {t("public.primaryCta")}
@@ -69,6 +63,7 @@ export default function HomePage() {
                             >
                                 {highlights.map((item, index) => {
                                     const Icon = highlightIcons[index] ?? Sparkles;
+
                                     return (
                                         <motion.div
                                             key={item}

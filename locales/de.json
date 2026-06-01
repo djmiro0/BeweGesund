@@ -22,6 +22,33 @@
     "themeLight": "Zum hellen Modus wechseln",
     "themeDark": "Zum dunklen Modus wechseln"
   },
+  "mobileTabs": {
+    "ariaLabel": "Mobile Navigation",
+    "tabs": {
+      "home": "Start",
+      "courses": "Kurse",
+      "calendar": "Kalender",
+      "profile": "Profil",
+      "about": "Info"
+    },
+    "actions": {
+      "open": "Schnellaktionen öffnen",
+      "eyebrow": "Schnell hinzufügen",
+      "title": "Nächster Schritt",
+      "trainingTitle": "Training",
+      "trainingText": "Termin buchen oder Session öffnen.",
+      "consultationTitle": "Live-Beratung",
+      "consultationText": "Persönliche Unterstützung anfragen."
+    },
+    "mind": {
+      "title": "Mind-Eintrag",
+      "description": "Notizen, Motivation oder kurzer Stimmungscheck.",
+      "placeholder": "Schreibe auf, woran du dich erinnern, was du loslassen oder vor dem Training wiederholen möchtest...",
+      "hint": "Vorerst auf diesem Gerät gespeichert.",
+      "save": "Speichern",
+      "saved": "Gespeichert"
+    }
+  },
   "home": {
     "hero": {
       "title": "BEWEGE DICH IN RICHTUNG EINER GESÜNDEREN KÖRPERHALTUNG",
@@ -74,6 +101,22 @@
         "bookConsultation": "Beratung buchen",
         "joinFromCalendar": "Im Kalender öffnen",
         "explorePrograms": "Programm ansehen"
+      },
+      "workouts": {
+        "title": "Workouts",
+        "subtitle": "Wähle einen Schwerpunkt und trainiere mit den Sessions, die zu deinem aktuellen Plan passen.",
+        "forYou": "Für dich",
+        "forYouDescription": "Empfohlene Sessions aus deinem aktuellen Weg.",
+        "sessions": "{count, plural, one {# Session} other {# Sessions}}",
+        "newWorkouts": "Neue Workouts",
+        "recommended": "Empfohlen",
+        "openSession": "Öffnen",
+        "lockedSoon": "Videothek nach Tags kommt als Nächstes.",
+        "status": {
+          "package": "Paket",
+          "upcoming": "Geplant",
+          "completed": "Fertig"
+        }
       }
     },
     "loading": "WIRD GELADEN..."
@@ -185,7 +228,7 @@
         },
         {
           "label": "Beratung",
-          "value": "30 Min / 40 EUR"
+          "value": "30 Min"
         }
       ]
     },
@@ -262,7 +305,7 @@
       "items": [
         "Online-Terminbuchung",
         "Registrierung ist nicht erforderlich",
-        "30 Minuten - 40 EUR"
+        "30 Minuten"
       ]
     },
     "annualTraining": {
@@ -299,7 +342,8 @@
     "reha-general": "Reha Allgemein",
     "osteoporosis-training": "Training bei Osteoporose",
     "arthritis-training": "Training bei Arthritis",
-    "morning-gymnastics": "Morgengymnastik",
+    "morning-gymnastics": "Morgengymnastik - Power",
+    "morning-gymnastics-gentle": "Morgengymnastik - Sanftes Aufwachen",
     "evening-gymnastics": "Abendgymnastik",
     "pilates-beginners": "Pilates für Anfänger",
     "heart-gymnastics": "Herzgymnastik",
@@ -540,7 +584,7 @@
       {
         "id": "consultation",
         "title": "Persönliche Beratung",
-        "desc": "Buche eine gezielte Online-Beratung ohne verpflichtende Registrierung. Dauer 30 Minuten, Preis 40 EUR.",
+        "desc": "Buche eine gezielte Online-Beratung ohne verpflichtende Registrierung. Dauer 30 Minuten.",
         "cta": "Online Buchen"
       },
       {
@@ -649,7 +693,7 @@
       }
     ],
     "cta": "Zur Beratung",
-    "note": "Direkte Kontaktdaten können hier ergänzt werden, sobald die finalen Kommunikationskanäle festgelegt sind."
+    "note": "E-Mail: info@bewegesund.de"
   },
   "consultationPage": {
     "title": "Persönliche Beratung",
@@ -664,8 +708,8 @@
         "body": "Termine werden online vereinbart und eine Registrierung ist vor der Beratung nicht verpflichtend."
       },
       {
-        "title": "Format und Preis",
-        "body": "Die Beratung dauert 30 Minuten und wird für 40 EUR angeboten."
+        "title": "Format",
+        "body": "Die Beratung dauert 30 Minuten."
       }
     ],
     "note": "Für allgemeine Kommunikation oder geschäftliche Zusammenarbeit bleibt die Kontaktseite der richtige zentrale Einstiegspunkt."

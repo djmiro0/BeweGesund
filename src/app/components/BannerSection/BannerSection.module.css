@@ -1,9 +1,8 @@
 .bannerSection {
   position: relative;
   width: 100%;
-  min-height: 82svh;
   overflow: hidden;
-  padding: clamp(1rem, 3vw, 2rem);
+  padding: 2rem;
   background: var(--page-soft);
   color: var(--page-base);
 }
@@ -158,7 +157,7 @@
   }
 
   .overlay {
-    align-items: flex-end;
+    align-items: center;
     padding: 1.25rem;
   }
 

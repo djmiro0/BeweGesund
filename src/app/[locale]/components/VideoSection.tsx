@@ -45,7 +45,7 @@ export default function VideoSection() {
     return (
         <section id="videos" className="py-20 px-6 bg-[var(--background)]">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-4xl md:text-6xl font-black uppercase italic mb-12 text-[var(--text-light)]">
+                <h2 className="text-4xl md:text-6xl font-black uppercase italic mb-12 text-[var(--text)]">
                     Online <span className="text-[var(--highlight)]">Training</span>
                 </h2>
 

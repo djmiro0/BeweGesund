@@ -23,7 +23,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0;
-  color: var(--text-light);
+  color: var(--page-ink);
   animation: fadeIn 0.8s var(--transition);
 }
 
@@ -54,7 +54,7 @@
 .subtitle {
   max-width: 640px;
   font-size: 1.12rem;
-  color: rgba(255, 255, 255, 0.76);
+  color: var(--page-muted);
   line-height: 1.8;
 }
 
@@ -110,7 +110,7 @@
 
 .text {
   line-height: 1.85;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--shell-text);
   font-size: 1.02rem;
 }
 
@@ -137,7 +137,7 @@
   gap: 1rem;
   padding: 1rem 0 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--shell-text);
 }
 
 .listItem:hover {
@@ -157,7 +157,7 @@
 .footerNote {
   margin-top: 2rem;
   font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--page-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }

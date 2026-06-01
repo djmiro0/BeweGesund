@@ -22,6 +22,33 @@
     "themeLight": "Switch to light mode",
     "themeDark": "Switch to dark mode"
   },
+  "mobileTabs": {
+    "ariaLabel": "Mobile navigation",
+    "tabs": {
+      "home": "Home",
+      "courses": "Courses",
+      "calendar": "Calendar",
+      "profile": "Profile",
+      "about": "About"
+    },
+    "actions": {
+      "open": "Open quick actions",
+      "eyebrow": "Quick add",
+      "title": "Choose next step",
+      "trainingTitle": "Training",
+      "trainingText": "Book or join your next session.",
+      "consultationTitle": "Live consult",
+      "consultationText": "Ask for personal support."
+    },
+    "mind": {
+      "title": "Mind entry",
+      "description": "Notes, motivation letters, or mood check-ins.",
+      "placeholder": "Write what you want to remember, release, or repeat before training...",
+      "hint": "Stored on this device for now.",
+      "save": "Save",
+      "saved": "Saved"
+    }
+  },
   "home": {
     "hero": {
       "title": "MOVE TOWARD A HEALTHIER BODY",
@@ -74,6 +101,22 @@
         "bookConsultation": "Book consultation",
         "joinFromCalendar": "Join from calendar",
         "explorePrograms": "View program"
+      },
+      "workouts": {
+        "title": "Workouts",
+        "subtitle": "Choose a focus area and continue with the sessions that match your current plan.",
+        "forYou": "For You",
+        "forYouDescription": "Recommended sessions from your current path.",
+        "sessions": "{count, plural, one {# session} other {# sessions}}",
+        "newWorkouts": "New workouts",
+        "recommended": "Recommended",
+        "openSession": "Open",
+        "lockedSoon": "Video library by tags comes next.",
+        "status": {
+          "package": "Package",
+          "upcoming": "Upcoming",
+          "completed": "Done"
+        }
       }
     },
     "loading": "LOADING..."
@@ -185,7 +228,7 @@
         },
         {
           "label": "Consultation",
-          "value": "30 min / 40 EUR"
+          "value": "30 min"
         }
       ]
     },
@@ -262,7 +305,7 @@
       "items": [
         "Online scheduling",
         "Registration is not required",
-        "30 minutes - 40 EUR"
+        "30 minutes"
       ]
     },
     "annualTraining": {
@@ -299,7 +342,8 @@
     "reha-general": "General Rehab",
     "osteoporosis-training": "Training for Osteoporosis",
     "arthritis-training": "Training for Arthritis",
-    "morning-gymnastics": "Morning Gymnastics",
+    "morning-gymnastics": "Morning Gymnastics - Power",
+    "morning-gymnastics-gentle": "Morning Gymnastics - Gentle Wake Up",
     "evening-gymnastics": "Evening Gymnastics",
     "pilates-beginners": "Pilates for Beginners",
     "heart-gymnastics": "Heart Gymnastics",
@@ -540,7 +584,7 @@
       {
         "id": "consultation",
         "title": "Personal Consultation",
-        "desc": "Book a focused online consultation without mandatory registration. Duration 30 minutes, price 40 EUR.",
+        "desc": "Book a focused online consultation without mandatory registration. Duration 30 minutes.",
         "cta": "Book Online"
       },
       {
@@ -649,7 +693,7 @@
       }
     ],
     "cta": "Go to Consultation",
-    "note": "Direct contact details can be added here once the final business communication channels are confirmed."
+    "note": "Email: info@bewegesund.de"
   },
   "consultationPage": {
     "title": "Personal Consultation",
@@ -664,8 +708,8 @@
         "body": "Appointments are scheduled online and registration is not mandatory before the consultation."
       },
       {
-        "title": "Format and Price",
-        "body": "The consultation lasts 30 minutes and is offered at 40 EUR."
+        "title": "Format",
+        "body": "The consultation lasts 30 minutes."
       }
     ],
     "note": "If you need general communication or business partnership contact, the contact page remains the right central entry point."

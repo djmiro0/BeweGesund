@@ -9,6 +9,7 @@ import { auth } from "../../../../firebase.config";
 import { signOut } from 'firebase/auth';
 import { LogOut, Globe, Menu, Moon, Sun, X } from 'lucide-react';
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
+import styles from "./Header.module.css";
 
 interface HeaderProps {
     locale: string;
@@ -76,21 +77,17 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
             onClick={() => setIsMenuOpen(false)}
             aria-label={t("profileLink")}
             aria-current={pathname === `/${locale}/profile` ? "page" : undefined}
-            className={`group flex min-w-0 items-center gap-2 rounded-full border p-1 transition-all sm:pr-3 ${
-                pathname === `/${locale}/profile`
-                    ? "border-[rgba(var(--page-accent-rgb),0.35)] bg-[rgba(var(--page-accent-rgb),0.12)]"
-                    : "border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.07)] hover:bg-[rgba(var(--shell-text-rgb),0.12)]"
-            }`}
+            className={`${styles.profileLink} ${pathname === `/${locale}/profile` ? styles.profileLinkActive : ""}`}
         >
             <span
-                className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(135deg,var(--page-accent),var(--page-olive))] bg-cover bg-center text-xs font-black text-[var(--shell-bg)] sm:h-9 sm:w-9 sm:text-sm"
+                className={styles.profileAvatar}
                 role="img"
                 aria-label={t("profileAvatarAlt", { name: profileName })}
                 style={profilePhoto ? { backgroundImage: `url("${profilePhoto}")` } : undefined}
             >
                 {profilePhoto ? null : profileInitial}
             </span>
-            <span className="hidden max-w-28 truncate text-sm font-black text-[var(--shell-text)] xl:block">
+            <span className={styles.profileName}>
                 {profileName}
             </span>
         </Link>
@@ -98,12 +95,12 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
 
     return (
         <>
-            <header className="fixed top-0 z-40 flex h-16 w-full items-center justify-between border-b border-[var(--shell-border)] bg-[linear-gradient(180deg,rgba(var(--shell-bg-rgb),0.97),rgba(var(--shell-bg-alt-rgb),0.95))] px-3 text-[var(--shell-text)] shadow-[0_16px_40px_rgba(20,16,11,0.18)] backdrop-blur-xl sm:h-20 sm:px-6">
+            <header className={styles.header}>
                 <Link
                     href={`/${locale}`}
                     aria-label={t("logo")}
                     data-testid="header-brand-link"
-                    className="min-w-0 shrink-0 transition-opacity hover:opacity-80"
+                    className={styles.brandLink}
                     onClick={() => setIsMenuOpen(false)}
                 >
                     <Image
@@ -111,51 +108,42 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         alt=""
                         width={36}
                         height={36}
+                        priority
                         data-testid="header-mobile-logo"
-                        className="block h-9 w-9 rounded-full sm:hidden"
+                        className={styles.mobileLogo}
                     />
                     <div
                         data-testid="header-desktop-wordmark"
-                        className="hidden truncate text-lg font-black italic uppercase tracking-normal text-[var(--shell-text)] sm:block sm:text-2xl"
+                        className={styles.wordmark}
                     >
-                        <span className="text-[var(--page-warm)]">S</span>.Bewe<span className="text-[var(--page-warm)]">Gesund</span>
+                        Bewe<span className={styles.wordmarkAccent}>Gesund</span>
                     </div>
                 </Link>
 
-                <nav className="hidden items-center gap-1 rounded-full border border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.04)] px-2 py-1.5 shadow-[inset_0_1px_0_rgba(var(--shell-text-rgb),0.04)] backdrop-blur-md lg:flex xl:gap-2 xl:px-3 xl:py-2">
+                <nav className={styles.desktopNav}>
                     {navItems.map((item) => (
                         <Link
                             key={item.key}
                             href={item.href}
                             onClick={() => setIsMenuOpen(false)}
                             aria-current={item.active ? "page" : undefined}
-                            className={`group relative overflow-hidden rounded-full px-3 py-2 text-xs font-bold uppercase tracking-[0.06em] transition-all duration-300 xl:px-4 xl:text-sm ${
-                                item.active
-                                    ? "text-[var(--shell-text)]"
-                                    : "text-[rgba(var(--shell-text-rgb),0.62)] hover:text-[var(--shell-text)]"
-                            }`}
+                            className={`${styles.navLink} ${item.active ? styles.navLinkActive : ""}`}
                         >
                             <span
-                                className={`absolute inset-x-3 bottom-[0.38rem] h-[2px] origin-left rounded-full bg-[linear-gradient(90deg,var(--page-accent),var(--page-warm),var(--page-olive))] transition-transform duration-300 ${
-                                    item.active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                                }`}
+                                className={`${styles.navUnderline} ${item.active ? styles.navUnderlineActive : ""}`}
                             />
                             <span
-                                className={`absolute inset-0 rounded-full transition-all duration-300 ${
-                                    item.active
-                                        ? "bg-[radial-gradient(circle_at_bottom,_rgba(var(--page-accent-rgb),0.16),_transparent_68%)] shadow-[inset_0_0_0_1px_rgba(var(--shell-text-rgb),0.08)]"
-                                        : "bg-transparent"
-                                }`}
+                                className={`${styles.navGlow} ${item.active ? styles.navGlowActive : ""}`}
                             />
-                            <span className="relative z-10 whitespace-nowrap">{item.label}</span>
+                            <span className={styles.navLabel}>{item.label}</span>
                         </Link>
                     ))}
                 </nav>
 
-                <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+                <div className={styles.actions}>
                     <button
                         onClick={handleLanguageChange}
-                        className="flex h-9 items-center gap-1 rounded-full border border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.09)] px-2.5 text-xs font-black text-[var(--shell-text)] transition-all hover:bg-[rgba(var(--shell-text-rgb),0.12)] sm:px-3"
+                        className={styles.languageButton}
                     >
                         <Globe size={14} />
                         {otherLocale.toUpperCase()}
@@ -166,20 +154,16 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         data-testid="theme-toggle"
                         aria-label={theme === "light" ? t("themeDark") : t("themeLight")}
                         title={theme === "light" ? t("themeDark") : t("themeLight")}
-                        className={`flex h-9 w-9 items-center justify-center rounded-full border text-xs font-black transition-all sm:w-auto sm:gap-2 sm:px-3 ${
-                            theme === "dark"
-                                ? "border-[var(--background)] bg-[var(--primary)] text-[var(--background)] hover:opacity-90"
-                                : "border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.09)] text-[var(--shell-text)] hover:bg-[rgba(var(--shell-text-rgb),0.12)]"
-                        }`}
+                        className={`${styles.themeButton} ${theme === "dark" ? styles.themeButtonDark : ""}`}
                     >
                         {theme === "light" ? <Moon size={14} /> : <Sun size={14} />}
-                        <span className="hidden sm:inline">{theme === "light" ? t("darkMode") : t("lightMode")}</span>
+                        <span className={styles.themeLabel}>{theme === "light" ? t("darkMode") : t("lightMode")}</span>
                     </button>
 
                     {user ? profileLink : (
                         <button
                             onClick={openAuth}
-                            className="hidden rounded-full bg-[var(--shell-text)] px-5 py-2 text-sm font-black uppercase text-[var(--shell-bg)] transition-all duration-300 hover:bg-[var(--page-accent)] hover:text-[var(--shell-text)] sm:block"
+                            className={styles.signInButton}
                         >
                             {t("signIn")}
                         </button>
@@ -188,7 +172,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                     {user ? (
                         <button
                             onClick={() => signOut(auth)}
-                            className="hidden items-center gap-2 text-sm font-black uppercase text-[var(--page-accent)] transition-colors hover:text-[var(--page-warm)] lg:flex"
+                            className={styles.signOutButton}
                         >
                             <LogOut size={18} />
                             <span>{t("signOut")}</span>
@@ -201,7 +185,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                         data-testid="mobile-menu-trigger"
                         aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
                         aria-expanded={isMenuOpen}
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.09)] text-[var(--shell-text)] transition-all hover:bg-[rgba(var(--shell-text-rgb),0.12)] lg:hidden"
+                        className={styles.menuButton}
                     >
                         {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
                     </button>
@@ -213,39 +197,33 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                     type="button"
                     aria-label={t("closeMenu")}
                     data-testid="mobile-menu-backdrop"
-                    className="fixed inset-x-0 bottom-0 top-16 z-20 cursor-default bg-[rgba(var(--shell-bg-rgb),0.18)] backdrop-blur-sm sm:top-20 lg:hidden"
+                    className={styles.mobileBackdrop}
                     onClick={() => setIsMenuOpen(false)}
                 />
             ) : null}
 
             <div
                 data-testid="mobile-menu"
-                className={`fixed left-0 right-0 top-16 z-30 border-b border-[var(--shell-border)] bg-[linear-gradient(180deg,rgba(var(--shell-bg-rgb),0.98),rgba(var(--shell-bg-alt-rgb),0.98))] px-3 py-4 text-[var(--shell-text)] shadow-[0_18px_42px_rgba(20,16,11,0.24)] backdrop-blur-xl transition-all duration-300 sm:top-20 sm:px-6 lg:hidden ${
-                    isMenuOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-3 opacity-0"
-                }`}
+                className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ""}`}
             >
-                <nav className="mx-auto flex max-w-3xl flex-col gap-2">
+                <nav className={styles.mobileNav}>
                     {navItems.map((item) => (
                         <Link
                             key={item.key}
                             href={item.href}
                             onClick={() => setIsMenuOpen(false)}
                             aria-current={item.active ? "page" : undefined}
-                            className={`rounded-2xl border px-4 py-3 text-sm font-black uppercase tracking-[0.1em] ${
-                                item.active
-                                    ? "border-[rgba(var(--page-accent-rgb),0.32)] bg-[rgba(var(--page-accent-rgb),0.14)] text-[var(--shell-text)]"
-                                    : "border-[var(--shell-border)] bg-[rgba(var(--shell-text-rgb),0.06)] text-[rgba(var(--shell-text-rgb),0.76)]"
-                            }`}
+                            className={`${styles.mobileNavLink} ${item.active ? styles.mobileNavLinkActive : ""}`}
                         >
                             {item.label}
                         </Link>
                     ))}
 
-                    <div className="mt-2 border-t border-[var(--shell-border)] pt-3">
+                    <div className={styles.mobileAuth}>
                         {user ? (
                             <button
                                 onClick={() => signOut(auth)}
-                                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-[rgba(var(--page-accent-rgb),0.28)] bg-[rgba(var(--page-accent-rgb),0.1)] px-4 py-3 text-sm font-black uppercase tracking-[0.1em] text-[var(--page-accent)]"
+                                className={styles.mobileSignOut}
                             >
                                 <LogOut size={18} />
                                 {t("signOut")}
@@ -256,7 +234,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                                     setIsMenuOpen(false);
                                     openAuth?.();
                                 }}
-                                className="w-full rounded-2xl bg-[var(--shell-text)] px-4 py-3 text-sm font-black uppercase tracking-[0.1em] text-[var(--shell-bg)]"
+                                className={styles.mobileSignIn}
                             >
                                 {t("signIn")}
                             </button>
