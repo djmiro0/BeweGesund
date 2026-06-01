@@ -46,7 +46,7 @@ export default function BannerSection() {
   return (
     <section className={styles.bannerSection}>
       <div className={styles.sectionIntro}>
-        <span>S.BeweGesund</span>
+        <span>Bewegesund</span>
       </div>
       <div className={styles.bannerWrapper}>
         <AnimatePresence mode="wait">

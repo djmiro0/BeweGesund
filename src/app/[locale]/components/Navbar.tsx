@@ -11,7 +11,7 @@ interface NavbarProps {
 export default function Navbar({ user, openAuth }: NavbarProps) {
     return (
         <nav className="fixed w-full z-40 bg-[rgba(var(--navy-rgb),0.92)] border-b border-[var(--border-soft)] h-20 px-6 flex items-center justify-between">
-            <div className="text-2xl font-black text-[var(--highlight)] italic">S.BeweGesund</div>
+            <div className="text-2xl font-black text-[var(--highlight)] italic">Bewegesund</div>
 
             <div className="flex items-center gap-6">
                 {user ? (

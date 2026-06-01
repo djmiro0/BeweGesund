@@ -1,6 +1,6 @@
 {
   "header": {
-    "logo": "S.BeweGesund",
+    "logo": "Bewegesund",
     "nav": {
       "program": "Program",
       "courses": "Courses",
@@ -105,7 +105,7 @@
       "title": "Terms of Use",
       "intro": "These general terms are a temporary version for the current prototype and will be refined before launch.",
       "items": [
-        "S.BeweGesund provides educational movement, rehabilitation, and training content. It does not replace medical diagnosis, treatment, or emergency care.",
+        "Bewegesund provides educational movement, rehabilitation, and training content. It does not replace medical diagnosis, treatment, or emergency care.",
         "You are responsible for entering accurate account and health-related information. Optional data helps personalize recommendations but can be added later.",
         "If you experience acute pain, dizziness, chest pain, shortness of breath, neurological symptoms, or other warning signs, stop training and contact a medical professional.",
         "Your account data is stored in Firebase and used inside the application for profile display, access control, training progress, and future recommendations.",
@@ -141,7 +141,7 @@
     "consultationNote": "Personal counseling is available inside the member area after sign-in."
   },
   "about": {
-    "title": "About S.BeweGesund",
+    "title": "About Bewegesund",
     "subtitle": "Movement, rehabilitation, and education for sustainable health",
     "missionTitle": "Our Mission",
     "missionText": "We support people who want to move safely, build strength gradually, and improve their quality of life through structured training and practical education.",
@@ -154,7 +154,7 @@
     },
     "visionTitle": "Our Vision",
     "visionText": "We want health-oriented movement and understandable education to be accessible, practical, and sustainable for everyday life.",
-    "footer": "S.BeweGesund. All rights reserved."
+    "footer": "Bewegesund. All rights reserved."
   },
   "banners": {
     "training": {
@@ -558,7 +558,7 @@
     ]
   },
   "footer": {
-    "brand": "S.BeweGesund",
+    "brand": "Bewegesund",
     "tagline": "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
     "navigationTitle": "Navigation",
     "legalTitle": "Legal",
@@ -583,11 +583,11 @@
       "responseLabel": "Response",
       "responseValue": "Business and counseling inquiries"
     },
-    "copyright": "© 2026 S.BeweGesund. All rights reserved."
+    "copyright": "© 2026 Bewegesund. All rights reserved."
   },
   "impressum": {
     "title": "Imprint",
-    "intro": "This page is prepared as the legal imprint area for S.BeweGesund.",
+    "intro": "This page is prepared as the legal imprint area for Bewegesund.",
     "sections": [
       {
         "title": "Provider Information",

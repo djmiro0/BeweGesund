@@ -35,7 +35,7 @@ export default function HeroSection({ openAuth }: { openAuth?: () => void }) {
                     transition={{ delay: 0.15, duration: 0.5 }}
                 >
                     <Sparkles size={16} />
-                    S.BeweGesund
+                    Bewegesund
                 </motion.div>
                 <h1>{t("title")}</h1>
                 <p>{t("subtitle")}</p>

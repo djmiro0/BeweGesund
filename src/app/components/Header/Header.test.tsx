@@ -12,7 +12,7 @@ const { push, toggleTheme } = vi.hoisted(() => ({
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string, values?: Record<string, string>) =>
     ({
-      logo: "S.BeweGesund",
+      logo: "Bewegesund",
       signIn: "Sign in",
       signOut: "Sign out",
       openMenu: "Open menu",
@@ -89,7 +89,7 @@ describe("Header", () => {
 
     expect(screen.getByTestId("header-mobile-logo")).toHaveAttribute("src", "/favicon.ico");
     expect(screen.getByTestId("header-mobile-logo")).toHaveClass("sm:hidden");
-    expect(screen.getByTestId("header-desktop-wordmark")).toHaveTextContent("S.BeweGesund");
+    expect(screen.getByTestId("header-desktop-wordmark")).toHaveTextContent("Bewegesund");
     expect(screen.getByTestId("header-desktop-wordmark")).toHaveClass("hidden", "sm:block");
   });
 

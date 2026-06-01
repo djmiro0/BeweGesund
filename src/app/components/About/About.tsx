@@ -18,7 +18,7 @@ export const About: React.FC = () => {
       <div className={styles.glow} />
       <div className={styles.aboutContainer}>
         <header className={styles.hero}>
-          <p className={styles.eyebrow}>S.BeweGesund</p>
+          <p className={styles.eyebrow}>Bewegesund</p>
           <h1 className={styles.title}>{t("title")}</h1>
           <p className={styles.subtitle}>{t("subtitle")}</p>
         </header>

@@ -1,6 +1,6 @@
-# S.BeweGesund
+# Bewegesund
 
-S.BeweGesund is a bilingual health and movement platform built with Next.js. The frontend handles the member experience, while Firebase and Cloud Functions own authentication, protected data updates, gamification, and subscription logic.
+Bewegesund is a bilingual health and movement platform built with Next.js. The frontend handles the member experience, while Firebase and Cloud Functions own authentication, protected data updates, gamification, and subscription logic.
 
 ## Stack
 

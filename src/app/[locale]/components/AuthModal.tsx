@@ -213,7 +213,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <button onClick={onClose} aria-label={t("close")} className="absolute right-4 top-4 rounded-full border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.05)] p-2 text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.1)] hover:text-[var(--text-light)]"><X size={18} /></button>
                 <div className="mb-6">
                     <div className="mb-3 inline-flex rounded-full border border-[rgba(var(--accent-rgb),0.25)] bg-[rgba(var(--accent-rgb),0.1)] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[var(--highlight-soft)]">
-                        S.BeweGesund
+                        Bewegesund
                     </div>
                     <h2 className="text-3xl font-black italic uppercase text-[var(--text-light)]">
                         {isRegister ? t("registerTitle") : t("signInTitle")}

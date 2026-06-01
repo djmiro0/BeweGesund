@@ -48,7 +48,7 @@ export default function InfoPage({
           className={styles.hero}
           variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}
         >
-          <p className={styles.eyebrow}>S.BeweGesund</p>
+          <p className={styles.eyebrow}>Bewegesund</p>
           <h1 className={styles.title}>{title}</h1>
           <p className={styles.intro}>{intro}</p>
           {ctaLabel && ctaHref ? (

@@ -22,7 +22,7 @@ vi.mock("next-intl", () => ({
   useLocale: () => "en",
   useTranslations: () => (key: string) =>
     ({
-      brand: "S.BeweGesund",
+      brand: "Bewegesund",
       tagline: "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
       navigationTitle: "Navigation",
       legalTitle: "Legal",
@@ -44,7 +44,7 @@ vi.mock("next-intl", () => ({
       "contactItems.languagesValue": "German and English",
       "contactItems.responseLabel": "Response",
       "contactItems.responseValue": "Business and counseling inquiries",
-      copyright: "© 2026 S.BeweGesund. All rights reserved.",
+      copyright: "© 2026 Bewegesund. All rights reserved.",
     })[key] ?? key,
 }));
 
@@ -66,6 +66,6 @@ describe("Footer", () => {
     expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(3);
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("Online by appointment");
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("German and English");
-    expect(screen.getByTestId("footer-bottom")).toHaveTextContent("© 2026 S.BeweGesund. All rights reserved.");
+    expect(screen.getByTestId("footer-bottom")).toHaveTextContent("© 2026 Bewegesund. All rights reserved.");
   });
 });

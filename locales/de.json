@@ -1,6 +1,6 @@
 {
   "header": {
-    "logo": "S.BeweGesund",
+    "logo": "Bewegesund",
     "nav": {
       "program": "Programme",
       "courses": "Kurse",
@@ -105,7 +105,7 @@
       "title": "Nutzungsbedingungen",
       "intro": "Diese allgemeinen Bedingungen sind eine vorläufige Version für den aktuellen Prototyp und werden vor dem Launch weiter ausgearbeitet.",
       "items": [
-        "S.BeweGesund stellt edukative Inhalte für Bewegung, Rehabilitation und Training bereit. Dies ersetzt keine medizinische Diagnose, Behandlung oder Notfallversorgung.",
+        "Bewegesund stellt edukative Inhalte für Bewegung, Rehabilitation und Training bereit. Dies ersetzt keine medizinische Diagnose, Behandlung oder Notfallversorgung.",
         "Du bist dafür verantwortlich, Konto- und gesundheitsbezogene Angaben korrekt einzugeben. Optionale Daten helfen bei späterer Personalisierung und können nachgetragen werden.",
         "Bei akutem Schmerz, Schwindel, Brustschmerz, Atemnot, neurologischen Symptomen oder anderen Warnzeichen solltest du das Training beenden und medizinischen Rat einholen.",
         "Deine Kontodaten werden in Firebase gespeichert und innerhalb der Anwendung für Profilanzeige, Zugriff, Trainingsfortschritt und spätere Empfehlungen genutzt.",
@@ -141,7 +141,7 @@
     "consultationNote": "Die persönliche Beratung ist im Mitgliederbereich nach dem Login verfügbar."
   },
   "about": {
-    "title": "Über S.BeweGesund",
+    "title": "Über Bewegesund",
     "subtitle": "Bewegung, Rehabilitation und Bildung für nachhaltige Gesundheit",
     "missionTitle": "Unsere Mission",
     "missionText": "Wir begleiten Menschen, die sich sicher bewegen, schrittweise Kraft aufbauen und ihre Lebensqualität durch strukturiertes Training und verständliche Bildung verbessern möchten.",
@@ -154,7 +154,7 @@
     },
     "visionTitle": "Unsere Vision",
     "visionText": "Wir möchten gesundheitsorientierte Bewegung und verständliche Bildung zugänglich, praxisnah und alltagstauglich machen.",
-    "footer": "S.BeweGesund. Alle Rechte vorbehalten."
+    "footer": "Bewegesund. Alle Rechte vorbehalten."
   },
   "banners": {
     "training": {
@@ -558,7 +558,7 @@
     ]
   },
   "footer": {
-    "brand": "S.BeweGesund",
+    "brand": "Bewegesund",
     "tagline": "Bewegung, Rehabilitation und Bildung mit einem klareren Weg zu gesünderem Alltag.",
     "navigationTitle": "Navigation",
     "legalTitle": "Rechtliches",
@@ -583,11 +583,11 @@
       "responseLabel": "Anfragen",
       "responseValue": "Geschäftliche und beratungsbezogene Anfragen"
     },
-    "copyright": "© 2026 S.BeweGesund. Alle Rechte vorbehalten."
+    "copyright": "© 2026 BeweGesund. Alle Rechte vorbehalten."
   },
   "impressum": {
     "title": "Impressum",
-    "intro": "Diese Seite ist als Bereich für die rechtlich erforderlichen Anbieterangaben von S.BeweGesund vorbereitet.",
+    "intro": "Diese Seite ist als Bereich für die rechtlich erforderlichen Anbieterangaben von Bewegesund vorbereitet.",
     "sections": [
       {
         "title": "Anbieterangaben",
