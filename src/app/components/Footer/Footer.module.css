@@ -230,6 +230,7 @@
   border-top: 1px solid rgba(var(--shell-text-rgb), 0.08);
   color: var(--shell-text-dim);
   font-size: 0.88rem;
+  text-align: center;
 }
 
 .footerBottom p {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
 import AppShell from "./components/AppShell";
 import "./globals.css";
@@ -47,6 +48,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AppShell locale={locale}>{children}</AppShell>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );
