@@ -1,0 +1,422 @@
+.tabBar {
+  --tab-surface:
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.9), rgba(var(--page-base-rgb), 0.86)),
+    rgba(var(--page-soft-rgb), 0.92);
+  --tab-border: rgba(var(--page-ink-rgb), 0.1);
+  --tab-text: rgba(var(--page-ink-rgb), 0.58);
+  --tab-text-active: var(--page-ink);
+  --tab-icon-bg: rgba(var(--page-ink-rgb), 0.06);
+  --tab-active-bg: rgba(var(--page-ink-rgb), 0.08);
+  --tab-action-bg: linear-gradient(135deg, var(--page-accent), var(--page-warm));
+  --tab-action-text: var(--shell-bg);
+  --tab-shadow: rgba(83, 57, 20, 0.26);
+  --tab-lift-glow: rgba(var(--page-accent-rgb), 0.16);
+  --tab-top-glow: rgba(var(--page-warm-rgb), 0.72);
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 55;
+  display: none;
+  padding: 0 0.8rem calc(0.65rem + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+:global(:root[data-theme="dark"]) .tabBar {
+  --tab-surface:
+    linear-gradient(180deg, rgba(var(--shell-surface-rgb), 0.9), rgba(var(--shell-bg-rgb), 0.94)),
+    rgba(var(--shell-bg-rgb), 0.9);
+  --tab-border: rgba(var(--page-base-rgb), 0.1);
+  --tab-text: rgba(var(--page-base-rgb), 0.58);
+  --tab-text-active: var(--shell-text);
+  --tab-icon-bg: rgba(var(--page-base-rgb), 0.08);
+  --tab-active-bg: rgba(var(--page-base-rgb), 0.1);
+  --tab-action-bg: linear-gradient(135deg, var(--page-accent), var(--page-warm));
+  --tab-action-text: var(--shell-bg);
+  --tab-shadow: rgba(0, 0, 0, 0.48);
+  --tab-lift-glow: rgba(var(--page-warm-rgb), 0.14);
+  --tab-top-glow: rgba(var(--page-warm-rgb), 0.64);
+}
+
+.tabRail {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+  max-width: 27rem;
+  min-height: 4.65rem;
+  margin: 0 auto;
+  border: 1px solid var(--tab-border);
+  border-radius: 1.45rem;
+  background: var(--tab-surface);
+  box-shadow:
+    0 0 0 1px rgba(var(--page-warm-rgb), 0.08),
+    0 10px 26px var(--tab-lift-glow),
+    0 22px 54px var(--tab-shadow);
+  padding: 0.5rem 0.35rem 0.42rem;
+  pointer-events: auto;
+  backdrop-filter: blur(22px);
+}
+
+.tabRail::after {
+  content: "";
+  position: absolute;
+  inset: -0.55rem 0.85rem auto;
+  height: 1.2rem;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, var(--tab-lift-glow), transparent 68%);
+  pointer-events: none;
+}
+
+.tabRail::before {
+  content: "";
+  position: absolute;
+  inset: 0.45rem 35% auto;
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--tab-top-glow), transparent);
+}
+
+.tabItem {
+  display: flex;
+  min-width: 0;
+  height: 3.1rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  border-radius: 1rem;
+  color: var(--tab-text);
+  text-decoration: none;
+  transition:
+    background 0.24s var(--transition),
+    color 0.24s var(--transition),
+    transform 0.24s var(--transition);
+}
+
+.tabItem:hover,
+.tabItemActive {
+  color: var(--tab-text-active);
+  transform: translateY(-2px);
+}
+
+.tabItemActive {
+  background: var(--tab-active-bg);
+}
+
+.tabIcon {
+  display: inline-flex;
+  width: 1.7rem;
+  height: 1.7rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: transparent;
+  transition: background 0.24s var(--transition), color 0.24s var(--transition);
+}
+
+.tabItemActive .tabIcon {
+  background: var(--tab-icon-bg);
+  color: var(--page-accent);
+}
+
+.tabLabel {
+  max-width: 4.2rem;
+  overflow: hidden;
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.centerAction {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  width: 3.45rem;
+  height: 3.45rem;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  align-self: start;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tab-action-bg);
+  box-shadow:
+    0 14px 30px rgba(var(--page-accent-rgb), 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  color: var(--tab-action-text);
+  cursor: pointer;
+  margin-top: -1.32rem;
+  transition:
+    box-shadow 0.24s var(--transition),
+    transform 0.24s var(--transition);
+}
+
+.centerAction:hover {
+  box-shadow:
+    0 18px 38px rgba(var(--page-accent-rgb), 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  transform: translateY(-3px) scale(1.03);
+}
+
+.actionLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 54;
+  display: none;
+}
+
+.actionBackdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(var(--shell-bg-rgb), 0.32);
+  backdrop-filter: blur(8px);
+}
+
+.actionSheet {
+  --sheet-surface:
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-base-rgb), 0.94)),
+    var(--page-soft);
+  --sheet-border: rgba(var(--page-ink-rgb), 0.12);
+  --sheet-text: var(--page-ink);
+  --sheet-muted: rgba(var(--page-ink-rgb), 0.62);
+  --sheet-card-bg: rgba(var(--page-base-rgb), 0.56);
+  --sheet-card-border: rgba(var(--page-ink-rgb), 0.08);
+  position: absolute;
+  right: 0.8rem;
+  bottom: calc(5.9rem + env(safe-area-inset-bottom));
+  left: 0.8rem;
+  max-width: 27rem;
+  margin: 0 auto;
+  border: 1px solid var(--sheet-border);
+  border-radius: 1.4rem;
+  background: var(--sheet-surface);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24);
+  color: var(--sheet-text);
+  padding: 0.9rem;
+  animation: sheetIn 0.26s var(--transition);
+}
+
+:global(:root[data-theme="dark"]) .actionSheet {
+  --sheet-surface:
+    linear-gradient(180deg, rgba(var(--shell-surface-rgb), 0.96), rgba(var(--shell-bg-rgb), 0.96)),
+    var(--shell-bg);
+  --sheet-border: rgba(var(--page-base-rgb), 0.1);
+  --sheet-text: var(--shell-text);
+  --sheet-muted: rgba(var(--page-base-rgb), 0.62);
+  --sheet-card-bg: rgba(var(--page-base-rgb), 0.06);
+  --sheet-card-border: rgba(var(--page-base-rgb), 0.09);
+}
+
+.sheetHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.sheetEyebrow {
+  margin: 0 0 0.28rem;
+  color: var(--page-accent);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.sheetTitle {
+  margin: 0;
+  color: var(--sheet-text);
+  font-size: 1.15rem;
+  font-style: italic;
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sheetClose {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--sheet-card-border);
+  border-radius: 999px;
+  background: var(--sheet-card-bg);
+  color: var(--sheet-text);
+}
+
+.quickActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.quickAction,
+.mindEntry {
+  border: 1px solid var(--sheet-card-border);
+  border-radius: 1rem;
+  background: var(--sheet-card-bg);
+  color: var(--sheet-text);
+}
+
+.quickAction {
+  display: flex;
+  min-width: 0;
+  gap: 0.55rem;
+  padding: 0.72rem;
+  text-decoration: none;
+  transition: transform 0.24s var(--transition), border-color 0.24s var(--transition);
+}
+
+.quickAction:hover {
+  border-color: rgba(var(--page-accent-rgb), 0.24);
+  transform: translateY(-2px);
+}
+
+.quickActionIcon {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.18), rgba(var(--page-warm-rgb), 0.22));
+  color: var(--page-accent);
+}
+
+.quickAction strong,
+.quickAction small {
+  display: block;
+}
+
+.quickAction strong {
+  font-size: 0.72rem;
+  font-weight: 950;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.quickAction small {
+  margin-top: 0.22rem;
+  color: var(--sheet-muted);
+  font-size: 0.66rem;
+  line-height: 1.25;
+}
+
+.mindEntry {
+  margin-top: 0.55rem;
+  padding: 0.72rem;
+}
+
+.mindHeader {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.mindHeader h3,
+.mindHeader p {
+  margin: 0;
+}
+
+.mindHeader h3 {
+  color: var(--sheet-text);
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.mindHeader p {
+  margin-top: 0.18rem;
+  color: var(--sheet-muted);
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.mindTextarea {
+  width: 100%;
+  min-height: 5.8rem;
+  resize: vertical;
+  border: 1px solid var(--sheet-card-border);
+  border-radius: 0.85rem;
+  background: rgba(var(--page-soft-rgb), 0.56);
+  color: var(--sheet-text);
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  margin-top: 0.65rem;
+  padding: 0.72rem;
+}
+
+:global(:root[data-theme="dark"]) .mindTextarea {
+  background: rgba(var(--shell-bg-rgb), 0.48);
+}
+
+.mindTextarea::placeholder {
+  color: var(--sheet-muted);
+}
+
+.mindFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-top: 0.6rem;
+}
+
+.mindFooter span {
+  color: var(--sheet-muted);
+  font-size: 0.66rem;
+  line-height: 1.2;
+}
+
+.mindSave {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tab-action-bg);
+  color: var(--tab-action-text);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  padding: 0.62rem 0.8rem;
+  text-transform: uppercase;
+}
+
+@keyframes sheetIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 767px) {
+  .tabBar,
+  .actionLayer {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabItem,
+  .centerAction,
+  .tabIcon,
+  .actionSheet,
+  .quickAction {
+    transition: none;
+    animation: none;
+  }
+}

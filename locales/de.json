@@ -22,6 +22,33 @@
     "themeLight": "Zum hellen Modus wechseln",
     "themeDark": "Zum dunklen Modus wechseln"
   },
+  "mobileTabs": {
+    "ariaLabel": "Mobile Navigation",
+    "tabs": {
+      "home": "Start",
+      "courses": "Kurse",
+      "calendar": "Kalender",
+      "profile": "Profil",
+      "about": "Info"
+    },
+    "actions": {
+      "open": "Schnellaktionen öffnen",
+      "eyebrow": "Schnell hinzufügen",
+      "title": "Nächster Schritt",
+      "trainingTitle": "Training",
+      "trainingText": "Termin buchen oder Session öffnen.",
+      "consultationTitle": "Live-Beratung",
+      "consultationText": "Persönliche Unterstützung anfragen."
+    },
+    "mind": {
+      "title": "Mind-Eintrag",
+      "description": "Notizen, Motivation oder kurzer Stimmungscheck.",
+      "placeholder": "Schreibe auf, woran du dich erinnern, was du loslassen oder vor dem Training wiederholen möchtest...",
+      "hint": "Vorerst auf diesem Gerät gespeichert.",
+      "save": "Speichern",
+      "saved": "Gespeichert"
+    }
+  },
   "home": {
     "hero": {
       "title": "BEWEGE DICH IN RICHTUNG EINER GESÜNDEREN KÖRPERHALTUNG",

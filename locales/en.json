@@ -22,6 +22,33 @@
     "themeLight": "Switch to light mode",
     "themeDark": "Switch to dark mode"
   },
+  "mobileTabs": {
+    "ariaLabel": "Mobile navigation",
+    "tabs": {
+      "home": "Home",
+      "courses": "Courses",
+      "calendar": "Calendar",
+      "profile": "Profile",
+      "about": "About"
+    },
+    "actions": {
+      "open": "Open quick actions",
+      "eyebrow": "Quick add",
+      "title": "Choose next step",
+      "trainingTitle": "Training",
+      "trainingText": "Book or join your next session.",
+      "consultationTitle": "Live consult",
+      "consultationText": "Ask for personal support."
+    },
+    "mind": {
+      "title": "Mind entry",
+      "description": "Notes, motivation letters, or mood check-ins.",
+      "placeholder": "Write what you want to remember, release, or repeat before training...",
+      "hint": "Stored on this device for now.",
+      "save": "Save",
+      "saved": "Saved"
+    }
+  },
   "home": {
     "hero": {
       "title": "MOVE TOWARD A HEALTHIER BODY",

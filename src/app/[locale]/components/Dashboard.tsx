@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CalendarDays, CheckCircle2, Compass, ShieldCheck } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, Compass, ShieldCheck, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { memberDashboard } from "@/data";
 import styles from "./Dashboard.module.css";
@@ -16,11 +17,43 @@ const fadeUp = {
     visible: { opacity: 1, y: 0 },
 };
 
+const statRise = {
+    hidden: { opacity: 0, y: 18, scale: 0.98 },
+    visible: { opacity: 1, y: 0, scale: 1 },
+};
+
 export default function Dashboard({ user }: { user: DashboardUser }) {
     const t = useTranslations("home.dashboard");
     const courseT = useTranslations("courseCatalog");
     const packageT = useTranslations("packages");
     const locale = useLocale();
+    const overviewStats = [
+        {
+            key: "package",
+            label: t("summary.currentPackage"),
+            value: packageT(memberDashboard.package),
+            hint: t("summary.packageDescription"),
+            icon: Sparkles,
+            progress: "74%",
+            featured: true,
+        },
+        {
+            key: "upcoming",
+            label: t("summary.upcoming"),
+            value: memberDashboard.upcomingCourseIds.length,
+            hint: t("summary.upcomingDescription"),
+            icon: CalendarDays,
+            progress: `${Math.min(memberDashboard.upcomingCourseIds.length * 24, 100)}%`,
+        },
+        {
+            key: "completed",
+            label: t("summary.completed"),
+            value: memberDashboard.completedCourseIds.length,
+            hint: t("summary.completedDescription"),
+            icon: CheckCircle2,
+            progress: `${Math.min(memberDashboard.completedCourseIds.length * 28, 100)}%`,
+        },
+    ];
 
     return (
         <section className={styles.dashboardSection}>
@@ -40,8 +73,47 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 <div className={styles.hero}>
                     <motion.div className={styles.heroMain} variants={fadeUp}>
                         <p className={styles.eyebrow}>{t("eyebrow")}</p>
-                        <h1 className={styles.title}>{t("greeting", { name: user.name.split(" ")[0] })}</h1>
-                        <p className={styles.description}>{t("ready")}</p>
+                        <div className={styles.overviewHeader}>
+                            <div>
+                                <h1 className={styles.title}>{t("greeting", { name: user.name.split(" ")[0] })}</h1>
+                                <p className={styles.description}>{t("ready")}</p>
+                            </div>
+                            <div className={styles.overviewPulse} aria-hidden="true" />
+                        </div>
+                        <motion.div
+                            className={styles.overviewStats}
+                            variants={{
+                                hidden: {},
+                                visible: { transition: { staggerChildren: 0.07, delayChildren: 0.08 } },
+                            }}
+                        >
+                            {overviewStats.map((item) => {
+                                const Icon = item.icon;
+
+                                return (
+                                    <motion.div
+                                        key={item.key}
+                                        className={`${styles.metricCard} ${item.featured ? styles.metricCardAccent : ""}`}
+                                        variants={statRise}
+                                        whileHover={{ y: -4, scale: 1.01 }}
+                                        style={{ "--metric-progress": item.progress } as CSSProperties}
+                                        data-testid={`dashboard-overview-${item.key}`}
+                                    >
+                                        <div className={styles.metricTopline}>
+                                            <span className={styles.metricIcon}>
+                                                <Icon size={15} />
+                                            </span>
+                                            <p className={styles.metricLabel}>{item.label}</p>
+                                        </div>
+                                        <p className={styles.metricValue}>{item.value}</p>
+                                        <div className={styles.metricTrack} aria-hidden="true">
+                                            <span />
+                                        </div>
+                                        <p className={styles.metricHint}>{item.hint}</p>
+                                    </motion.div>
+                                );
+                            })}
+                        </motion.div>
                         <div className={styles.actions}>
                             <Link href={`/${locale}/calendar`} className={styles.primaryButton}>
                                 {t("actions.openCalendar")}
@@ -51,24 +123,6 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                 {t("actions.bookConsultation")}
                                 <ArrowRight size={16} />
                             </Link>
-                        </div>
-                    </motion.div>
-
-                    <motion.div className={styles.heroAside} variants={fadeUp}>
-                        <div className={`${styles.metricCard} ${styles.metricCardAccent}`}>
-                            <p className={styles.metricLabel}>{t("summary.currentPackage")}</p>
-                            <p className={styles.metricValue}>{packageT(memberDashboard.package)}</p>
-                            <p className={styles.metricHint}>{t("summary.packageDescription")}</p>
-                        </div>
-                        <div className={styles.metricCard}>
-                            <p className={styles.metricLabel}>{t("summary.upcoming")}</p>
-                            <p className={styles.metricValue}>{memberDashboard.upcomingCourseIds.length}</p>
-                            <p className={styles.metricHint}>{t("summary.upcomingDescription")}</p>
-                        </div>
-                        <div className={styles.metricCard}>
-                            <p className={styles.metricLabel}>{t("summary.completed")}</p>
-                            <p className={styles.metricValue}>{memberDashboard.completedCourseIds.length}</p>
-                            <p className={styles.metricHint}>{t("summary.completedDescription")}</p>
                         </div>
                     </motion.div>
                 </div>

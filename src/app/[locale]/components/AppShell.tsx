@@ -4,7 +4,9 @@ import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
+import MobileTabBar from "./MobileTabBar";
 import { ThemeProvider } from "./ThemeProvider";
+import styles from "./AppShell.module.css";
 
 function ShellFrame({
   children,
@@ -19,7 +21,8 @@ function ShellFrame({
     <>
       <Header locale={locale} user={user} openAuth={openAuth} />
       <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
-      <main>{children}</main>
+      <main className={styles.main}>{children}</main>
+      <MobileTabBar locale={locale} user={user} openAuth={openAuth} />
       <Footer />
     </>
   );
