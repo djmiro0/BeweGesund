@@ -50,6 +50,8 @@
 
 .brandIcon {
   flex: 0 0 auto;
+  height: auto;
+  aspect-ratio: 1;
   border-radius: 999px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
 }

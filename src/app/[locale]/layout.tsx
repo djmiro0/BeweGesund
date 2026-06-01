@@ -26,7 +26,7 @@ export default async function LocaleLayout({
   const messages = locale === "de" ? deMessages : enMessages;
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
