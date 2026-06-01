@@ -1,14 +1,14 @@
 "use client";
 
 import { ArrowRight, CircleCheck, Clock3, LockKeyhole, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import styles from "./ComingSoon.module.css";
 
 interface ComingSoonProps {
     openAuth: () => void;
 }
 
-const fadeIn = {
+const fadeIn: Variants = {
     hidden: { opacity: 0, y: 18 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] } },
 };
