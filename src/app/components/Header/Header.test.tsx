@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Header from "./Header";
+import styles from "./Header.module.css";
 
 const { push, toggleTheme } = vi.hoisted(() => ({
   push: vi.fn(),
@@ -88,9 +89,9 @@ describe("Header", () => {
     render(<Header locale="en" />);
 
     expect(screen.getByTestId("header-mobile-logo")).toHaveAttribute("src", "/favicon.ico");
-    expect(screen.getByTestId("header-mobile-logo")).toHaveClass("sm:hidden");
-    expect(screen.getByTestId("header-desktop-wordmark")).toHaveTextContent("Bewegesund");
-    expect(screen.getByTestId("header-desktop-wordmark")).toHaveClass("hidden", "sm:block");
+    expect(screen.getByTestId("header-mobile-logo")).toHaveClass(styles.mobileLogo);
+    expect(screen.getByTestId("header-desktop-wordmark")).toHaveTextContent("S.BeweGesund");
+    expect(screen.getByTestId("header-desktop-wordmark")).toHaveClass(styles.wordmark);
   });
 
   it("closes the mobile menu from the blurred page backdrop", async () => {
@@ -101,14 +102,14 @@ describe("Header", () => {
     await user.click(trigger);
 
     expect(trigger).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByTestId("mobile-menu")).toHaveClass("translate-y-0", "opacity-100");
-    expect(screen.getByTestId("mobile-menu-backdrop")).toHaveClass("backdrop-blur-sm");
+    expect(screen.getByTestId("mobile-menu")).toHaveClass(styles.mobileMenuOpen);
+    expect(screen.getByTestId("mobile-menu-backdrop")).toHaveClass(styles.mobileBackdrop);
 
     await user.click(screen.getByTestId("mobile-menu-backdrop"));
 
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByTestId("mobile-menu-backdrop")).not.toBeInTheDocument();
-    expect(screen.getByTestId("mobile-menu")).toHaveClass("pointer-events-none", "opacity-0");
+    expect(screen.getByTestId("mobile-menu")).not.toHaveClass(styles.mobileMenuOpen);
   });
 
   it("closes the mobile menu after selecting a menu link", async () => {

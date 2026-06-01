@@ -48,10 +48,9 @@
 }
 
 .content h1 {
-  max-width: 12ch;
   margin: 0;
   color: var(--primary);
-  font-size: clamp(3.4rem, 8.5vw, 8.8rem);
+  font-size: 2rem;
   font-style: italic;
   font-weight: 950;
   line-height: 0.88;

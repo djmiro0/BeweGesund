@@ -60,7 +60,7 @@
 .title {
   margin-top: 1rem;
   max-width: 11ch;
-  font-size: clamp(3rem, 7vw, 6.6rem);
+  font-size: 3rem;
   line-height: 0.94;
   font-style: italic;
   font-weight: 900;
