@@ -3,15 +3,107 @@
 }
 
 .loadingScreen {
+  position: relative;
   display: flex;
   min-height: 100svh;
+  flex-direction: column;
+  gap: 0.8rem;
   align-items: center;
   justify-content: center;
-  background: var(--page-base);
-  color: var(--page-accent);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(var(--page-warm-rgb), 0.16), transparent 16rem),
+    radial-gradient(circle at 18% 12%, rgba(var(--page-accent-rgb), 0.12), transparent 18rem),
+    linear-gradient(180deg, var(--shell-bg-alt), var(--shell-bg));
+  color: #ffffff;
+}
+
+.loadingScreen::before {
+  content: "";
+  position: absolute;
+  width: min(68vw, 34rem);
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  animation: loadingOrbit 8s linear infinite;
+}
+
+.loadingMark {
+  position: relative;
+  display: grid;
+  width: 5.3rem;
+  aspect-ratio: 1;
+  place-items: center;
+}
+
+.loadingMark span {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.loadingMark span:nth-child(1) {
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--page-warm);
+  animation: loadingSpin 1.15s linear infinite;
+}
+
+.loadingMark span:nth-child(2) {
+  inset: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-right-color: var(--page-accent);
+  animation: loadingSpin 1.8s linear infinite reverse;
+}
+
+.loadingMark span:nth-child(3) {
+  width: 1.05rem;
+  height: 1.05rem;
+  background: var(--page-warm);
+  box-shadow: 0 0 34px rgba(var(--page-warm-rgb), 0.78);
+  animation: loadingPulse 1.25s var(--transition) infinite;
+}
+
+.loadingKicker {
+  position: relative;
+  margin: 0.45rem 0 0;
+  color: var(--page-warm);
+  font-size: 0.72rem;
   font-weight: 950;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+}
+
+.loadingText {
+  position: relative;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+@keyframes loadingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loadingPulse {
+  0%,
+  100% {
+    transform: scale(0.82);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+@keyframes loadingOrbit {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 767px) {

@@ -2,8 +2,8 @@
   min-height: 100svh;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.94) 0%, rgba(var(--shell-bg-rgb), 0.82) 45%, rgba(var(--shell-bg-rgb), 0.36) 100%),
-    url("/training.jpg") center / cover;
+          linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.94) 0%, rgba(var(--shell-bg-rgb), 0.82) 45%, rgba(var(--shell-bg-rgb), 0.36) 100%),
+          url("/training.jpg") center / cover;
   color: #ffffff;
 }
 
@@ -45,10 +45,9 @@
 }
 
 .title {
-  max-width: 11ch;
   margin: 0;
   color: #ffffff;
-  font-size: clamp(3.15rem, 9.2vw, 8.8rem);
+  font-size: 2.5rem;
   font-weight: 950;
   letter-spacing: 0;
   line-height: 0.82;
@@ -93,8 +92,8 @@
   cursor: pointer;
   padding: 0.92rem 1.15rem;
   transition:
-    background 0.24s var(--transition),
-    transform 0.24s var(--transition);
+          background 0.24s var(--transition),
+          transform 0.24s var(--transition);
 }
 
 .primaryButton:hover {
@@ -173,8 +172,8 @@
 @media (max-width: 900px) {
   .comingSoon {
     background:
-      linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.92) 0%, rgba(var(--shell-bg-rgb), 0.78) 58%, rgba(var(--shell-bg-rgb), 0.48) 100%),
-      url("/training.jpg") center / cover;
+            linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.92) 0%, rgba(var(--shell-bg-rgb), 0.78) 58%, rgba(var(--shell-bg-rgb), 0.48) 100%),
+            url("/training.jpg") center / cover;
   }
 
   .hero {
@@ -214,5 +213,9 @@
   .primaryButton,
   .statusPill {
     width: 100%;
+  }
+  .title {
+    font-size: 2rem;
+
   }
 }

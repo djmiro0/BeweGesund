@@ -19,7 +19,17 @@ function ShellFrame({
   const { user, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
 
   if (loading) {
-    return <main className={styles.loadingScreen}>Loading</main>;
+    return (
+      <main className={styles.loadingScreen}>
+        <div className={styles.loadingMark} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <p className={styles.loadingKicker}>BeweGesund</p>
+        <p className={styles.loadingText}>...</p>
+      </main>
+    );
   }
 
   if (!user) {
