@@ -79,6 +79,29 @@
   --border-strong: rgba(var(--page-accent-rgb), 0.28);
   --shadow-color: rgba(0, 0, 0, 0.28);
 
+  /*
+   * Default page UI tokens.
+   * Use these for new page/content components. Reserve `--shell-*` for the
+   * dark chrome areas such as header, footer, mobile navigation, and overlays.
+   */
+  --ui-bg: var(--background);
+  --ui-bg-alt: var(--page-soft);
+  --ui-surface: var(--page-soft-alt);
+  --ui-text: var(--foreground);
+  --ui-muted: rgba(var(--foreground-rgb), 0.72);
+  --ui-dim: rgba(var(--foreground-rgb), 0.54);
+  --ui-border: rgba(var(--foreground-rgb), 0.12);
+  --ui-border-soft: rgba(var(--foreground-rgb), 0.08);
+  --ui-accent: var(--page-accent);
+  --ui-accent-soft: rgba(var(--page-accent-rgb), 0.12);
+  --ui-warm: #946414;
+  --ui-warm-soft: rgba(var(--page-warm-rgb), 0.18);
+  --ui-olive: #586a17;
+  --ui-olive-soft: rgba(var(--page-olive-rgb), 0.16);
+  --ui-link: #8a2431;
+  --ui-link-hover: var(--foreground);
+  --ui-image-bg: rgba(var(--foreground-rgb), 0.08);
+
   --accent-rgb: var(--secondary-rgb);
   --accent-strong-rgb: var(--tertiary-rgb);
   --accent-soft-rgb: var(--quaternary-rgb);
@@ -161,6 +184,24 @@
   --border-soft: var(--shell-border);
   --border-strong: rgba(var(--page-accent-rgb), 0.28);
   --shadow-color: rgba(0, 0, 0, 0.34);
+
+  --ui-bg: var(--background);
+  --ui-bg-alt: var(--page-soft);
+  --ui-surface: var(--page-soft-alt);
+  --ui-text: var(--foreground);
+  --ui-muted: rgba(var(--foreground-rgb), 0.72);
+  --ui-dim: rgba(var(--foreground-rgb), 0.56);
+  --ui-border: rgba(var(--foreground-rgb), 0.14);
+  --ui-border-soft: rgba(var(--foreground-rgb), 0.08);
+  --ui-accent: var(--page-accent);
+  --ui-accent-soft: rgba(var(--page-accent-rgb), 0.14);
+  --ui-warm: var(--page-warm);
+  --ui-warm-soft: rgba(var(--page-warm-rgb), 0.16);
+  --ui-olive: var(--page-olive);
+  --ui-olive-soft: rgba(var(--page-olive-rgb), 0.16);
+  --ui-link: var(--page-warm);
+  --ui-link-hover: var(--foreground);
+  --ui-image-bg: rgba(var(--foreground-rgb), 0.08);
 
   --gradient1: linear-gradient(135deg, var(--shell-bg) 0%, var(--shell-bg-alt) 100%);
   --gradient2:
