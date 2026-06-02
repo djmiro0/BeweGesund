@@ -34,6 +34,21 @@ export interface TrainingVideo {
   muxPlaybackId: string | null;
 }
 
+export type BlogTag = "nutrition" | "health" | "training";
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  body: string;
+  tags: BlogTag[];
+  author: string;
+  readTimeMinutes: number;
+  publishedAt: string;
+  featuredImage: string;
+}
+
 interface ContentfulEntry<TFields> {
   sys: {
     id: string;
@@ -73,11 +88,33 @@ type TrainingVideoFields = Partial<{
   muxPlaybackId: string;
 }>;
 
+type ContentfulAssetField = { sys?: { id?: string }; fields?: { file?: { url?: string } } } | string;
+
+type BlogPostFields = Partial<{
+  title: string;
+  excerpt: string;
+  slug: string;
+  body: string;
+  tags: string[];
+  author: string;
+  readTimeMinutes: number;
+  publishedAt: string;
+  featuredImage: ContentfulAssetField;
+  image: ContentfulAssetField;
+}>;
+
 const defaultCalendarContentType = "calendarEvent";
 const defaultVideoContentType = "trainingVideo";
+const defaultBlogContentType = "blogPost";
 
 function hasContentfulConfig() {
   return Boolean(process.env.CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_DELIVERY_TOKEN);
+}
+
+function warnMissingContentfulConfig(contentType: string) {
+  console.warn(
+    `Contentful config missing for ${contentType}. Set CONTENTFUL_SPACE_ID and CONTENTFUL_DELIVERY_TOKEN in .env.local or deployment env vars.`,
+  );
 }
 
 function getContentfulLocale(locale: string) {
@@ -91,7 +128,10 @@ async function fetchEntries<TFields>(
   locale: string,
   searchParams: Record<string, string> = {},
 ) {
-  if (!hasContentfulConfig()) return null;
+  if (!hasContentfulConfig()) {
+    warnMissingContentfulConfig(contentType);
+    return null;
+  }
 
   const spaceId = process.env.CONTENTFUL_SPACE_ID;
   const environment = process.env.CONTENTFUL_ENVIRONMENT ?? "master";
@@ -198,7 +238,7 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
   return Array.from(days.values());
 }
 
-function normalizeImage(image: TrainingVideoFields["image"], assetUrls: Map<string, string>) {
+function normalizeImage(image: ContentfulAssetField | undefined, assetUrls: Map<string, string>) {
   if (!image) return "";
   if (typeof image === "string") return image;
 
@@ -207,6 +247,14 @@ function normalizeImage(image: TrainingVideoFields["image"], assetUrls: Map<stri
   if (!url) return "";
 
   return url.startsWith("//") ? `https:${url}` : url;
+}
+
+function buildAssetUrlMap<TFields>(collection: ContentfulCollection<TFields> | null) {
+  return new Map<string, string>(
+    collection?.includes?.Asset?.flatMap((asset) =>
+      asset.fields.file?.url ? [[asset.sys.id, asset.fields.file.url]] : [],
+    ) ?? [],
+  );
 }
 
 export async function getTrainingVideos(locale: string): Promise<TrainingVideo[]> {
@@ -231,11 +279,7 @@ export async function getTrainingVideos(locale: string): Promise<TrainingVideo[]
     }));
   }
 
-  const assetUrls = new Map<string, string>(
-    collection.includes?.Asset?.flatMap((asset) =>
-      asset.fields.file?.url ? [[asset.sys.id, asset.fields.file.url]] : [],
-    ) ?? [],
-  );
+  const assetUrls = buildAssetUrlMap(collection);
 
   return collection.items
     .map((item) => ({
@@ -249,4 +293,68 @@ export async function getTrainingVideos(locale: string): Promise<TrainingVideo[]
       muxPlaybackId: item.fields.muxPlaybackId ?? null,
     }))
     .filter((video) => video.image || video.muxPlaybackId);
+}
+
+function normalizeBlogTags(tags: string[] | undefined): BlogTag[] {
+  const validTags: BlogTag[] = ["nutrition", "health", "training"];
+
+  return Array.from(
+    new Set(
+      (tags ?? [])
+        .map((tag) => tag.toLowerCase().trim())
+        .filter((tag): tag is BlogTag => validTags.includes(tag as BlogTag)),
+    ),
+  );
+}
+
+function mapBlogPost(
+  item: ContentfulEntry<BlogPostFields>,
+  assetUrls: Map<string, string>,
+): BlogPost | null {
+  if (!item.fields.title) return null;
+
+  return {
+    id: item.sys.id,
+    title: item.fields.title,
+    excerpt: item.fields.excerpt ?? "",
+    slug: item.fields.slug ?? item.sys.id,
+    body: item.fields.body ?? "",
+    tags: normalizeBlogTags(item.fields.tags),
+    author: item.fields.author ?? "Bewegesund",
+    readTimeMinutes: Number(item.fields.readTimeMinutes ?? 4),
+    publishedAt: item.fields.publishedAt ?? new Date().toISOString(),
+    featuredImage: normalizeImage(item.fields.featuredImage ?? item.fields.image, assetUrls) || "/food.jpg",
+  };
+}
+
+export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
+  const collection = await fetchEntries<BlogPostFields>(
+    process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
+    locale,
+    {
+      order: "-fields.publishedAt",
+    },
+  );
+
+  if (!collection?.items.length) return [];
+
+  const assetUrls = buildAssetUrlMap(collection);
+  return collection.items
+    .map((item) => mapBlogPost(item, assetUrls))
+    .filter((post): post is BlogPost => Boolean(post));
+}
+
+export async function getBlogPost(locale: string, slug: string): Promise<BlogPost | null> {
+  const collection = await fetchEntries<BlogPostFields>(
+    process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
+    locale,
+    {
+      "fields.slug": slug,
+      limit: "1",
+    },
+  );
+
+  if (!collection?.items.length) return null;
+
+  return mapBlogPost(collection.items[0], buildAssetUrlMap(collection));
 }

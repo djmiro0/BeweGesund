@@ -6,6 +6,7 @@
       "courses": "Kurse",
       "settings": "Einstellungen",
       "calendar": "Live-Kalender",
+      "blogs": "Blogs",
       "consultation": "Beratung",
       "about": "Über Uns",
       "contact": "Kontakt"
@@ -28,6 +29,7 @@
       "home": "Start",
       "courses": "Kurse",
       "calendar": "Kalender",
+      "blogs": "Blogs",
       "profile": "Profil",
       "about": "Info"
     },
@@ -358,6 +360,15 @@
     "active-break": "Aktive Pause",
     "nutrition-program": "Ernährungsprogramm"
   },
+  "blogs": {
+    "eyebrow": "Bewegesund Journal",
+    "title": "Wissen zu Sport, Gesundheit und Ernährung für deinen Alltag.",
+    "intro": "Praktische Artikel zu Training, Regeneration, Ernährung und gesünderen Routinen.",
+    "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
+    "filterHint": "Nach Thema filtern",
+    "readArticle": "Artikel lesen",
+    "empty": "Zu diesem Tag gibt es noch keine passenden Artikel."
+  },
   "packages": {
     "starter": "Starter",
     "rehab-plus": "Reha Plus",
@@ -614,6 +625,7 @@
       "about": "Über Uns",
       "programs": "Programme",
       "calendar": "Live-Kalender",
+      "blogs": "Blogs",
       "consultation": "Beratung",
       "impressum": "Impressum",
       "privacy": "Datenschutz",

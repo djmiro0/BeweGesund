@@ -2,6 +2,7 @@
 
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
+import { usePathname } from "next/navigation";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
@@ -17,6 +18,8 @@ function ShellFrame({
   locale: string;
 }) {
   const { user, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
+  const pathname = usePathname();
+  const isPublicBlogRoute = pathname.startsWith(`/${locale}/blogs`);
 
   if (loading) {
     return (
@@ -32,7 +35,7 @@ function ShellFrame({
     );
   }
 
-  if (!user) {
+  if (!user && !isPublicBlogRoute) {
     return (
       <>
         <ComingSoon openAuth={openAuth} />

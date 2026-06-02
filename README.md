@@ -50,6 +50,12 @@ All gamification and subscription logic belongs in Cloud Functions.
 
 ## Local Frontend
 
+Copy the environment template and fill in real local credentials before starting the dev server:
+
+```bash
+cp .env.example .env.local
+```
+
 ```bash
 npm install
 npm run dev
@@ -57,7 +63,7 @@ npm run dev
 
 ## Contentful Calendar and Video Content
 
-The app now reads the live calendar from Contentful when the environment variables in `.env.example` are configured. If Contentful is not configured yet, the existing local mock schedule is used as a fallback.
+The app reads Contentful from runtime environment variables such as `.env.local` in development or deployment provider variables in production. `.env.example` is only a safe template and is not loaded by Next.js automatically. If Contentful is not configured yet, the calendar and videos use local fallbacks; blogs show only published Contentful entries.
 
 Create a `calendarEvent` content type with these fields:
 

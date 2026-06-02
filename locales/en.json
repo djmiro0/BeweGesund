@@ -6,6 +6,7 @@
       "courses": "Courses",
       "settings": "Settings",
       "calendar": "Live Calendar",
+      "blogs": "Blogs",
       "consultation": "Consultation",
       "about": "About",
       "contact": "Contact"
@@ -28,6 +29,7 @@
       "home": "Home",
       "courses": "Courses",
       "calendar": "Calendar",
+      "blogs": "Blogs",
       "profile": "Profile",
       "about": "About"
     },
@@ -358,6 +360,15 @@
     "active-break": "Active Break",
     "nutrition-program": "Nutrition Program"
   },
+  "blogs": {
+    "eyebrow": "Bewegesund Journal",
+    "title": "Sport, health, and nutrition knowledge for everyday decisions.",
+    "intro": "Practical articles for training, recovery, nutrition, and healthier routines.",
+    "articleCount": "{count, plural, one {# article} other {# articles}}",
+    "filterHint": "Filter by topic",
+    "readArticle": "Read article",
+    "empty": "No articles match this tag yet."
+  },
   "packages": {
     "starter": "Starter",
     "rehab-plus": "Rehab Plus",
@@ -614,6 +625,7 @@
       "about": "About",
       "programs": "Program",
       "calendar": "Live Calendar",
+      "blogs": "Blogs",
       "consultation": "Consultation",
       "impressum": "Imprint",
       "privacy": "Privacy Policy",

@@ -63,23 +63,6 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var savedTheme = localStorage.getItem("sbewegesund-theme");
-                  var systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-                  document.documentElement.dataset.theme = savedTheme || systemTheme;
-                } catch (error) {
-                  document.documentElement.dataset.theme = "light";
-                }
-              })();
-            `,
-          }}
-        />
-      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AppShell locale={locale}>{children}</AppShell>

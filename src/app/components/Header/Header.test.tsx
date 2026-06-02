@@ -29,6 +29,7 @@ vi.mock("next-intl", () => ({
       "nav.courses": "Courses",
       "nav.settings": "Settings",
       "nav.calendar": "Calendar",
+      "nav.blogs": "Blogs",
       "nav.contact": "Contact",
       "nav.about": "About",
     })[key] ?? key,
