@@ -24,3 +24,5 @@ Use the semantic `--ui-*` tokens for new page and content components.
 For page content, do not use `--shell-*` tokens. Those are reserved for dark chrome areas such as the header, footer, mobile navigation, modals, and overlays.
 
 This prevents light-mode contrast bugs where cream shell text appears on a cream page background.
+
+Use fixed `rem` values with media query overrides for spacing, sizing, and typography. Do not use `clamp()` for new UI work in this project.

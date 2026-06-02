@@ -46,7 +46,7 @@ export interface BlogPost {
   author: string;
   readTimeMinutes: number;
   publishedAt: string;
-  featuredImage: string;
+  featuredImage: string | null;
 }
 
 interface ContentfulEntry<TFields> {
@@ -118,7 +118,7 @@ function warnMissingContentfulConfig(contentType: string) {
 }
 
 function getContentfulLocale(locale: string) {
-  if (locale === "de") return process.env.CONTENTFUL_LOCALE_DE ?? "de-DE";
+  if (locale === "de") return process.env.CONTENTFUL_LOCALE_DE ?? "de";
   if (locale === "en") return process.env.CONTENTFUL_LOCALE_EN ?? "en-US";
   return locale;
 }
@@ -257,6 +257,10 @@ function buildAssetUrlMap<TFields>(collection: ContentfulCollection<TFields> | n
   );
 }
 
+function mergeAssetUrlMaps(primary: Map<string, string>, fallback: Map<string, string>) {
+  return new Map([...fallback, ...primary]);
+}
+
 export async function getTrainingVideos(locale: string): Promise<TrainingVideo[]> {
   const collection = await fetchEntries<TrainingVideoFields>(
     process.env.CONTENTFUL_VIDEO_CONTENT_TYPE ?? defaultVideoContentType,
@@ -323,7 +327,7 @@ function mapBlogPost(
     author: item.fields.author ?? "Bewegesund",
     readTimeMinutes: Number(item.fields.readTimeMinutes ?? 4),
     publishedAt: item.fields.publishedAt ?? new Date().toISOString(),
-    featuredImage: normalizeImage(item.fields.featuredImage ?? item.fields.image, assetUrls) || "/food.jpg",
+    featuredImage: normalizeImage(item.fields.featuredImage ?? item.fields.image, assetUrls) || null,
   };
 }
 
@@ -338,7 +342,17 @@ export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
 
   if (!collection?.items.length) return [];
 
-  const assetUrls = buildAssetUrlMap(collection);
+  const fallbackCollection = locale === "en"
+    ? null
+    : await fetchEntries<BlogPostFields>(
+        process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
+        "en",
+        {
+          order: "-fields.publishedAt",
+        },
+      );
+  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+
   return collection.items
     .map((item) => mapBlogPost(item, assetUrls))
     .filter((post): post is BlogPost => Boolean(post));
@@ -356,5 +370,17 @@ export async function getBlogPost(locale: string, slug: string): Promise<BlogPos
 
   if (!collection?.items.length) return null;
 
-  return mapBlogPost(collection.items[0], buildAssetUrlMap(collection));
+  const fallbackCollection = locale === "en"
+    ? null
+    : await fetchEntries<BlogPostFields>(
+        process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
+        "en",
+        {
+          "sys.id": collection.items[0].sys.id,
+          limit: "1",
+        },
+      );
+  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+
+  return mapBlogPost(collection.items[0], assetUrls);
 }

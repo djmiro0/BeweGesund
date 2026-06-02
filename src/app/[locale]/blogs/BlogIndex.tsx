@@ -5,16 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { ArrowUpRight, BookOpen, Clock, Search } from "lucide-react";
+import { ArrowUpRight, BookOpen, Clock, ImageIcon, Search } from "lucide-react";
 import type { BlogPost, BlogTag } from "@/lib/contentful";
+import { blogTagOptions, getBlogTagLabel } from "./blogTags";
 import styles from "./Blogs.module.css";
-
-const tagOptions: Array<{ id: "all" | BlogTag; label: string }> = [
-  { id: "all", label: "All" },
-  { id: "nutrition", label: "Nutrition" },
-  { id: "health", label: "Health" },
-  { id: "training", label: "Sport / Training" },
-];
 
 interface BlogIndexProps {
   locale: string;
@@ -64,16 +58,16 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
         </div>
       </motion.header>
 
-      <div className={styles.filterRail} aria-label="Blog tags">
-        {tagOptions.map((tag) => (
+      <div className={styles.filterRail} aria-label={t("filterAria")}>
+        {blogTagOptions.map((tag) => (
           <button
-            key={tag.id}
+            key={tag}
             type="button"
-            className={`${styles.filterButton} ${activeTag === tag.id ? styles.filterButtonActive : ""}`}
-            onClick={() => setActiveTag(tag.id)}
-            aria-pressed={activeTag === tag.id}
+            className={`${styles.filterButton} ${activeTag === tag ? styles.filterButtonActive : ""}`}
+            onClick={() => setActiveTag(tag)}
+            aria-pressed={activeTag === tag}
           >
-            {tag.label}
+            {getBlogTagLabel(tag, t)}
           </button>
         ))}
       </div>
@@ -94,19 +88,27 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
           }}
         >
           <motion.article className={styles.featuredPost} variants={fadeUp}>
-            <Link href={`/${locale}/blogs/${featuredPost.slug}`} className={styles.featuredImageLink}>
-              <Image
-                src={featuredPost.featuredImage}
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className={styles.featuredImage}
-              />
-            </Link>
+            {featuredPost.featuredImage ? (
+              <Link href={`/${locale}/blogs/${featuredPost.slug}`} className={styles.featuredImageLink}>
+                <Image
+                  src={featuredPost.featuredImage}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className={styles.featuredImage}
+                />
+              </Link>
+            ) : (
+              <Link href={`/${locale}/blogs/${featuredPost.slug}`} className={styles.featuredImageLink}>
+                <span className={styles.imageFallback} aria-hidden="true">
+                  <ImageIcon size={34} />
+                </span>
+              </Link>
+            )}
             <div className={styles.featuredCopy}>
               <div className={styles.tagRow}>
                 {featuredPost.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>{tag}</span>
+                  <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
                 ))}
               </div>
               <h2 className={styles.featuredTitle}>
@@ -130,19 +132,27 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
           <div className={styles.postList}>
             {restPosts.map((post) => (
               <motion.article key={post.id} className={styles.postItem} variants={fadeUp}>
-                <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
-                  <Image
-                    src={post.featuredImage}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 220px, 36vw"
-                    className={styles.postImage}
-                  />
-                </Link>
+                {post.featuredImage ? (
+                  <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
+                    <Image
+                      src={post.featuredImage}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 220px, 100vw"
+                      className={styles.postImage}
+                    />
+                  </Link>
+                ) : (
+                  <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
+                    <span className={styles.imageFallback} aria-hidden="true">
+                      <ImageIcon size={24} />
+                    </span>
+                  </Link>
+                )}
                 <div className={styles.postCopy}>
                   <div className={styles.tagRow}>
                     {post.tags.map((tag) => (
-                      <span key={tag} className={styles.tag}>{tag}</span>
+                      <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
                     ))}
                   </div>
                   <h2 className={styles.postTitle}>

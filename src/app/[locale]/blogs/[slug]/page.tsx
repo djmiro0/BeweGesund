@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { ArrowLeft, Clock, ImageIcon } from "lucide-react";
 import { getBlogPost } from "@/lib/contentful";
+import { getBlogTagLabel } from "../blogTags";
 import styles from "../Blogs.module.css";
 
 export default async function BlogPostPage({
@@ -12,6 +14,7 @@ export default async function BlogPostPage({
 }) {
   const { locale, slug } = await params;
   const post = await getBlogPost(locale, slug);
+  const t = await getTranslations({ locale, namespace: "blogs" });
 
   if (!post) notFound();
 
@@ -33,7 +36,7 @@ export default async function BlogPostPage({
       <header className={styles.articleHeader}>
         <div className={styles.tagRow}>
           {post.tags.map((tag) => (
-            <span key={tag} className={styles.tag}>{tag}</span>
+            <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
           ))}
         </div>
         <h1 className={styles.articleTitle}>{post.title}</h1>
@@ -51,14 +54,20 @@ export default async function BlogPostPage({
       </header>
 
       <div className={styles.articleImageWrap}>
-        <Image
-          src={post.featuredImage}
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 1120px, 100vw"
-          className={styles.articleImage}
-          priority
-        />
+        {post.featuredImage ? (
+          <Image
+            src={post.featuredImage}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 1120px, 100vw"
+            className={styles.articleImage}
+            priority
+          />
+        ) : (
+          <span className={styles.imageFallback} aria-hidden="true">
+            <ImageIcon size={38} />
+          </span>
+        )}
       </div>
 
       <div className={styles.articleBody}>

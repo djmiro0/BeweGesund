@@ -366,8 +366,15 @@
     "intro": "Praktische Artikel zu Training, Regeneration, Ernährung und gesünderen Routinen.",
     "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
     "filterHint": "Nach Thema filtern",
+    "filterAria": "Blog-Tags",
     "readArticle": "Artikel lesen",
-    "empty": "Zu diesem Tag gibt es noch keine passenden Artikel."
+    "empty": "Zu diesem Tag gibt es noch keine passenden Artikel.",
+    "tags": {
+      "all": "Alle",
+      "nutrition": "Ernährung",
+      "health": "Gesundheit",
+      "training": "Sport / Training"
+    }
   },
   "packages": {
     "starter": "Starter",
@@ -705,6 +712,23 @@
       }
     ],
     "note": "E-Mail: info@bewegesund.de"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Die gesuchte Seite existiert nicht.",
+    "action": "Zur Startseite"
+  },
+  "badRequest": {
+    "eyebrow": "Bewegesund",
+    "title": "Ungültige Anfrage",
+    "description": "Diese Anfrage konnte nicht verarbeitet werden. Kehre zur Startseite zurück und starte von dort neu.",
+    "action": "Zur Startseite",
+    "status": "400",
+    "items": [
+      "Adresse prüfen",
+      "Startseite öffnen",
+      "Navigation neu wählen"
+    ]
   },
   "consultationPage": {
     "title": "Persönliche Beratung",
