@@ -98,20 +98,14 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
                     onClick={() => setIsMenuOpen(false)}
                 >
                     <Image
-                        src="/favicon.ico"
+                        src="/logo.png"
                         alt=""
-                        width={36}
-                        height={36}
+                        width={70}
+                        height={70}
                         priority
-                        data-testid="header-mobile-logo"
-                        className={styles.mobileLogo}
+                        data-testid="header-brand-logo"
+                        className={styles.brandLogo}
                     />
-                    <div
-                        data-testid="header-desktop-wordmark"
-                        className={styles.wordmark}
-                    >
-                        Bewe<span className={styles.wordmarkAccent}>Gesund</span>
-                    </div>
                 </Link>
 
                 <nav className={styles.desktopNav}>

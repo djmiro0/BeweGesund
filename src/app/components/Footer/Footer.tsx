@@ -35,10 +35,10 @@ const Footer: React.FC = () => {
         <div className={style.brandColumn}>
           <Link href={`/${locale}`} className={style.brandMark} data-testid="footer-brand-link">
             <Image
-              src="/favicon.ico"
+              src="/logo.png"
               alt=""
-              width={42}
-              height={42}
+              width={64}
+              height={64}
               className={style.brandIcon}
               data-testid="footer-brand-icon"
             />

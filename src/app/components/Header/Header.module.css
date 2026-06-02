@@ -16,6 +16,8 @@
 }
 
 .brandLink {
+  display: inline-flex;
+  align-items: center;
   min-width: 0;
   flex-shrink: 0;
   transition: opacity 0.25s var(--transition);
@@ -25,28 +27,12 @@
   opacity: 0.8;
 }
 
-.mobileLogo {
+.brandLogo {
   display: block;
-  width: 2.25rem;
+  width: 2.75rem;
   height: auto;
   aspect-ratio: 1;
   border-radius: 999px;
-}
-
-.wordmark {
-  display: none;
-  color: var(--shell-text);
-  font-size: 1.125rem;
-  font-style: italic;
-  font-weight: 950;
-  letter-spacing: 0;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.wordmarkAccent {
-  color: var(--page-warm);
 }
 
 .desktopNav {
@@ -430,13 +416,8 @@
     padding: 0 1.5rem;
   }
 
-  .mobileLogo {
-    display: none;
-  }
-
-  .wordmark {
-    display: block;
-    font-size: 1.5rem;
+  .brandLogo {
+    width: 4rem;
   }
 
   .actions {
@@ -487,6 +468,10 @@
 }
 
 @media (min-width: 1024px) {
+  .brandLogo {
+    width: 4.35rem;
+  }
+
   .desktopNav {
     display: flex;
   }
