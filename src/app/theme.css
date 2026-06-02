@@ -39,6 +39,8 @@
   --page-border: rgba(var(--page-ink-rgb), 0.12);
   --page-border-soft: rgba(var(--page-ink-rgb), 0.08);
   --page-shadow: rgba(8, 17, 31, 0.12);
+  --media-text: #ffffff;
+  --media-text-rgb: 255, 255, 255;
 
   --shell-bg: #0b1627;
   --shell-bg-rgb: 11, 22, 39;
@@ -126,6 +128,8 @@
   --page-border: rgba(var(--page-ink-rgb), 0.14);
   --page-border-soft: rgba(var(--page-ink-rgb), 0.08);
   --page-shadow: rgba(0, 0, 0, 0.28);
+  --media-text: #ffffff;
+  --media-text-rgb: 255, 255, 255;
 
   --shell-bg: #07101d;
   --shell-bg-rgb: 7, 16, 29;

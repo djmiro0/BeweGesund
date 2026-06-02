@@ -34,7 +34,6 @@ vi.mock("next-intl", () => ({
       "links.about": "About",
       "links.programs": "Program",
       "links.calendar": "Live Calendar",
-      "links.consultation": "Consultation",
       "links.impressum": "Imprint",
       "links.privacy": "Privacy Policy",
       "links.contact": "Contact",
@@ -54,7 +53,7 @@ describe("Footer", () => {
 
     expect(screen.getByTestId("site-footer")).toBeInTheDocument();
     expect(screen.getByTestId("footer-brand-link")).toHaveAttribute("href", "/en");
-    expect(screen.getByTestId("footer-brand-icon")).toHaveAttribute("src", "/favicon.ico");
+    expect(screen.getByTestId("footer-brand-icon")).toHaveAttribute("src", "/logo.png");
     expect(screen.getByTestId("footer-contact-cta")).toHaveAttribute("href", "/en/kontakt");
     expect(screen.getByTestId("footer-contact-cta")).toHaveTextContent("Open Contact");
   });
@@ -63,7 +62,7 @@ describe("Footer", () => {
     render(<Footer />);
 
     expect(screen.getAllByTestId("footer-navigation-link")).toHaveLength(5);
-    expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(3);
+    expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(2);
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("Online by appointment");
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("German and English");
     expect(screen.getByTestId("footer-bottom")).toHaveTextContent("© 2026 Bewegesund. All rights reserved.");

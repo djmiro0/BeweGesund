@@ -29,7 +29,6 @@ vi.mock("next-intl", () => ({
       "nav.courses": "Courses",
       "nav.settings": "Settings",
       "nav.calendar": "Calendar",
-      "nav.consultation": "Consultation",
       "nav.contact": "Contact",
       "nav.about": "About",
     })[key] ?? key,
@@ -85,13 +84,11 @@ describe("Header", () => {
     toggleTheme.mockClear();
   });
 
-  it("uses the favicon as the mobile brand and keeps the wordmark for wider screens", () => {
+  it("uses the site logo as the header brand", () => {
     render(<Header locale="en" />);
 
-    expect(screen.getByTestId("header-mobile-logo")).toHaveAttribute("src", "/favicon.ico");
-    expect(screen.getByTestId("header-mobile-logo")).toHaveClass(styles.mobileLogo);
-    expect(screen.getByTestId("header-desktop-wordmark")).toHaveTextContent("Bewegesund");
-    expect(screen.getByTestId("header-desktop-wordmark")).toHaveClass(styles.wordmark);
+    expect(screen.getByTestId("header-brand-logo")).toHaveAttribute("src", "/logo.png");
+    expect(screen.getByTestId("header-brand-logo")).toHaveClass(styles.brandLogo);
   });
 
   it("closes the mobile menu from the blurred page backdrop", async () => {

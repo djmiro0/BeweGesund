@@ -94,6 +94,11 @@
   max-width: 650px;
 }
 
+.email {
+  font-size: 1rem;
+  color: var(--info-title);
+}
+
 .cta {
   display: inline-flex;
   margin-top: 1.4rem;

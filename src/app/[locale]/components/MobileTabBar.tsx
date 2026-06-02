@@ -122,7 +122,7 @@ export default function MobileTabBar({ locale, user, openAuth }: MobileTabBarPro
               </Link>
 
               <Link
-                href={`/${locale}/consultation`}
+                href={`/${locale}/kontakt`}
                 className={styles.quickAction}
                 onClick={() => setIsActionSheetOpen(false)}
                 data-testid="mobile-action-consultation"

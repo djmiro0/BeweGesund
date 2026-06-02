@@ -4,7 +4,7 @@
   background:
           linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.94) 0%, rgba(var(--shell-bg-rgb), 0.82) 45%, rgba(var(--shell-bg-rgb), 0.36) 100%),
           url("/training.jpg") center / cover;
-  color: #ffffff;
+  color: var(--media-text);
 }
 
 .hero {
@@ -22,7 +22,7 @@
   position: absolute;
   inset: clamp(0.75rem, 2vw, 1.5rem);
   pointer-events: none;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(var(--media-text-rgb), 0.12);
 }
 
 .heroCopy,
@@ -46,7 +46,7 @@
 
 .title {
   margin: 0;
-  color: #ffffff;
+  color: var(--media-text);
   font-size: 2.5rem;
   font-weight: 950;
   letter-spacing: 0;
@@ -58,7 +58,7 @@
 .description {
   max-width: 42rem;
   margin: 1.4rem 0 0;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(var(--media-text-rgb), 0.78);
   font-size: clamp(1rem, 1.45vw, 1.22rem);
   font-weight: 650;
   line-height: 1.6;
@@ -97,14 +97,14 @@
 }
 
 .primaryButton:hover {
-  background: #ffffff;
+  background: var(--media-text);
   transform: translateY(-2px);
 }
 
 .statusPill {
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(var(--media-text-rgb), 0.14);
   background: rgba(var(--shell-surface-rgb), 0.5);
-  color: rgba(255, 255, 255, 0.82);
+  color: rgba(var(--media-text-rgb), 0.82);
   padding: 0.88rem 1rem;
   backdrop-filter: blur(18px);
 }
@@ -121,7 +121,7 @@
 .orbit {
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--media-text-rgb), 0.2);
   border-radius: 50%;
 }
 
@@ -157,9 +157,9 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(var(--media-text-rgb), 0.14);
   padding: 0 0 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(var(--media-text-rgb), 0.8);
   font-size: 0.86rem;
   font-weight: 850;
 }

@@ -2,8 +2,8 @@
   --tab-surface:
     linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.9), rgba(var(--page-base-rgb), 0.86)),
     rgba(var(--page-soft-rgb), 0.92);
-  --tab-border: rgba(var(--page-ink-rgb), 0.1);
-  --tab-text: rgba(var(--page-ink-rgb), 0.58);
+  --tab-border: var(--page-border);
+  --tab-text: var(--page-muted);
   --tab-text-active: var(--page-ink);
   --tab-icon-bg: rgba(var(--page-ink-rgb), 0.06);
   --tab-active-bg: rgba(var(--page-ink-rgb), 0.08);
@@ -26,11 +26,11 @@
   --tab-surface:
     linear-gradient(180deg, rgba(var(--shell-surface-rgb), 0.9), rgba(var(--shell-bg-rgb), 0.94)),
     rgba(var(--shell-bg-rgb), 0.9);
-  --tab-border: rgba(var(--page-base-rgb), 0.1);
-  --tab-text: rgba(var(--page-base-rgb), 0.58);
+  --tab-border: var(--shell-border);
+  --tab-text: var(--shell-text-muted);
   --tab-text-active: var(--shell-text);
-  --tab-icon-bg: rgba(var(--page-base-rgb), 0.08);
-  --tab-active-bg: rgba(var(--page-base-rgb), 0.1);
+  --tab-icon-bg: rgba(var(--shell-text-rgb), 0.08);
+  --tab-active-bg: rgba(var(--shell-text-rgb), 0.1);
   --tab-action-bg: linear-gradient(135deg, var(--page-accent), var(--page-warm));
   --tab-action-text: var(--shell-bg);
   --tab-shadow: rgba(0, 0, 0, 0.48);
@@ -182,11 +182,11 @@
   --sheet-surface:
     linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-base-rgb), 0.94)),
     var(--page-soft);
-  --sheet-border: rgba(var(--page-ink-rgb), 0.12);
+  --sheet-border: var(--page-border);
   --sheet-text: var(--page-ink);
-  --sheet-muted: rgba(var(--page-ink-rgb), 0.62);
+  --sheet-muted: var(--page-muted);
   --sheet-card-bg: rgba(var(--page-base-rgb), 0.56);
-  --sheet-card-border: rgba(var(--page-ink-rgb), 0.08);
+  --sheet-card-border: var(--page-border-soft);
   position: absolute;
   right: 0.8rem;
   bottom: calc(5.9rem + env(safe-area-inset-bottom));
@@ -206,11 +206,11 @@
   --sheet-surface:
     linear-gradient(180deg, rgba(var(--shell-surface-rgb), 0.96), rgba(var(--shell-bg-rgb), 0.96)),
     var(--shell-bg);
-  --sheet-border: rgba(var(--page-base-rgb), 0.1);
+  --sheet-border: var(--shell-border);
   --sheet-text: var(--shell-text);
-  --sheet-muted: rgba(var(--page-base-rgb), 0.62);
-  --sheet-card-bg: rgba(var(--page-base-rgb), 0.06);
-  --sheet-card-border: rgba(var(--page-base-rgb), 0.09);
+  --sheet-muted: var(--shell-text-muted);
+  --sheet-card-bg: rgba(var(--shell-text-rgb), 0.06);
+  --sheet-card-border: rgba(var(--shell-text-rgb), 0.09);
 }
 
 .sheetHeader {

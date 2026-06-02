@@ -1,18 +1,11 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useTranslations } from "next-intl";
-import InfoPage from "@/app/components/InfoPage/InfoPage";
+export default async function ConsultationPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
 
-export default function ConsultationPage() {
-  const t = useTranslations("consultationPage");
-  const sections = t.raw("sections") as Array<{ title: string; body: string }>;
-
-  return (
-    <InfoPage
-      title={t("title")}
-      intro={t("intro")}
-      sections={sections}
-      note={t("note")}
-    />
-  );
+  redirect(`/${locale}/kontakt`);
 }
