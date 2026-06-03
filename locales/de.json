@@ -239,20 +239,24 @@
       "lead": "Eine strukturierte Bibliothek aus Bewegung, Rehabilitation und Bildungsformaten für den alltagstauglichen Einstieg.",
       "categories": {
         "reha": {
-          "title": "Reha",
-          "description": "Gezielte Reha-Formate für Knie, Rücken, Hüfte und allgemeine Stabilität mit ergänzenden Schwerpunkten für Osteoporose und Arthritis."
+          "title": "REHA Kurse",
+          "description": "Rehabilitationsprogramme mit wöchentlichem Videorhythmus und klarer Progression."
         },
         "healthy-living": {
-          "title": "Lebe Gesund",
+          "title": "Lebe Gesund Kurse",
           "description": "Alltagstaugliche Formate für Mobilität, sanften Einstieg und regelmäßige Bewegung."
         },
         "overweight": {
-          "title": "Übergewicht",
+          "title": "Übergewichtskurse",
           "description": "Bewegungs- und Ernährungsformate mit Fokus auf nachhaltige Gewichtsreduktion."
         },
         "definition": {
-          "title": "Definition",
+          "title": "Intensive",
           "description": "Intensivere Kraft- und Definitionsformate für fortgeschrittenere Mitglieder."
+        },
+        "intensive": {
+          "title": "Intensive",
+          "description": "Gezielte Kraft-, Definitions- und intensivere Trainingsformate."
         },
         "pre-post-birth": {
           "title": "Pre & Postgeburt",
@@ -261,6 +265,18 @@
         "corporate-fitness": {
           "title": "Firmenfitness",
           "description": "Kurze, wiederholbare Bewegungseinheiten für aktive Arbeitspausen im Berufsalltag."
+        },
+        "live-courses": {
+          "title": "Live Kurse",
+          "description": "Geplante Live-Bewegungseinheiten für Mitglieder."
+        },
+        "live-seminars": {
+          "title": "Live Seminare",
+          "description": "Geplante edukative Live-Sessions mit fachlicher Begleitung."
+        },
+        "nutrition-seminars": {
+          "title": "Ernährungsseminare",
+          "description": "Ernährungsbildung und praktisches Gesundheitswissen."
         },
         "paragraph-20": {
           "title": "Paragraf 20",
@@ -272,6 +288,8 @@
         "unlocks": "{count, plural, one {#x pro Woche freigeschaltet} other {#x pro Woche freigeschaltet}}",
         "coach": "Coach: {name}"
       },
+      "empty": "In Contentful sind noch keine Kurse veröffentlicht.",
+      "emptyCategory": "In dieser Kategorie ist noch kein Kurs veröffentlicht.",
       "notes": {
         "package22": "22 Trainings in einem Paket verfügbar.",
         "repeat2to3": "Ideal zum Wiederholen, zwei- bis dreimal pro Woche.",
@@ -291,6 +309,13 @@
         "Zehn-Minuten-Training für die aktive Pause",
         "Edukative Seminare"
       ]
+    },
+    "weeklyUnlock": {
+      "label": "Kursrhythmus",
+      "title": "3 neue Videos pro Woche",
+      "description": "Mitglieder schalten wöchentlich den nächsten Trainingsblock frei und sammeln Videos, bis der Kurs abgeschlossen ist.",
+      "badge": "REHA Ablauf",
+      "reha": "Wenn ein Mitglied einen REHA Kurs öffnet, sieht es die Videos für diesen Kurs. Jede Woche werden 3 neue Videos für diese Trainingswoche freigeschaltet. In der nächsten Woche öffnen sich die nächsten 3, und das Mitglied sammelt sie weiter, bis der ganze Kurs beendet ist."
     },
     "liveTrainings": {
       "title": "Live-Trainings",
@@ -359,6 +384,24 @@
     "baby-training": "Babytraining",
     "active-break": "Aktive Pause",
     "nutrition-program": "Ernährungsprogramm"
+  },
+  "courseDetail": {
+    "back": "Zurück zu den Kursen",
+    "eyebrow": "Geschützter Kurs",
+    "instructionsTitle": "So führst du die Übungen aus",
+    "instructionsFallback": "Die Übungsanleitung wird bald ergänzt.",
+    "player": {
+      "videoPending": "Video folgt",
+      "preparingVideo": "Video wird vorbereitet",
+      "signInRequired": "Melde dich an, um diesen Kurs anzusehen.",
+      "tokenError": "Der Wiedergabe-Token konnte nicht erstellt werden.",
+      "signingMissing": "Mux Signing ist noch nicht konfiguriert.",
+      "authError": "Bitte melde dich erneut an, um diesen Kurs anzusehen."
+    },
+    "meta": {
+      "flexibleDuration": "Flexible Dauer",
+      "training": "Training"
+    }
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",

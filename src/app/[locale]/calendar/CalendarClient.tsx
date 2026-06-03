@@ -54,7 +54,6 @@ function addDays(dateKey: string, amount: number) {
 
 export default function CalendarClient({ days }: { days: CalendarDay[] }) {
   const t = useTranslations("calendar");
-  const courseT = useTranslations("courseCatalog");
   const packageT = useTranslations("packages");
   const locale = useLocale();
   const { user, openAuth } = useAuth();
@@ -286,7 +285,6 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
             {selectedDay.entries.map((entry) => {
               const included =
                 packageRank[memberDashboard.package] >= packageRank[entry.packageRequired];
-              const title = entry.title || (entry.titleKey ? courseT(entry.titleKey) : "");
               const canJoin = included && Boolean(entry.liveTrainingLink);
 
               return (
@@ -318,7 +316,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                           {packageT(entry.packageRequired)}
                         </span>
                       </div>
-                      <h4 className={styles.sessionTitle}>{title}</h4>
+                      <h4 className={styles.sessionTitle}>{entry.title}</h4>
                       {entry.description ? (
                         <p className={styles.sessionDescription}>{entry.description}</p>
                       ) : null}

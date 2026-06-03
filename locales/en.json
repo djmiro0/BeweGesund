@@ -239,28 +239,44 @@
       "lead": "A structured library of movement, rehabilitation, and education formats designed for everyday accessibility.",
       "categories": {
         "reha": {
-          "title": "Rehab",
-          "description": "Targeted rehab formats for knee, back, hip, and general stability, with added focus areas for osteoporosis and arthritis."
+          "title": "REHA Courses",
+          "description": "Rehabilitation programs with a weekly video rhythm and guided progression."
         },
         "healthy-living": {
-          "title": "Healthy Living",
+          "title": "Lebe Gesund Courses",
           "description": "Accessible formats for mobility, gentle entry points, and regular everyday movement."
         },
         "overweight": {
-          "title": "Weight Management",
+          "title": "Overweight Courses",
           "description": "Movement and nutrition formats focused on sustainable weight reduction."
         },
         "definition": {
-          "title": "Definition",
+          "title": "Intensive",
           "description": "More intensive strength and definition formats for more advanced members."
+        },
+        "intensive": {
+          "title": "Intensive",
+          "description": "Focused strength, definition, and higher-effort training formats."
         },
         "pre-post-birth": {
           "title": "Pre & Post Birth",
           "description": "Supportive formats around pelvic floor work, birth preparation, and training with your baby."
         },
         "corporate-fitness": {
-          "title": "Corporate Fitness",
+          "title": "Firmenfitness",
           "description": "Short, repeatable movement units designed for active breaks during the workday."
+        },
+        "live-courses": {
+          "title": "Live Courses",
+          "description": "Scheduled live movement sessions for members."
+        },
+        "live-seminars": {
+          "title": "Live Seminars",
+          "description": "Scheduled education sessions with live guidance."
+        },
+        "nutrition-seminars": {
+          "title": "Nutrition Seminars",
+          "description": "Nutrition education and practical health knowledge."
         },
         "paragraph-20": {
           "title": "Paragraph 20",
@@ -272,6 +288,8 @@
         "unlocks": "{count, plural, one {Unlocks # session per week} other {Unlocks # sessions per week}}",
         "coach": "Coach: {name}"
       },
+      "empty": "No courses are published in Contentful yet.",
+      "emptyCategory": "No published course in this category yet.",
       "notes": {
         "package22": "Available as a 22-session package.",
         "repeat2to3": "Ideally repeated two to three times per week.",
@@ -291,6 +309,13 @@
         "Ten-Minute Training for an Active Break",
         "Educational Seminars"
       ]
+    },
+    "weeklyUnlock": {
+      "label": "Course rhythm",
+      "title": "3 new videos per week",
+      "description": "Members unlock the next training block weekly and keep collecting videos until the course is complete.",
+      "badge": "REHA flow",
+      "reha": "When a member opens a REHA course, they see the videos for that course. Every week, 3 new videos unlock for that training week. The next week opens the next 3, and the member keeps collecting them until the whole course is finished."
     },
     "liveTrainings": {
       "title": "Live Trainings",
@@ -359,6 +384,24 @@
     "baby-training": "Baby Training",
     "active-break": "Active Break",
     "nutrition-program": "Nutrition Program"
+  },
+  "courseDetail": {
+    "back": "Back to courses",
+    "eyebrow": "Protected course",
+    "instructionsTitle": "How to do the exercises",
+    "instructionsFallback": "Exercise instructions will be added soon.",
+    "player": {
+      "videoPending": "Video pending",
+      "preparingVideo": "Preparing video",
+      "signInRequired": "Sign in to watch this course.",
+      "tokenError": "Playback token could not be created.",
+      "signingMissing": "Mux signing is not configured yet.",
+      "authError": "Please sign in again to watch this course."
+    },
+    "meta": {
+      "flexibleDuration": "Flexible duration",
+      "training": "Training"
+    }
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",

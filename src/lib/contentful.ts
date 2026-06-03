@@ -1,11 +1,10 @@
-import { activeScheduleDays, mockVideos, type MemberPackage } from "@/data";
+import { mockVideos, type MemberPackage } from "@/data";
 
 export type ContentfulCalendarFormat = "training" | "seminar";
 
 export interface CalendarEvent {
   id: string;
   title: string;
-  titleKey?: string;
   description: string;
   liveTrainingLink: string | null;
   slug: string;
@@ -32,6 +31,37 @@ export interface TrainingVideo {
   level: string;
   image: string;
   muxPlaybackId: string | null;
+}
+
+export interface CourseDetail {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  exerciseInstructions: string;
+  duration: string;
+  level: string;
+  coach: string;
+  packageRequired: MemberPackage;
+  muxPlaybackId: string | null;
+  posterImage: string | null;
+}
+
+export interface CourseSummary {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  categoryKey: string;
+  categoryTitle: string;
+  categoryDescription: string;
+  durationMinutes: number | null;
+  unlocksPerWeek: number | null;
+  note: string;
+  coach: string;
+  packageRequired: MemberPackage;
+  order: number;
+  publishedAt: string;
 }
 
 export type BlogTag = "nutrition" | "health" | "training";
@@ -103,9 +133,35 @@ type BlogPostFields = Partial<{
   image: ContentfulAssetField;
 }>;
 
+type CourseFields = Partial<{
+  title: string;
+  slug: string;
+  description: string;
+  exerciseInstructions: string;
+  categoryKey: string;
+  categoryTitle: string;
+  categoryDescription: string;
+  durationMinutes: number;
+  unlocksPerWeek: number;
+  note: string;
+  duration: string | number;
+  level: string;
+  courseKey: string;
+  tags: string | string[];
+  coach: string;
+  packageRequired: MemberPackage;
+  muxPlaybackId: string;
+  posterImage: ContentfulAssetField;
+  image: ContentfulAssetField;
+  featuredImage: ContentfulAssetField;
+  order: number;
+  publishedAt: string;
+}>;
+
 const defaultCalendarContentType = "calendarEvent";
 const defaultVideoContentType = "trainingVideo";
 const defaultBlogContentType = "blogPost";
+const defaultCourseContentType = "course";
 
 function hasContentfulConfig() {
   return Boolean(process.env.CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_DELIVERY_TOKEN);
@@ -173,24 +229,38 @@ function normalizeFormat(value: string | undefined): ContentfulCalendarFormat {
   return value === "seminar" ? "seminar" : "training";
 }
 
-function fallbackCalendarDays(): CalendarDay[] {
-  return activeScheduleDays.map((day) => ({
-    ...day,
-    entries: day.entries.map((entry) => ({
-      id: entry.id,
-      title: "",
-      titleKey: entry.titleKey,
-      description: "",
-      liveTrainingLink: null,
-      slug: entry.id,
-      startsAt: entry.startsAt,
-      durationMinutes: entry.durationMinutes,
-      formatKey: entry.formatKey,
-      coach: entry.coach,
-      packageRequired: entry.packageRequired,
-      muxPlaybackId: null,
-    })),
-  }));
+function normalizeStringList(value: string | string[] | undefined) {
+  if (Array.isArray(value)) {
+    return value.map((item) => item.trim()).filter(Boolean);
+  }
+
+  return (value ?? "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeKey(value: string | undefined) {
+  return value
+    ?.replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/Ä/g, "ae")
+    .replace(/Ö/g, "oe")
+    .replace(/Ü/g, "ue")
+    .replace(/ß/g, "ss")
+    ?.toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function titleFromKey(value: string) {
+  return value
+    .split(/[-_\s]+/)
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
 }
 
 export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
@@ -202,7 +272,7 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
     },
   );
 
-  if (!collection?.items.length) return fallbackCalendarDays();
+  if (!collection?.items.length) return [];
 
   const events = collection.items
     .map((item) => {
@@ -297,6 +367,104 @@ export async function getTrainingVideos(locale: string): Promise<TrainingVideo[]
       muxPlaybackId: item.fields.muxPlaybackId ?? null,
     }))
     .filter((video) => video.image || video.muxPlaybackId);
+}
+
+function mapCourseDetail(
+  item: ContentfulEntry<CourseFields>,
+  assetUrls: Map<string, string>,
+): CourseDetail | null {
+  if (!item.fields.title) return null;
+
+  return {
+    id: item.sys.id,
+    title: item.fields.title,
+    slug: item.fields.slug ?? item.sys.id,
+    description: item.fields.description ?? "",
+    exerciseInstructions: item.fields.exerciseInstructions ?? "",
+    duration: item.fields.duration ? String(item.fields.duration) : "",
+    level: item.fields.level ?? "",
+    coach: item.fields.coach ?? "",
+    packageRequired: normalizePackage(item.fields.packageRequired),
+    muxPlaybackId: item.fields.muxPlaybackId ?? null,
+    posterImage: normalizeImage(
+      item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
+      assetUrls,
+    ) || null,
+  };
+}
+
+function mapCourseSummary(item: ContentfulEntry<CourseFields>): CourseSummary | null {
+  if (!item.fields.title) return null;
+
+  const slug = item.fields.slug ?? item.sys.id;
+  const tags = normalizeStringList(item.fields.tags);
+  const categoryKey = normalizeKey(item.fields.categoryKey ?? tags[0]) ?? "courses";
+  const durationMinutes =
+    item.fields.durationMinutes ??
+    (typeof item.fields.duration === "number" ? item.fields.duration : undefined);
+
+  return {
+    id: item.sys.id,
+    title: item.fields.title,
+    slug,
+    description: item.fields.description ?? "",
+    categoryKey,
+    categoryTitle: item.fields.categoryTitle ?? titleFromKey(tags[0] ?? categoryKey),
+    categoryDescription: item.fields.categoryDescription ?? "",
+    durationMinutes: durationMinutes ? Number(durationMinutes) : null,
+    unlocksPerWeek: item.fields.unlocksPerWeek ? Number(item.fields.unlocksPerWeek) : null,
+    note: item.fields.note ?? "",
+    coach: item.fields.coach ?? "",
+    packageRequired: normalizePackage(item.fields.packageRequired),
+    order: Number(item.fields.order ?? 0),
+    publishedAt: item.fields.publishedAt ?? "",
+  };
+}
+
+export async function getCourses(locale: string): Promise<CourseSummary[]> {
+  const collection = await fetchEntries<CourseFields>(
+    process.env.CONTENTFUL_COURSE_CONTENT_TYPE ?? defaultCourseContentType,
+    locale,
+  );
+
+  if (!collection?.items.length) return [];
+
+  return collection.items
+    .map(mapCourseSummary)
+    .filter((course): course is CourseSummary => Boolean(course))
+    .sort((a, b) => {
+      if (a.order !== b.order) return a.order - b.order;
+      const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return bDate - aDate || a.title.localeCompare(b.title);
+    });
+}
+
+export async function getCourseDetail(locale: string, slug: string): Promise<CourseDetail | null> {
+  const collection = await fetchEntries<CourseFields>(
+    process.env.CONTENTFUL_COURSE_CONTENT_TYPE ?? defaultCourseContentType,
+    locale,
+    {
+      "fields.slug": slug,
+      limit: "1",
+    },
+  );
+
+  if (!collection?.items.length) return null;
+
+  const fallbackCollection = locale === "en"
+    ? null
+    : await fetchEntries<CourseFields>(
+        process.env.CONTENTFUL_COURSE_CONTENT_TYPE ?? defaultCourseContentType,
+        "en",
+        {
+          "sys.id": collection.items[0].sys.id,
+          limit: "1",
+        },
+      );
+  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+
+  return mapCourseDetail(collection.items[0], assetUrls);
 }
 
 function normalizeBlogTags(tags: string[] | undefined): BlogTag[] {

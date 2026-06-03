@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       cors_origin: origin,
       new_asset_settings: {
-        playback_policies: ["public"],
+        playback_policies: ["signed"],
         video_quality: "basic",
       },
     }),
