@@ -9,7 +9,13 @@ function base64UrlEncode(value: string | Buffer) {
 }
 
 function getMuxSigningPrivateKey() {
-  return process.env.MUX_SIGNING_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  const privateKey = process.env.MUX_SIGNING_PRIVATE_KEY?.replace(/\\n/g, "\n").trim();
+
+  if (!privateKey || privateKey.includes("BEGIN")) {
+    return privateKey;
+  }
+
+  return Buffer.from(privateKey, "base64").toString("utf8");
 }
 
 function hasRealMuxSigningValue(value: string | undefined) {
@@ -37,7 +43,9 @@ export function createMuxPlaybackToken(playbackId: string, expiresInSeconds = 60
   };
   const payload = {
     aud: "v",
+    iat: now,
     exp: now + expiresInSeconds,
+    kid: keyId,
     sub: playbackId,
   };
 

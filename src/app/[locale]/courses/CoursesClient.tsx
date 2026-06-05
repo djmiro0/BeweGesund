@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Video,
 } from "lucide-react";
+import { memberCourses } from "@/data";
 import type { CourseSummary } from "@/lib/contentful";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
@@ -57,6 +58,9 @@ const categoryAliases: Record<string, CategoryId> = {
   "lebe-gesund": "healthy-living",
   "lebe-gesund-kursevi": "healthy-living",
   overweight: "overweight",
+  "weight-reduction": "overweight",
+  "weight-loss": "overweight",
+  abnehmen: "overweight",
   uebergewicht: "overweight",
   ubergewicht: "overweight",
   uebergewichtskurse: "overweight",
@@ -91,8 +95,12 @@ const categoryIcons: Record<CategoryId, typeof HeartPulse> = {
   "nutrition-seminars": Salad,
 };
 
-function canonicalCategory(categoryKey: string): CategoryId {
-  return categoryAliases[categoryKey] ?? "healthy-living";
+function canonicalCategory(categoryKey: unknown): CategoryId {
+  const key = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
+
+  if (typeof key !== "string") return "healthy-living";
+
+  return categoryAliases[key] ?? "healthy-living";
 }
 
 function groupCourses(courses: CourseSummary[]) {
@@ -113,6 +121,7 @@ function groupCourses(courses: CourseSummary[]) {
 
 export default function CoursesClient({ courses }: { courses: CourseSummary[] }) {
   const t = useTranslations("courses");
+  const courseT = useTranslations("courseCatalog");
   const { user, openAuth } = useAuth();
   const locale = useLocale();
   const groupedCourses = groupCourses(courses);
@@ -139,7 +148,8 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
       <motion.div className={styles.categoryGrid} initial="hidden" animate="visible" variants={stagger}>
         {groupedCourses.map((group) => {
           const Icon = categoryIcons[group.id];
-          const hasCourses = group.courses.length > 0;
+          const subtypes = memberCourses.filter((course) => canonicalCategory(course.categoryKey) === group.id);
+          const hasCourses = subtypes.length > 0 || group.courses.length > 0;
 
           return (
             <motion.article key={group.id} variants={fadeUp}>
@@ -157,16 +167,10 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
                     </div>
                   </div>
 
-                  {group.id === "reha" ? (
-                    <div className={styles.rehaNote}>
-                      <span>{t("weeklyUnlock.badge")}</span>
-                      <p>{t("weeklyUnlock.reha")}</p>
-                    </div>
-                  ) : null}
-
-                  <div className={styles.courseMeta}>
-                    <span>{t("courseTypes.meta.courseCount", { count: group.courses.length })}</span>
-                    <span>{t("weeklyUnlock.title")}</span>
+                  <div className={styles.subtypePills}>
+                    {subtypes.map((course) => (
+                      <span key={course.id}>{courseT(course.id)}</span>
+                    ))}
                   </div>
                 </Link>
               ) : (

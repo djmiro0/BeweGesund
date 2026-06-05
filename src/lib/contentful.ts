@@ -52,7 +52,7 @@ export interface CourseSummary {
   title: string;
   slug: string;
   description: string;
-  categoryKey: string;
+  categoryKey: unknown;
   categoryTitle: string;
   categoryDescription: string;
   durationMinutes: number | null;
@@ -60,8 +60,11 @@ export interface CourseSummary {
   note: string;
   coach: string;
   packageRequired: MemberPackage;
+  courseKey: string;
+  posterImage: string | null;
   order: number;
   publishedAt: string;
+  hasVideo: boolean;
 }
 
 export type BlogTag = "nutrition" | "health" | "training";
@@ -138,7 +141,7 @@ type CourseFields = Partial<{
   slug: string;
   description: string;
   exerciseInstructions: string;
-  categoryKey: string;
+  categoryKey: string | string[];
   categoryTitle: string;
   categoryDescription: string;
   durationMinutes: number;
@@ -146,7 +149,7 @@ type CourseFields = Partial<{
   note: string;
   duration: string | number;
   level: string;
-  courseKey: string;
+  courseKey: string | string[];
   tags: string | string[];
   coach: string;
   packageRequired: MemberPackage;
@@ -240,8 +243,12 @@ function normalizeStringList(value: string | string[] | undefined) {
     .filter(Boolean);
 }
 
-function normalizeKey(value: string | undefined) {
-  return value
+function normalizeKey(value: unknown) {
+  const text = Array.isArray(value) ? value[0] : value;
+
+  if (typeof text !== "string") return undefined;
+
+  return text
     ?.replace(/ä/g, "ae")
     .replace(/ö/g, "oe")
     .replace(/ü/g, "ue")
@@ -393,7 +400,10 @@ function mapCourseDetail(
   };
 }
 
-function mapCourseSummary(item: ContentfulEntry<CourseFields>): CourseSummary | null {
+function mapCourseSummary(
+  item: ContentfulEntry<CourseFields>,
+  assetUrls: Map<string, string>,
+): CourseSummary | null {
   if (!item.fields.title) return null;
 
   const slug = item.fields.slug ?? item.sys.id;
@@ -416,8 +426,14 @@ function mapCourseSummary(item: ContentfulEntry<CourseFields>): CourseSummary | 
     note: item.fields.note ?? "",
     coach: item.fields.coach ?? "",
     packageRequired: normalizePackage(item.fields.packageRequired),
+    courseKey: normalizeKey(item.fields.courseKey) ?? "",
+    posterImage: normalizeImage(
+      item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
+      assetUrls,
+    ) || null,
     order: Number(item.fields.order ?? 0),
     publishedAt: item.fields.publishedAt ?? "",
+    hasVideo: Boolean(item.fields.muxPlaybackId),
   };
 }
 
@@ -435,8 +451,11 @@ function mapMemberCourseSummary(course: MemberCourseDefinition, order: number): 
     note: course.noteKey ?? "",
     coach: course.coach ?? "",
     packageRequired: course.packageRequired,
+    courseKey: course.id,
+    posterImage: null,
     order,
     publishedAt: "",
+    hasVideo: false,
   };
 }
 
@@ -466,7 +485,10 @@ function mergeCourseSummaries(contentfulCourses: CourseSummary[]) {
       note: course.note || plannedCourse.note,
       coach: course.coach || plannedCourse.coach,
       packageRequired: course.packageRequired || plannedCourse.packageRequired,
+      courseKey: course.courseKey || plannedCourse.courseKey,
+      posterImage: course.posterImage || plannedCourse.posterImage,
       order: plannedCourse.order,
+      hasVideo: course.hasVideo,
     });
   });
 
@@ -486,8 +508,9 @@ export async function getCourses(locale: string): Promise<CourseSummary[]> {
 
   if (!collection?.items.length) return mergeCourseSummaries([]);
 
+  const assetUrls = buildAssetUrlMap(collection);
   const contentfulCourses = collection.items
-    .map(mapCourseSummary)
+    .map((item) => mapCourseSummary(item, assetUrls))
     .filter((course): course is CourseSummary => Boolean(course));
 
   return mergeCourseSummaries(contentfulCourses);
@@ -503,24 +526,8 @@ export async function getCourseDetail(locale: string, slug: string): Promise<Cou
     },
   );
 
-  const fallbackCourse = memberCourses.find((course) => course.id === slug);
-
   if (!collection?.items.length) {
-    if (!fallbackCourse) return null;
-
-    return {
-      id: fallbackCourse.id,
-      title: fallbackCourse.id,
-      slug: fallbackCourse.id,
-      description: "",
-      exerciseInstructions: "",
-      duration: fallbackCourse.durationMinutes ? `${fallbackCourse.durationMinutes} Min` : "",
-      level: "",
-      coach: fallbackCourse.coach ?? "",
-      packageRequired: fallbackCourse.packageRequired,
-      muxPlaybackId: null,
-      posterImage: null,
-    };
+    return null;
   }
 
   const fallbackCollection = locale === "en"

@@ -48,8 +48,26 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({
-    playbackToken: createMuxPlaybackToken(playbackId),
+  let playbackToken: string;
+
+  try {
+    playbackToken = createMuxPlaybackToken(playbackId);
+  } catch {
+    return NextResponse.json(
+      {
+        error: "Mux playback token could not be signed.",
+        code: "MUX_TOKEN_SIGNING_FAILED",
+      },
+      { status: 500 },
+    );
+  }
+
+  const response = NextResponse.json({
+    playbackToken,
     expiresInSeconds: 600,
   });
+
+  response.headers.set("Cache-Control", "no-store");
+
+  return response;
 }

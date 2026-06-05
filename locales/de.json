@@ -287,7 +287,14 @@
         "duration": "{count} Min",
         "unlocks": "{count, plural, one {#x pro Woche freigeschaltet} other {#x pro Woche freigeschaltet}}",
         "coach": "Coach: {name}",
-        "courseCount": "{count, plural, one {# Unterkurs} other {# Unterkurse}}"
+        "courseCount": "{count, plural, one {# Unterkurs} other {# Unterkurse}}",
+        "videoCount": "{count, plural, one {# Video verfügbar} other {# Videos verfügbar}}",
+        "plannedCount": "{count, plural, one {# Training geplant} other {# Trainings geplant}}",
+        "subtypeCount": "{count, plural, one {# Unterkurs} other {# Unterkurse}}",
+        "video": "Video",
+        "videoAvailable": "Video verfügbar",
+        "comingSoon": "In Vorbereitung",
+        "newThisWeek": "Neu diese Woche"
       },
       "empty": "In Contentful sind noch keine Kurse veröffentlicht.",
       "emptyCategory": "In dieser Kategorie ist noch kein Kurs veröffentlicht.",
@@ -404,7 +411,9 @@
     },
     "meta": {
       "flexibleDuration": "Flexible Dauer",
-      "training": "Training"
+      "training": "Training",
+      "videoAvailable": "Video verfügbar",
+      "videoPending": "Video in Vorbereitung"
     }
   },
   "blogs": {
@@ -678,6 +687,7 @@
       "home": "Startseite",
       "about": "Über Uns",
       "programs": "Programme",
+      "courses": "Kurse",
       "calendar": "Live-Kalender",
       "blogs": "Blogs",
       "consultation": "Beratung",

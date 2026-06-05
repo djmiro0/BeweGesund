@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, Dumbbell, ShieldCheck, UserRound } from "lucide-react";
+import { ArrowLeft, Clock, Dumbbell, PlayCircle, ShieldCheck, UserRound } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { memberCourses } from "@/data";
+import { memberCourses, type MemberCourseDefinition } from "@/data";
 import { getCourseDetail, getCourses, type CourseSummary } from "@/lib/contentful";
 import ProtectedMuxPlayer from "./ProtectedMuxPlayer";
 import styles from "./CourseDetail.module.css";
@@ -18,6 +18,9 @@ const categorySlugs = new Set([
 ]);
 
 const categoryAliases: Record<string, string> = {
+  "weight-reduction": "overweight",
+  "weight-loss": "overweight",
+  abnehmen: "overweight",
   definition: "intensive",
 };
 
@@ -32,8 +35,31 @@ const translatedNoteKeys = new Set([
   "comingLater",
 ]);
 
-function canonicalCategory(slug: string) {
-  return categoryAliases[slug] ?? slug;
+function canonicalCategory(slug: unknown) {
+  const key = Array.isArray(slug) ? slug[0] : slug;
+
+  if (typeof key !== "string") return "";
+
+  return categoryAliases[key] ?? key;
+}
+
+function getSubtypeVideos(courses: CourseSummary[], subtype: MemberCourseDefinition, categorySlug: string) {
+  const categorySubtypes = memberCourses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+  const subtypeIds = new Set(categorySubtypes.map((course) => course.id));
+  const plannedOnlyIds = new Set(memberCourses.map((course) => course.id));
+  const categoryItems = courses.filter(
+    (course) => canonicalCategory(course.categoryKey) === categorySlug && !(plannedOnlyIds.has(course.id) && !course.hasVideo),
+  );
+  const directMatches = categoryItems.filter((course) => course.courseKey === subtype.id || course.slug === subtype.id);
+  const isFallbackSubtype = categorySubtypes[0]?.id === subtype.id;
+
+  if (!isFallbackSubtype) return directMatches;
+
+  const fallbackMatches = categoryItems.filter(
+    (course) => course.courseKey === "" || !subtypeIds.has(course.courseKey) || course.courseKey === "weight-reduction",
+  );
+
+  return Array.from(new Map([...directMatches, ...fallbackMatches].map((course) => [course.id, course])).values());
 }
 
 export default async function CourseDetailPage({
@@ -50,22 +76,27 @@ export default async function CourseDetailPage({
 
   if (categorySlugs.has(categorySlug)) {
     const courses = await getCourses(locale);
-    const categoryCourses = courses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+    const subtypes = memberCourses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+    const subtypeCards = subtypes.map((subtype) => {
+      const videos = getSubtypeVideos(courses, subtype, categorySlug);
+      const availableVideoCount = videos.filter((video) => video.hasVideo).length;
+      const plannedTrainingCount = subtype.plannedTrainingCount ?? videos.length;
 
-    if (!categoryCourses.length) notFound();
+      return {
+        subtype,
+        videos,
+        availableVideoCount,
+        plannedTrainingCount,
+      };
+    });
+    const availableVideoCount = subtypeCards.reduce((total, card) => total + card.availableVideoCount, 0);
 
-    const getCourseTitle = (course: CourseSummary) => {
-      if (course.title === course.id || course.title === course.slug) {
-        return courseT(course.id);
-      }
+    if (!subtypeCards.length) notFound();
 
-      return course.title;
-    };
-
-    const getCourseNote = (course: CourseSummary) => {
-      if (!course.note) return "";
-      if (translatedNoteKeys.has(course.note)) return coursesT(`courseTypes.notes.${course.note}`);
-      return course.note;
+    const getCourseNote = (course: MemberCourseDefinition) => {
+      if (!course.noteKey) return "";
+      if (translatedNoteKeys.has(course.noteKey)) return coursesT(`courseTypes.notes.${course.noteKey}`);
+      return course.noteKey;
     };
 
     return (
@@ -87,39 +118,55 @@ export default async function CourseDetailPage({
 
           <aside className={coursesStyles.unlockPanel}>
             <p className={coursesStyles.unlockLabel}>{coursesT("weeklyUnlock.label")}</p>
-            <strong>{coursesT("weeklyUnlock.title")}</strong>
-            <p>{categorySlug === "reha" ? coursesT("weeklyUnlock.reha") : coursesT("weeklyUnlock.description")}</p>
+            <strong>{coursesT("courseTypes.meta.videoCount", { count: availableVideoCount })}</strong>
+            <p>{coursesT("courseTypes.meta.subtypeCount", { count: subtypeCards.length })}</p>
           </aside>
         </header>
 
         <div className={coursesStyles.subtypeList}>
-          {categoryCourses.map((course) => {
-            const courseNote = getCourseNote(course);
-
-            return (
-              <Link key={course.id} href={`/${locale}/courses/${course.slug}`} className={coursesStyles.courseCard}>
+          {subtypeCards.map(({ subtype, videos, availableVideoCount, plannedTrainingCount }) => {
+            const courseNote = getCourseNote(subtype);
+            const cardContent = (
+              <>
+                {availableVideoCount ? (
+                  <span className={coursesStyles.videoBadge}>{coursesT("courseTypes.meta.newThisWeek")}</span>
+                ) : null}
                 <div>
-                  <h2 className={coursesStyles.courseTitle}>{getCourseTitle(course)}</h2>
-                  {course.description ? (
-                    <p className={coursesStyles.courseDescription}>{course.description}</p>
-                  ) : null}
-                  {courseNote || course.coach ? (
+                  <h2 className={coursesStyles.courseTitle}>{courseT(subtype.id)}</h2>
+                  {courseNote || subtype.coach ? (
                     <p className={coursesStyles.courseDescription}>
                       {courseNote}
-                      {courseNote && course.coach ? " · " : ""}
-                      {course.coach ? coursesT("courseTypes.meta.coach", { name: course.coach }) : null}
+                      {courseNote && subtype.coach ? " · " : ""}
+                      {subtype.coach ? coursesT("courseTypes.meta.coach", { name: subtype.coach }) : null}
                     </p>
                   ) : null}
                 </div>
                 <div className={coursesStyles.courseMeta}>
-                  {course.durationMinutes ? (
-                    <span>{coursesT("courseTypes.meta.duration", { count: course.durationMinutes })}</span>
+                  <span>{coursesT("courseTypes.meta.videoCount", { count: availableVideoCount })}</span>
+                  <span>{coursesT("weeklyUnlock.title")}</span>
+                  <span>{coursesT("courseTypes.meta.plannedCount", { count: plannedTrainingCount })}</span>
+                  {subtype.durationMinutes ? (
+                    <span>{coursesT("courseTypes.meta.duration", { count: subtype.durationMinutes })}</span>
                   ) : null}
-                  {course.unlocksPerWeek ? (
-                    <span>{coursesT("courseTypes.meta.unlocks", { count: course.unlocksPerWeek })}</span>
+                  {subtype.unlocksPerWeek ? (
+                    <span>{coursesT("courseTypes.meta.unlocks", { count: subtype.unlocksPerWeek })}</span>
                   ) : null}
-                  <span>{packages(course.packageRequired)}</span>
+                  <span>{packages(subtype.packageRequired)}</span>
                 </div>
+              </>
+            );
+
+            if (!videos.length) {
+              return (
+                <article key={subtype.id} className={`${coursesStyles.courseCard} ${coursesStyles.courseCardUnavailable}`}>
+                  {cardContent}
+                </article>
+              );
+            }
+
+            return (
+              <Link key={subtype.id} href={`/${locale}/courses/${categorySlug}/${subtype.id}`} className={coursesStyles.courseCard}>
+                {cardContent}
               </Link>
             );
           })}
@@ -172,17 +219,19 @@ export default async function CourseDetailPage({
             {course.description ? <p className={styles.description}>{course.description}</p> : null}
           </div>
 
-          <section className={styles.instructions}>
-            <h2>{t("instructionsTitle")}</h2>
-            {instructionParagraphs.length ? (
-              instructionParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-            ) : (
-              <p>{t("instructionsFallback")}</p>
-            )}
-          </section>
+          {instructionParagraphs.length ? (
+            <section className={styles.instructions}>
+              <h2>{t("instructionsTitle")}</h2>
+              {instructionParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </section>
+          ) : null}
         </div>
 
         <aside className={styles.metaPanel}>
+          <div className={styles.metaItem}>
+            <PlayCircle size={17} />
+            <span>{course.muxPlaybackId ? t("meta.videoAvailable") : t("meta.videoPending")}</span>
+          </div>
           <div className={styles.metaItem}>
             <Clock size={17} />
             <span>{course.duration || t("meta.flexibleDuration")}</span>

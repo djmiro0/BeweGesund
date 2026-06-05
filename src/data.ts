@@ -63,6 +63,7 @@ export interface MemberCourseDefinition {
     categoryKey: string;
     durationMinutes?: number;
     unlocksPerWeek?: number;
+    plannedTrainingCount?: number;
     noteKey?: string;
     coach?: string;
     packageRequired: MemberPackage;
@@ -99,13 +100,13 @@ export const memberCourses: MemberCourseDefinition[] = [
     { id: "morning-gymnastics", categoryKey: "healthy-living", durationMinutes: 15, unlocksPerWeek: 1, packageRequired: "starter" },
     { id: "morning-gymnastics-gentle", categoryKey: "healthy-living", durationMinutes: 15, unlocksPerWeek: 1, packageRequired: "starter" },
     { id: "evening-gymnastics", categoryKey: "healthy-living", durationMinutes: 10, unlocksPerWeek: 1, packageRequired: "starter" },
-    { id: "pilates-beginners", categoryKey: "healthy-living", durationMinutes: 30, unlocksPerWeek: 1, noteKey: "package20", coach: "Nevena", packageRequired: "starter" },
+    { id: "pilates-beginners", categoryKey: "healthy-living", durationMinutes: 30, unlocksPerWeek: 1, plannedTrainingCount: 20, noteKey: "package20", coach: "Nevena", packageRequired: "starter" },
     { id: "heart-gymnastics", categoryKey: "healthy-living", durationMinutes: 25, unlocksPerWeek: 1, packageRequired: "starter" },
     { id: "weight-loss-program", categoryKey: "overweight", durationMinutes: 35, unlocksPerWeek: 1, noteKey: "repeat2to3", packageRequired: "rehab-plus" },
     { id: "nutrition-principles", categoryKey: "overweight", noteKey: "premiumRecommended", packageRequired: "all-access" },
     { id: "abs-intensive", categoryKey: "definition", durationMinutes: 30, unlocksPerWeek: 1, packageRequired: "all-access" },
     { id: "glutes-intensive", categoryKey: "definition", durationMinutes: 30, unlocksPerWeek: 1, packageRequired: "all-access" },
-    { id: "full-body-strength-advanced", categoryKey: "definition", durationMinutes: 25, unlocksPerWeek: 1, noteKey: "package20", coach: "Ivana", packageRequired: "all-access" },
+    { id: "full-body-strength-advanced", categoryKey: "definition", durationMinutes: 25, unlocksPerWeek: 1, plannedTrainingCount: 20, noteKey: "package20", coach: "Ivana", packageRequired: "all-access" },
     { id: "pelvic-floor", categoryKey: "pre-post-birth", durationMinutes: 20, unlocksPerWeek: 1, packageRequired: "starter" },
     { id: "birth-preparation", categoryKey: "pre-post-birth", packageRequired: "starter" },
     { id: "baby-training", categoryKey: "pre-post-birth", packageRequired: "starter" },
