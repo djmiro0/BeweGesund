@@ -286,16 +286,20 @@
       "meta": {
         "duration": "{count} Min",
         "unlocks": "{count, plural, one {#x pro Woche freigeschaltet} other {#x pro Woche freigeschaltet}}",
-        "coach": "Coach: {name}"
+        "coach": "Coach: {name}",
+        "courseCount": "{count, plural, one {# Unterkurs} other {# Unterkurse}}"
       },
       "empty": "In Contentful sind noch keine Kurse veröffentlicht.",
       "emptyCategory": "In dieser Kategorie ist noch kein Kurs veröffentlicht.",
       "notes": {
+        "package20": "20 Trainings in einem Paket verfügbar.",
         "package22": "22 Trainings in einem Paket verfügbar.",
         "repeat2to3": "Ideal zum Wiederholen, zwei- bis dreimal pro Woche.",
         "repeatDaily": "Mindestens zwei- bis dreimal pro Woche wiederholen, idealerweise täglich in der Pause und am besten zweimal pro Tag.",
         "videoAndDocs": "Videoformat mit begleitender Dokumentation.",
-        "onlineOnly": "Ausschließlich online verfügbar."
+        "onlineOnly": "Ausschließlich online verfügbar.",
+        "premiumRecommended": "Grundlagen der Ernährung, empfohlen für Premium-Mitglieder.",
+        "comingLater": "Dieses Training wird später ergänzt."
       },
       "items": [
         "Pilates für Anfänger",
@@ -312,10 +316,10 @@
     },
     "weeklyUnlock": {
       "label": "Kursrhythmus",
-      "title": "3 neue Videos pro Woche",
+      "title": "1 neues Training pro Woche",
       "description": "Mitglieder schalten wöchentlich den nächsten Trainingsblock frei und sammeln Videos, bis der Kurs abgeschlossen ist.",
       "badge": "REHA Ablauf",
-      "reha": "Wenn ein Mitglied einen REHA Kurs öffnet, sieht es die Videos für diesen Kurs. Jede Woche werden 3 neue Videos für diese Trainingswoche freigeschaltet. In der nächsten Woche öffnen sich die nächsten 3, und das Mitglied sammelt sie weiter, bis der ganze Kurs beendet ist."
+      "reha": "Wenn ein Mitglied einen REHA Kurs öffnet, sieht es die Videos für diesen Kurs. Jede Woche wird ein neues Training freigeschaltet. Das Ziel ist, dieses Training zwei- bis dreimal pro Woche zu wiederholen."
     },
     "liveTrainings": {
       "title": "Live-Trainings",
@@ -372,13 +376,13 @@
     "morning-gymnastics": "Morgengymnastik - Power",
     "morning-gymnastics-gentle": "Morgengymnastik - Sanftes Aufwachen",
     "evening-gymnastics": "Abendgymnastik",
-    "pilates-beginners": "Pilates für Anfänger",
+    "pilates-beginners": "Pilates für Anfänger und mittleres Niveau",
     "heart-gymnastics": "Herzgymnastik",
     "weight-loss-program": "Abnehmprogramm",
     "nutrition-principles": "Ernährungsprinzipien",
     "abs-intensive": "Bauchmuskeln intensiv",
     "glutes-intensive": "Pomuskeln intensiv",
-    "full-body-strength-advanced": "Ganzkörpertraining Kraft - fortgeschritten",
+    "full-body-strength-advanced": "Ganzkörpertraining - Kraft - fortgeschritten",
     "pelvic-floor": "Beckenboden",
     "birth-preparation": "Geburtsvorbereitung",
     "baby-training": "Babytraining",

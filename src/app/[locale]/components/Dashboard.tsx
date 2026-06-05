@@ -371,7 +371,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                                 </p>
                                             ) : null}
                                         </div>
-                                        <Link href={`/${locale}/calendar`} className={styles.openButton}>
+                                        <Link href={`/${locale}/courses/${course.id}`} className={styles.openButton}>
                                             {t("workouts.openSession")}
                                             <ArrowUpRight size={14} />
                                         </Link>

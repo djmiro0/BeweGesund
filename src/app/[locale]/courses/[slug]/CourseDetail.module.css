@@ -11,10 +11,9 @@
 .backLink {
   width: fit-content;
   max-width: 1180px;
-  margin: 0 auto 0.9rem;
+  margin: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
   color: var(--page-muted);
   font-size: 0.78rem;
   font-weight: 800;

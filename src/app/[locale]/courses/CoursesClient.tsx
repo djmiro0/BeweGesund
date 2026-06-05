@@ -113,7 +113,6 @@ function groupCourses(courses: CourseSummary[]) {
 
 export default function CoursesClient({ courses }: { courses: CourseSummary[] }) {
   const t = useTranslations("courses");
-  const packages = useTranslations("packages");
   const { user, openAuth } = useAuth();
   const locale = useLocale();
   const groupedCourses = groupCourses(courses);
@@ -143,52 +142,50 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
           const hasCourses = group.courses.length > 0;
 
           return (
-            <motion.section key={group.id} className={styles.categoryBlock} variants={fadeUp}>
-              <div className={styles.categoryHead}>
-                <div className={styles.categoryIcon}>
-                  <Icon size={19} />
-                </div>
-                <div>
-                  <h2 className={styles.categoryTitle}>{t(`courseTypes.categories.${group.id}.title`)}</h2>
-                  <p className={styles.categoryDescription}>
-                    {t(`courseTypes.categories.${group.id}.description`)}
-                  </p>
-                </div>
-              </div>
-
-              {group.id === "reha" ? (
-                <div className={styles.rehaNote}>
-                  <span>{t("weeklyUnlock.badge")}</span>
-                  <p>{t("weeklyUnlock.reha")}</p>
-                </div>
-              ) : null}
-
+            <motion.article key={group.id} variants={fadeUp}>
               {hasCourses ? (
-                <div className={styles.courseList}>
-                  {group.courses.map((course) => (
-                    <Link key={course.id} href={`/${locale}/courses/${course.slug}`} className={styles.courseCard}>
-                      <div>
-                        <h3 className={styles.courseTitle}>{course.title}</h3>
-                        {course.description ? (
-                          <p className={styles.courseDescription}>{course.description}</p>
-                        ) : null}
-                      </div>
-                      <div className={styles.courseMeta}>
-                        {course.durationMinutes ? (
-                          <span>{t("courseTypes.meta.duration", { count: course.durationMinutes })}</span>
-                        ) : null}
-                        {course.unlocksPerWeek ? (
-                          <span>{t("courseTypes.meta.unlocks", { count: course.unlocksPerWeek })}</span>
-                        ) : null}
-                        <span>{packages(course.packageRequired)}</span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                <Link href={`/${locale}/courses/${group.id}`} className={styles.categoryBlock}>
+                  <div className={styles.categoryHead}>
+                    <div className={styles.categoryIcon}>
+                      <Icon size={19} />
+                    </div>
+                    <div>
+                      <h2 className={styles.categoryTitle}>{t(`courseTypes.categories.${group.id}.title`)}</h2>
+                      <p className={styles.categoryDescription}>
+                        {t(`courseTypes.categories.${group.id}.description`)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {group.id === "reha" ? (
+                    <div className={styles.rehaNote}>
+                      <span>{t("weeklyUnlock.badge")}</span>
+                      <p>{t("weeklyUnlock.reha")}</p>
+                    </div>
+                  ) : null}
+
+                  <div className={styles.courseMeta}>
+                    <span>{t("courseTypes.meta.courseCount", { count: group.courses.length })}</span>
+                    <span>{t("weeklyUnlock.title")}</span>
+                  </div>
+                </Link>
               ) : (
-                <p className={styles.emptyCategory}>{t("courseTypes.emptyCategory")}</p>
+                <section className={styles.categoryBlock}>
+                  <div className={styles.categoryHead}>
+                    <div className={styles.categoryIcon}>
+                      <Icon size={19} />
+                    </div>
+                    <div>
+                      <h2 className={styles.categoryTitle}>{t(`courseTypes.categories.${group.id}.title`)}</h2>
+                      <p className={styles.categoryDescription}>
+                        {t(`courseTypes.categories.${group.id}.description`)}
+                      </p>
+                    </div>
+                  </div>
+                  <p className={styles.emptyCategory}>{t("courseTypes.emptyCategory")}</p>
+                </section>
               )}
-            </motion.section>
+            </motion.article>
           );
         })}
       </motion.div>

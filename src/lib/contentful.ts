@@ -1,4 +1,4 @@
-import { mockVideos, type MemberPackage } from "@/data";
+import { memberCourses, mockVideos, type MemberCourseDefinition, type MemberPackage } from "@/data";
 
 export type ContentfulCalendarFormat = "training" | "seminar";
 
@@ -421,23 +421,76 @@ function mapCourseSummary(item: ContentfulEntry<CourseFields>): CourseSummary | 
   };
 }
 
+function mapMemberCourseSummary(course: MemberCourseDefinition, order: number): CourseSummary {
+  return {
+    id: course.id,
+    title: course.id,
+    slug: course.id,
+    description: "",
+    categoryKey: course.categoryKey,
+    categoryTitle: titleFromKey(course.categoryKey),
+    categoryDescription: "",
+    durationMinutes: course.durationMinutes ?? null,
+    unlocksPerWeek: course.unlocksPerWeek ?? null,
+    note: course.noteKey ?? "",
+    coach: course.coach ?? "",
+    packageRequired: course.packageRequired,
+    order,
+    publishedAt: "",
+  };
+}
+
+function mergeCourseSummaries(contentfulCourses: CourseSummary[]) {
+  const merged = new Map<string, CourseSummary>();
+
+  memberCourses.forEach((course, index) => {
+    merged.set(course.id, mapMemberCourseSummary(course, index));
+  });
+
+  contentfulCourses.forEach((course) => {
+    const plannedCourse = merged.get(course.slug) ?? merged.get(course.id);
+
+    if (!plannedCourse) {
+      merged.set(course.slug, course);
+      return;
+    }
+
+    merged.set(plannedCourse.id, {
+      ...plannedCourse,
+      ...course,
+      id: plannedCourse.id,
+      slug: course.slug || plannedCourse.slug,
+      categoryKey: plannedCourse.categoryKey,
+      durationMinutes: course.durationMinutes ?? plannedCourse.durationMinutes,
+      unlocksPerWeek: course.unlocksPerWeek ?? plannedCourse.unlocksPerWeek,
+      note: course.note || plannedCourse.note,
+      coach: course.coach || plannedCourse.coach,
+      packageRequired: course.packageRequired || plannedCourse.packageRequired,
+      order: plannedCourse.order,
+    });
+  });
+
+  return Array.from(merged.values()).sort((a, b) => {
+    if (a.order !== b.order) return a.order - b.order;
+    const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+    const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+    return bDate - aDate || a.title.localeCompare(b.title);
+  });
+}
+
 export async function getCourses(locale: string): Promise<CourseSummary[]> {
   const collection = await fetchEntries<CourseFields>(
     process.env.CONTENTFUL_COURSE_CONTENT_TYPE ?? defaultCourseContentType,
     locale,
   );
 
-  if (!collection?.items.length) return [];
+  if (!collection?.items.length) return mergeCourseSummaries([]);
 
-  return collection.items
+  const contentfulCourses = collection.items
     .map(mapCourseSummary)
-    .filter((course): course is CourseSummary => Boolean(course))
-    .sort((a, b) => {
-      if (a.order !== b.order) return a.order - b.order;
-      const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-      const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
-      return bDate - aDate || a.title.localeCompare(b.title);
-    });
+    .filter((course): course is CourseSummary => Boolean(course));
+
+  return mergeCourseSummaries(contentfulCourses);
 }
 
 export async function getCourseDetail(locale: string, slug: string): Promise<CourseDetail | null> {
@@ -450,7 +503,25 @@ export async function getCourseDetail(locale: string, slug: string): Promise<Cou
     },
   );
 
-  if (!collection?.items.length) return null;
+  const fallbackCourse = memberCourses.find((course) => course.id === slug);
+
+  if (!collection?.items.length) {
+    if (!fallbackCourse) return null;
+
+    return {
+      id: fallbackCourse.id,
+      title: fallbackCourse.id,
+      slug: fallbackCourse.id,
+      description: "",
+      exerciseInstructions: "",
+      duration: fallbackCourse.durationMinutes ? `${fallbackCourse.durationMinutes} Min` : "",
+      level: "",
+      coach: fallbackCourse.coach ?? "",
+      packageRequired: fallbackCourse.packageRequired,
+      muxPlaybackId: null,
+      posterImage: null,
+    };
+  }
 
   const fallbackCollection = locale === "en"
     ? null
