@@ -4,7 +4,9 @@ import { useTranslations } from "next-intl";
 import { auth, db } from "../../../../firebase.config";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, type AuthError } from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { LoaderCircle, X } from 'lucide-react';
+import { Check, LoaderCircle, X } from 'lucide-react';
+import type { MemberPackage } from "@/data";
+import { memberPackages } from "@/lib/memberPackages";
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -22,7 +24,7 @@ interface CreateUserProfilePayload {
     occupationKey: string | null;
     averageStepsPerDay: number | null;
     primaryGoalKey: string | null;
-    memberPackage: "starter";
+    memberPackage: MemberPackage;
     startedCourseIds: string[];
     completedCourseIds: string[];
     recommendedCourseIds: string[];
@@ -61,6 +63,7 @@ interface FirebaseErrorLike {
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const t = useTranslations("auth");
+    const packageT = useTranslations("packages");
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -69,6 +72,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [heightCm, setHeightCm] = useState('');
     const [weightKg, setWeightKg] = useState('');
     const [occupation, setOccupation] = useState('');
+    const [memberPackage, setMemberPackage] = useState<MemberPackage>("starter");
     const [hasAcceptedConsent, setHasAcceptedConsent] = useState(false);
     const [isTermsOpen, setIsTermsOpen] = useState(false);
     const [isRegister, setIsRegister] = useState(false);
@@ -132,7 +136,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         occupationKey: occupation || null,
         averageStepsPerDay: null,
         primaryGoalKey: null,
-        memberPackage: "starter",
+        memberPackage,
         startedCourseIds: [],
         completedCourseIds: [],
         recommendedCourseIds: [],
@@ -163,6 +167,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setHeightCm("");
         setWeightKg("");
         setOccupation("");
+        setMemberPackage("starter");
         setHasAcceptedConsent(false);
         setIsTermsOpen(false);
         setErrorMessage("");
@@ -322,6 +327,34 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     <option value="physical">{t("occupations.physical")}</option>
                                 </select>
                             </label>
+                            <fieldset>
+                                <legend className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">
+                                    {t("requiredLabel", { label: t("packageLabel") })}
+                                </legend>
+                                <div className="grid gap-2 sm:grid-cols-3">
+                                    {memberPackages.map((packageId) => {
+                                        const isSelected = memberPackage === packageId;
+
+                                        return (
+                                            <button
+                                                key={packageId}
+                                                type="button"
+                                                aria-pressed={isSelected}
+                                                onClick={() => setMemberPackage(packageId)}
+                                                className={`flex min-h-16 items-center justify-between gap-2 rounded-2xl border px-4 py-3 text-left text-sm font-black transition ${
+                                                    isSelected
+                                                        ? "border-[var(--highlight)] bg-[rgba(var(--accent-rgb),0.18)] text-[var(--text-light)]"
+                                                        : "border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.32)] text-[var(--text-dim)] hover:border-[var(--border-strong)]"
+                                                }`}
+                                            >
+                                                {packageT(packageId)}
+                                                {isSelected ? <Check size={17} /> : null}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                <p className="mt-2 text-xs leading-5 text-[var(--text-dim)]">{t("packageTemporaryHint")}</p>
+                            </fieldset>
                             <label className="flex items-start gap-3 rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.32)] p-4 text-sm leading-6 text-[var(--text-dim)]">
                                 <input
                                     type="checkbox"
@@ -353,15 +386,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         {isRegister ? t("submitRegister") : t("submitSignIn")}
                     </button>
                 </form>
-                {/*<button*/}
-                {/*    onClick={() => {*/}
-                {/*        resetForm();*/}
-                {/*        setIsRegister(!isRegister);*/}
-                {/*    }}*/}
-                {/*    className="mt-5 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"*/}
-                {/*>*/}
-                {/*    {isRegister ? t("switchToSignIn") : t("switchToRegister")}*/}
-                {/*</button>*/}
+                <button
+                    type="button"
+                    onClick={() => {
+                        resetForm();
+                        setIsRegister((current) => !current);
+                    }}
+                    className="mt-5 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
+                >
+                    {isRegister ? t("switchToSignIn") : t("switchToRegister")}
+                </button>
                 {isTermsOpen ? (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(var(--navy-rgb),0.72)] p-4 backdrop-blur-sm">
                         <div className="relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-[1.5rem] border border-[var(--border-soft)] bg-[linear-gradient(180deg,_rgba(var(--navy-rgb),0.98),_rgba(2,35,53,0.98))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.45)]">

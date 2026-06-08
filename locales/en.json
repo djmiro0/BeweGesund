@@ -138,6 +138,8 @@
     "heightCm": "Height (cm)",
     "weightKg": "Weight (kg)",
     "occupation": "Occupation",
+    "packageLabel": "Membership package",
+    "packageTemporaryHint": "For the current test, you can choose your package freely. Payment will be added to package changes later.",
     "selectPlaceholder": "Select an option",
     "occupations": {
       "sedentary": "Mostly seated",
@@ -441,6 +443,14 @@
     "eyebrow": "Member profile",
     "avatarAlt": "{name}'s profile photo",
     "mobileTitle": "Holistic fitness education",
+    "packageSelector": {
+      "eyebrow": "Membership",
+      "title": "Active package",
+      "description": "This package controls access to courses and live sessions.",
+      "temporaryHint": "Test phase: the package can be changed without payment.",
+      "saved": "Package updated.",
+      "error": "The package could not be saved."
+    },
     "actions": {
       "menu": "Open profile menu",
       "seeMore": "See more",

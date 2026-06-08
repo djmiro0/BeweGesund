@@ -7,6 +7,7 @@ import {
   Award,
   BookOpen,
   CalendarDays,
+  Check,
   ChevronDown,
   Crown,
   Dumbbell,
@@ -26,9 +27,10 @@ import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, type AuthE
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase.config";
 import { activeScheduleDays, memberCourses, type MemberPackage } from "@/data";
+import { memberPackages } from "@/lib/memberPackages";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import ProfileSettingsAccess from "./ProfileSettingsAccess";
@@ -95,6 +97,8 @@ export default function ProfilePage() {
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isTrainingOpen, setIsTrainingOpen] = useState(false);
+  const [isSavingPackage, setIsSavingPackage] = useState(false);
+  const [packageMessage, setPackageMessage] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -277,6 +281,28 @@ export default function ProfilePage() {
     }
   };
 
+  const handlePackageChange = async (nextPackage: MemberPackage) => {
+    if (!user || nextPackage === profile.memberPackage || isSavingPackage) return;
+
+    const previousPackage = profile.memberPackage;
+    setIsSavingPackage(true);
+    setPackageMessage("");
+    setProfile((current) => ({ ...current, memberPackage: nextPackage }));
+
+    try {
+      await updateDoc(doc(db, "users", user.uid), {
+        memberPackage: nextPackage,
+        updatedAt: serverTimestamp(),
+      });
+      setPackageMessage(t("packageSelector.saved"));
+    } catch {
+      setProfile((current) => ({ ...current, memberPackage: previousPackage }));
+      setPackageMessage(t("packageSelector.error"));
+    } finally {
+      setIsSavingPackage(false);
+    }
+  };
+
   return (
     <motion.section
       className={styles.profileSection}
@@ -311,6 +337,34 @@ export default function ProfilePage() {
             settingsLabel={t("settings.link")}
           />
         </motion.header>
+
+        <motion.section className={styles.packagePanel} variants={fadeUp}>
+          <div>
+            <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
+            <h2>{t("packageSelector.title")}</h2>
+            <p>{t("packageSelector.description")}</p>
+          </div>
+          <div className={styles.packageOptions}>
+            {memberPackages.map((packageId) => {
+              const isSelected = profile.memberPackage === packageId;
+
+              return (
+                <button
+                  key={packageId}
+                  type="button"
+                  className={`${styles.packageOption} ${isSelected ? styles.packageOptionActive : ""}`}
+                  aria-pressed={isSelected}
+                  disabled={isSavingPackage}
+                  onClick={() => void handlePackageChange(packageId)}
+                >
+                  <span>{packageT(packageId)}</span>
+                  {isSelected ? <Check size={17} /> : null}
+                </button>
+              );
+            })}
+          </div>
+          <p className={styles.packageHint}>{packageMessage || t("packageSelector.temporaryHint")}</p>
+        </motion.section>
 
         <motion.details className={`${styles.mobileCard} ${styles.bodyCard}`} variants={fadeUp} open>
           <summary className={styles.cardSummary}>

@@ -91,6 +91,72 @@
   white-space: nowrap;
 }
 
+.packagePanel {
+  display: grid;
+  gap: 0.8rem;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 0.9rem;
+  background:
+    linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9));
+  padding: 1rem;
+  box-shadow: 0 12px 28px rgba(var(--page-ink-rgb), 0.08);
+}
+
+.packagePanel h2 {
+  margin: 0.18rem 0 0;
+  color: var(--page-ink);
+  font-size: 1.15rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.packagePanel > div:first-child > p:last-child,
+.packageHint {
+  margin: 0.3rem 0 0;
+  color: var(--page-muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.packageOptions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.packageOption {
+  min-width: 0;
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 0.7rem;
+  background: rgba(var(--page-soft-rgb), 0.7);
+  padding: 0.65rem 0.4rem;
+  color: var(--page-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.packageOption:hover,
+.packageOptionActive {
+  border-color: rgba(var(--secondary-rgb), 0.42);
+  background: rgba(var(--secondary-rgb), 0.12);
+  color: var(--page-ink);
+}
+
+.packageOption:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.packageHint {
+  min-height: 1.1rem;
+}
+
 .settingsTrigger {
   display: inline-flex;
   align-items: center;

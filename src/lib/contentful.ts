@@ -271,17 +271,18 @@ function titleFromKey(value: string) {
 }
 
 export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
-  const collection = await fetchEntries<CalendarEventFields>(
-    process.env.CONTENTFUL_CALENDAR_CONTENT_TYPE ?? defaultCalendarContentType,
-    locale,
-    {
-      order: "fields.startsAt",
-    },
-  );
+  const [collection, courses] = await Promise.all([
+    fetchEntries<CalendarEventFields>(
+      process.env.CONTENTFUL_CALENDAR_CONTENT_TYPE ?? defaultCalendarContentType,
+      locale,
+      {
+        order: "fields.startsAt",
+      },
+    ),
+    getCourses(locale),
+  ]);
 
-  if (!collection?.items.length) return [];
-
-  const events = collection.items
+  const calendarEvents = (collection?.items ?? [])
     .map((item) => {
       const startsAt = item.fields.startsAt ?? item.fields.dateTime;
       if (!startsAt || !item.fields.title) return null;
@@ -300,7 +301,25 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
         muxPlaybackId: item.fields.muxPlaybackId ?? null,
       } satisfies CalendarEvent;
     })
-    .filter((event): event is CalendarEvent => Boolean(event))
+    .filter((event): event is CalendarEvent => Boolean(event));
+
+  const courseReleases = courses
+    .filter((course) => course.hasVideo && Boolean(course.publishedAt))
+    .map((course) => ({
+      id: `course-${course.id}`,
+      title: course.title,
+      description: course.description,
+      liveTrainingLink: `/${locale}/courses/${course.slug}`,
+      slug: course.slug,
+      startsAt: course.publishedAt,
+      durationMinutes: course.durationMinutes ?? 30,
+      formatKey: "training" as const,
+      coach: course.coach || "Sandra",
+      packageRequired: course.packageRequired,
+      muxPlaybackId: null,
+    } satisfies CalendarEvent));
+
+  const events = [...calendarEvents, ...courseReleases]
     .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
 
   const days = new Map<string, CalendarDay>();

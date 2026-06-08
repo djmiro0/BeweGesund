@@ -138,6 +138,8 @@
     "heightCm": "Körpergröße (cm)",
     "weightKg": "Gewicht (kg)",
     "occupation": "Beruf",
+    "packageLabel": "Mitgliedspaket",
+    "packageTemporaryHint": "Für den aktuellen Test kannst du dein Paket frei wählen. Die Zahlung wird später beim Paketwechsel ergänzt.",
     "selectPlaceholder": "Option auswählen",
     "occupations": {
       "sedentary": "Überwiegend sitzend",
@@ -441,6 +443,14 @@
     "eyebrow": "Mitgliederprofil",
     "avatarAlt": "Profilfoto von {name}",
     "mobileTitle": "Ganzheitliche Fitnessbildung",
+    "packageSelector": {
+      "eyebrow": "Mitgliedschaft",
+      "title": "Aktives Paket",
+      "description": "Dieses Paket steuert den Zugriff auf Kurse und Live-Sessions.",
+      "temporaryHint": "Testphase: Das Paket kann ohne Zahlung geändert werden.",
+      "saved": "Paket wurde aktualisiert.",
+      "error": "Das Paket konnte nicht gespeichert werden."
+    },
     "actions": {
       "menu": "Profilmenü öffnen",
       "seeMore": "Mehr sehen",
