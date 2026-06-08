@@ -60,7 +60,7 @@ export interface CourseSummary {
   note: string;
   coach: string;
   packageRequired: MemberPackage;
-  courseKey: string;
+  subcategoryKey: string;
   posterImage: string | null;
   order: number;
   publishedAt: string;
@@ -149,7 +149,7 @@ type CourseFields = Partial<{
   note: string;
   duration: string | number;
   level: string;
-  courseKey: string | string[];
+  subcategoryKey: string | string[];
   tags: string | string[];
   coach: string;
   packageRequired: MemberPackage;
@@ -426,7 +426,7 @@ function mapCourseSummary(
     note: item.fields.note ?? "",
     coach: item.fields.coach ?? "",
     packageRequired: normalizePackage(item.fields.packageRequired),
-    courseKey: normalizeKey(item.fields.courseKey) ?? "",
+    subcategoryKey: normalizeKey(item.fields.subcategoryKey) ?? "",
     posterImage: normalizeImage(
       item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
       assetUrls,
@@ -451,7 +451,7 @@ function mapMemberCourseSummary(course: MemberCourseDefinition, order: number): 
     note: course.noteKey ?? "",
     coach: course.coach ?? "",
     packageRequired: course.packageRequired,
-    courseKey: course.id,
+    subcategoryKey: course.id,
     posterImage: null,
     order,
     publishedAt: "",
@@ -485,7 +485,7 @@ function mergeCourseSummaries(contentfulCourses: CourseSummary[]) {
       note: course.note || plannedCourse.note,
       coach: course.coach || plannedCourse.coach,
       packageRequired: course.packageRequired || plannedCourse.packageRequired,
-      courseKey: course.courseKey || plannedCourse.courseKey,
+      subcategoryKey: course.subcategoryKey || plannedCourse.subcategoryKey,
       posterImage: course.posterImage || plannedCourse.posterImage,
       order: plannedCourse.order,
       hasVideo: course.hasVideo,

@@ -30,13 +30,13 @@ function getSubtypeVideos(courses: CourseSummary[], subtype: MemberCourseDefinit
   const categoryItems = courses.filter(
     (course) => canonicalCategory(course.categoryKey) === categorySlug && !(plannedOnlyIds.has(course.id) && !course.hasVideo),
   );
-  const directMatches = categoryItems.filter((course) => course.courseKey === subtype.id || course.slug === subtype.id);
+  const directMatches = categoryItems.filter((course) => course.subcategoryKey === subtype.id || course.slug === subtype.id);
   const isFallbackSubtype = categorySubtypes[0]?.id === subtype.id;
 
   if (!isFallbackSubtype) return directMatches;
 
   const fallbackMatches = categoryItems.filter(
-    (course) => course.courseKey === "" || !subtypeIds.has(course.courseKey) || course.courseKey === "weight-reduction",
+    (course) => course.subcategoryKey === "" || !subtypeIds.has(course.subcategoryKey),
   );
 
   return Array.from(new Map([...directMatches, ...fallbackMatches].map((course) => [course.id, course])).values());
