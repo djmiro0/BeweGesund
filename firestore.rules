@@ -10,12 +10,16 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    function isValidMemberPackage(value) {
+      return value in ["starter", "rehab-plus", "all-access"];
+    }
+
     function profileImmutableFieldsUnchanged() {
       return request.resource.data.xp == resource.data.xp
         && request.resource.data.points == resource.data.points
         && request.resource.data.premiumStatus == resource.data.premiumStatus
         && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus
-        && request.resource.data.memberPackage == resource.data.memberPackage
+        && isValidMemberPackage(request.resource.data.memberPackage)
         && request.resource.data.currentStreak == resource.data.currentStreak
         && request.resource.data.longestStreak == resource.data.longestStreak
         && request.resource.data.weeklyLeaderboardRank == resource.data.weeklyLeaderboardRank
@@ -70,7 +74,7 @@ service cloud.firestore {
         && hasOnlyProfileFields()
         && request.resource.data.uid == userId
         && request.resource.data.email == request.auth.token.email
-        && request.resource.data.memberPackage == "starter"
+        && isValidMemberPackage(request.resource.data.memberPackage)
         && request.resource.data.startedCourseIds == []
         && request.resource.data.completedCourseIds == []
         && request.resource.data.recommendedCourseIds == []

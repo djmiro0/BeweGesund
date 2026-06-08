@@ -28,9 +28,6 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
     [activeTag, posts],
   );
 
-  const featuredPost = filteredPosts[0];
-  const restPosts = filteredPosts.slice(1);
-
   return (
     <section className={styles.blogsPage}>
       <motion.header
@@ -72,10 +69,10 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
         ))}
       </div>
 
-      {featuredPost ? (
+      {filteredPosts.length ? (
         <motion.div
           key={activeTag}
-          className={styles.postLayout}
+          className={styles.postGrid}
           initial="hidden"
           animate="visible"
           variants={{
@@ -87,89 +84,49 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
             },
           }}
         >
-          <motion.article className={styles.featuredPost} variants={fadeUp}>
-            {featuredPost.featuredImage ? (
-              <Link href={`/${locale}/blogs/${featuredPost.slug}`} className={styles.featuredImageLink}>
-                <Image
-                  src={featuredPost.featuredImage}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  className={styles.featuredImage}
-                />
-              </Link>
-            ) : (
-              <Link href={`/${locale}/blogs/${featuredPost.slug}`} className={styles.featuredImageLink}>
-                <span className={styles.imageFallback} aria-hidden="true">
-                  <ImageIcon size={34} />
-                </span>
-              </Link>
-            )}
-            <div className={styles.featuredCopy}>
-              <div className={styles.tagRow}>
-                {featuredPost.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
-                ))}
-              </div>
-              <h2 className={styles.featuredTitle}>
-                <Link href={`/${locale}/blogs/${featuredPost.slug}`}>{featuredPost.title}</Link>
-              </h2>
-              <p className={styles.excerpt}>{featuredPost.excerpt}</p>
-              <div className={styles.postMeta}>
-                <span>{featuredPost.author}</span>
-                <span>
-                  <Clock size={14} />
-                  {featuredPost.readTimeMinutes} min
-                </span>
-              </div>
-              <Link href={`/${locale}/blogs/${featuredPost.slug}`} className={styles.readLink}>
-                {t("readArticle")}
-                <ArrowUpRight size={17} />
-              </Link>
-            </div>
-          </motion.article>
-
-          <div className={styles.postList}>
-            {restPosts.map((post) => (
-              <motion.article key={post.id} className={styles.postItem} variants={fadeUp}>
-                {post.featuredImage ? (
-                  <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
-                    <Image
-                      src={post.featuredImage}
-                      alt=""
-                      fill
-                      sizes="(min-width: 1024px) 220px, 100vw"
-                      className={styles.postImage}
-                    />
-                  </Link>
-                ) : (
-                  <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
-                    <span className={styles.imageFallback} aria-hidden="true">
-                      <ImageIcon size={24} />
-                    </span>
-                  </Link>
-                )}
-                <div className={styles.postCopy}>
-                  <div className={styles.tagRow}>
-                    {post.tags.map((tag) => (
-                      <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
-                    ))}
-                  </div>
-                  <h2 className={styles.postTitle}>
-                    <Link href={`/${locale}/blogs/${post.slug}`}>{post.title}</Link>
-                  </h2>
-                  <p className={styles.excerpt}>{post.excerpt}</p>
-                  <div className={styles.postMeta}>
-                    <span>{post.author}</span>
-                    <span>
-                      <Clock size={14} />
-                      {post.readTimeMinutes} min
-                    </span>
-                  </div>
+          {filteredPosts.map((post) => (
+            <motion.article key={post.id} className={styles.postCard} variants={fadeUp}>
+              {post.featuredImage ? (
+                <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
+                  <Image
+                    src={post.featuredImage}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className={styles.postImage}
+                  />
+                </Link>
+              ) : (
+                <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
+                  <span className={styles.imageFallback} aria-hidden="true">
+                    <ImageIcon size={24} />
+                  </span>
+                </Link>
+              )}
+              <div className={styles.postCopy}>
+                <div className={styles.tagRow}>
+                  {post.tags.map((tag) => (
+                    <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
+                  ))}
                 </div>
-              </motion.article>
-            ))}
-          </div>
+                <h2 className={styles.postTitle}>
+                  <Link href={`/${locale}/blogs/${post.slug}`}>{post.title}</Link>
+                </h2>
+                <p className={styles.excerpt}>{post.excerpt}</p>
+                <div className={styles.postMeta}>
+                  <span>{post.author}</span>
+                  <span>
+                    <Clock size={14} />
+                    {post.readTimeMinutes} min
+                  </span>
+                </div>
+                <Link href={`/${locale}/blogs/${post.slug}`} className={styles.readLink}>
+                  {t("readArticle")}
+                  <ArrowUpRight size={17} />
+                </Link>
+              </div>
+            </motion.article>
+          ))}
         </motion.div>
       ) : (
         <div className={styles.emptyState}>

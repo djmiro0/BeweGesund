@@ -16,16 +16,10 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import styles from "./Calendar.module.css";
-import { memberDashboard, type MemberPackage } from "@/data";
+import { packageRank } from "@/lib/memberPackages";
 import type { CalendarDay } from "@/lib/contentful";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
-
-const packageRank: Record<MemberPackage, number> = {
-  starter: 1,
-  "rehab-plus": 2,
-  "all-access": 3,
-};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -54,10 +48,9 @@ function addDays(dateKey: string, amount: number) {
 
 export default function CalendarClient({ days }: { days: CalendarDay[] }) {
   const t = useTranslations("calendar");
-  const courseT = useTranslations("courseCatalog");
   const packageT = useTranslations("packages");
   const locale = useLocale();
-  const { user, openAuth } = useAuth();
+  const { user, memberPackage, openAuth } = useAuth();
   const [selectedDate, setSelectedDate] = useState(days[0]?.date ?? toDateKey(new Date()));
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
@@ -137,7 +130,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
         </div>
         <div className={styles.planCard}>
           <span className={styles.planLabel}>{t("memberPackage")}</span>
-          <strong className={styles.planValue}>{packageT(memberDashboard.package)}</strong>
+          <strong className={styles.planValue}>{packageT(memberPackage)}</strong>
           <p className={styles.planHint}>{t("packageHint")}</p>
         </div>
       </motion.div>
@@ -285,8 +278,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
           <div className={styles.sessionList}>
             {selectedDay.entries.map((entry) => {
               const included =
-                packageRank[memberDashboard.package] >= packageRank[entry.packageRequired];
-              const title = entry.title || (entry.titleKey ? courseT(entry.titleKey) : "");
+                packageRank[memberPackage] >= packageRank[entry.packageRequired];
               const canJoin = included && Boolean(entry.liveTrainingLink);
 
               return (
@@ -310,6 +302,9 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                     </div>
                     <div className={styles.sessionCopy}>
                       <div className={styles.sessionBadges}>
+                        {entry.isLive ? (
+                          <span className={styles.liveBadge}>{t("liveBadge")}</span>
+                        ) : null}
                         <span className={styles.formatBadge}>
                           <Video size={14} />
                           {t(`formats.${entry.formatKey}`)}
@@ -318,7 +313,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                           {packageT(entry.packageRequired)}
                         </span>
                       </div>
-                      <h4 className={styles.sessionTitle}>{title}</h4>
+                      <h4 className={styles.sessionTitle}>{entry.title}</h4>
                       {entry.description ? (
                         <p className={styles.sessionDescription}>{entry.description}</p>
                       ) : null}

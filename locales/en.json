@@ -112,13 +112,22 @@
         "sessions": "{count, plural, one {# session} other {# sessions}}",
         "newWorkouts": "New workouts",
         "recommended": "Recommended",
+        "live": "Live",
         "openSession": "Open",
         "lockedSoon": "Video library by tags comes next.",
+        "recentDescription": "The newest published training videos.",
+        "emptyCategory": "No published videos are available in this category yet.",
         "status": {
           "package": "Package",
           "upcoming": "Upcoming",
           "completed": "Done"
         }
+      },
+      "news": {
+        "title": "Latest articles",
+        "viewAll": "View all",
+        "read": "Read article",
+        "readTime": "{count} min read"
       }
     },
     "loading": "LOADING..."
@@ -138,6 +147,8 @@
     "heightCm": "Height (cm)",
     "weightKg": "Weight (kg)",
     "occupation": "Occupation",
+    "packageLabel": "Membership package",
+    "packageTemporaryHint": "For the current test, you can choose your package freely. Payment will be added to package changes later.",
     "selectPlaceholder": "Select an option",
     "occupations": {
       "sedentary": "Mostly seated",
@@ -239,28 +250,44 @@
       "lead": "A structured library of movement, rehabilitation, and education formats designed for everyday accessibility.",
       "categories": {
         "reha": {
-          "title": "Rehab",
-          "description": "Targeted rehab formats for knee, back, hip, and general stability, with added focus areas for osteoporosis and arthritis."
+          "title": "REHA Courses",
+          "description": "Rehabilitation programs with a weekly video rhythm and guided progression."
         },
         "healthy-living": {
-          "title": "Healthy Living",
+          "title": "Lebe Gesund Courses",
           "description": "Accessible formats for mobility, gentle entry points, and regular everyday movement."
         },
         "overweight": {
-          "title": "Weight Management",
+          "title": "Overweight Courses",
           "description": "Movement and nutrition formats focused on sustainable weight reduction."
         },
         "definition": {
-          "title": "Definition",
+          "title": "Intensive",
           "description": "More intensive strength and definition formats for more advanced members."
+        },
+        "intensive": {
+          "title": "Intensive",
+          "description": "Focused strength, definition, and higher-effort training formats."
         },
         "pre-post-birth": {
           "title": "Pre & Post Birth",
           "description": "Supportive formats around pelvic floor work, birth preparation, and training with your baby."
         },
         "corporate-fitness": {
-          "title": "Corporate Fitness",
+          "title": "Firmenfitness",
           "description": "Short, repeatable movement units designed for active breaks during the workday."
+        },
+        "live-courses": {
+          "title": "Live Courses",
+          "description": "Scheduled live movement sessions for members."
+        },
+        "live-seminars": {
+          "title": "Live Seminars",
+          "description": "Scheduled education sessions with live guidance."
+        },
+        "nutrition-seminars": {
+          "title": "Nutrition Seminars",
+          "description": "Nutrition education and practical health knowledge."
         },
         "paragraph-20": {
           "title": "Paragraph 20",
@@ -270,14 +297,28 @@
       "meta": {
         "duration": "{count} min",
         "unlocks": "{count, plural, one {Unlocks # session per week} other {Unlocks # sessions per week}}",
-        "coach": "Coach: {name}"
+        "coach": "Coach: {name}",
+        "courseCount": "{count, plural, one {# subtype} other {# subtypes}}",
+        "videoCount": "{count, plural, one {# video available} other {# videos available}}",
+        "plannedCount": "{count, plural, one {# training planned} other {# trainings planned}}",
+        "subtypeCount": "{count, plural, one {# subtype} other {# subtypes}}",
+        "video": "Video",
+        "videoAvailable": "Video available",
+        "comingSoon": "In preparation",
+        "live": "Live",
+        "newThisWeek": "New this week"
       },
+      "empty": "No courses are published in Contentful yet.",
+      "emptyCategory": "No published course in this category yet.",
       "notes": {
+        "package20": "Available as a 20-session package.",
         "package22": "Available as a 22-session package.",
         "repeat2to3": "Ideally repeated two to three times per week.",
         "repeatDaily": "Repeat at least two to three times per week, ideally every day during a break and best twice per day.",
         "videoAndDocs": "Video format with supporting documentation.",
-        "onlineOnly": "Available online only."
+        "onlineOnly": "Available online only.",
+        "premiumRecommended": "Nutrition basics, recommended for premium members.",
+        "comingLater": "This training will be added later."
       },
       "items": [
         "Pilates for Beginners",
@@ -291,6 +332,13 @@
         "Ten-Minute Training for an Active Break",
         "Educational Seminars"
       ]
+    },
+    "weeklyUnlock": {
+      "label": "Course rhythm",
+      "title": "1 new training per week",
+      "description": "Members unlock the next training block weekly and keep collecting videos until the course is complete.",
+      "badge": "REHA flow",
+      "reha": "When a member opens a REHA course, they see the videos for that course. Every week, one new training unlocks. The goal is to repeat that training two to three times per week."
     },
     "liveTrainings": {
       "title": "Live Trainings",
@@ -347,18 +395,38 @@
     "morning-gymnastics": "Morning Gymnastics - Power",
     "morning-gymnastics-gentle": "Morning Gymnastics - Gentle Wake Up",
     "evening-gymnastics": "Evening Gymnastics",
-    "pilates-beginners": "Pilates for Beginners",
+    "pilates-beginners": "Pilates for Beginners and Intermediate Level",
     "heart-gymnastics": "Heart Gymnastics",
     "weight-loss-program": "Weight Loss Program",
     "nutrition-principles": "Nutrition Principles",
     "abs-intensive": "Intensive Abs",
     "glutes-intensive": "Intensive Glutes",
-    "full-body-strength-advanced": "Full Body Strength - Advanced",
+    "full-body-strength-advanced": "Full Body Training - Strength - Advanced",
     "pelvic-floor": "Pelvic Floor",
     "birth-preparation": "Birth Preparation",
     "baby-training": "Baby Training",
     "active-break": "Active Break",
     "nutrition-program": "Nutrition Program"
+  },
+  "courseDetail": {
+    "back": "Back to courses",
+    "eyebrow": "Protected course",
+    "instructionsTitle": "How to do the exercises",
+    "instructionsFallback": "Exercise instructions will be added soon.",
+    "player": {
+      "videoPending": "Video pending",
+      "preparingVideo": "Preparing video",
+      "signInRequired": "Sign in to watch this course.",
+      "tokenError": "Playback token could not be created.",
+      "signingMissing": "Mux signing is not configured yet.",
+      "authError": "Please sign in again to watch this course."
+    },
+    "meta": {
+      "flexibleDuration": "Flexible duration",
+      "training": "Training",
+      "videoAvailable": "Video available",
+      "videoPending": "Video in preparation"
+    }
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",
@@ -385,6 +453,14 @@
     "eyebrow": "Member profile",
     "avatarAlt": "{name}'s profile photo",
     "mobileTitle": "Holistic fitness education",
+    "packageSelector": {
+      "eyebrow": "Membership",
+      "title": "Active package",
+      "description": "This package controls access to courses and live sessions.",
+      "temporaryHint": "Test phase: the package can be changed without payment.",
+      "saved": "Package updated.",
+      "error": "The package could not be saved."
+    },
     "actions": {
       "menu": "Open profile menu",
       "seeMore": "See more",
@@ -548,6 +624,7 @@
     "sessionCount": "{count, plural, one {# session} other {# sessions}}",
     "included": "Included",
     "upgradeRequired": "Upgrade required",
+    "liveBadge": "Live",
     "join": "Join session",
     "unlockButton": "Package needed",
     "missingLink": "Link pending",
@@ -631,6 +708,7 @@
       "home": "Home",
       "about": "About",
       "programs": "Program",
+      "courses": "Courses",
       "calendar": "Live Calendar",
       "blogs": "Blogs",
       "consultation": "Consultation",

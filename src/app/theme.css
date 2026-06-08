@@ -6,12 +6,12 @@
 }
 
 :root {
-  --primary: #f7f1e6;
+  --primary: #ffffff;
   --secondary: #e23d4f;
   --tertiary: #88992d;
   --quaternary: #f6c764;
 
-  --primary-rgb: 247, 241, 230;
+  --primary-rgb: 255, 255, 255;
   --secondary-rgb: 226, 61, 79;
   --tertiary-rgb: 136, 153, 45;
   --quaternary-rgb: 246, 199, 100;
@@ -22,10 +22,10 @@
   --page-soft-rgb: 255, 250, 240;
   --page-soft-alt: #fff7e7;
   --page-soft-alt-rgb: 255, 247, 231;
-  --page-cream-1: #fcf7ee;
-  --page-cream-1-rgb: 252, 247, 238;
-  --page-cream-2: #f6efdf;
-  --page-cream-2-rgb: 246, 239, 223;
+  --page-cream-1: #ffffff;
+  --page-cream-1-rgb: 255, 255, 255;
+  --page-cream-2: #ffffff;
+  --page-cream-2-rgb: 255, 255, 255;
 
   --page-base: var(--primary);
   --page-base-rgb: var(--primary-rgb);
