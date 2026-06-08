@@ -14,6 +14,27 @@ service cloud.firestore {
       return value in ["starter", "rehab-plus", "all-access"];
     }
 
+    function isValidRegion(value) {
+      return value in [
+        "baden-wuerttemberg",
+        "bavaria",
+        "berlin",
+        "brandenburg",
+        "bremen",
+        "hamburg",
+        "hesse",
+        "lower-saxony",
+        "mecklenburg-western-pomerania",
+        "north-rhine-westphalia",
+        "rhineland-palatinate",
+        "saarland",
+        "saxony",
+        "saxony-anhalt",
+        "schleswig-holstein",
+        "thuringia"
+      ];
+    }
+
     function profileImmutableFieldsUnchanged() {
       return request.resource.data.xp == resource.data.xp
         && request.resource.data.points == resource.data.points
@@ -44,6 +65,7 @@ service cloud.firestore {
         "heightCm",
         "weightKg",
         "occupationKey",
+        "regionKey",
         "averageStepsPerDay",
         "primaryGoalKey",
         "memberPackage",
@@ -74,6 +96,7 @@ service cloud.firestore {
         && hasOnlyProfileFields()
         && request.resource.data.uid == userId
         && request.resource.data.email == request.auth.token.email
+        && isValidRegion(request.resource.data.regionKey)
         && isValidMemberPackage(request.resource.data.memberPackage)
         && request.resource.data.startedCourseIds == []
         && request.resource.data.completedCourseIds == []

@@ -71,12 +71,35 @@ function optionalNumberInRange(value: unknown, field: string, min: number, max: 
 function normalizeRegistrationPayload(data: unknown) {
   const payload = (data ?? {}) as RegistrationProfilePayload;
   const occupationKeys = ["sedentary", "standing", "physical"];
+  const regionKeys = [
+    "baden-wuerttemberg",
+    "bavaria",
+    "berlin",
+    "brandenburg",
+    "bremen",
+    "hamburg",
+    "hesse",
+    "lower-saxony",
+    "mecklenburg-western-pomerania",
+    "north-rhine-westphalia",
+    "rhineland-palatinate",
+    "saarland",
+    "saxony",
+    "saxony-anhalt",
+    "schleswig-holstein",
+    "thuringia",
+  ];
   const anamnesisStatusKeys = ["pending", "completed", "review-required"];
   const occupationKey = optionalString(payload.occupationKey);
+  const regionKey = requireString(payload.regionKey, "regionKey");
   const anamnesisStatusKey = payload.anamnesisStatusKey ?? "pending";
 
   if (occupationKey && !occupationKeys.includes(occupationKey)) {
     throw new HttpsError("invalid-argument", "occupationKey is invalid.");
+  }
+
+  if (!regionKeys.includes(regionKey)) {
+    throw new HttpsError("invalid-argument", "regionKey is invalid.");
   }
 
   if (!anamnesisStatusKeys.includes(anamnesisStatusKey)) {
@@ -94,6 +117,7 @@ function normalizeRegistrationPayload(data: unknown) {
     heightCm: optionalNumberInRange(payload.heightCm, "heightCm", 80, 240),
     weightKg: optionalNumberInRange(payload.weightKg, "weightKg", 25, 300),
     occupationKey,
+    regionKey,
     averageStepsPerDay:
       typeof payload.averageStepsPerDay === "number" && Number.isFinite(payload.averageStepsPerDay)
         ? Math.max(0, payload.averageStepsPerDay)
@@ -190,6 +214,7 @@ export const createUserProfile = onCall({ region: REGION }, async (request) => {
         heightCm: registrationProfile.heightCm,
         weightKg: registrationProfile.weightKg,
         occupationKey: registrationProfile.occupationKey,
+        regionKey: registrationProfile.regionKey,
         averageStepsPerDay: registrationProfile.averageStepsPerDay,
         primaryGoalKey: registrationProfile.primaryGoalKey,
         anamnesisStatusKey: registrationProfile.anamnesisStatusKey,
@@ -211,6 +236,7 @@ export const createUserProfile = onCall({ region: REGION }, async (request) => {
     heightCm: registrationProfile.heightCm,
     weightKg: registrationProfile.weightKg,
     occupationKey: registrationProfile.occupationKey,
+    regionKey: registrationProfile.regionKey,
     averageStepsPerDay: registrationProfile.averageStepsPerDay,
     primaryGoalKey: registrationProfile.primaryGoalKey,
     memberPackage: "starter",
