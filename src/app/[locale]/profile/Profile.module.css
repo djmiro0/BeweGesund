@@ -1,8 +1,7 @@
 .profileSection {
   min-height: 100svh;
   padding: 5.6rem 0.85rem 2rem;
-  background:
-    linear-gradient(180deg, var(--page-soft) 0%, var(--page-cream-2) 100%);
+  background:var(--primary-rgb);
   color: var(--page-ink);
 }
 
@@ -683,7 +682,7 @@
 }
 
 .dangerIcon {
-  color: var(--accent-strong);
+  color: var(--secondary);
 }
 
 .dangerText {
@@ -708,7 +707,7 @@
 
 .deleteButton {
   margin: 0.9rem;
-  background: var(--accent-strong);
+  background: var(--secondary);
   padding: 0.85rem 1rem;
   color: var(--text-light);
 }

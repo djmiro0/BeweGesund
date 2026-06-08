@@ -14,6 +14,7 @@ export interface CalendarEvent {
   coach: string;
   packageRequired: MemberPackage;
   muxPlaybackId: string | null;
+  isLive: boolean;
 }
 
 export interface CalendarDay {
@@ -65,6 +66,8 @@ export interface CourseSummary {
   order: number;
   publishedAt: string;
   hasVideo: boolean;
+  isLive: boolean;
+  liveTrainingLink: string | null;
 }
 
 export type BlogTag = "nutrition" | "health" | "training";
@@ -108,6 +111,8 @@ type CalendarEventFields = Partial<{
   coach: string;
   packageRequired: MemberPackage;
   muxPlaybackId: string;
+  live: boolean;
+  isLive: boolean;
 }>;
 
 type TrainingVideoFields = Partial<{
@@ -159,6 +164,9 @@ type CourseFields = Partial<{
   featuredImage: ContentfulAssetField;
   order: number;
   publishedAt: string;
+  live: boolean;
+  isLive: boolean;
+  liveTrainingLink: string;
 }>;
 
 const defaultCalendarContentType = "calendarEvent";
@@ -299,6 +307,7 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
         coach: item.fields.coach ?? "Sandra",
         packageRequired: normalizePackage(item.fields.packageRequired),
         muxPlaybackId: item.fields.muxPlaybackId ?? null,
+        isLive: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink),
       } satisfies CalendarEvent;
     })
     .filter((event): event is CalendarEvent => Boolean(event));
@@ -317,6 +326,7 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
       coach: course.coach || "Sandra",
       packageRequired: course.packageRequired,
       muxPlaybackId: null,
+      isLive: course.isLive,
     } satisfies CalendarEvent));
 
   const events = [...calendarEvents, ...courseReleases]
@@ -453,6 +463,8 @@ function mapCourseSummary(
     order: Number(item.fields.order ?? 0),
     publishedAt: item.fields.publishedAt ?? "",
     hasVideo: Boolean(item.fields.muxPlaybackId),
+    isLive: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink),
+    liveTrainingLink: item.fields.liveTrainingLink ?? null,
   };
 }
 
@@ -475,6 +487,8 @@ function mapMemberCourseSummary(course: MemberCourseDefinition, order: number): 
     order,
     publishedAt: "",
     hasVideo: false,
+    isLive: false,
+    liveTrainingLink: null,
   };
 }
 
@@ -508,6 +522,8 @@ function mergeCourseSummaries(contentfulCourses: CourseSummary[]) {
       posterImage: course.posterImage || plannedCourse.posterImage,
       order: plannedCourse.order,
       hasVideo: course.hasVideo,
+      isLive: course.isLive,
+      liveTrainingLink: course.liveTrainingLink,
     });
   });
 

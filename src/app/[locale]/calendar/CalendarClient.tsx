@@ -302,6 +302,9 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                     </div>
                     <div className={styles.sessionCopy}>
                       <div className={styles.sessionBadges}>
+                        {entry.isLive ? (
+                          <span className={styles.liveBadge}>{t("liveBadge")}</span>
+                        ) : null}
                         <span className={styles.formatBadge}>
                           <Video size={14} />
                           {t(`formats.${entry.formatKey}`)}

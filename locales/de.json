@@ -112,13 +112,22 @@
         "sessions": "{count, plural, one {# Session} other {# Sessions}}",
         "newWorkouts": "Neue Workouts",
         "recommended": "Empfohlen",
+        "live": "Live",
         "openSession": "Öffnen",
         "lockedSoon": "Videothek nach Tags kommt als Nächstes.",
+        "recentDescription": "Die neuesten veröffentlichten Trainingsvideos.",
+        "emptyCategory": "In dieser Kategorie sind noch keine Videos veröffentlicht.",
         "status": {
           "package": "Paket",
           "upcoming": "Geplant",
           "completed": "Fertig"
         }
+      },
+      "news": {
+        "title": "Neueste Artikel",
+        "viewAll": "Alle ansehen",
+        "read": "Artikel lesen",
+        "readTime": "{count} Min. Lesezeit"
       }
     },
     "loading": "WIRD GELADEN..."
@@ -296,6 +305,7 @@
         "video": "Video",
         "videoAvailable": "Video verfügbar",
         "comingSoon": "In Vorbereitung",
+        "live": "Live",
         "newThisWeek": "Neu diese Woche"
       },
       "empty": "In Contentful sind noch keine Kurse veröffentlicht.",
@@ -614,6 +624,7 @@
     "sessionCount": "{count, plural, one {# Session} other {# Sessions}}",
     "included": "Enthalten",
     "upgradeRequired": "Upgrade nötig",
+    "liveBadge": "Live",
     "join": "Session beitreten",
     "unlockButton": "Paket nötig",
     "missingLink": "Link fehlt",

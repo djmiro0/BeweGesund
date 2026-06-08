@@ -112,13 +112,22 @@
         "sessions": "{count, plural, one {# session} other {# sessions}}",
         "newWorkouts": "New workouts",
         "recommended": "Recommended",
+        "live": "Live",
         "openSession": "Open",
         "lockedSoon": "Video library by tags comes next.",
+        "recentDescription": "The newest published training videos.",
+        "emptyCategory": "No published videos are available in this category yet.",
         "status": {
           "package": "Package",
           "upcoming": "Upcoming",
           "completed": "Done"
         }
+      },
+      "news": {
+        "title": "Latest articles",
+        "viewAll": "View all",
+        "read": "Read article",
+        "readTime": "{count} min read"
       }
     },
     "loading": "LOADING..."
@@ -296,6 +305,7 @@
         "video": "Video",
         "videoAvailable": "Video available",
         "comingSoon": "In preparation",
+        "live": "Live",
         "newThisWeek": "New this week"
       },
       "empty": "No courses are published in Contentful yet.",
@@ -614,6 +624,7 @@
     "sessionCount": "{count, plural, one {# session} other {# sessions}}",
     "included": "Included",
     "upgradeRequired": "Upgrade required",
+    "liveBadge": "Live",
     "join": "Join session",
     "unlockButton": "Package needed",
     "missingLink": "Link pending",

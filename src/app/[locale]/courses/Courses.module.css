@@ -290,10 +290,10 @@ a.categoryBlock:hover {
   padding: 0.35rem 0.15rem 0.28rem 0;
 }
 
-.videoBadge {
+.videoBadge,
+.liveBadge {
   position: absolute;
   top: 0.72rem;
-  right: 0.72rem;
   z-index: 1;
   border: 1px solid rgba(var(--secondary-rgb), 0.24);
   border-radius: 999px;
@@ -307,6 +307,17 @@ a.categoryBlock:hover {
   letter-spacing: 0.08em;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.videoBadge {
+  right: 0.72rem;
+}
+
+.liveBadge {
+  left: 0.72rem;
+  border-color: rgba(var(--page-accent-rgb), 0.24);
+  background: var(--page-accent);
+  box-shadow: 0 0.45rem 1rem rgba(var(--page-accent-rgb), 0.22);
 }
 
 .courseCardUnavailable {
@@ -436,9 +447,13 @@ a.categoryBlock:hover {
     padding-right: 0;
   }
 
-  .videoBadge {
+  .videoBadge,
+  .liveBadge {
     position: static;
     width: fit-content;
+  }
+
+  .videoBadge {
     margin-left: auto;
   }
 }

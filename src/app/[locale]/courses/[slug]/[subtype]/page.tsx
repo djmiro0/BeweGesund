@@ -97,7 +97,9 @@ export default async function CourseSubtypePage({
                 href={`/${locale}/courses/${video.slug}`}
                 className={`${coursesStyles.courseCard} ${coursesStyles.videoCourseCard}`}
               >
-                <span className={coursesStyles.videoBadge}>{coursesT("courseTypes.meta.newThisWeek")}</span>
+                <span className={video.isLive ? coursesStyles.liveBadge : coursesStyles.videoBadge}>
+                  {video.isLive ? coursesT("courseTypes.meta.live") : coursesT("courseTypes.meta.newThisWeek")}
+                </span>
                 <div className={coursesStyles.videoPoster}>
                   {video.posterImage ? (
                     <Image src={video.posterImage} alt="" fill sizes="(max-width: 720px) 100vw, 240px" />

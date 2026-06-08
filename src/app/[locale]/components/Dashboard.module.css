@@ -297,7 +297,9 @@
 
 .featureCard,
 .workoutCard,
-.workoutPanel {
+.workoutPanel,
+.newsPanel,
+.newsCard {
   border: 1px solid var(--app-border);
   box-shadow: 0 14px 34px var(--app-shadow);
 }
@@ -324,6 +326,18 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.featureFallback,
+.workoutThumbFallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 25% 20%, rgba(var(--page-accent-rgb), 0.3), transparent 9rem),
+    linear-gradient(135deg, var(--shell-bg-alt), var(--shell-bg));
+  color: var(--page-warm);
 }
 
 .cardShade {
@@ -354,12 +368,35 @@
   height: 2rem;
 }
 
+.liveBadge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 2;
+  border-radius: 999px;
+  background: var(--page-accent);
+  box-shadow: 0 0.45rem 1rem rgba(var(--page-accent-rgb), 0.26);
+  color: var(--page-base);
+  font-size: 0.55rem;
+  font-weight: 950;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  padding: 0.32rem 0.5rem;
+  text-transform: uppercase;
+}
+
 .cardCopy {
   position: absolute;
   right: 0.85rem;
   bottom: 0.85rem;
   left: 0.85rem;
   z-index: 2;
+}
+
+.featureLink {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
 }
 
 .cardKicker {
@@ -393,6 +430,28 @@
   padding: 0.9rem;
 }
 
+.filterEmptyState {
+  grid-column: 1 / -1;
+  display: flex;
+  min-height: 8rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 1px dashed var(--app-border);
+  border-radius: 1rem;
+  background: var(--app-card);
+  color: var(--app-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.newsPanel {
+  border-radius: 1.2rem;
+  background: var(--app-surface-strong);
+  padding: 0.9rem;
+}
+
 .panelHeader,
 .listHeader {
   display: flex;
@@ -419,6 +478,17 @@
   font-size: 0.66rem;
   line-height: 1.25;
   text-align: right;
+}
+
+.viewAllLink,
+.newsReadLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--page-accent);
+  font-size: 0.65rem;
+  font-weight: 950;
+  text-transform: uppercase;
 }
 
 .panelEyebrow {
@@ -563,6 +633,10 @@
   color: var(--app-muted);
   font-size: 0.68rem;
   line-height: 1.35;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .openButton {
@@ -582,6 +656,81 @@
 :global(:root[data-theme="dark"]) .openButton {
   background: var(--page-warm);
   color: var(--shell-bg);
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.newsCard {
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--app-card);
+}
+
+.newsImage {
+  position: relative;
+  display: grid;
+  min-height: 8.5rem;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(var(--page-accent-rgb), 0.2), transparent 7rem),
+    var(--shell-bg);
+  color: var(--page-warm);
+}
+
+.newsImage img {
+  object-fit: cover;
+  transition: transform 0.4s var(--transition);
+}
+
+.newsCard:hover .newsImage img {
+  transform: scale(1.04);
+}
+
+.newsBody {
+  padding: 0.75rem;
+}
+
+.newsMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem;
+  color: var(--app-muted);
+  font-size: 0.58rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.newsBody h3 {
+  margin-top: 0.45rem;
+  color: var(--app-text);
+  font-size: 0.88rem;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.newsBody h3 a {
+  color: inherit;
+}
+
+.newsExcerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.38rem;
+  color: var(--app-muted);
+  font-size: 0.68rem;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.newsReadLink {
+  margin-top: 0.62rem;
 }
 
 .tagHint {
@@ -630,6 +779,10 @@
     grid-template-columns: 1fr;
   }
 
+  .newsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .workoutCard {
     grid-template-columns: 6.4rem minmax(0, 1fr);
   }
@@ -670,6 +823,10 @@
     padding: 0.75rem;
   }
 
+  .newsPanel {
+    padding: 0.75rem;
+  }
+
   .panelHeader,
   .categoryIntro,
   .listHeader {
@@ -679,5 +836,24 @@
 
   .listHeader small {
     text-align: left;
+  }
+
+  .newsGrid {
+    display: grid;
+    grid-auto-columns: minmax(min(84vw, 18rem), 1fr);
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .newsGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .newsCard {
+    scroll-snap-align: start;
   }
 }

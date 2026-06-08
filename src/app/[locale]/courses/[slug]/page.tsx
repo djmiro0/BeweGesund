@@ -80,12 +80,14 @@ export default async function CourseDetailPage({
     const subtypeCards = subtypes.map((subtype) => {
       const videos = getSubtypeVideos(courses, subtype, categorySlug);
       const availableVideoCount = videos.filter((video) => video.hasVideo).length;
+      const liveVideoCount = videos.filter((video) => video.isLive).length;
       const plannedTrainingCount = subtype.plannedTrainingCount ?? videos.length;
 
       return {
         subtype,
         videos,
         availableVideoCount,
+        liveVideoCount,
         plannedTrainingCount,
       };
     });
@@ -124,11 +126,13 @@ export default async function CourseDetailPage({
         </header>
 
         <div className={coursesStyles.subtypeList}>
-          {subtypeCards.map(({ subtype, videos, availableVideoCount, plannedTrainingCount }) => {
+          {subtypeCards.map(({ subtype, videos, availableVideoCount, liveVideoCount, plannedTrainingCount }) => {
             const courseNote = getCourseNote(subtype);
             const cardContent = (
               <>
-                {availableVideoCount ? (
+                {liveVideoCount ? (
+                  <span className={coursesStyles.liveBadge}>{coursesT("courseTypes.meta.live")}</span>
+                ) : availableVideoCount ? (
                   <span className={coursesStyles.videoBadge}>{coursesT("courseTypes.meta.newThisWeek")}</span>
                 ) : null}
                 <div>
