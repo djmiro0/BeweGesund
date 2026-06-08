@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useTranslations } from "next-intl";
 import { auth, db } from "../../../../firebase.config";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, type AuthError } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, deleteUser, updateProfile, type AuthError } from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { Check, LoaderCircle, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
@@ -22,6 +22,7 @@ interface CreateUserProfilePayload {
     heightCm: number | null;
     weightKg: number | null;
     occupationKey: string | null;
+    regionKey: string;
     averageStepsPerDay: number | null;
     primaryGoalKey: string | null;
     memberPackage: MemberPackage;
@@ -45,6 +46,25 @@ interface CreateUserProfilePayload {
     claimedRewardIds: string[];
     roles: ["member"];
 }
+
+const regionKeys = [
+    "baden-wuerttemberg",
+    "bavaria",
+    "berlin",
+    "brandenburg",
+    "bremen",
+    "hamburg",
+    "hesse",
+    "lower-saxony",
+    "mecklenburg-western-pomerania",
+    "north-rhine-westphalia",
+    "rhineland-palatinate",
+    "saarland",
+    "saxony",
+    "saxony-anhalt",
+    "schleswig-holstein",
+    "thuringia",
+] as const;
 
 interface FirebaseErrorLike {
     code?: string;
@@ -72,6 +92,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [heightCm, setHeightCm] = useState('');
     const [weightKg, setWeightKg] = useState('');
     const [occupation, setOccupation] = useState('');
+    const [region, setRegion] = useState('');
     const [memberPackage, setMemberPackage] = useState<MemberPackage>("starter");
     const [hasAcceptedConsent, setHasAcceptedConsent] = useState(false);
     const [isTermsOpen, setIsTermsOpen] = useState(false);
@@ -85,6 +106,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         email.trim().length > 0 &&
         password.length > 0 &&
         confirmPassword.length > 0 &&
+        region.length > 0 &&
         isPasswordMatching &&
         hasAcceptedConsent;
     const canSubmit = isRegister
@@ -134,6 +156,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         heightCm: heightCm ? Number(heightCm) : null,
         weightKg: weightKg ? Number(weightKg) : null,
         occupationKey: occupation || null,
+        regionKey: region,
         averageStepsPerDay: null,
         primaryGoalKey: null,
         memberPackage,
@@ -167,6 +190,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setHeightCm("");
         setWeightKg("");
         setOccupation("");
+        setRegion("");
         setMemberPackage("starter");
         setHasAcceptedConsent(false);
         setIsTermsOpen(false);
@@ -189,15 +213,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     return;
                 }
 
-                const credential = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(
-                    doc(db, "users", credential.user.uid),
-                    createProfilePayload(credential.user.uid, credential.user.email ?? email.trim()),
-                );
+                const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
 
-                await updateProfile(credential.user, {
-                    displayName: fullName.trim(),
-                });
+                try {
+                    await updateProfile(credential.user, {
+                        displayName: fullName.trim(),
+                    });
+                    await setDoc(
+                        doc(db, "users", credential.user.uid),
+                        createProfilePayload(credential.user.uid, credential.user.email ?? email.trim()),
+                    );
+                } catch (profileError) {
+                    await deleteUser(credential.user).catch(() => undefined);
+                    throw profileError;
+                }
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
             }
@@ -326,6 +355,25 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     <option value="standing">{t("occupations.standing")}</option>
                                     <option value="physical">{t("occupations.physical")}</option>
                                 </select>
+                            </label>
+                            <label className="block">
+                                <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">
+                                    {t("requiredLabel", { label: t("region") })}
+                                </span>
+                                <select
+                                    value={region}
+                                    onChange={(event) => setRegion(event.target.value)}
+                                    className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                                    required
+                                >
+                                    <option value="">{t("selectRegionPlaceholder")}</option>
+                                    {regionKeys.map((regionKey) => (
+                                        <option key={regionKey} value={regionKey}>
+                                            {t(`regions.${regionKey}`)}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="mt-2 text-xs leading-5 text-[var(--text-dim)]">{t("regionCompetitionHint")}</p>
                             </label>
                             <fieldset>
                                 <legend className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">

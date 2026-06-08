@@ -9,6 +9,7 @@ export interface UserProfile {
   heightCm: number | null;
   weightKg: number | null;
   occupationKey: string | null;
+  regionKey: string;
   averageStepsPerDay: number | null;
   primaryGoalKey: string | null;
   memberPackage: "starter" | "rehab-plus" | "all-access";
@@ -46,6 +47,7 @@ export interface RegistrationProfilePayload {
   heightCm?: number | null;
   weightKg?: number | null;
   occupationKey?: "sedentary" | "standing" | "physical" | null;
+  regionKey?: string;
   averageStepsPerDay?: number;
   primaryGoalKey?: string;
   anamnesisStatusKey?: "pending" | "completed" | "review-required";
