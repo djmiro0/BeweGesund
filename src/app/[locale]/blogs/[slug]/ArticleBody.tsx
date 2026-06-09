@@ -1,35 +1,58 @@
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import Image from "next/image";
+import {
+  documentToReactComponents,
+  type Options,
+} from "@contentful/rich-text-react-renderer";
+import { BLOCKS, INLINES, type Document } from "@contentful/rich-text-types";
 import styles from "../Blogs.module.css";
 
 interface ArticleBodyProps {
-  body: string;
+  body: Document;
 }
+
+const richTextOptions: Options = {
+  renderNode: {
+    [BLOCKS.HEADING_1]: (_node, children) => <h2>{children}</h2>,
+    [INLINES.HYPERLINK]: (node, children) => {
+      const href = String(node.data.uri ?? "");
+      const isExternal = /^https?:\/\//.test(href);
+
+      return (
+        <a
+          href={href}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noreferrer" : undefined}
+        >
+          {children}
+        </a>
+      );
+    },
+    [BLOCKS.EMBEDDED_ASSET]: (node) => {
+      const fields = node.data.target?.fields;
+      const url = fields?.file?.url;
+
+      if (!url) return null;
+
+      const width = fields.file.details?.image?.width ?? 1200;
+      const height = fields.file.details?.image?.height ?? 675;
+
+      return (
+        <Image
+          src={url.startsWith("//") ? `https:${url}` : url}
+          alt={fields.description ?? fields.title ?? ""}
+          width={width}
+          height={height}
+          sizes="(min-width: 768px) 720px, 100vw"
+        />
+      );
+    },
+  },
+};
 
 export default function ArticleBody({ body }: ArticleBodyProps) {
   return (
     <div className={styles.articleBody}>
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          h1: ({ children }) => <h2>{children}</h2>,
-          a: ({ href, children }) => {
-            const isExternal = href?.startsWith("http");
-
-            return (
-              <a
-                href={href}
-                target={isExternal ? "_blank" : undefined}
-                rel={isExternal ? "noreferrer" : undefined}
-              >
-                {children}
-              </a>
-            );
-          },
-        }}
-      >
-        {body}
-      </ReactMarkdown>
+      {documentToReactComponents(body, richTextOptions)}
     </div>
   );
 }

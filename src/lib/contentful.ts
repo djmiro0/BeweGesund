@@ -1,3 +1,4 @@
+import { BLOCKS, type Document } from "@contentful/rich-text-types";
 import { memberCourses, mockVideos, type MemberCourseDefinition, type MemberPackage } from "@/data";
 
 export type ContentfulCalendarFormat = "training" | "seminar";
@@ -77,7 +78,7 @@ export interface BlogPost {
   title: string;
   excerpt: string;
   slug: string;
-  body: string;
+  body: Document;
   tags: BlogTag[];
   author: string;
   readTimeMinutes: number;
@@ -92,10 +93,24 @@ interface ContentfulEntry<TFields> {
   fields: TFields;
 }
 
+interface ContentfulAssetFields {
+  title?: string;
+  description?: string;
+  file?: {
+    url?: string;
+    details?: {
+      image?: {
+        width?: number;
+        height?: number;
+      };
+    };
+  };
+}
+
 interface ContentfulCollection<TFields> {
   items: Array<ContentfulEntry<TFields>>;
   includes?: {
-    Asset?: Array<ContentfulEntry<{ file?: { url?: string } }>>;
+    Asset?: Array<ContentfulEntry<ContentfulAssetFields>>;
   };
 }
 
@@ -132,7 +147,7 @@ type BlogPostFields = Partial<{
   title: string;
   excerpt: string;
   slug: string;
-  body: string;
+  body: unknown;
   tags: string[];
   author: string;
   readTimeMinutes: number;
@@ -361,6 +376,75 @@ function buildAssetUrlMap<TFields>(collection: ContentfulCollection<TFields> | n
       asset.fields.file?.url ? [[asset.sys.id, asset.fields.file.url]] : [],
     ) ?? [],
   );
+}
+
+function buildAssetMap<TFields>(collection: ContentfulCollection<TFields> | null) {
+  return new Map(
+    collection?.includes?.Asset?.map((asset) => [asset.sys.id, asset]) ?? [],
+  );
+}
+
+function createRichTextDocument(content: Document["content"] = []): Document {
+  return {
+    nodeType: BLOCKS.DOCUMENT,
+    data: {},
+    content,
+  };
+}
+
+function normalizeRichTextDocument(value: unknown): Document {
+  if (typeof value === "string") {
+    const paragraphs = value
+      .split(/\n\s*\n/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean)
+      .map<Document["content"][number]>((paragraph) => ({
+        nodeType: BLOCKS.PARAGRAPH,
+        data: {},
+        content: [{
+          nodeType: "text" as const,
+          value: paragraph,
+          marks: [],
+          data: {},
+        }],
+      }));
+
+    return createRichTextDocument(paragraphs);
+  }
+
+  if (
+    value
+    && typeof value === "object"
+    && "nodeType" in value
+    && value.nodeType === BLOCKS.DOCUMENT
+    && "content" in value
+    && Array.isArray(value.content)
+  ) {
+    return value as Document;
+  }
+
+  return createRichTextDocument();
+}
+
+function resolveRichTextAssets(
+  document: Document,
+  assets: Map<string, ContentfulEntry<ContentfulAssetFields>>,
+): Document {
+  return {
+    ...document,
+    content: document.content.map((node) => {
+      if (node.nodeType === BLOCKS.EMBEDDED_ASSET) {
+        const assetId = node.data.target?.sys?.id;
+        const asset = assetId ? assets.get(assetId) : undefined;
+
+        return asset
+          ? { ...node, data: { ...node.data, target: asset } }
+          : node;
+      }
+
+      return node;
+    }),
+  };
 }
 
 function mergeAssetUrlMaps(primary: Map<string, string>, fallback: Map<string, string>) {
@@ -595,15 +679,18 @@ function normalizeBlogTags(tags: string[] | undefined): BlogTag[] {
 function mapBlogPost(
   item: ContentfulEntry<BlogPostFields>,
   assetUrls: Map<string, string>,
+  richTextAssets: Map<string, ContentfulEntry<ContentfulAssetFields>>,
 ): BlogPost | null {
   if (!item.fields.title) return null;
+
+  const body = normalizeRichTextDocument(item.fields.body);
 
   return {
     id: item.sys.id,
     title: item.fields.title,
     excerpt: item.fields.excerpt ?? "",
     slug: item.fields.slug ?? item.sys.id,
-    body: item.fields.body ?? "",
+    body: resolveRichTextAssets(body, richTextAssets),
     tags: normalizeBlogTags(item.fields.tags),
     author: item.fields.author ?? "Bewegesund",
     readTimeMinutes: Number(item.fields.readTimeMinutes ?? 4),
@@ -633,9 +720,13 @@ export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
         },
       );
   const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+  const richTextAssets = new Map([
+    ...buildAssetMap(fallbackCollection),
+    ...buildAssetMap(collection),
+  ]);
 
   return collection.items
-    .map((item) => mapBlogPost(item, assetUrls))
+    .map((item) => mapBlogPost(item, assetUrls, richTextAssets))
     .filter((post): post is BlogPost => Boolean(post));
 }
 
@@ -662,6 +753,10 @@ export async function getBlogPost(locale: string, slug: string): Promise<BlogPos
         },
       );
   const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+  const richTextAssets = new Map([
+    ...buildAssetMap(fallbackCollection),
+    ...buildAssetMap(collection),
+  ]);
 
-  return mapBlogPost(collection.items[0], assetUrls);
+  return mapBlogPost(collection.items[0], assetUrls, richTextAssets);
 }
