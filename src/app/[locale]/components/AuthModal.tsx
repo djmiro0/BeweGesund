@@ -434,16 +434,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         {isRegister ? t("submitRegister") : t("submitSignIn")}
                     </button>
                 </form>
-                <button
-                    type="button"
-                    onClick={() => {
-                        resetForm();
-                        setIsRegister((current) => !current);
-                    }}
-                    className="mt-5 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
-                >
-                    {isRegister ? t("switchToSignIn") : t("switchToRegister")}
-                </button>
+                {/*<button*/}
+                {/*    type="button"*/}
+                {/*    onClick={() => {*/}
+                {/*        resetForm();*/}
+                {/*        setIsRegister((current) => !current);*/}
+                {/*    }}*/}
+                {/*    className="mt-5 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"*/}
+                {/*>*/}
+                {/*    {isRegister ? t("switchToSignIn") : t("switchToRegister")}*/}
+                {/*</button>*/}
                 {isTermsOpen ? (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(var(--navy-rgb),0.72)] p-4 backdrop-blur-sm">
                         <div className="relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-[1.5rem] border border-[var(--border-soft)] bg-[linear-gradient(180deg,_rgba(var(--navy-rgb),0.98),_rgba(2,35,53,0.98))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
