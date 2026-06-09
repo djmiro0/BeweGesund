@@ -104,11 +104,6 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
                 </Link>
               )}
               <div className={styles.postCopy}>
-                <div className={styles.tagRow}>
-                  {post.tags.map((tag) => (
-                    <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
-                  ))}
-                </div>
                 <h2 className={styles.postTitle}>
                   <Link href={`/${locale}/blogs/${post.slug}`}>{post.title}</Link>
                 </h2>
