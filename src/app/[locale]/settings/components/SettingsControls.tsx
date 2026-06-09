@@ -15,6 +15,9 @@ interface SettingsInputProps {
   type?: "text" | "email" | "number";
   suffix?: string;
   testId?: string;
+  readOnly?: boolean;
+  min?: number;
+  max?: number;
   onChange: (value: string) => void;
 }
 
@@ -47,7 +50,18 @@ export function SettingsSection({ title, description, children, testId }: Settin
   );
 }
 
-export function SettingsInput({ id, label, value, type = "text", suffix, testId, onChange }: SettingsInputProps) {
+export function SettingsInput({
+  id,
+  label,
+  value,
+  type = "text",
+  suffix,
+  testId,
+  readOnly,
+  min,
+  max,
+  onChange,
+}: SettingsInputProps) {
   return (
     <label className={styles.field} htmlFor={id}>
       <span>{label}</span>
@@ -57,6 +71,9 @@ export function SettingsInput({ id, label, value, type = "text", suffix, testId,
           data-testid={testId}
           type={type}
           value={value}
+          readOnly={readOnly}
+          min={min}
+          max={max}
           onChange={(event) => onChange(event.target.value)}
         />
         {suffix ? <span className={styles.inputSuffix}>{suffix}</span> : null}

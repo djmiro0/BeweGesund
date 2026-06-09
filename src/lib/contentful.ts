@@ -231,24 +231,24 @@ async function fetchEntries<TFields>(
     url.searchParams.set(key, value);
   });
 
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     next: { revalidate: 300 },
   });
 
   if (!response.ok) {
-    console.warn(`Contentful request failed for ${contentType}: ${response.status}`);
-    return null;
+    // Do not let a transient Contentful error remain in Next's data cache.
+    response = await fetch(url, { cache: "no-store" });
+
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => "");
+      console.warn(
+        `Contentful request failed for ${contentType}: ${response.status}${errorBody ? ` ${errorBody.slice(0, 300)}` : ""}`,
+      );
+      return null;
+    }
   }
 
   return (await response.json()) as ContentfulCollection<TFields>;
-}
-
-function normalizePackage(value: string | undefined): MemberPackage {
-  if (value === "starter" || value === "rehab-plus" || value === "all-access") {
-    return value;
-  }
-
-  return "starter";
 }
 
 function normalizeFormat(value: string | undefined): ContentfulCalendarFormat {
@@ -306,7 +306,7 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
   ]);
 
   const calendarEvents = (collection?.items ?? [])
-    .map((item) => {
+    .map<CalendarEvent | null>((item) => {
       const startsAt = item.fields.startsAt ?? item.fields.dateTime;
       if (!startsAt || !item.fields.title) return null;
 
@@ -320,12 +320,12 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
         durationMinutes: Number(item.fields.durationMinutes ?? 30),
         formatKey: normalizeFormat(item.fields.format),
         coach: item.fields.coach ?? "Sandra",
-        packageRequired: normalizePackage(item.fields.packageRequired),
+        packageRequired: "plus",
         muxPlaybackId: item.fields.muxPlaybackId ?? null,
         isLive: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink),
       } satisfies CalendarEvent;
     })
-    .filter((event): event is CalendarEvent => Boolean(event));
+    .filter((event): event is CalendarEvent => event !== null);
 
   const courseReleases = courses
     .filter((course) => course.hasVideo && Boolean(course.publishedAt))
@@ -339,7 +339,7 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
       durationMinutes: course.durationMinutes ?? 30,
       formatKey: "training" as const,
       coach: course.coach || "Sandra",
-      packageRequired: course.packageRequired,
+      packageRequired: course.isLive ? "plus" : "basic",
       muxPlaybackId: null,
       isLive: course.isLive,
     } satisfies CalendarEvent));
@@ -504,7 +504,9 @@ function mapCourseDetail(
     duration: item.fields.duration ? String(item.fields.duration) : "",
     level: item.fields.level ?? "",
     coach: item.fields.coach ?? "",
-    packageRequired: normalizePackage(item.fields.packageRequired),
+    packageRequired: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink)
+      ? "plus"
+      : "basic",
     muxPlaybackId: item.fields.muxPlaybackId ?? null,
     posterImage: normalizeImage(
       item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
@@ -538,7 +540,9 @@ function mapCourseSummary(
     unlocksPerWeek: item.fields.unlocksPerWeek ? Number(item.fields.unlocksPerWeek) : null,
     note: item.fields.note ?? "",
     coach: item.fields.coach ?? "",
-    packageRequired: normalizePackage(item.fields.packageRequired),
+    packageRequired: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink)
+      ? "plus"
+      : "basic",
     subcategoryKey: normalizeKey(item.fields.subcategoryKey) ?? "",
     posterImage: normalizeImage(
       item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,

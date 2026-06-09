@@ -7,6 +7,8 @@ import styles from "./CourseDetail.module.css";
 
 interface ProtectedMuxPlayerProps {
   playbackId: string | null;
+  courseSlug: string;
+  locale: string;
   poster?: string | null;
   title: string;
   messages: {
@@ -25,7 +27,14 @@ function getPlaybackErrorMessage(errorCode: string | undefined, messages: Protec
   return messages.tokenError;
 }
 
-export default function ProtectedMuxPlayer({ playbackId, poster, title, messages }: ProtectedMuxPlayerProps) {
+export default function ProtectedMuxPlayer({
+  playbackId,
+  courseSlug,
+  locale,
+  poster,
+  title,
+  messages,
+}: ProtectedMuxPlayerProps) {
   const { user, loading } = useAuth();
   const [playbackToken, setPlaybackToken] = useState("");
   const [error, setError] = useState("");
@@ -62,7 +71,7 @@ export default function ProtectedMuxPlayer({ playbackId, poster, title, messages
             Authorization: `Bearer ${idToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ playbackId }),
+          body: JSON.stringify({ playbackId, courseSlug, locale }),
         });
         const payload = (await response.json()) as {
           playbackToken?: string;
@@ -87,7 +96,7 @@ export default function ProtectedMuxPlayer({ playbackId, poster, title, messages
     return () => {
       cancelled = true;
     };
-  }, [messages, playbackId, user]);
+  }, [courseSlug, locale, messages, playbackId, user]);
 
   if (!playbackId) {
     return (

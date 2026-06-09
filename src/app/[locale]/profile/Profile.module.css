@@ -119,7 +119,7 @@
 
 .packageOptions {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.45rem;
 }
 
@@ -658,6 +658,210 @@
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--page-olive), var(--page-warm));
+}
+
+.leaderboard {
+  --leaderboard-bg:
+    radial-gradient(circle at 86% 8%, rgba(var(--page-warm-rgb), 0.24), transparent 30%),
+    linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.94));
+  --leaderboard-border: rgba(var(--page-warm-rgb), 0.5);
+  --leaderboard-text: var(--page-ink);
+  --leaderboard-muted: rgba(var(--page-ink-rgb), 0.66);
+  --leaderboard-dim: rgba(var(--page-ink-rgb), 0.46);
+  --leaderboard-row: rgba(var(--page-base-rgb), 0.72);
+  --leaderboard-row-border: rgba(var(--page-ink-rgb), 0.1);
+  --leaderboard-highlight: var(--ui-warm);
+  --leaderboard-shadow: rgba(var(--page-ink-rgb), 0.16);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--leaderboard-border);
+  border-radius: 1.35rem;
+  background: var(--leaderboard-bg);
+  padding: clamp(1rem, 3vw, 1.4rem);
+  color: var(--leaderboard-text);
+  box-shadow: 0 24px 60px var(--leaderboard-shadow);
+}
+
+:global(:root[data-theme="dark"]) .leaderboard {
+  --leaderboard-bg:
+    radial-gradient(circle at 86% 8%, rgba(var(--page-warm-rgb), 0.18), transparent 30%),
+    linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-base-rgb), 0.98));
+  --leaderboard-border: rgba(var(--page-warm-rgb), 0.3);
+  --leaderboard-muted: rgba(var(--page-ink-rgb), 0.68);
+  --leaderboard-dim: rgba(var(--page-ink-rgb), 0.46);
+  --leaderboard-row: rgba(var(--page-ink-rgb), 0.055);
+  --leaderboard-row-border: rgba(var(--page-ink-rgb), 0.09);
+  --leaderboard-highlight: var(--page-warm);
+  --leaderboard-shadow: rgba(0, 0, 0, 0.32);
+}
+
+.leaderboardGlow {
+  position: absolute;
+  z-index: -1;
+  top: -5rem;
+  right: -4rem;
+  width: 13rem;
+  height: 13rem;
+  border-radius: 999px;
+  background: rgba(var(--page-warm-rgb), 0.18);
+  filter: blur(18px);
+}
+
+.leaderboardHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+}
+
+.leaderboardEyebrow {
+  margin: 0;
+  color: var(--leaderboard-highlight);
+  font-size: 0.65rem;
+  font-weight: 950;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.leaderboardHeader h2 {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.7rem, 7vw, 2.75rem);
+  font-style: italic;
+  font-weight: 950;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.leaderboardHeader p:last-child {
+  max-width: 36rem;
+  margin: 0.65rem 0 0;
+  color: var(--leaderboard-muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.trophyMark {
+  display: grid;
+  width: 3.4rem;
+  height: 3.4rem;
+  place-items: center;
+  border: 1px solid rgba(var(--page-warm-rgb), 0.38);
+  border-radius: 999px;
+  background: rgba(var(--page-warm-rgb), 0.14);
+  color: var(--leaderboard-highlight);
+  box-shadow: 0 0 30px rgba(var(--page-warm-rgb), 0.16);
+}
+
+.leaderboardTable {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1.15rem;
+}
+
+.leaderboardLabels,
+.leaderboardRow {
+  display: grid;
+  grid-template-columns: 2.7rem minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.leaderboardLabels {
+  padding: 0 0.65rem 0.25rem;
+  color: var(--leaderboard-dim);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.leaderboardLabels span:last-child {
+  text-align: right;
+}
+
+.leaderboardRow {
+  min-height: 3.7rem;
+  border: 1px solid var(--leaderboard-row-border);
+  border-radius: 0.95rem;
+  background: var(--leaderboard-row);
+  padding: 0.55rem 0.7rem;
+  transition: transform 0.2s var(--transition), border-color 0.2s var(--transition);
+}
+
+.leaderboardRow:hover {
+  transform: translateX(3px);
+  border-color: rgba(var(--page-warm-rgb), 0.42);
+}
+
+.currentUserRow {
+  border-color: rgba(var(--page-olive-rgb), 0.58);
+  background: linear-gradient(90deg, rgba(var(--page-olive-rgb), 0.2), var(--leaderboard-row));
+  box-shadow: inset 3px 0 0 var(--page-olive);
+}
+
+.rank {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: rgba(var(--page-ink-rgb), 0.09);
+  color: var(--leaderboard-muted);
+  font-size: 0.8rem;
+  font-weight: 950;
+}
+
+.rank1 {
+  background: linear-gradient(135deg, #ffe78a, #dca527);
+  color: #493100;
+  box-shadow: 0 0 20px rgba(255, 205, 78, 0.24);
+}
+
+.rank2 {
+  background: linear-gradient(135deg, #eff3f5, #9baab2);
+  color: #27343b;
+}
+
+.rank3 {
+  background: linear-gradient(135deg, #e4a36b, #9a5835);
+  color: #fff4e8;
+}
+
+.competitor {
+  min-width: 0;
+}
+
+.competitor strong,
+.competitor small {
+  display: block;
+}
+
+.competitor strong {
+  overflow: hidden;
+  color: var(--leaderboard-text);
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.competitor small {
+  margin-top: 0.15rem;
+  color: var(--leaderboard-dim);
+  font-size: 0.68rem;
+}
+
+.points {
+  color: var(--leaderboard-highlight);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.leaderboardNote {
+  margin: 0.85rem 0 0;
+  color: var(--leaderboard-dim);
+  font-size: 0.68rem;
+  line-height: 1.5;
 }
 
 .staticHeader {

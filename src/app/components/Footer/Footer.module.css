@@ -240,6 +240,28 @@
   margin: 0;
 }
 
+.developerLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+  color: inherit;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.developerLink:hover {
+  color: var(--shell-text);
+}
+
+.developerLogo {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 @media (max-width: 980px) {
   .footerInner {
     grid-template-columns: 1fr;

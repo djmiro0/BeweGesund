@@ -10,15 +10,18 @@ import HeroSection from "./components/HeroSection";
 import VideoSection from "./components/VideoSection";
 import BannerSection from "../components/BannerSection/BannerSection";
 import styles from "./page.module.css";
+import { getProfileFirstName } from "@/lib/userProfile";
 
 const highlightIcons = [ShieldCheck, CalendarDays, Sparkles];
 
 export default function HomePage() {
     const t = useTranslations("home");
     const locale = useLocale();
-    const { user, loading, openAuth } = useAuth();
+    const { user, profile, loading, openAuth } = useAuth();
     const highlights = t.raw("public.highlights") as string[];
-    const displayName = user?.displayName || user?.email?.split("@")[0] || "Member";
+    const displayName = profile
+        ? getProfileFirstName(profile, user?.displayName) || "Member"
+        : user?.displayName?.trim().split(/\s+/)[0] || user?.email?.split("@")[0] || "Member";
 
     if (loading) return <div className={styles.loadingScreen}>{t("loading")}</div>;
 

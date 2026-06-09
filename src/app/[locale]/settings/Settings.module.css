@@ -1,8 +1,7 @@
 .settingsPage {
   min-height: 100svh;
   padding: 7rem clamp(1rem, 3vw, 2rem) 4rem;
-  background:
-    linear-gradient(135deg, rgba(var(--page-base-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.92) 46%, rgba(var(--page-cream-2-rgb), 0.96));
+  background: var(--primary-rgb);
   color: var(--page-ink);
 }
 
@@ -163,10 +162,23 @@
   justify-content: center;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--page-accent), var(--page-olive));
+  background-position: center;
+  background-size: cover;
   color: var(--page-soft);
   font-size: 1.6rem;
   font-weight: 950;
   box-shadow: 0 16px 34px rgba(var(--page-accent-rgb), 0.16);
+}
+
+.field input:read-only {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.errorMessage {
+  margin: 0;
+  color: var(--status-danger);
+  font-weight: 850;
 }
 
 .profileName {
@@ -396,6 +408,171 @@
   font-weight: 950;
 }
 
+.accountManagement {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.25rem;
+  align-items: center;
+  margin-top: 1.25rem;
+  border: 1px solid rgba(var(--accent-strong-rgb), 0.22);
+  border-radius: 1.35rem;
+  background: linear-gradient(135deg, rgba(var(--accent-strong-rgb), 0.08), rgba(var(--page-soft-rgb), 0.96));
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.accountManagementCopy {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.accountIcon,
+.modalIcon {
+  display: grid;
+  width: 2.9rem;
+  height: 2.9rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(var(--accent-strong-rgb), 0.12);
+  color: var(--accent-strong);
+}
+
+.accountManagement h2,
+.deleteModal h2 {
+  margin: 0.2rem 0 0;
+  color: var(--page-ink);
+  font-size: 1.25rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.accountManagementCopy > div > p:last-child {
+  max-width: 46rem;
+  margin: 0.45rem 0 0;
+  color: var(--page-muted);
+  line-height: 1.55;
+}
+
+.dangerButton {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(var(--navy-rgb), 0.76);
+  backdrop-filter: blur(10px);
+}
+
+.deleteModal {
+  position: relative;
+  width: min(100%, 34rem);
+  border: 1px solid rgba(var(--accent-strong-rgb), 0.25);
+  border-radius: 1.6rem;
+  background: linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.99), rgba(var(--page-cream-2-rgb), 0.99));
+  padding: 1.5rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.34);
+}
+
+.modalClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  place-items: center;
+  border: 1px solid var(--page-border);
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.8);
+  color: var(--page-muted);
+  cursor: pointer;
+}
+
+.modalIcon {
+  margin-bottom: 1rem;
+}
+
+.modalText {
+  margin: 0.75rem 0 0;
+  color: var(--page-muted);
+  line-height: 1.65;
+}
+
+.passwordLabel {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  color: rgba(var(--page-ink-rgb), 0.62);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.passwordLabel input {
+  width: 100%;
+  border: 1px solid var(--page-border);
+  border-radius: 0.9rem;
+  background: rgba(var(--page-base-rgb), 0.62);
+  padding: 0.9rem 1rem;
+  color: var(--page-ink);
+  font: inherit;
+  outline: none;
+}
+
+.deleteError {
+  margin: 0.8rem 0 0;
+  border-radius: 0.85rem;
+  background: rgba(var(--accent-strong-rgb), 0.1);
+  padding: 0.8rem;
+  color: var(--accent-strong);
+  font-weight: 800;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1.15rem;
+}
+
+.cancelButton,
+.confirmDeleteButton {
+  flex: 1;
+  min-height: 2.9rem;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.cancelButton {
+  background: rgba(var(--page-ink-rgb), 0.08);
+  color: var(--page-ink);
+}
+
+.confirmDeleteButton {
+  background: var(--accent-strong);
+  color: var(--text-light);
+}
+
+.confirmDeleteButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 @media (max-width: 980px) {
   .layout {
     grid-template-columns: 1fr;
@@ -438,5 +615,18 @@
   .resetButton,
   .saveButton {
     width: 100%;
+  }
+
+  .accountManagement {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dangerButton {
+    width: 100%;
+  }
+
+  .modalActions {
+    flex-direction: column-reverse;
   }
 }

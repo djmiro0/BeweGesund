@@ -14,10 +14,12 @@ import styles from "./Header.module.css";
 interface HeaderProps {
     locale: string;
     user?: { email?: string | null; displayName?: string | null; photoURL?: string | null } | null;
+    profileName?: string | null;
+    profilePhoto?: string | null;
     openAuth?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
+const Header: React.FC<HeaderProps> = ({ locale, user, profileName: storedProfileName, profilePhoto: storedProfilePhoto, openAuth }) => {
     const t = useTranslations("header");
     const router = useRouter();
     const pathname = usePathname();
@@ -25,8 +27,8 @@ const Header: React.FC<HeaderProps> = ({ locale, user, openAuth }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const otherLocale = locale === "en" ? "de" : "en";
-    const profileName = user?.displayName || user?.email?.split("@")[0] || t("profileFallback");
-    const profilePhoto = user?.photoURL;
+    const profileName = storedProfileName || user?.displayName?.trim().split(/\s+/)[0] || user?.email?.split("@")[0] || t("profileFallback");
+    const profilePhoto = storedProfilePhoto || user?.photoURL;
     const profileInitial = profileName.charAt(0).toUpperCase();
 
     const navItems = [

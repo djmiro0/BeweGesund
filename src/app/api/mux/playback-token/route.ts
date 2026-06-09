@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 import { verifyFirebaseIdToken } from "@/lib/firebaseToken";
+import { getFirebaseUserAccess } from "@/lib/firebaseUserAccess";
+import { packageRank } from "@/lib/memberPackages";
 import { createMuxPlaybackToken, hasMuxSigningConfig } from "@/lib/muxSigning";
+import { consumeRateLimit } from "@/lib/serverRateLimit";
+import { getCourseDetail } from "@/lib/contentful";
 
 export const runtime = "nodejs";
 
 interface PlaybackTokenRequest {
   playbackId?: string;
+  courseSlug?: string;
+  locale?: string;
 }
 
 export async function POST(request: Request) {
@@ -29,8 +35,10 @@ export async function POST(request: Request) {
     );
   }
 
+  let uid: string;
+
   try {
-    await verifyFirebaseIdToken(idToken);
+    ({ uid } = await verifyFirebaseIdToken(idToken));
   } catch {
     return NextResponse.json(
       { error: "Invalid authentication token.", code: "INVALID_AUTH_TOKEN" },
@@ -40,11 +48,50 @@ export async function POST(request: Request) {
 
   const body = (await request.json().catch(() => ({}))) as PlaybackTokenRequest;
   const playbackId = body.playbackId?.trim();
+  const courseSlug = body.courseSlug?.trim();
+  const locale = body.locale === "de" ? "de" : "en";
 
-  if (!playbackId) {
+  if (!playbackId || !courseSlug) {
     return NextResponse.json(
-      { error: "playbackId is required.", code: "PLAYBACK_ID_REQUIRED" },
+      { error: "playbackId and courseSlug are required.", code: "PLAYBACK_REQUEST_INVALID" },
       { status: 400 },
+    );
+  }
+
+  const rateLimit = consumeRateLimit(`mux-playback:${uid}`, 30, 60_000);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many playback requests.", code: "RATE_LIMITED" },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
+  try {
+    const [course, userAccess] = await Promise.all([
+      getCourseDetail(locale, courseSlug),
+      getFirebaseUserAccess(uid, idToken),
+    ]);
+
+    if (!course || course.muxPlaybackId !== playbackId) {
+      return NextResponse.json(
+        { error: "The requested video is not available.", code: "VIDEO_NOT_FOUND" },
+        { status: 404 },
+      );
+    }
+
+    if (packageRank[userAccess.memberPackage] < packageRank[course.packageRequired]) {
+      return NextResponse.json(
+        { error: "Your membership does not include this video.", code: "PACKAGE_REQUIRED" },
+        { status: 403 },
+      );
+    }
+  } catch {
+    return NextResponse.json(
+      { error: "Video access could not be verified.", code: "ACCESS_CHECK_FAILED" },
+      { status: 503 },
     );
   }
 

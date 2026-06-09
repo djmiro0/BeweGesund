@@ -1,6 +1,7 @@
 import { HttpsError, onCall, onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { logger } from "firebase-functions";
+import { getAuth } from "firebase-admin/auth";
 import Stripe from "stripe";
 import { increment, LEADERBOARDS_COLLECTION, REWARDS_COLLECTION, serverTimestamp, userRef, db } from "./firestore";
 import { stripeSecretKey, stripeWebhookSecret } from "./config";
@@ -60,14 +61,6 @@ function optionalString(value: unknown) {
   return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 }
 
-function optionalNumberInRange(value: unknown, field: string, min: number, max: number) {
-  if (value === null || value === undefined || value === "") {
-    return null;
-  }
-
-  return requireNumberInRange(value, field, min, max);
-}
-
 function normalizeRegistrationPayload(data: unknown) {
   const payload = (data ?? {}) as RegistrationProfilePayload;
   const occupationKeys = ["sedentary", "standing", "physical"];
@@ -93,6 +86,8 @@ function normalizeRegistrationPayload(data: unknown) {
   const occupationKey = optionalString(payload.occupationKey);
   const regionKey = requireString(payload.regionKey, "regionKey");
   const anamnesisStatusKey = payload.anamnesisStatusKey ?? "pending";
+  const memberPackage: UserProfile["memberPackage"] = "basic";
+  const gender = payload.gender;
 
   if (occupationKey && !occupationKeys.includes(occupationKey)) {
     throw new HttpsError("invalid-argument", "occupationKey is invalid.");
@@ -106,16 +101,30 @@ function normalizeRegistrationPayload(data: unknown) {
     throw new HttpsError("invalid-argument", "anamnesisStatusKey is invalid.");
   }
 
+  if (gender !== "female" && gender !== "male") {
+    throw new HttpsError("invalid-argument", "gender must be female or male.");
+  }
+
   if (payload.consentAccepted !== true) {
     throw new HttpsError("failed-precondition", "Registration consent is required.");
   }
 
+  if (payload.healthConsentAccepted !== true) {
+    throw new HttpsError("failed-precondition", "Explicit health-data consent is required.");
+  }
+
+  const displayName = requireString(payload.displayName, "displayName");
+  const displayNameParts = displayName.split(/\s+/);
+
   return {
-    displayName: requireString(payload.displayName, "displayName"),
+    firstName: optionalString(payload.firstName) ?? displayNameParts[0],
+    lastName: optionalString(payload.lastName) ?? displayNameParts.slice(1).join(" "),
+    displayName,
     photoURL: optionalString(payload.photoURL),
-    dateOfBirth: optionalString(payload.dateOfBirth),
-    heightCm: optionalNumberInRange(payload.heightCm, "heightCm", 80, 240),
-    weightKg: optionalNumberInRange(payload.weightKg, "weightKg", 25, 300),
+    age: requireNumberInRange(payload.age, "age", 1, 120),
+    gender,
+    heightCm: requireNumberInRange(payload.heightCm, "heightCm", 80, 240),
+    weightKg: requireNumberInRange(payload.weightKg, "weightKg", 25, 300),
     occupationKey,
     regionKey,
     averageStepsPerDay:
@@ -126,17 +135,21 @@ function normalizeRegistrationPayload(data: unknown) {
       ? payload.primaryGoalKey.trim()
       : null,
     anamnesisStatusKey,
+    memberPackage,
   };
 }
 
 async function applyCompletion(userId: string, kind: "lesson" | "workout", payload: CompletionPayload) {
   const itemId = kind === "lesson" ? payload.lessonId : payload.workoutId;
 
-  if (!itemId) {
+  if (!itemId || itemId.length > 160) {
     throw new HttpsError("invalid-argument", `${kind}Id is required.`);
   }
 
   const completedAt = payload.completedAt ? new Date(payload.completedAt) : new Date();
+  if (Number.isNaN(completedAt.getTime()) || completedAt.getTime() > Date.now() + 60_000) {
+    throw new HttpsError("invalid-argument", "completedAt is invalid.");
+  }
   const completionCollection = kind === "lesson" ? "lessonCompletions" : "workoutCompletions";
   const xpGain = kind === "lesson" ? 20 : 35;
   const pointsGain = kind === "lesson" ? 10 : 20;
@@ -144,10 +157,18 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
   const ref = userRef(userId);
 
   return db.runTransaction(async (transaction) => {
-    const snapshot = await transaction.get(ref);
+    const completionRef = ref.collection(completionCollection).doc(itemId);
+    const [snapshot, completionSnapshot] = await Promise.all([
+      transaction.get(ref),
+      transaction.get(completionRef),
+    ]);
 
     if (!snapshot.exists) {
       throw new HttpsError("failed-precondition", "User profile does not exist.");
+    }
+
+    if (completionSnapshot.exists) {
+      return { ok: true, alreadyCompleted: true, xpGain: 0, pointsGain: 0 };
     }
 
     const data = snapshot.data() as {
@@ -168,7 +189,7 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
     const longestStreak = Math.max(data.longestStreak ?? 0, currentStreak);
 
     transaction.set(
-      ref.collection(completionCollection).doc(itemId),
+      completionRef,
       {
         userId,
         completedAt,
@@ -198,7 +219,7 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
   });
 }
 
-export const createUserProfile = onCall({ region: REGION }, async (request) => {
+export const createUserProfile = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
   const uid = requireAuth(request.auth);
   const authUser = request.auth!;
   const registrationProfile = normalizeRegistrationPayload(request.data);
@@ -208,17 +229,22 @@ export const createUserProfile = onCall({ region: REGION }, async (request) => {
   if (snapshot.exists) {
     await ref.set(
       {
+        firstName: registrationProfile.firstName,
+        lastName: registrationProfile.lastName,
         displayName: registrationProfile.displayName,
         photoURL: registrationProfile.photoURL,
-        dateOfBirth: registrationProfile.dateOfBirth,
+        age: registrationProfile.age,
+        gender: registrationProfile.gender,
         heightCm: registrationProfile.heightCm,
         weightKg: registrationProfile.weightKg,
         occupationKey: registrationProfile.occupationKey,
         regionKey: registrationProfile.regionKey,
         averageStepsPerDay: registrationProfile.averageStepsPerDay,
         primaryGoalKey: registrationProfile.primaryGoalKey,
+        memberPackage: registrationProfile.memberPackage,
         anamnesisStatusKey: registrationProfile.anamnesisStatusKey,
         consentAcceptedAt: serverTimestamp(),
+        healthConsentAcceptedAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       },
       { merge: true },
@@ -230,21 +256,25 @@ export const createUserProfile = onCall({ region: REGION }, async (request) => {
   const profile: UserProfile = {
     uid,
     email: authUser.token.email ?? "",
+    firstName: registrationProfile.firstName,
+    lastName: registrationProfile.lastName,
     displayName: registrationProfile.displayName,
     photoURL: registrationProfile.photoURL,
-    dateOfBirth: registrationProfile.dateOfBirth,
+    age: registrationProfile.age,
+    gender: registrationProfile.gender,
     heightCm: registrationProfile.heightCm,
     weightKg: registrationProfile.weightKg,
     occupationKey: registrationProfile.occupationKey,
     regionKey: registrationProfile.regionKey,
     averageStepsPerDay: registrationProfile.averageStepsPerDay,
     primaryGoalKey: registrationProfile.primaryGoalKey,
-    memberPackage: "starter",
+    memberPackage: registrationProfile.memberPackage,
     startedCourseIds: [],
     completedCourseIds: [],
     recommendedCourseIds: [],
     anamnesisStatusKey: registrationProfile.anamnesisStatusKey,
     consentAcceptedAt: serverTimestamp(),
+    healthConsentAcceptedAt: serverTimestamp(),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     xp: 0,
@@ -266,17 +296,31 @@ export const createUserProfile = onCall({ region: REGION }, async (request) => {
   return { ok: true, created: true };
 });
 
-export const completeLesson = onCall({ region: REGION }, async (request) => {
+export const deleteUserAccount = onCall(
+  { region: REGION, enforceAppCheck: true },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const ref = userRef(uid);
+
+    await db.recursiveDelete(ref);
+    await getAuth().deleteUser(uid);
+
+    logger.info("User account deleted", { uid });
+    return { ok: true };
+  },
+);
+
+export const completeLesson = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
   const uid = requireAuth(request.auth);
   return applyCompletion(uid, "lesson", request.data as CompletionPayload);
 });
 
-export const completeWorkout = onCall({ region: REGION }, async (request) => {
+export const completeWorkout = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
   const uid = requireAuth(request.auth);
   return applyCompletion(uid, "workout", request.data as CompletionPayload);
 });
 
-export const updateStreak = onCall({ region: REGION }, async (request) => {
+export const updateStreak = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
   const uid = requireAuth(request.auth);
   const ref = userRef(uid);
   const snapshot = await ref.get();
@@ -362,7 +406,7 @@ export const updateMonthlyLeaderboard = onSchedule(
   },
 );
 
-export const claimReward = onCall({ region: REGION }, async (request) => {
+export const claimReward = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
   const uid = requireAuth(request.auth);
   const { rewardId } = request.data as RewardClaimPayload;
 

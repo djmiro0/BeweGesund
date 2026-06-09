@@ -3,21 +3,25 @@ export type PremiumStatus = "free" | "active" | "past_due" | "canceled";
 export interface UserProfile {
   uid: string;
   email: string;
+  firstName: string;
+  lastName: string;
   displayName: string | null;
   photoURL: string | null;
-  dateOfBirth: string | null;
-  heightCm: number | null;
-  weightKg: number | null;
+  age: number;
+  gender: "female" | "male";
+  heightCm: number;
+  weightKg: number;
   occupationKey: string | null;
   regionKey: string;
   averageStepsPerDay: number | null;
   primaryGoalKey: string | null;
-  memberPackage: "starter" | "rehab-plus" | "all-access";
+  memberPackage: "basic" | "plus";
   startedCourseIds: string[];
   completedCourseIds: string[];
   recommendedCourseIds: string[];
   anamnesisStatusKey: "pending" | "completed" | "review-required";
   consentAcceptedAt: FirebaseFirestore.FieldValue;
+  healthConsentAcceptedAt: FirebaseFirestore.FieldValue;
   createdAt: FirebaseFirestore.FieldValue;
   updatedAt: FirebaseFirestore.FieldValue;
   xp: number;
@@ -41,17 +45,22 @@ export interface CompletionPayload {
 }
 
 export interface RegistrationProfilePayload {
+  firstName?: string;
+  lastName?: string;
   displayName?: string;
   photoURL?: string | null;
-  dateOfBirth?: string;
-  heightCm?: number | null;
-  weightKg?: number | null;
+  age?: number;
+  gender?: "female" | "male";
+  heightCm?: number;
+  weightKg?: number;
   occupationKey?: "sedentary" | "standing" | "physical" | null;
   regionKey?: string;
   averageStepsPerDay?: number;
   primaryGoalKey?: string;
   anamnesisStatusKey?: "pending" | "completed" | "review-required";
+  memberPackage?: "basic" | "plus";
   consentAccepted?: boolean;
+  healthConsentAccepted?: boolean;
 }
 
 export interface RewardClaimPayload {

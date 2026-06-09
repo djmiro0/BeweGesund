@@ -53,6 +53,8 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
   const { user, memberPackage, openAuth } = useAuth();
   const [selectedDate, setSelectedDate] = useState(days[0]?.date ?? toDateKey(new Date()));
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [joiningEventId, setJoiningEventId] = useState("");
+  const [joinError, setJoinError] = useState("");
 
   const daysByDate = useMemo(
     () => new Map(days.map((day) => [day.date, day])),
@@ -97,6 +99,35 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
       }),
     [locale],
   );
+
+  const handleJoin = async (eventId: string) => {
+    if (!user || joiningEventId) return;
+
+    setJoiningEventId(eventId);
+    setJoinError("");
+
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/calendar/join", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ eventId, locale }),
+      });
+      const payload = (await response.json()) as { url?: string };
+
+      if (!response.ok || !payload.url) {
+        throw new Error("Join failed");
+      }
+
+      window.location.assign(payload.url);
+    } catch {
+      setJoinError(t("joinError"));
+      setJoiningEventId("");
+    }
+  };
 
   if (!user) {
     return (
@@ -330,15 +361,15 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                       {included ? t("included") : t("upgradeRequired")}
                     </span>
                     {canJoin ? (
-                      <a
+                      <button
+                        type="button"
                         className={`${styles.joinButton} ${styles.joinButtonEnabled}`}
-                        href={entry.liveTrainingLink ?? undefined}
-                        target="_blank"
-                        rel="noreferrer"
+                        disabled={Boolean(joiningEventId)}
+                        onClick={() => void handleJoin(entry.id)}
                       >
-                        {t("join")}
+                        {joiningEventId === entry.id ? t("joining") : t("join")}
                         <ExternalLink size={15} />
-                      </a>
+                      </button>
                     ) : (
                       <button
                         type="button"
@@ -368,6 +399,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
             <p>{t("emptyDescription")}</p>
           </div>
         )}
+        {joinError ? <p className={styles.restrictionText} role="alert">{joinError}</p> : null}
       </motion.section>
     </motion.div>
   );

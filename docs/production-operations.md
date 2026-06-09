@@ -1,0 +1,39 @@
+# Production Operations
+
+## Required release checks
+
+- `npm run lint`
+- `npm run test:component`
+- `npm run build`
+- `npm run build` in `functions/`
+- Verify `/api/health` returns HTTP 200 after deployment.
+- Smoke-test registration, email verification, password reset, settings save, video playback, and account deletion.
+
+## Required production configuration
+
+- Contentful delivery configuration
+- Firebase project ID and Firebase App Check reCAPTCHA v3 site key
+- Mux signing credentials and a mandatory admin upload token
+- `NEXT_PUBLIC_SITE_URL`
+- All `LEGAL_*` provider variables from `.env.example`
+
+Enable Firebase App Check enforcement for Firestore after the web app is registered and verified.
+
+## Backups
+
+Configure scheduled Firestore exports in Google Cloud to a dedicated, access-restricted Cloud Storage bucket. Use a daily schedule, a documented retention period, and lifecycle deletion. Test a restore into a non-production project before launch and at least quarterly.
+
+## Monitoring and alerts
+
+- Monitor `/api/health` from an external uptime service.
+- Configure Vercel alerts for elevated 5xx rates and failed deployments.
+- Configure Firebase alerts for Functions errors, quota usage, and App Check rejection spikes.
+- Never log passwords, Firebase ID tokens, Mux signing keys, or health-profile values.
+
+## Incident response
+
+1. Disable affected endpoints or revoke credentials.
+2. Rotate exposed Firebase, Contentful, or Mux credentials.
+3. Review Vercel and Firebase logs.
+4. Assess notification obligations with the data-protection contact.
+5. Document the incident, impact, response, and preventive changes.
