@@ -9,7 +9,7 @@ Create a content type with API identifier `blogPost`.
 | Title | `title` | Short text | Yes | Article headline. Localize this field. |
 | Slug | `slug` | Short text | Yes | URL slug, for example `how-to-sleep-better`. Keep unique per locale. |
 | Excerpt | `excerpt` | Long text | Yes | Short teaser shown on the Blogs page. Localize this field. |
-| Body | `body` | Long text | Yes | Full article text. Separate paragraphs with a blank line. Localize this field. |
+| Body | `body` | Rich text | Yes | Full article content. Enable headings, lists, links, quotes, tables, and embedded media. Localize this field. |
 | Tags | `tags` | Short text list | Yes | Use only English keys: `nutrition`, `health`, `training`. |
 | Author | `author` | Short text | No | Defaults to `Bewegesund` if empty. |
 | Read time minutes | `readTimeMinutes` | Integer | No | Defaults to 4 if empty. |
@@ -51,13 +51,9 @@ Published at:
 
 Body:
 
-```text
-Guter Schlaf ist keine Nebensache, sondern ein aktiver Teil von Gesundheit, Regeneration und Leistungsfähigkeit.
-
-Für Training bedeutet Schlaf vor allem Reparatur, hormonelle Balance, Konzentration und die Fähigkeit, Belastung sinnvoll zu verarbeiten.
-
-Praktisch helfen feste Schlafzeiten, reduziertes Licht am Abend, ein ruhiger Schlafraum, ein klares Abendritual und weniger intensive Reize kurz vor dem Schlafengehen.
-```
+Add the article in the Rich Text editor. Use heading level 2 as the first
+section level because the article title is already rendered as the page's
+heading level 1. Embedded images are supported.
 
 ## Environment
 

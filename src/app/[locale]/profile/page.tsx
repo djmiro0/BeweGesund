@@ -44,6 +44,7 @@ const fadeUp = {
 const getCourseMeta = (courseId: string) => memberCourses.find((course) => course.id === courseId);
 
 type AnamnesisStatus = "pending" | "completed" | "review-required";
+type ProfileSection = "body" | "training" | "calm" | "badges" | "league";
 
 interface ProfileData {
   email: string | null;
@@ -97,6 +98,7 @@ export default function ProfilePage() {
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isTrainingOpen, setIsTrainingOpen] = useState(false);
+  const [openSection, setOpenSection] = useState<ProfileSection | null>("body");
   const [isSavingPackage, setIsSavingPackage] = useState(false);
   const [packageMessage, setPackageMessage] = useState("");
 
@@ -127,6 +129,13 @@ export default function ProfilePage() {
   const email = user.email || profile.email || t("values.notProvided");
   const avatar = user.photoURL || profile.photoURL;
   const profileInitial = displayName.charAt(0).toUpperCase();
+
+  const handleSectionToggle = (section: ProfileSection, isOpen: boolean) => {
+    setOpenSection((currentSection) => {
+      if (isOpen) return section;
+      return currentSection === section ? null : currentSection;
+    });
+  };
   const bmi = profile.heightCm && profile.weightKg
     ? profile.weightKg / ((profile.heightCm / 100) * (profile.heightCm / 100))
     : null;
@@ -366,7 +375,12 @@ export default function ProfilePage() {
           <p className={styles.packageHint}>{packageMessage || t("packageSelector.temporaryHint")}</p>
         </motion.section>
 
-        <motion.details className={`${styles.mobileCard} ${styles.bodyCard}`} variants={fadeUp} open>
+        <motion.details
+          className={`${styles.mobileCard} ${styles.bodyCard}`}
+          variants={fadeUp}
+          open={openSection === "body"}
+          onToggle={(event) => handleSectionToggle("body", event.currentTarget.open)}
+        >
           <summary className={styles.cardSummary}>
             <span>{t("cards.body.title")}</span>
             <Scale size={34} />
@@ -402,7 +416,12 @@ export default function ProfilePage() {
         </motion.details>
 
         <div className={styles.twoColumnRow}>
-          <motion.details className={`${styles.mobileCard} ${styles.trainingCard}`} variants={fadeUp}>
+          <motion.details
+            className={`${styles.mobileCard} ${styles.trainingCard}`}
+            variants={fadeUp}
+            open={openSection === "training"}
+            onToggle={(event) => handleSectionToggle("training", event.currentTarget.open)}
+          >
             <summary className={styles.cardSummary}>
               <span>{t("cards.training.title")}</span>
               <Dumbbell size={30} />
@@ -424,7 +443,12 @@ export default function ProfilePage() {
             </button>
           </motion.details>
 
-          <motion.details className={`${styles.mobileCard} ${styles.calmCard}`} variants={fadeUp}>
+          <motion.details
+            className={`${styles.mobileCard} ${styles.calmCard}`}
+            variants={fadeUp}
+            open={openSection === "calm"}
+            onToggle={(event) => handleSectionToggle("calm", event.currentTarget.open)}
+          >
             <summary className={styles.cardSummary}>
               <span>{t("cards.calm.title")}</span>
               <Wind size={30} />
@@ -448,7 +472,12 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.twoColumnRow}>
-          <motion.details className={`${styles.mobileCard} ${styles.badgeCard}`} variants={fadeUp}>
+          <motion.details
+            className={`${styles.mobileCard} ${styles.badgeCard}`}
+            variants={fadeUp}
+            open={openSection === "badges"}
+            onToggle={(event) => handleSectionToggle("badges", event.currentTarget.open)}
+          >
             <summary className={styles.cardSummary}>
               <span>{t("cards.badges.title")}</span>
               <Medal size={30} />
@@ -466,7 +495,12 @@ export default function ProfilePage() {
             </div>
           </motion.details>
 
-          <motion.details className={`${styles.mobileCard} ${styles.leagueCard}`} variants={fadeUp}>
+          <motion.details
+            className={`${styles.mobileCard} ${styles.leagueCard}`}
+            variants={fadeUp}
+            open={openSection === "league"}
+            onToggle={(event) => handleSectionToggle("league", event.currentTarget.open)}
+          >
             <summary className={styles.cardSummary}>
               <span>{t("cards.league.title")}</span>
               <Trophy size={30} />
