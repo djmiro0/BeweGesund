@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import { NextIntlClientProvider } from "next-intl";
 import AppShell from "./components/AppShell";
-import "./globals.css";
 import enMessages from "../../../locales/en.json";
 import deMessages from "../../../locales/de.json";
-
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 function getBaseUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -62,13 +56,8 @@ export default async function LocaleLayout({
   const messages = locale === "de" ? deMessages : enMessages;
 
   return (
-    <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <AppShell locale={locale}>{children}</AppShell>
-        </NextIntlClientProvider>
-        <Analytics />
-      </body>
-    </html>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <AppShell locale={locale}>{children}</AppShell>
+    </NextIntlClientProvider>
   );
 }

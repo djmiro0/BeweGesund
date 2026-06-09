@@ -31,8 +31,6 @@ export default function PrivacySettings({ data, onChange }: PrivacySettingsProps
 
       <div className={styles.accountActions}>
         <button type="button" className={styles.secondaryButton}>Change password</button>
-        <button type="button" className={styles.secondaryButton}>Export data</button>
-        <button type="button" className={styles.dangerButton}>Delete account</button>
       </div>
     </SettingsSection>
   );

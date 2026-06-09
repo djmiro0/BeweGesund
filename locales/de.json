@@ -136,14 +136,19 @@
     "signInTitle": "Mitglieder-Login",
     "registerTitle": "Konto Erstellen",
     "supportText": "Erhalte Zugriff auf Live-Training, Live-Seminare und persönliche Beratung nur für Mitglieder.",
-    "registerSupportText": "Erstelle zuerst dein Konto. Gesundheits- und Profildaten sind vorerst optional und helfen später bei einer genaueren Trainingsauswahl.",
+    "registerSupportText": "Erstelle dein Konto und ergänze die grundlegenden Gesundheitsdaten für dein Profil und die BMI-Berechnung.",
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
-    "fullName": "Vollständiger Name",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
     "email": "E-Mail-Adresse",
     "password": "Passwort",
     "confirmPassword": "Passwort bestätigen",
-    "dateOfBirth": "Geburtsdatum",
+    "age": "Alter",
+    "gender": "Geschlecht",
+    "genderFemale": "Weiblich",
+    "genderMale": "Männlich",
+    "selectGenderPlaceholder": "Geschlecht auswählen",
     "heightCm": "Körpergröße (cm)",
     "weightKg": "Gewicht (kg)",
     "occupation": "Beruf",
@@ -169,7 +174,26 @@
       "thuringia": "Thüringen"
     },
     "packageLabel": "Mitgliedspaket",
-    "packageTemporaryHint": "Für den aktuellen Test kannst du dein Paket frei wählen. Die Zahlung wird später beim Paketwechsel ergänzt.",
+    "packageTemporaryHint": "Neue Konten starten mit Basic. Plus kann aktiviert werden, sobald die Zahlungsabwicklung verfügbar ist.",
+    "plans": {
+      "basic": {
+        "description": "Deine Grundlage für selbstständiges Training und fundiertes Gesundheitswissen.",
+        "features": [
+          "Alle aufgezeichneten Trainings und Programme",
+          "Alle Blogartikel und Wissensinhalte",
+          "Zugriff auf alle weiteren grundlegenden Plattformfunktionen"
+        ]
+      },
+      "plus": {
+        "description": "Für alle, die live begleitet werden und fachlich immer auf dem neuesten Stand bleiben möchten.",
+        "features": [
+          "Alles aus dem Basic-Paket",
+          "Zusätzliche Live-Trainings mit aktuellen Übungen",
+          "Live-Seminare mit neuestem Gesundheits- und Trainingswissen",
+          "Zusätzliches Wissen und künftig wertvolle Punkte für das Wettbewerbssystem"
+        ]
+      }
+    },
     "selectPlaceholder": "Option auswählen",
     "occupations": {
       "sedentary": "Überwiegend sitzend",
@@ -177,10 +201,11 @@
       "physical": "Körperliche Arbeit"
     },
     "consentText": "Ich akzeptiere die Nutzungsbedingungen und verstehe, dass das Programm edukativ und trainingsorientiert ist.",
+    "healthConsentText": "Ich willige ausdrücklich in die Verarbeitung von Alter, Geschlecht, Körpergröße und Gewicht zur BMI-Berechnung und Trainingspersonalisierung ein. Ich kann diese Einwilligung jederzeit widerrufen und mein Konto löschen.",
     "terms": {
       "link": "Nutzungsbedingungen ansehen",
       "title": "Nutzungsbedingungen",
-      "intro": "Diese allgemeinen Bedingungen sind eine vorläufige Version für den aktuellen Prototyp und werden vor dem Launch weiter ausgearbeitet.",
+      "intro": "Diese Bedingungen regeln die Nutzung der Bewegesund-Mitgliederplattform.",
       "items": [
         "Bewegesund stellt edukative Inhalte für Bewegung, Rehabilitation und Training bereit. Dies ersetzt keine medizinische Diagnose, Behandlung oder Notfallversorgung.",
         "Du bist dafür verantwortlich, Konto- und gesundheitsbezogene Angaben korrekt einzugeben. Optionale Daten helfen bei späterer Personalisierung und können nachgetragen werden.",
@@ -193,6 +218,10 @@
     },
     "submitSignIn": "Anmelden",
     "submitRegister": "Konto Erstellen",
+    "forgotPassword": "Passwort vergessen?",
+    "resetEmailRequired": "Gib zuerst deine E-Mail-Adresse ein.",
+    "resetEmailSent": "Falls für diese E-Mail ein Konto existiert, wurden Anweisungen zum Zurücksetzen gesendet.",
+    "verificationSent": "Konto erstellt. Bitte bestätige deine E-Mail-Adresse, bevor du dich anmeldest.",
     "switchToRegister": "Neu hier? Konto erstellen",
     "switchToSignIn": "Bereits ein Konto? Anmelden",
     "close": "Schließen",
@@ -203,6 +232,7 @@
     "weakPassword": "Bitte wähle ein stärkeres Passwort.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
     "consentRequired": "Bitte bestätige den Einwilligungshinweis, um fortzufahren.",
+    "healthConsentRequired": "Für die Verarbeitung gesundheitsbezogener Profildaten ist eine ausdrückliche Einwilligung erforderlich.",
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "tooManyRequests": "Zu viele Versuche. Bitte warte kurz und versuche es erneut.",
     "profileSavePermissionDenied": "Dein Konto wurde erstellt, aber das Profil konnte nicht gespeichert werden, weil die Firestore-Berechtigungen noch nicht aktualisiert sind. Bitte versuche es erneut, nachdem die Regeln deployt wurden.",
@@ -451,7 +481,7 @@
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",
-    "title": "Wissen zu Sport, Gesundheit und Ernährung für deinen Alltag.",
+    "title": "Wissen zu Sport, Gesundheit und Ernährung.",
     "intro": "Praktische Artikel zu Training, Regeneration, Ernährung und gesünderen Routinen.",
     "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
     "filterHint": "Nach Thema filtern",
@@ -466,9 +496,8 @@
     }
   },
   "packages": {
-    "starter": "Starter",
-    "rehab-plus": "Reha Plus",
-    "all-access": "All Access"
+    "basic": "Basic",
+    "plus": "Plus"
   },
   "profile": {
     "eyebrow": "Mitgliederprofil",
@@ -478,8 +507,9 @@
       "eyebrow": "Mitgliedschaft",
       "title": "Aktives Paket",
       "description": "Dieses Paket steuert den Zugriff auf Kurse und Live-Sessions.",
-      "temporaryHint": "Testphase: Das Paket kann ohne Zahlung geändert werden.",
+      "temporaryHint": "Paketwechsel sind gesperrt, bis eine verifizierte Zahlungsabwicklung verfügbar ist.",
       "saved": "Paket wurde aktualisiert.",
+      "permissionError": "Paket konnte nicht gespeichert werden. Bitte deploye zuerst die aktuellen Firestore-Regeln.",
       "error": "Das Paket konnte nicht gespeichert werden."
     },
     "actions": {
@@ -505,7 +535,8 @@
       "completedHint": "Bereits besuchte Kurse."
     },
     "details": {
-      "dateOfBirth": "Geburtsdatum",
+      "age": "Alter",
+      "gender": "Geschlecht",
       "height": "Körpergröße",
       "weight": "Gewicht",
       "recommendedWeight": "Empfohlene Gewichtsspanne",
@@ -518,6 +549,11 @@
     "values": {
       "height": "{count} cm",
       "weight": "{count} kg",
+      "age": "{count} Jahre",
+      "gender": {
+        "female": "Weiblich",
+        "male": "Männlich"
+      },
       "weightRange": "{min} - {max} kg",
       "steps": "{count} Schritte/Tag",
       "notProvided": "Noch nicht angegeben"
@@ -607,6 +643,16 @@
       "flexible": "Flexibles Format",
       "empty": "Hier wurden noch keine Kurse gespeichert."
     },
+    "leaderboard": {
+      "eyebrow": "Arena dieser Woche",
+      "title": "Wochenrangliste",
+      "description": "Regelmäßigkeit, Lernen und absolvierte Trainings bestimmen künftig diese Rangliste.",
+      "rank": "Rang",
+      "competitor": "Teilnehmer",
+      "points": "Punkte",
+      "you": "Du · aktuelle Woche",
+      "placeholder": "Vorschaudaten. Echte Punkte werden in der Gamification-Phase mit Trainings, Videos und Blogaktivitäten verbunden."
+    },
     "delete": {
       "eyebrow": "Kontoverwaltung",
       "title": "Profil löschen",
@@ -647,6 +693,8 @@
     "upgradeRequired": "Upgrade nötig",
     "liveBadge": "Live",
     "join": "Session beitreten",
+    "joining": "Wird geöffnet...",
+    "joinError": "Der geschützte Session-Link konnte nicht geöffnet werden. Bitte versuche es erneut.",
     "unlockButton": "Paket nötig",
     "missingLink": "Link fehlt",
     "needsPackage": "Für diese Session wird das Paket {package} benötigt.",
@@ -745,7 +793,8 @@
       "responseLabel": "Anfragen",
       "responseValue": "Geschäftliche und beratungsbezogene Anfragen"
     },
-    "copyright": "© 2026 BeweGesund. Alle Rechte vorbehalten."
+    "copyright": "© 2026 BeweGesund. Alle Rechte vorbehalten.",
+    "developedBy": "Entwickelt von djmir0"
   },
   "impressum": {
     "title": "Impressum",

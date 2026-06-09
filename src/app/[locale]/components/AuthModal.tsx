@@ -2,11 +2,21 @@
 import { useState } from 'react';
 import { useTranslations } from "next-intl";
 import { auth, db } from "../../../../firebase.config";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, deleteUser, updateProfile, type AuthError } from 'firebase/auth';
+import {
+    createUserWithEmailAndPassword,
+    deleteUser,
+    sendEmailVerification,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
+    signOut,
+    updateProfile,
+    type AuthError,
+} from 'firebase/auth';
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { Check, LoaderCircle, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
 import { memberPackages } from "@/lib/memberPackages";
+import type { UserGender } from "@/lib/userProfile";
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -16,11 +26,14 @@ interface AuthModalProps {
 interface CreateUserProfilePayload {
     uid: string;
     email: string;
+    firstName: string;
+    lastName: string;
     displayName: string;
     photoURL: string | null;
-    dateOfBirth: string | null;
-    heightCm: number | null;
-    weightKg: number | null;
+    age: number;
+    gender: UserGender;
+    heightCm: number;
+    weightKg: number;
     occupationKey: string | null;
     regionKey: string;
     averageStepsPerDay: number | null;
@@ -31,6 +44,7 @@ interface CreateUserProfilePayload {
     recommendedCourseIds: string[];
     anamnesisStatusKey: "pending";
     consentAcceptedAt: ReturnType<typeof serverTimestamp>;
+    healthConsentAcceptedAt: ReturnType<typeof serverTimestamp>;
     createdAt: ReturnType<typeof serverTimestamp>;
     updatedAt: ReturnType<typeof serverTimestamp>;
     xp: 0;
@@ -87,28 +101,40 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [fullName, setFullName] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [age, setAge] = useState('');
+    const [gender, setGender] = useState<UserGender | ''>('');
     const [heightCm, setHeightCm] = useState('');
     const [weightKg, setWeightKg] = useState('');
     const [occupation, setOccupation] = useState('');
     const [region, setRegion] = useState('');
-    const [memberPackage, setMemberPackage] = useState<MemberPackage>("starter");
     const [hasAcceptedConsent, setHasAcceptedConsent] = useState(false);
+    const [hasAcceptedHealthConsent, setHasAcceptedHealthConsent] = useState(false);
     const [isTermsOpen, setIsTermsOpen] = useState(false);
     const [isRegister, setIsRegister] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [infoMessage, setInfoMessage] = useState("");
     const termsItems = t.raw("terms.items") as string[];
     const isPasswordMatching = !isRegister || password === confirmPassword;
     const hasRequiredRegistrationFields =
-        fullName.trim().length > 0 &&
+        firstName.trim().length > 0 &&
+        lastName.trim().length > 0 &&
         email.trim().length > 0 &&
         password.length > 0 &&
         confirmPassword.length > 0 &&
+        Number(age) >= 1 &&
+        Number(age) <= 120 &&
+        gender.length > 0 &&
+        Number(heightCm) >= 80 &&
+        Number(heightCm) <= 240 &&
+        Number(weightKg) >= 25 &&
+        Number(weightKg) <= 300 &&
         region.length > 0 &&
         isPasswordMatching &&
-        hasAcceptedConsent;
+        hasAcceptedConsent &&
+        hasAcceptedHealthConsent;
     const canSubmit = isRegister
         ? hasRequiredRegistrationFields && !isSubmitting
         : email.trim().length > 0 && password.length > 0 && !isSubmitting;
@@ -147,24 +173,29 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         }
     };
 
+    const fullName = `${firstName.trim()} ${lastName.trim()}`;
     const createProfilePayload = (uid: string, userEmail: string): CreateUserProfilePayload => ({
         uid,
         email: userEmail,
-        displayName: fullName.trim(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        displayName: fullName,
         photoURL: null,
-        dateOfBirth: dateOfBirth || null,
-        heightCm: heightCm ? Number(heightCm) : null,
-        weightKg: weightKg ? Number(weightKg) : null,
+        age: Number(age),
+        gender: gender as UserGender,
+        heightCm: Number(heightCm),
+        weightKg: Number(weightKg),
         occupationKey: occupation || null,
         regionKey: region,
         averageStepsPerDay: null,
         primaryGoalKey: null,
-        memberPackage,
+        memberPackage: "basic",
         startedCourseIds: [],
         completedCourseIds: [],
         recommendedCourseIds: [],
         anamnesisStatusKey: "pending",
         consentAcceptedAt: serverTimestamp(),
+        healthConsentAcceptedAt: serverTimestamp(),
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         xp: 0,
@@ -185,16 +216,39 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        setFullName("");
-        setDateOfBirth("");
+        setFirstName("");
+        setLastName("");
+        setAge("");
+        setGender("");
         setHeightCm("");
         setWeightKg("");
         setOccupation("");
         setRegion("");
-        setMemberPackage("starter");
         setHasAcceptedConsent(false);
+        setHasAcceptedHealthConsent(false);
         setIsTermsOpen(false);
         setErrorMessage("");
+        setInfoMessage("");
+    };
+
+    const handlePasswordReset = async () => {
+        if (!email.trim() || isSubmitting) {
+            setErrorMessage(`${t("errorPrefix")} ${t("resetEmailRequired")}`);
+            return;
+        }
+
+        setIsSubmitting(true);
+        setErrorMessage("");
+        setInfoMessage("");
+
+        try {
+            await sendPasswordResetEmail(auth, email.trim());
+            setInfoMessage(t("resetEmailSent"));
+        } catch (error) {
+            setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(error)}`);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -213,16 +267,28 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     return;
                 }
 
+                if (!hasAcceptedHealthConsent) {
+                    setErrorMessage(`${t("errorPrefix")} ${t("healthConsentRequired")}`);
+                    return;
+                }
+
                 const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
 
                 try {
                     await updateProfile(credential.user, {
-                        displayName: fullName.trim(),
+                        displayName: fullName,
                     });
                     await setDoc(
                         doc(db, "users", credential.user.uid),
                         createProfilePayload(credential.user.uid, credential.user.email ?? email.trim()),
                     );
+                    await sendEmailVerification(credential.user);
+                    await signOut(auth);
+                    setPassword("");
+                    setConfirmPassword("");
+                    setIsRegister(false);
+                    setInfoMessage(t("verificationSent"));
+                    return;
                 } catch (profileError) {
                     await deleteUser(credential.user).catch(() => undefined);
                     throw profileError;
@@ -258,18 +324,32 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {isRegister ? (
-                        <label className="block">
-                            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("fullName") })}</span>
-                            <input
-                                type="text"
-                                placeholder={t("fullName")}
-                                value={fullName}
-                                onChange={(event) => setFullName(event.target.value)}
-                                className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
-                                autoComplete="name"
-                                required
-                            />
-                        </label>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <label className="block">
+                                <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("firstName") })}</span>
+                                <input
+                                    type="text"
+                                    placeholder={t("firstName")}
+                                    value={firstName}
+                                    onChange={(event) => setFirstName(event.target.value)}
+                                    className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                                    autoComplete="given-name"
+                                    required
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("lastName") })}</span>
+                                <input
+                                    type="text"
+                                    placeholder={t("lastName")}
+                                    value={lastName}
+                                    onChange={(event) => setLastName(event.target.value)}
+                                    className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                                    autoComplete="family-name"
+                                    required
+                                />
+                            </label>
+                        </div>
                     ) : null}
                     <label className="block">
                         <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{isRegister ? t("requiredLabel", { label: t("email") }) : t("email")}</span>
@@ -310,18 +390,34 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     </div>
                     {isRegister ? (
                         <>
-                            <div className="grid gap-4 sm:grid-cols-3">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <label className="block">
-                                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("optionalLabel", { label: t("dateOfBirth") })}</span>
+                                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("age") })}</span>
                                     <input
-                                        type="date"
-                                        value={dateOfBirth}
-                                        onChange={(event) => setDateOfBirth(event.target.value)}
+                                        type="number"
+                                        min="1"
+                                        max="120"
+                                        value={age}
+                                        onChange={(event) => setAge(event.target.value)}
                                         className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                                        required
                                     />
                                 </label>
                                 <label className="block">
-                                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("optionalLabel", { label: t("heightCm") })}</span>
+                                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("gender") })}</span>
+                                    <select
+                                        value={gender}
+                                        onChange={(event) => setGender(event.target.value as UserGender | '')}
+                                        className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                                        required
+                                    >
+                                        <option value="">{t("selectGenderPlaceholder")}</option>
+                                        <option value="female">{t("genderFemale")}</option>
+                                        <option value="male">{t("genderMale")}</option>
+                                    </select>
+                                </label>
+                                <label className="block">
+                                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("heightCm") })}</span>
                                     <input
                                         type="number"
                                         min="80"
@@ -329,10 +425,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                         value={heightCm}
                                         onChange={(event) => setHeightCm(event.target.value)}
                                         className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                                        required
                                     />
                                 </label>
                                 <label className="block">
-                                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("optionalLabel", { label: t("weightKg") })}</span>
+                                    <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("weightKg") })}</span>
                                     <input
                                         type="number"
                                         min="25"
@@ -340,6 +437,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                         value={weightKg}
                                         onChange={(event) => setWeightKg(event.target.value)}
                                         className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                                        required
                                     />
                                 </label>
                             </div>
@@ -379,25 +477,44 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                 <legend className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">
                                     {t("requiredLabel", { label: t("packageLabel") })}
                                 </legend>
-                                <div className="grid gap-2 sm:grid-cols-3">
+                                <div className="grid gap-3 sm:grid-cols-2">
                                     {memberPackages.map((packageId) => {
-                                        const isSelected = memberPackage === packageId;
+                                        const isSelected = packageId === "basic";
+                                        const features = t.raw(`plans.${packageId}.features`) as string[];
 
                                         return (
-                                            <button
+                                            <div
                                                 key={packageId}
-                                                type="button"
-                                                aria-pressed={isSelected}
-                                                onClick={() => setMemberPackage(packageId)}
-                                                className={`flex min-h-16 items-center justify-between gap-2 rounded-2xl border px-4 py-3 text-left text-sm font-black transition ${
+                                                className={`relative flex min-h-56 flex-col items-start rounded-2xl border px-5 py-5 text-left transition ${
                                                     isSelected
-                                                        ? "border-[var(--highlight)] bg-[rgba(var(--accent-rgb),0.18)] text-[var(--text-light)]"
+                                                        ? "border-[var(--highlight)] bg-[linear-gradient(145deg,rgba(var(--accent-rgb),0.22),rgba(var(--navy-rgb),0.46))] text-[var(--text-light)] shadow-[0_14px_40px_rgba(0,0,0,0.18)]"
                                                         : "border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.32)] text-[var(--text-dim)] hover:border-[var(--border-strong)]"
                                                 }`}
                                             >
-                                                {packageT(packageId)}
-                                                {isSelected ? <Check size={17} /> : null}
-                                            </button>
+                                                <span className="flex w-full items-center justify-between gap-3">
+                                                    <span className="text-lg font-black uppercase tracking-[0.08em]">
+                                                        {packageT(packageId)}
+                                                    </span>
+                                                    <span className={`grid h-7 w-7 place-items-center rounded-full border ${
+                                                        isSelected
+                                                            ? "border-[var(--highlight)] bg-[var(--highlight)] text-[var(--text-on-warm)]"
+                                                            : "border-[var(--border-soft)]"
+                                                    }`}>
+                                                        {isSelected ? <Check size={16} /> : null}
+                                                    </span>
+                                                </span>
+                                                <span className="mt-3 text-sm font-medium leading-6 text-[var(--text-dim)]">
+                                                    {t(`plans.${packageId}.description`)}
+                                                </span>
+                                                <span className="mt-4 grid gap-2 text-sm font-bold leading-5">
+                                                    {features.map((feature) => (
+                                                        <span key={feature} className="flex items-start gap-2">
+                                                            <Check size={15} className="mt-0.5 shrink-0 text-[var(--highlight-soft)]" />
+                                                            <span>{feature}</span>
+                                                        </span>
+                                                    ))}
+                                                </span>
+                                            </div>
                                         );
                                     })}
                                 </div>
@@ -422,6 +539,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                                     </button>
                                 </span>
                             </label>
+                            <label className="flex items-start gap-3 rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.32)] p-4 text-sm leading-6 text-[var(--text-dim)]">
+                                <input
+                                    type="checkbox"
+                                    checked={hasAcceptedHealthConsent}
+                                    onChange={(event) => setHasAcceptedHealthConsent(event.target.checked)}
+                                    className="mt-1 h-4 w-4 accent-[var(--highlight)]"
+                                    required
+                                />
+                                <span>{t("healthConsentText")}</span>
+                            </label>
                         </>
                     ) : null}
                     {errorMessage ? (
@@ -429,21 +556,35 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                             {errorMessage}
                         </div>
                     ) : null}
+                    {infoMessage ? (
+                        <div className="rounded-2xl border border-[rgba(var(--page-warm-rgb),0.28)] bg-[rgba(var(--page-warm-rgb),0.1)] px-4 py-3 text-sm text-[var(--text-light)]">
+                            {infoMessage}
+                        </div>
+                    ) : null}
                     <button disabled={!canSubmit} className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[var(--text-light)] disabled:hover:text-[var(--text-on-warm)]">
                         {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}
                         {isRegister ? t("submitRegister") : t("submitSignIn")}
                     </button>
                 </form>
-                {/*<button*/}
-                {/*    type="button"*/}
-                {/*    onClick={() => {*/}
-                {/*        resetForm();*/}
-                {/*        setIsRegister((current) => !current);*/}
-                {/*    }}*/}
-                {/*    className="mt-5 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"*/}
-                {/*>*/}
-                {/*    {isRegister ? t("switchToSignIn") : t("switchToRegister")}*/}
-                {/*</button>*/}
+                {!isRegister ? (
+                    <button
+                        type="button"
+                        onClick={() => void handlePasswordReset()}
+                        className="mt-4 w-full text-sm font-bold text-[var(--highlight-soft)] transition hover:text-[var(--text-light)]"
+                    >
+                        {t("forgotPassword")}
+                    </button>
+                ) : null}
+                <button
+                    type="button"
+                    onClick={() => {
+                        resetForm();
+                        setIsRegister((current) => !current);
+                    }}
+                    className="mt-3 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
+                >
+                    {isRegister ? t("switchToSignIn") : t("switchToRegister")}
+                </button>
                 {isTermsOpen ? (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(var(--navy-rgb),0.72)] p-4 backdrop-blur-sm">
                         <div className="relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-[1.5rem] border border-[var(--border-soft)] bg-[linear-gradient(180deg,_rgba(var(--navy-rgb),0.98),_rgba(2,35,53,0.98))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.45)]">

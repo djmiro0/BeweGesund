@@ -769,8 +769,8 @@
   }
 
   .openButton {
-    grid-column: 2;
     width: fit-content;
+    grid-column: 1
   }
 }
 
