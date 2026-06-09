@@ -3,8 +3,8 @@ import type { NextRequest } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
 const intlMiddleware = createMiddleware({
-  locales: ["en", "de"],
-  defaultLocale: "en",
+  locales: ["de", "en"],
+  defaultLocale: "de",
   localeDetection: false
 });
 
@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   // Redirect root "/" to default locale
   if (pathname === "/") {
     const url = request.nextUrl.clone();
-    url.pathname = "/en"; 
+    url.pathname = "/de";
     return NextResponse.redirect(url);
   }
 
