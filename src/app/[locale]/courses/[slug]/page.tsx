@@ -202,6 +202,8 @@ export default async function CourseDetailPage({
       <section className={styles.videoPanel}>
         <ProtectedMuxPlayer
           playbackId={course.muxPlaybackId}
+          courseSlug={course.slug}
+          locale={locale}
           poster={course.posterImage}
           title={courseTitle}
           messages={{

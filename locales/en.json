@@ -136,14 +136,19 @@
     "signInTitle": "Member Sign In",
     "registerTitle": "Create Account",
     "supportText": "Access member-only live training, live seminars, and personal counseling.",
-    "registerSupportText": "Create your account first. Health and profile details are optional for now and help us personalize training later.",
+    "registerSupportText": "Create your account and add the basic health details used to personalize your profile and calculate BMI.",
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
-    "fullName": "Full name",
+    "firstName": "First name",
+    "lastName": "Last name",
     "email": "Email address",
     "password": "Password",
     "confirmPassword": "Confirm password",
-    "dateOfBirth": "Date of birth",
+    "age": "Age",
+    "gender": "Gender",
+    "genderFemale": "Female",
+    "genderMale": "Male",
+    "selectGenderPlaceholder": "Select gender",
     "heightCm": "Height (cm)",
     "weightKg": "Weight (kg)",
     "occupation": "Occupation",
@@ -169,7 +174,26 @@
       "thuringia": "Thuringia"
     },
     "packageLabel": "Membership package",
-    "packageTemporaryHint": "For the current test, you can choose your package freely. Payment will be added to package changes later.",
+    "packageTemporaryHint": "New accounts start with Basic. Plus activation will be available when billing is introduced.",
+    "plans": {
+      "basic": {
+        "description": "Your foundation for independent training and reliable health knowledge.",
+        "features": [
+          "All recorded workouts and programs",
+          "All blog articles and educational content",
+          "Access to all other core platform features"
+        ]
+      },
+      "plus": {
+        "description": "For members who want live guidance and the latest practical knowledge.",
+        "features": [
+          "Everything included in Basic",
+          "Additional live training with current exercises",
+          "Live seminars with the latest health and training information",
+          "Extra knowledge and future valuable points for the competition system"
+        ]
+      }
+    },
     "selectPlaceholder": "Select an option",
     "occupations": {
       "sedentary": "Mostly seated",
@@ -177,10 +201,11 @@
       "physical": "Physical work"
     },
     "consentText": "I accept the terms of use and understand that the program is educational and training-oriented.",
+    "healthConsentText": "I explicitly consent to the processing of my age, gender, height, and weight to calculate BMI and personalize training. I can withdraw this consent and delete my account at any time.",
     "terms": {
       "link": "View terms of use",
       "title": "Terms of Use",
-      "intro": "These general terms are a temporary version for the current prototype and will be refined before launch.",
+      "intro": "These terms govern use of the Bewegesund member platform.",
       "items": [
         "Bewegesund provides educational movement, rehabilitation, and training content. It does not replace medical diagnosis, treatment, or emergency care.",
         "You are responsible for entering accurate account and health-related information. Optional data helps personalize recommendations but can be added later.",
@@ -193,6 +218,10 @@
     },
     "submitSignIn": "Sign In",
     "submitRegister": "Create Account",
+    "forgotPassword": "Forgot your password?",
+    "resetEmailRequired": "Enter your email address first.",
+    "resetEmailSent": "Password reset instructions were sent if an account exists for this email.",
+    "verificationSent": "Account created. Check your email and verify the address before signing in.",
     "switchToRegister": "New here? Create an account",
     "switchToSignIn": "Already have an account? Sign in",
     "close": "Close",
@@ -203,6 +232,7 @@
     "weakPassword": "Please choose a stronger password.",
     "passwordMismatch": "The passwords do not match.",
     "consentRequired": "Please confirm the consent note to continue.",
+    "healthConsentRequired": "Explicit consent for processing health-related profile data is required.",
     "invalidEmail": "Please enter a valid email address.",
     "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
     "profileSavePermissionDenied": "Your account was created, but the profile could not be saved because Firestore permissions are not updated yet. Please try again after the rules are deployed.",
@@ -451,7 +481,7 @@
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",
-    "title": "Sport, health, and nutrition knowledge for everyday decisions.",
+    "title": "Sport, health, and nutrition.",
     "intro": "Practical articles for training, recovery, nutrition, and healthier routines.",
     "articleCount": "{count, plural, one {# article} other {# articles}}",
     "filterHint": "Filter by topic",
@@ -466,9 +496,8 @@
     }
   },
   "packages": {
-    "starter": "Starter",
-    "rehab-plus": "Rehab Plus",
-    "all-access": "All Access"
+    "basic": "Basic",
+    "plus": "Plus"
   },
   "profile": {
     "eyebrow": "Member profile",
@@ -478,8 +507,9 @@
       "eyebrow": "Membership",
       "title": "Active package",
       "description": "This package controls access to courses and live sessions.",
-      "temporaryHint": "Test phase: the package can be changed without payment.",
+      "temporaryHint": "Package changes are locked until verified billing is introduced.",
       "saved": "Package updated.",
+      "permissionError": "The package could not be saved. Deploy the current Firestore rules first.",
       "error": "The package could not be saved."
     },
     "actions": {
@@ -505,7 +535,8 @@
       "completedHint": "Courses already attended."
     },
     "details": {
-      "dateOfBirth": "Date of birth",
+      "age": "Age",
+      "gender": "Gender",
       "height": "Height",
       "weight": "Weight",
       "recommendedWeight": "Recommended weight range",
@@ -518,6 +549,11 @@
     "values": {
       "height": "{count} cm",
       "weight": "{count} kg",
+      "age": "{count} years",
+      "gender": {
+        "female": "Female",
+        "male": "Male"
+      },
       "weightRange": "{min} - {max} kg",
       "steps": "{count} steps/day",
       "notProvided": "Not provided yet"
@@ -607,6 +643,16 @@
       "flexible": "Flexible format",
       "empty": "No courses have been saved here yet."
     },
+    "leaderboard": {
+      "eyebrow": "This week's arena",
+      "title": "Weekly leaderboard",
+      "description": "Consistency, learning, and completed training will shape this ranking once gamification goes live.",
+      "rank": "Rank",
+      "competitor": "Competitor",
+      "points": "Points",
+      "you": "You · current week",
+      "placeholder": "Preview data. Real points will be connected to workouts, videos, and blog activity in the gamification phase."
+    },
     "delete": {
       "eyebrow": "Account control",
       "title": "Delete profile",
@@ -647,6 +693,8 @@
     "upgradeRequired": "Upgrade required",
     "liveBadge": "Live",
     "join": "Join session",
+    "joining": "Opening...",
+    "joinError": "The secure session link could not be opened. Please try again.",
     "unlockButton": "Package needed",
     "missingLink": "Link pending",
     "needsPackage": "This session requires the {package} package.",
@@ -745,7 +793,8 @@
       "responseLabel": "Response",
       "responseValue": "Business and counseling inquiries"
     },
-    "copyright": "© 2026 Bewegesund. All rights reserved."
+    "copyright": "© 2026 Bewegesund. All rights reserved.",
+    "developedBy": "Developed by djmir0"
   },
   "impressum": {
     "title": "Imprint",

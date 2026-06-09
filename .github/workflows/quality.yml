@@ -1,0 +1,30 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:component
+      - run: npm run build
+        env:
+          CONTENTFUL_SPACE_ID: ci-placeholder
+          CONTENTFUL_DELIVERY_TOKEN: ci-placeholder
+          FIREBASE_PROJECT_ID: sandrin-app
+          NEXT_PUBLIC_SITE_URL: https://example.test
+      - run: npm ci
+        working-directory: functions
+      - run: npm run build
+        working-directory: functions

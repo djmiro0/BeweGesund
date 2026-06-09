@@ -75,7 +75,8 @@ Create a `calendarEvent` content type with these fields:
 - `durationMinutes` integer
 - `format` short text, either `training` or `seminar`
 - `coach` short text
-- `packageRequired` short text, one of `starter`, `rehab-plus`, `all-access`
+- `packageRequired` short text, one of `basic`, `plus`. Recorded course content is
+  available to Basic members; live content requires Plus.
 - `muxPlaybackId` short text, optional when the session has replay video
 
 Create a `trainingVideo` content type with these fields:
@@ -100,16 +101,17 @@ Create a `course` content type with these fields:
 - `courseKey` short text, optional stable internal key
 - `posterImage`, `featuredImage`, or `image` media
 - `tags` short text, optional grouping label such as `rehab`, `training`, or `nutrition`
-- `packageRequired` short text, one of `starter`, `rehab-plus`, `all-access`
+- `packageRequired` short text, one of `basic`, `plus`. Live training and live
+  seminars should use `plus`.
 - `publishedAt` date/time, optional sort fallback
 - `coach`, `categoryKey`, `categoryTitle`, `categoryDescription`, `unlocksPerWeek`, `note`, and `order` are also supported if you add them later
 
 Mux owns uploaded video files and playback. Contentful owns the editorial metadata and stores the Mux `playbackId` once the video is ready. Course playback is protected through `POST /api/mux/playback-token`: the client sends the Firebase ID token, the route verifies it, and the app returns a short-lived signed Mux playback token.
 
-To create a Mux direct upload URL from the app backend, set `MUX_TOKEN_ID`, `MUX_TOKEN_SECRET`, and preferably `MUX_ADMIN_UPLOAD_TOKEN`, then call `POST /api/mux/direct-upload` with `Authorization: Bearer <MUX_ADMIN_UPLOAD_TOKEN>`. New direct uploads are created with signed playback policy.
+To create a Mux direct upload URL from the app backend, set `MUX_TOKEN_ID`, `MUX_TOKEN_SECRET`, and `MUX_ADMIN_UPLOAD_TOKEN`, then call `POST /api/mux/direct-upload` with `Authorization: Bearer <MUX_ADMIN_UPLOAD_TOKEN>`. New direct uploads are created with signed playback policy. The endpoint fails closed when any credential is missing.
 
 For protected playback, set `MUX_SIGNING_KEY_ID`, `MUX_SIGNING_PRIVATE_KEY`, and `FIREBASE_PROJECT_ID`. Existing Mux assets must also have a signed playback id/policy; public-only playback ids will not work with signed playback tokens.
 
-## Next Backend Step
+## Production Readiness
 
-Install the Firebase Functions dependencies in `functions/`, connect the first authenticated user flow to `createUserProfile`, and start reading protected member state from Firestore instead of mock data.
+Run the release checks and complete the external service configuration described in `docs/production-operations.md`. Stripe billing is intentionally deferred; new members receive Basic access and package changes remain locked until billing is connected.

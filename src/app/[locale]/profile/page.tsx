@@ -3,10 +3,8 @@
 import { motion } from "framer-motion";
 import {
   Activity,
-  AlertTriangle,
   Award,
   BookOpen,
-  CalendarDays,
   Check,
   ChevronDown,
   Crown,
@@ -18,19 +16,15 @@ import {
   Scale,
   Sparkles,
   Trophy,
-  Trash2,
   UserRound,
   Wind,
   X,
 } from "lucide-react";
-import { deleteUser, EmailAuthProvider, reauthenticateWithCredential, type AuthError } from "firebase/auth";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { deleteDoc, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db } from "../../../../firebase.config";
-import { activeScheduleDays, memberCourses, type MemberPackage } from "@/data";
+import { useState } from "react";
+import { activeScheduleDays, memberCourses } from "@/data";
 import { memberPackages } from "@/lib/memberPackages";
+import { emptyUserProfile, getProfileFirstName } from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import ProfileSettingsAccess from "./ProfileSettingsAccess";
@@ -43,42 +37,7 @@ const fadeUp = {
 
 const getCourseMeta = (courseId: string) => memberCourses.find((course) => course.id === courseId);
 
-type AnamnesisStatus = "pending" | "completed" | "review-required";
-type ProfileSection = "body" | "training" | "calm" | "badges" | "league";
-
-interface ProfileData {
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-  dateOfBirth: string | null;
-  heightCm: number | null;
-  weightKg: number | null;
-  occupationKey: "sedentary" | "standing" | "physical" | null;
-  averageStepsPerDay: number | null;
-  primaryGoalKey: string | null;
-  memberPackage: MemberPackage | null;
-  startedCourseIds: string[];
-  completedCourseIds: string[];
-  recommendedCourseIds: string[];
-  anamnesisStatusKey: AnamnesisStatus;
-}
-
-const emptyProfile: ProfileData = {
-  email: null,
-  displayName: null,
-  photoURL: null,
-  dateOfBirth: null,
-  heightCm: null,
-  weightKg: null,
-  occupationKey: null,
-  averageStepsPerDay: null,
-  primaryGoalKey: null,
-  memberPackage: null,
-  startedCourseIds: [],
-  completedCourseIds: [],
-  recommendedCourseIds: [],
-  anamnesisStatusKey: "pending",
-};
+type ProfileSection = "body" | "training" | "calm" | "badges";
 
 const isKnownCourse = (courseId: string) => memberCourses.some((course) => course.id === courseId);
 const translatedGoalKeys = ["backPain"];
@@ -87,33 +46,14 @@ const recommendedBmiMin = 18.5;
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
+  const authT = useTranslations("auth");
   const courseT = useTranslations("courseCatalog");
   const packageT = useTranslations("packages");
   const locale = useLocale();
-  const router = useRouter();
-  const { user, openAuth } = useAuth();
-  const [profile, setProfile] = useState<ProfileData>(emptyProfile);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deletePassword, setDeletePassword] = useState("");
-  const [deleteError, setDeleteError] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { user, profile: firebaseProfile, openAuth } = useAuth();
+  const profile = firebaseProfile ?? emptyUserProfile;
   const [isTrainingOpen, setIsTrainingOpen] = useState(false);
   const [openSection, setOpenSection] = useState<ProfileSection | null>("body");
-  const [isSavingPackage, setIsSavingPackage] = useState(false);
-  const [packageMessage, setPackageMessage] = useState("");
-
-  useEffect(() => {
-    if (!user) return;
-
-    void getDoc(doc(db, "users", user.uid)).then((snapshot) => {
-      if (!snapshot.exists()) return;
-
-      setProfile((currentProfile) => ({
-        ...currentProfile,
-        ...snapshot.data(),
-      }));
-    });
-  }, [user]);
 
   if (!user) {
     return (
@@ -125,10 +65,10 @@ export default function ProfilePage() {
     );
   }
 
-  const displayName = user.displayName || profile.displayName || t("values.notProvided");
+  const firstName = getProfileFirstName(profile, user.displayName) || t("values.notProvided");
   const email = user.email || profile.email || t("values.notProvided");
-  const avatar = user.photoURL || profile.photoURL;
-  const profileInitial = displayName.charAt(0).toUpperCase();
+  const avatar = profile.photoURL || user.photoURL;
+  const profileInitial = firstName.charAt(0).toUpperCase();
 
   const handleSectionToggle = (section: ProfileSection, isOpen: boolean) => {
     setOpenSection((currentSection) => {
@@ -145,11 +85,6 @@ export default function ProfilePage() {
   const flexibleWeightMax = recommendedWeightMax ? recommendedWeightMax * 1.1 : null;
   const numberFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
   const integerFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
-  const dateFormatter = new Intl.DateTimeFormat(locale, {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
   const goalValue = profile.primaryGoalKey
     ? translatedGoalKeys.includes(profile.primaryGoalKey)
       ? t(`goals.${profile.primaryGoalKey}`)
@@ -192,8 +127,13 @@ export default function ProfilePage() {
       icon: Sparkles,
     },
     {
-      label: t("details.dateOfBirth"),
-      value: profile.dateOfBirth ? dateFormatter.format(new Date(profile.dateOfBirth)) : t("values.notProvided"),
+      label: t("details.age"),
+      value: profile.age ? t("values.age", { count: profile.age }) : t("values.notProvided"),
+      icon: UserRound,
+    },
+    {
+      label: t("details.gender"),
+      value: profile.gender ? t(`values.gender.${profile.gender}`) : t("values.notProvided"),
       icon: UserRound,
     },
     {
@@ -234,6 +174,19 @@ export default function ProfilePage() {
   const currentBadgePoints = 420;
   const nextBadgePoints = 600;
   const badgeProgress = Math.round((currentBadgePoints / nextBadgePoints) * 100);
+  const leaderboardEntries = [
+    { name: "Mia Weber", region: "Berlin", points: 980 },
+    { name: "Jonas Fischer", region: "Bayern", points: 860 },
+    { name: "Lea Schneider", region: "Hessen", points: 740 },
+    {
+      name: firstName,
+      region: profile.regionKey ? authT(`regions.${profile.regionKey}`) : t("values.notProvided"),
+      points: profile.weeklyScore,
+      isCurrentUser: true,
+    },
+    { name: "Noah Wagner", region: "Hamburg", points: 420 },
+    { name: "Emma Becker", region: "Sachsen", points: 310 },
+  ].sort((a, b) => b.points - a.points);
 
   const renderCourse = (courseId: string, badge: string) => {
     const course = getCourseMeta(courseId);
@@ -252,66 +205,6 @@ export default function ProfilePage() {
     );
   };
 
-  const getDeleteErrorMessage = (error: unknown) => {
-    const code = (error as AuthError | undefined)?.code;
-
-    switch (code) {
-      case "auth/wrong-password":
-      case "auth/invalid-credential":
-        return t("delete.errors.invalidPassword");
-      case "auth/requires-recent-login":
-        return t("delete.errors.recentLogin");
-      case "permission-denied":
-      case "firestore/permission-denied":
-        return t("delete.errors.permissionDenied");
-      default:
-        return t("delete.errors.generic");
-    }
-  };
-
-  const handleDeleteProfile = async () => {
-    if (!user?.email || !deletePassword || isDeleting) return;
-
-    setIsDeleting(true);
-    setDeleteError("");
-
-    try {
-      const credential = EmailAuthProvider.credential(user.email, deletePassword);
-      await reauthenticateWithCredential(user, credential);
-      await deleteDoc(doc(db, "users", user.uid));
-      await deleteUser(user);
-      setIsDeleteOpen(false);
-      setDeletePassword("");
-      router.replace(`/${locale}`);
-    } catch (error) {
-      setDeleteError(getDeleteErrorMessage(error));
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  const handlePackageChange = async (nextPackage: MemberPackage) => {
-    if (!user || nextPackage === profile.memberPackage || isSavingPackage) return;
-
-    const previousPackage = profile.memberPackage;
-    setIsSavingPackage(true);
-    setPackageMessage("");
-    setProfile((current) => ({ ...current, memberPackage: nextPackage }));
-
-    try {
-      await updateDoc(doc(db, "users", user.uid), {
-        memberPackage: nextPackage,
-        updatedAt: serverTimestamp(),
-      });
-      setPackageMessage(t("packageSelector.saved"));
-    } catch {
-      setProfile((current) => ({ ...current, memberPackage: previousPackage }));
-      setPackageMessage(t("packageSelector.error"));
-    } finally {
-      setIsSavingPackage(false);
-    }
-  };
-
   return (
     <motion.section
       className={styles.profileSection}
@@ -327,14 +220,14 @@ export default function ProfilePage() {
           <div
             className={styles.avatar}
             role="img"
-            aria-label={t("avatarAlt", { name: displayName })}
+            aria-label={t("avatarAlt", { name: firstName })}
             style={avatar ? { backgroundImage: `url("${avatar}")` } : undefined}
           >
             {avatar ? null : profileInitial}
           </div>
           <div className={styles.identityText}>
             <p className={styles.eyebrow}>{t("eyebrow")}</p>
-            <h1 className={styles.title}>{displayName}</h1>
+            <h1 className={styles.title}>{firstName}</h1>
             <p className={styles.email}>{email}</p>
           </div>
           <ProfileSettingsAccess
@@ -363,8 +256,7 @@ export default function ProfilePage() {
                   type="button"
                   className={`${styles.packageOption} ${isSelected ? styles.packageOptionActive : ""}`}
                   aria-pressed={isSelected}
-                  disabled={isSavingPackage}
-                  onClick={() => void handlePackageChange(packageId)}
+                  disabled
                 >
                   <span>{packageT(packageId)}</span>
                   {isSelected ? <Check size={17} /> : null}
@@ -372,7 +264,7 @@ export default function ProfilePage() {
               );
             })}
           </div>
-          <p className={styles.packageHint}>{packageMessage || t("packageSelector.temporaryHint")}</p>
+          <p className={styles.packageHint}>{t("packageSelector.temporaryHint")}</p>
         </motion.section>
 
         <motion.details
@@ -471,13 +363,12 @@ export default function ProfilePage() {
           </motion.details>
         </div>
 
-        <div className={styles.twoColumnRow}>
-          <motion.details
-            className={`${styles.mobileCard} ${styles.badgeCard}`}
-            variants={fadeUp}
-            open={openSection === "badges"}
-            onToggle={(event) => handleSectionToggle("badges", event.currentTarget.open)}
-          >
+        <motion.details
+          className={`${styles.mobileCard} ${styles.badgeCard}`}
+          variants={fadeUp}
+          open={openSection === "badges"}
+          onToggle={(event) => handleSectionToggle("badges", event.currentTarget.open)}
+        >
             <summary className={styles.cardSummary}>
               <span>{t("cards.badges.title")}</span>
               <Medal size={30} />
@@ -493,42 +384,43 @@ export default function ProfilePage() {
             <div className={styles.progressTrack}>
               <span style={{ width: `${badgeProgress}%` }} />
             </div>
-          </motion.details>
+        </motion.details>
 
-          <motion.details
-            className={`${styles.mobileCard} ${styles.leagueCard}`}
-            variants={fadeUp}
-            open={openSection === "league"}
-            onToggle={(event) => handleSectionToggle("league", event.currentTarget.open)}
-          >
-            <summary className={styles.cardSummary}>
-              <span>{t("cards.league.title")}</span>
-              <Trophy size={30} />
-              <ChevronDown className={styles.chevron} size={19} />
-            </summary>
-            <div className={styles.leagueBody}>
-              <CalendarDays size={38} />
-              <div>
-                <h3>{t("cards.league.subtitle")}</h3>
-                <p>{t("cards.league.description")}</p>
-              </div>
-            </div>
-          </motion.details>
-        </div>
-
-        <motion.section className={`${styles.mobileCard} ${styles.dangerPanel}`} variants={fadeUp}>
-          <div className={styles.staticHeader}>
+        <motion.section className={styles.leaderboard} variants={fadeUp}>
+          <div className={styles.leaderboardGlow} aria-hidden="true" />
+          <div className={styles.leaderboardHeader}>
             <div>
-              <p className={styles.panelEyebrow}>{t("delete.eyebrow")}</p>
-              <h2>{t("delete.title")}</h2>
+              <p className={styles.leaderboardEyebrow}>{t("leaderboard.eyebrow")}</p>
+              <h2>{t("leaderboard.title")}</h2>
+              <p>{t("leaderboard.description")}</p>
             </div>
-            <AlertTriangle className={styles.dangerIcon} size={22} />
+            <span className={styles.trophyMark}>
+              <Trophy size={30} />
+            </span>
           </div>
-          <p className={styles.dangerText}>{t("delete.description")}</p>
-          <button type="button" className={styles.deleteButton} onClick={() => setIsDeleteOpen(true)}>
-            <Trash2 size={17} />
-            {t("delete.open")}
-          </button>
+          <div className={styles.leaderboardTable}>
+            <div className={styles.leaderboardLabels} aria-hidden="true">
+              <span>{t("leaderboard.rank")}</span>
+              <span>{t("leaderboard.competitor")}</span>
+              <span>{t("leaderboard.points")}</span>
+            </div>
+            {leaderboardEntries.map((entry, index) => (
+              <div
+                key={`${entry.name}-${entry.region}`}
+                className={`${styles.leaderboardRow} ${entry.isCurrentUser ? styles.currentUserRow : ""}`}
+              >
+                <span className={`${styles.rank} ${index < 3 ? styles[`rank${index + 1}`] : ""}`}>
+                  {index + 1}
+                </span>
+                <span className={styles.competitor}>
+                  <strong>{entry.name}</strong>
+                  <small>{entry.isCurrentUser ? t("leaderboard.you") : entry.region}</small>
+                </span>
+                <strong className={styles.points}>{integerFormatter.format(entry.points)}</strong>
+              </div>
+            ))}
+          </div>
+          <p className={styles.leaderboardNote}>{t("leaderboard.placeholder")}</p>
         </motion.section>
       </div>
 
@@ -581,62 +473,6 @@ export default function ProfilePage() {
         </div>
       ) : null}
 
-      {isDeleteOpen ? (
-        <div className={styles.modalOverlay}>
-          <div className={styles.deleteModal} role="dialog" aria-modal="true" aria-labelledby="delete-profile-title">
-            <button
-              type="button"
-              className={styles.modalClose}
-              aria-label={t("delete.cancel")}
-              onClick={() => {
-                setIsDeleteOpen(false);
-                setDeletePassword("");
-                setDeleteError("");
-              }}
-            >
-              <X size={18} />
-            </button>
-            <div className={styles.modalIcon}>
-              <AlertTriangle size={24} />
-            </div>
-            <p className={styles.panelEyebrow}>{t("delete.confirmEyebrow")}</p>
-            <h2 id="delete-profile-title" className={styles.modalTitle}>{t("delete.confirmTitle")}</h2>
-            <p className={styles.modalText}>{t("delete.confirmText")}</p>
-            <label className={styles.passwordLabel}>
-              <span>{t("delete.passwordLabel")}</span>
-              <input
-                type="password"
-                value={deletePassword}
-                onChange={(event) => setDeletePassword(event.target.value)}
-                placeholder={t("delete.passwordPlaceholder")}
-                autoComplete="current-password"
-              />
-            </label>
-            {deleteError ? <p className={styles.deleteError}>{deleteError}</p> : null}
-            <div className={styles.modalActions}>
-              <button
-                type="button"
-                className={styles.cancelButton}
-                onClick={() => {
-                  setIsDeleteOpen(false);
-                  setDeletePassword("");
-                  setDeleteError("");
-                }}
-              >
-                {t("delete.cancel")}
-              </button>
-              <button
-                type="button"
-                className={styles.confirmDeleteButton}
-                disabled={!deletePassword || isDeleting}
-                onClick={handleDeleteProfile}
-              >
-                {isDeleting ? t("delete.deleting") : t("delete.confirm")}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </motion.section>
   );
 }

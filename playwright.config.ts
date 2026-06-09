@@ -1,5 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const useExistingServer = process.env.PLAYWRIGHT_USE_EXISTING_SERVER === "true";
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? (useExistingServer
+  ? "http://localhost:3000"
+  : "http://127.0.0.1:3100");
+
 export default defineConfig({
   testDir: "./e2e",
   timeout: 30_000,
@@ -7,10 +12,10 @@ export default defineConfig({
     timeout: 5_000,
   },
   use: {
-    baseURL: "http://127.0.0.1:3100",
+    baseURL,
     trace: "on-first-retry",
   },
-  webServer: {
+  webServer: useExistingServer ? undefined : {
     command: "npm run dev -- --hostname 127.0.0.1 --port 3100",
     url: "http://127.0.0.1:3100/de",
     reuseExistingServer: !process.env.CI,

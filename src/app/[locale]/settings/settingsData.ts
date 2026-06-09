@@ -1,6 +1,9 @@
+import type { User } from "firebase/auth";
+import type { UserProfileData } from "@/lib/userProfile";
+
 export type FitnessLevel = "beginner" | "intermediate" | "advanced";
-export type MainGoal = "lose-weight" | "build-muscle" | "improve-fitness" | "stay-healthy";
-export type Gender = "female" | "male" | "non-binary" | "prefer-not-to-say";
+export type MainGoal = "lose-weight" | "build-muscle" | "improve-fitness" | "stay-healthy" | "backPain";
+export type Gender = "female" | "male";
 export type TrainingLocation = "gym" | "home" | "outdoor";
 export type Equipment = "no-equipment" | "dumbbells" | "full-gym";
 export type DietPreference = "normal" | "vegetarian" | "vegan" | "keto";
@@ -14,7 +17,7 @@ export interface ProfileSettingsData {
   username: string;
   email: string;
   age: number;
-  gender: Gender;
+  gender: Gender | "";
   height: number;
   weight: number;
   fitnessLevel: FitnessLevel;
@@ -52,8 +55,8 @@ export interface GamificationData {
   xpPoints: number;
   currentLevel: number;
   currentStreak: number;
-  weeklyRank: number;
-  monthlyRank: number;
+  weeklyRank: number | null;
+  monthlyRank: number | null;
   badges: string[];
   achievements: string[];
 }
@@ -96,56 +99,56 @@ export const workoutDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 export const defaultUserSettings: UserSettings = {
   profile: {
     profileImageUrl: "",
-    fullName: "Sandrin Member",
-    username: "sandrin_member",
-    email: "member@sbewegesund.com",
-    age: 34,
-    gender: "prefer-not-to-say",
-    height: 176,
-    weight: 78,
-    fitnessLevel: "intermediate",
+    fullName: "",
+    username: "",
+    email: "",
+    age: 0,
+    gender: "",
+    height: 0,
+    weight: 0,
+    fitnessLevel: "beginner",
     mainGoal: "stay-healthy",
   },
   bodyProgress: {
-    currentWeight: 78,
-    targetWeight: 74,
-    bodyFatPercentage: 22,
-    stepGoal: 9000,
-    waterIntakeGoal: 2.5,
-    sleepGoal: 8,
+    currentWeight: 0,
+    targetWeight: 0,
+    bodyFatPercentage: 0,
+    stepGoal: 0,
+    waterIntakeGoal: 0,
+    sleepGoal: 0,
   },
   workoutPreferences: {
-    preferredWorkoutDays: ["Monday", "Wednesday", "Friday"],
-    workoutDuration: 45,
+    preferredWorkoutDays: [],
+    workoutDuration: 30,
     trainingLocation: "home",
-    equipment: "dumbbells",
-    difficultyLevel: "intermediate",
+    equipment: "no-equipment",
+    difficultyLevel: "beginner",
     restTimerDuration: 60,
   },
   nutrition: {
-    dailyCalorieGoal: 2200,
-    proteinGoal: 140,
-    carbsGoal: 240,
-    fatGoal: 70,
+    dailyCalorieGoal: 0,
+    proteinGoal: 0,
+    carbsGoal: 0,
+    fatGoal: 0,
     dietPreference: "normal",
-    allergies: "None",
+    allergies: "",
   },
   gamification: {
-    xpPoints: 4280,
-    currentLevel: 12,
-    currentStreak: 9,
-    weeklyRank: 18,
-    monthlyRank: 42,
-    badges: ["Consistency", "Hydration", "Live Session"],
-    achievements: ["First 10 workouts", "7-day streak", "Profile completed"],
+    xpPoints: 0,
+    currentLevel: 1,
+    currentStreak: 0,
+    weeklyRank: null,
+    monthlyRank: null,
+    badges: [],
+    achievements: [],
   },
   notifications: {
-    workoutReminders: true,
+    workoutReminders: false,
     mealReminders: false,
-    waterReminders: true,
-    challengeUpdates: true,
-    leaderboardUpdates: true,
-    emailNotifications: true,
+    waterReminders: false,
+    challengeUpdates: false,
+    leaderboardUpdates: false,
+    emailNotifications: false,
     pushNotifications: false,
   },
   privacy: {
@@ -159,3 +162,110 @@ export const defaultUserSettings: UserSettings = {
     videoAutoplay: true,
   },
 };
+
+type StoredSettings = Partial<Omit<UserSettings, "gamification" | "profile">> & {
+  profile?: Partial<Pick<ProfileSettingsData, "username" | "fitnessLevel">>;
+};
+
+function isMainGoal(value: unknown): value is MainGoal {
+  return value === "lose-weight"
+    || value === "build-muscle"
+    || value === "improve-fitness"
+    || value === "stay-healthy"
+    || value === "backPain";
+}
+
+export function settingsFromFirebase(
+  profile: UserProfileData,
+  stored: Record<string, unknown> | undefined,
+  user: User,
+  locale: string,
+): UserSettings {
+  const preferences = (stored ?? {}) as StoredSettings;
+  const settings = structuredClone(defaultUserSettings);
+
+  settings.profile = {
+    ...settings.profile,
+    ...preferences.profile,
+    profileImageUrl: user.photoURL ?? profile.photoURL ?? "",
+    fullName: profile.displayName ?? user.displayName ?? "",
+    username: preferences.profile?.username ?? user.email?.split("@")[0] ?? "",
+    email: user.email ?? profile.email ?? "",
+    age: profile.age ?? 0,
+    gender: profile.gender ?? "",
+    height: profile.heightCm ?? 0,
+    weight: profile.weightKg ?? 0,
+    mainGoal: isMainGoal(profile.primaryGoalKey) ? profile.primaryGoalKey : "stay-healthy",
+  };
+  settings.bodyProgress = {
+    ...settings.bodyProgress,
+    ...preferences.bodyProgress,
+    currentWeight: profile.weightKg ?? 0,
+    stepGoal: preferences.bodyProgress?.stepGoal ?? profile.averageStepsPerDay ?? 0,
+  };
+  settings.workoutPreferences = {
+    ...settings.workoutPreferences,
+    ...preferences.workoutPreferences,
+  };
+  settings.nutrition = {
+    ...settings.nutrition,
+    ...preferences.nutrition,
+  };
+  settings.notifications = {
+    ...settings.notifications,
+    ...preferences.notifications,
+  };
+  settings.privacy = {
+    ...settings.privacy,
+    ...preferences.privacy,
+  };
+  settings.app = {
+    ...settings.app,
+    ...preferences.app,
+    language: preferences.app?.language ?? (locale === "de" ? "german" : "english"),
+  };
+  settings.gamification = {
+    xpPoints: profile.xp,
+    currentLevel: Math.max(1, Math.floor(profile.xp / 500) + 1),
+    currentStreak: profile.currentStreak,
+    weeklyRank: profile.weeklyLeaderboardRank,
+    monthlyRank: profile.monthlyLeaderboardRank,
+    badges: profile.claimedRewardIds,
+    achievements: profile.completedCourseIds,
+  };
+
+  return settings;
+}
+
+export function profileUpdateFromSettings(settings: UserSettings) {
+  const [firstName = "", ...lastNameParts] = settings.profile.fullName.trim().split(/\s+/);
+
+  return {
+    firstName,
+    lastName: lastNameParts.join(" "),
+    displayName: settings.profile.fullName.trim(),
+    ...(settings.profile.age > 0 ? { age: settings.profile.age } : {}),
+    ...(settings.profile.gender ? { gender: settings.profile.gender } : {}),
+    heightCm: settings.profile.height > 0 ? settings.profile.height : null,
+    weightKg: settings.profile.weight > 0 ? settings.profile.weight : null,
+    primaryGoalKey: settings.profile.mainGoal,
+  };
+}
+
+export function storedSettingsFromForm(settings: UserSettings): StoredSettings {
+  return {
+    profile: {
+      username: settings.profile.username.trim(),
+      fitnessLevel: settings.profile.fitnessLevel,
+    },
+    bodyProgress: {
+      ...settings.bodyProgress,
+      currentWeight: settings.profile.weight,
+    },
+    workoutPreferences: settings.workoutPreferences,
+    nutrition: settings.nutrition,
+    notifications: settings.notifications,
+    privacy: settings.privacy,
+    app: settings.app,
+  };
+}

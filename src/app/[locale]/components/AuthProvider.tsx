@@ -5,12 +5,13 @@ import { onAuthStateChanged, type User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "../../../../firebase.config";
 import type { MemberPackage } from "@/data";
-import { isMemberPackage } from "@/lib/memberPackages";
+import { emptyUserProfile, normalizeUserProfile, type UserProfileData } from "@/lib/userProfile";
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
   memberPackage: MemberPackage;
+  profile: UserProfileData | null;
   isAuthOpen: boolean;
   openAuth: () => void;
   closeAuth: () => void;
@@ -21,7 +22,8 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [memberPackage, setMemberPackage] = useState<MemberPackage>("starter");
+  const [memberPackage, setMemberPackage] = useState<MemberPackage>("basic");
+  const [profile, setProfile] = useState<UserProfileData | null>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   useEffect(() => {
@@ -31,7 +33,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(currentUser);
 
       if (!currentUser) {
-        setMemberPackage("starter");
+        setMemberPackage("basic");
+        setProfile(null);
         setLoading(false);
         return;
       }
@@ -39,12 +42,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       unsubscribeProfile = onSnapshot(
         doc(db, "users", currentUser.uid),
         (snapshot) => {
-          const packageValue = snapshot.data()?.memberPackage;
-          setMemberPackage(isMemberPackage(packageValue) ? packageValue : "starter");
+          const nextProfile = snapshot.exists()
+            ? normalizeUserProfile(snapshot.data())
+            : emptyUserProfile;
+          setProfile(nextProfile);
+          setMemberPackage(nextProfile.memberPackage);
           setLoading(false);
         },
         () => {
-          setMemberPackage("starter");
+          setMemberPackage("basic");
+          setProfile(null);
           setLoading(false);
         },
       );
@@ -61,11 +68,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       loading,
       memberPackage,
+      profile,
       isAuthOpen,
       openAuth: () => setIsAuthOpen(true),
       closeAuth: () => setIsAuthOpen(false),
     }),
-    [user, loading, memberPackage, isAuthOpen]
+    [user, loading, memberPackage, profile, isAuthOpen]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

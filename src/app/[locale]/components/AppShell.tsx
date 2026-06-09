@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
 import MobileTabBar from "./MobileTabBar";
 import { ThemeProvider } from "./ThemeProvider";
+import { getProfileFirstName } from "@/lib/userProfile";
 import styles from "./AppShell.module.css";
 
 function ShellFrame({
@@ -17,7 +18,7 @@ function ShellFrame({
   children: React.ReactNode;
   locale: string;
 }) {
-  const { user, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
+  const { user, profile, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
   const pathname = usePathname();
   const isPublicBlogRoute = pathname.startsWith(`/${locale}/blogs`);
 
@@ -46,7 +47,13 @@ function ShellFrame({
 
   return (
     <>
-      <Header locale={locale} user={user} openAuth={openAuth} />
+      <Header
+        locale={locale}
+        user={user}
+        profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
+        profilePhoto={profile?.photoURL ?? user?.photoURL}
+        openAuth={openAuth}
+      />
       <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
       <main className={styles.main}>{children}</main>
       <MobileTabBar locale={locale} user={user} openAuth={openAuth} />

@@ -125,17 +125,18 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     ];
 
     const activeGroup = tabs.find((tab) => tab.id === activeTab) ?? tabs[0];
-    const activeCourses = useMemo(
-        () => workouts.filter((course) => {
-            if (activeTab === "for-you") {
-                return [course.id, course.slug, course.subcategoryKey]
-                    .some((key) => recommendedCourseIdSet.has(key));
-            }
+    const activeCourses = useMemo(() => {
+        if (activeTab === "for-you") {
+            const recommended = workouts.filter((course) =>
+                [course.id, course.slug, course.subcategoryKey]
+                    .some((key) => recommendedCourseIdSet.has(key)),
+            );
 
-            return canonicalCategory(course.categoryKey) === activeTab;
-        }),
-        [activeTab, recommendedCourseIdSet, workouts],
-    );
+            return recommended.length ? recommended : workouts;
+        }
+
+        return workouts.filter((course) => canonicalCategory(course.categoryKey) === activeTab);
+    }, [activeTab, recommendedCourseIdSet, workouts]);
     const recentWorkouts = workouts.slice(0, 8);
 
     const scrollTabs = (direction: "left" | "right") => {

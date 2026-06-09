@@ -11,8 +11,8 @@ export default function GamificationSummary({ data }: GamificationSummaryProps) 
     { label: "XP points", value: data.xpPoints.toLocaleString() },
     { label: "Current level", value: data.currentLevel },
     { label: "Current streak", value: `${data.currentStreak} days` },
-    { label: "Weekly rank", value: `#${data.weeklyRank}` },
-    { label: "Monthly rank", value: `#${data.monthlyRank}` },
+    { label: "Weekly rank", value: data.weeklyRank ? `#${data.weeklyRank}` : "-" },
+    { label: "Monthly rank", value: data.monthlyRank ? `#${data.monthlyRank}` : "-" },
   ];
 
   return (
@@ -33,11 +33,11 @@ export default function GamificationSummary({ data }: GamificationSummaryProps) 
       <div className={styles.placeholderGrid}>
         <div className={styles.placeholderBox} data-testid="settings-badges-placeholder">
           <span>Badges placeholder</span>
-          <p>{data.badges.join(" / ")}</p>
+          <p>{data.badges.length ? data.badges.join(" / ") : "No badges yet"}</p>
         </div>
         <div className={styles.placeholderBox} data-testid="settings-achievements-placeholder">
           <span>Achievements placeholder</span>
-          <p>{data.achievements.join(" / ")}</p>
+          <p>{data.achievements.length ? data.achievements.join(" / ") : "No achievements yet"}</p>
         </div>
       </div>
     </SettingsSection>
