@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { CalendarDays, Dumbbell, HeartPulse, Home, Info, MessageCircle, Plus, UserRound, X } from "lucide-react";
+import { BookOpen, CalendarDays, Dumbbell, HeartPulse, Home, MessageCircle, Plus, X } from "lucide-react";
 import styles from "./MobileTabBar.module.css";
 
 interface MobileTabBarProps {
@@ -61,21 +61,13 @@ export default function MobileTabBar({ locale, user, openAuth }: MobileTabBarPro
       icon: CalendarDays,
       active: pathname === `/${locale}/calendar`,
     },
-    user
-      ? {
-          key: "profile",
-          href: `/${locale}/profile`,
-          label: t("tabs.profile"),
-          icon: UserRound,
-          active: pathname === `/${locale}/profile`,
-        }
-      : {
-          key: "about",
-          href: `/${locale}/about`,
-          label: t("tabs.about"),
-          icon: Info,
-          active: pathname === `/${locale}/about`,
-        },
+    {
+      key: "blogs",
+      href: `/${locale}/blogs`,
+      label: t("tabs.blogs"),
+      icon: BookOpen,
+      active: pathname.startsWith(`/${locale}/blogs`),
+    },
   ];
 
   return (

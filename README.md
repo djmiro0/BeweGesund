@@ -50,14 +50,20 @@ All gamification and subscription logic belongs in Cloud Functions.
 
 ## Local Frontend
 
+Copy the environment template and fill in real local credentials before starting the dev server:
+
+```bash
+cp .env.example .env.local
+```
+
 ```bash
 npm install
 npm run dev
 ```
 
-## Contentful Calendar and Video Content
+## Contentful Calendar, Course, and Video Content
 
-The app now reads the live calendar from Contentful when the environment variables in `.env.example` are configured. If Contentful is not configured yet, the existing local mock schedule is used as a fallback.
+The app reads Contentful from runtime environment variables such as `.env.local` in development or deployment provider variables in production. `.env.example` is only a safe template and is not loaded by Next.js automatically. If Contentful is not configured yet, the calendar, courses, and blogs do not render fake fallback entries.
 
 Create a `calendarEvent` content type with these fields:
 
@@ -82,9 +88,27 @@ Create a `trainingVideo` content type with these fields:
 - `image` or `featuredImage` media
 - `muxPlaybackId` short text
 
-Mux owns uploaded video files and playback. Contentful owns the editorial metadata and stores the Mux `playbackId` once the video is ready.
+Create a `course` content type with these fields:
 
-To create a Mux direct upload URL from the app backend, set `MUX_TOKEN_ID`, `MUX_TOKEN_SECRET`, and preferably `MUX_ADMIN_UPLOAD_TOKEN`, then call `POST /api/mux/direct-upload` with `Authorization: Bearer <MUX_ADMIN_UPLOAD_TOKEN>`.
+- `title` short text, required
+- `slug` short text, required; use the same value as the app course id, for example `reha-knee`
+- `description` long text
+- `exerciseInstructions` long text
+- `muxPlaybackId` short text, the signed Mux playback id
+- `duration` integer, shown as minutes on the course card
+- `level` short text
+- `courseKey` short text, optional stable internal key
+- `posterImage`, `featuredImage`, or `image` media
+- `tags` short text, optional grouping label such as `rehab`, `training`, or `nutrition`
+- `packageRequired` short text, one of `starter`, `rehab-plus`, `all-access`
+- `publishedAt` date/time, optional sort fallback
+- `coach`, `categoryKey`, `categoryTitle`, `categoryDescription`, `unlocksPerWeek`, `note`, and `order` are also supported if you add them later
+
+Mux owns uploaded video files and playback. Contentful owns the editorial metadata and stores the Mux `playbackId` once the video is ready. Course playback is protected through `POST /api/mux/playback-token`: the client sends the Firebase ID token, the route verifies it, and the app returns a short-lived signed Mux playback token.
+
+To create a Mux direct upload URL from the app backend, set `MUX_TOKEN_ID`, `MUX_TOKEN_SECRET`, and preferably `MUX_ADMIN_UPLOAD_TOKEN`, then call `POST /api/mux/direct-upload` with `Authorization: Bearer <MUX_ADMIN_UPLOAD_TOKEN>`. New direct uploads are created with signed playback policy.
+
+For protected playback, set `MUX_SIGNING_KEY_ID`, `MUX_SIGNING_PRIVATE_KEY`, and `FIREBASE_PROJECT_ID`. Existing Mux assets must also have a signed playback id/policy; public-only playback ids will not work with signed playback tokens.
 
 ## Next Backend Step
 

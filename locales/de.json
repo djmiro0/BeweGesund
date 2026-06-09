@@ -6,6 +6,7 @@
       "courses": "Kurse",
       "settings": "Einstellungen",
       "calendar": "Live-Kalender",
+      "blogs": "Blogs",
       "consultation": "Beratung",
       "about": "Über Uns",
       "contact": "Kontakt"
@@ -28,6 +29,7 @@
       "home": "Start",
       "courses": "Kurse",
       "calendar": "Kalender",
+      "blogs": "Blogs",
       "profile": "Profil",
       "about": "Info"
     },
@@ -110,13 +112,22 @@
         "sessions": "{count, plural, one {# Session} other {# Sessions}}",
         "newWorkouts": "Neue Workouts",
         "recommended": "Empfohlen",
+        "live": "Live",
         "openSession": "Öffnen",
         "lockedSoon": "Videothek nach Tags kommt als Nächstes.",
+        "recentDescription": "Die neuesten veröffentlichten Trainingsvideos.",
+        "emptyCategory": "In dieser Kategorie sind noch keine Videos veröffentlicht.",
         "status": {
           "package": "Paket",
           "upcoming": "Geplant",
           "completed": "Fertig"
         }
+      },
+      "news": {
+        "title": "Neueste Artikel",
+        "viewAll": "Alle ansehen",
+        "read": "Artikel lesen",
+        "readTime": "{count} Min. Lesezeit"
       }
     },
     "loading": "WIRD GELADEN..."
@@ -136,6 +147,29 @@
     "heightCm": "Körpergröße (cm)",
     "weightKg": "Gewicht (kg)",
     "occupation": "Beruf",
+    "region": "Bundesland",
+    "selectRegionPlaceholder": "Bundesland auswählen",
+    "regionCompetitionHint": "Dein Bundesland ist erforderlich, damit du bei regionalen Wettbewerben gemeinsam mit anderen Mitgliedern teilnehmen kannst.",
+    "regions": {
+      "baden-wuerttemberg": "Baden-Württemberg",
+      "bavaria": "Bayern",
+      "berlin": "Berlin",
+      "brandenburg": "Brandenburg",
+      "bremen": "Bremen",
+      "hamburg": "Hamburg",
+      "hesse": "Hessen",
+      "lower-saxony": "Niedersachsen",
+      "mecklenburg-western-pomerania": "Mecklenburg-Vorpommern",
+      "north-rhine-westphalia": "Nordrhein-Westfalen",
+      "rhineland-palatinate": "Rheinland-Pfalz",
+      "saarland": "Saarland",
+      "saxony": "Sachsen",
+      "saxony-anhalt": "Sachsen-Anhalt",
+      "schleswig-holstein": "Schleswig-Holstein",
+      "thuringia": "Thüringen"
+    },
+    "packageLabel": "Mitgliedspaket",
+    "packageTemporaryHint": "Für den aktuellen Test kannst du dein Paket frei wählen. Die Zahlung wird später beim Paketwechsel ergänzt.",
     "selectPlaceholder": "Option auswählen",
     "occupations": {
       "sedentary": "Überwiegend sitzend",
@@ -237,20 +271,24 @@
       "lead": "Eine strukturierte Bibliothek aus Bewegung, Rehabilitation und Bildungsformaten für den alltagstauglichen Einstieg.",
       "categories": {
         "reha": {
-          "title": "Reha",
-          "description": "Gezielte Reha-Formate für Knie, Rücken, Hüfte und allgemeine Stabilität mit ergänzenden Schwerpunkten für Osteoporose und Arthritis."
+          "title": "REHA Kurse",
+          "description": "Rehabilitationsprogramme mit wöchentlichem Videorhythmus und klarer Progression."
         },
         "healthy-living": {
-          "title": "Lebe Gesund",
+          "title": "Lebe Gesund Kurse",
           "description": "Alltagstaugliche Formate für Mobilität, sanften Einstieg und regelmäßige Bewegung."
         },
         "overweight": {
-          "title": "Übergewicht",
+          "title": "Übergewichtskurse",
           "description": "Bewegungs- und Ernährungsformate mit Fokus auf nachhaltige Gewichtsreduktion."
         },
         "definition": {
-          "title": "Definition",
+          "title": "Intensive",
           "description": "Intensivere Kraft- und Definitionsformate für fortgeschrittenere Mitglieder."
+        },
+        "intensive": {
+          "title": "Intensive",
+          "description": "Gezielte Kraft-, Definitions- und intensivere Trainingsformate."
         },
         "pre-post-birth": {
           "title": "Pre & Postgeburt",
@@ -260,6 +298,18 @@
           "title": "Firmenfitness",
           "description": "Kurze, wiederholbare Bewegungseinheiten für aktive Arbeitspausen im Berufsalltag."
         },
+        "live-courses": {
+          "title": "Live Kurse",
+          "description": "Geplante Live-Bewegungseinheiten für Mitglieder."
+        },
+        "live-seminars": {
+          "title": "Live Seminare",
+          "description": "Geplante edukative Live-Sessions mit fachlicher Begleitung."
+        },
+        "nutrition-seminars": {
+          "title": "Ernährungsseminare",
+          "description": "Ernährungsbildung und praktisches Gesundheitswissen."
+        },
         "paragraph-20": {
           "title": "Paragraf 20",
           "description": "Online-orientierte Ernährungsprogramme als ergänzender Gesundheitsbaustein."
@@ -268,14 +318,28 @@
       "meta": {
         "duration": "{count} Min",
         "unlocks": "{count, plural, one {#x pro Woche freigeschaltet} other {#x pro Woche freigeschaltet}}",
-        "coach": "Coach: {name}"
+        "coach": "Coach: {name}",
+        "courseCount": "{count, plural, one {# Unterkurs} other {# Unterkurse}}",
+        "videoCount": "{count, plural, one {# Video verfügbar} other {# Videos verfügbar}}",
+        "plannedCount": "{count, plural, one {# Training geplant} other {# Trainings geplant}}",
+        "subtypeCount": "{count, plural, one {# Unterkurs} other {# Unterkurse}}",
+        "video": "Video",
+        "videoAvailable": "Video verfügbar",
+        "comingSoon": "In Vorbereitung",
+        "live": "Live",
+        "newThisWeek": "Neu diese Woche"
       },
+      "empty": "In Contentful sind noch keine Kurse veröffentlicht.",
+      "emptyCategory": "In dieser Kategorie ist noch kein Kurs veröffentlicht.",
       "notes": {
+        "package20": "20 Trainings in einem Paket verfügbar.",
         "package22": "22 Trainings in einem Paket verfügbar.",
         "repeat2to3": "Ideal zum Wiederholen, zwei- bis dreimal pro Woche.",
         "repeatDaily": "Mindestens zwei- bis dreimal pro Woche wiederholen, idealerweise täglich in der Pause und am besten zweimal pro Tag.",
         "videoAndDocs": "Videoformat mit begleitender Dokumentation.",
-        "onlineOnly": "Ausschließlich online verfügbar."
+        "onlineOnly": "Ausschließlich online verfügbar.",
+        "premiumRecommended": "Grundlagen der Ernährung, empfohlen für Premium-Mitglieder.",
+        "comingLater": "Dieses Training wird später ergänzt."
       },
       "items": [
         "Pilates für Anfänger",
@@ -289,6 +353,13 @@
         "Zehn-Minuten-Training für die aktive Pause",
         "Edukative Seminare"
       ]
+    },
+    "weeklyUnlock": {
+      "label": "Kursrhythmus",
+      "title": "1 neues Training pro Woche",
+      "description": "Mitglieder schalten wöchentlich den nächsten Trainingsblock frei und sammeln Videos, bis der Kurs abgeschlossen ist.",
+      "badge": "REHA Ablauf",
+      "reha": "Wenn ein Mitglied einen REHA Kurs öffnet, sieht es die Videos für diesen Kurs. Jede Woche wird ein neues Training freigeschaltet. Das Ziel ist, dieses Training zwei- bis dreimal pro Woche zu wiederholen."
     },
     "liveTrainings": {
       "title": "Live-Trainings",
@@ -345,18 +416,54 @@
     "morning-gymnastics": "Morgengymnastik - Power",
     "morning-gymnastics-gentle": "Morgengymnastik - Sanftes Aufwachen",
     "evening-gymnastics": "Abendgymnastik",
-    "pilates-beginners": "Pilates für Anfänger",
+    "pilates-beginners": "Pilates für Anfänger und mittleres Niveau",
     "heart-gymnastics": "Herzgymnastik",
     "weight-loss-program": "Abnehmprogramm",
     "nutrition-principles": "Ernährungsprinzipien",
     "abs-intensive": "Bauchmuskeln intensiv",
     "glutes-intensive": "Pomuskeln intensiv",
-    "full-body-strength-advanced": "Ganzkörpertraining Kraft - fortgeschritten",
+    "full-body-strength-advanced": "Ganzkörpertraining - Kraft - fortgeschritten",
     "pelvic-floor": "Beckenboden",
     "birth-preparation": "Geburtsvorbereitung",
     "baby-training": "Babytraining",
     "active-break": "Aktive Pause",
     "nutrition-program": "Ernährungsprogramm"
+  },
+  "courseDetail": {
+    "back": "Zurück zu den Kursen",
+    "eyebrow": "Geschützter Kurs",
+    "instructionsTitle": "So führst du die Übungen aus",
+    "instructionsFallback": "Die Übungsanleitung wird bald ergänzt.",
+    "player": {
+      "videoPending": "Video folgt",
+      "preparingVideo": "Video wird vorbereitet",
+      "signInRequired": "Melde dich an, um diesen Kurs anzusehen.",
+      "tokenError": "Der Wiedergabe-Token konnte nicht erstellt werden.",
+      "signingMissing": "Mux Signing ist noch nicht konfiguriert.",
+      "authError": "Bitte melde dich erneut an, um diesen Kurs anzusehen."
+    },
+    "meta": {
+      "flexibleDuration": "Flexible Dauer",
+      "training": "Training",
+      "videoAvailable": "Video verfügbar",
+      "videoPending": "Video in Vorbereitung"
+    }
+  },
+  "blogs": {
+    "eyebrow": "Bewegesund Journal",
+    "title": "Wissen zu Sport, Gesundheit und Ernährung für deinen Alltag.",
+    "intro": "Praktische Artikel zu Training, Regeneration, Ernährung und gesünderen Routinen.",
+    "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
+    "filterHint": "Nach Thema filtern",
+    "filterAria": "Blog-Tags",
+    "readArticle": "Artikel lesen",
+    "empty": "Zu diesem Tag gibt es noch keine passenden Artikel.",
+    "tags": {
+      "all": "Alle",
+      "nutrition": "Ernährung",
+      "health": "Gesundheit",
+      "training": "Sport / Training"
+    }
   },
   "packages": {
     "starter": "Starter",
@@ -367,6 +474,14 @@
     "eyebrow": "Mitgliederprofil",
     "avatarAlt": "Profilfoto von {name}",
     "mobileTitle": "Ganzheitliche Fitnessbildung",
+    "packageSelector": {
+      "eyebrow": "Mitgliedschaft",
+      "title": "Aktives Paket",
+      "description": "Dieses Paket steuert den Zugriff auf Kurse und Live-Sessions.",
+      "temporaryHint": "Testphase: Das Paket kann ohne Zahlung geändert werden.",
+      "saved": "Paket wurde aktualisiert.",
+      "error": "Das Paket konnte nicht gespeichert werden."
+    },
     "actions": {
       "menu": "Profilmenü öffnen",
       "seeMore": "Mehr sehen",
@@ -530,6 +645,7 @@
     "sessionCount": "{count, plural, one {# Session} other {# Sessions}}",
     "included": "Enthalten",
     "upgradeRequired": "Upgrade nötig",
+    "liveBadge": "Live",
     "join": "Session beitreten",
     "unlockButton": "Paket nötig",
     "missingLink": "Link fehlt",
@@ -613,7 +729,9 @@
       "home": "Startseite",
       "about": "Über Uns",
       "programs": "Programme",
+      "courses": "Kurse",
       "calendar": "Live-Kalender",
+      "blogs": "Blogs",
       "consultation": "Beratung",
       "impressum": "Impressum",
       "privacy": "Datenschutz",
@@ -693,6 +811,23 @@
       }
     ],
     "note": "E-Mail: info@bewegesund.de"
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Die gesuchte Seite existiert nicht.",
+    "action": "Zur Startseite"
+  },
+  "badRequest": {
+    "eyebrow": "Bewegesund",
+    "title": "Ungültige Anfrage",
+    "description": "Diese Anfrage konnte nicht verarbeitet werden. Kehre zur Startseite zurück und starte von dort neu.",
+    "action": "Zur Startseite",
+    "status": "400",
+    "items": [
+      "Adresse prüfen",
+      "Startseite öffnen",
+      "Navigation neu wählen"
+    ]
   },
   "consultationPage": {
     "title": "Persönliche Beratung",

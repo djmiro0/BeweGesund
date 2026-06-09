@@ -482,7 +482,8 @@
 }
 
 .formatBadge,
-.packageBadge {
+.packageBadge,
+.liveBadge {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -502,6 +503,12 @@
 .packageBadge {
   background: rgba(var(--page-warm-rgb), 0.24);
   color: #8f5f07;
+}
+
+.liveBadge {
+  background: var(--page-accent);
+  color: var(--page-base);
+  box-shadow: 0 0.45rem 1rem rgba(var(--page-accent-rgb), 0.22);
 }
 
 .sessionTitle {

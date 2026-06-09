@@ -13,9 +13,9 @@ const Footer: React.FC = () => {
   const navigationLinks = [
     { href: `/${locale}`, label: t("links.home") },
     { href: `/${locale}/about`, label: t("links.about") },
-    { href: `/${locale}/courses`, label: t("links.programs") },
+    { href: `/${locale}/courses`, label: t("links.courses") },
     { href: `/${locale}/calendar`, label: t("links.calendar") },
-    { href: `/${locale}/kontakt`, label: t("links.contact") },
+    { href: `/${locale}/blogs`, label: t("links.blogs") },
   ];
 
   const legalLinks = [

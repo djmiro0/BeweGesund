@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useSyncExternalStore } from "react";
+import { createContext, useContext, useLayoutEffect, useMemo, useSyncExternalStore } from "react";
 
 type ThemeMode = "light" | "dark";
 
@@ -20,11 +20,6 @@ function applyTheme(theme: ThemeMode) {
 function readTheme(): ThemeMode {
   if (typeof window === "undefined") {
     return "light";
-  }
-
-  const datasetTheme = document.documentElement.dataset.theme;
-  if (datasetTheme === "light" || datasetTheme === "dark") {
-    return datasetTheme;
   }
 
   const savedTheme = window.localStorage.getItem(STORAGE_KEY);
@@ -57,6 +52,10 @@ function subscribe(callback: () => void) {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = useSyncExternalStore(subscribe, readTheme, (): ThemeMode => "light");
+
+  useLayoutEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   const value = useMemo<ThemeContextValue>(
     () => ({
