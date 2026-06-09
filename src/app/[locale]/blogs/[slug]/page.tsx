@@ -1,10 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
 import { ArrowLeft, Clock, ImageIcon } from "lucide-react";
 import { getBlogPost } from "@/lib/contentful";
-import { getBlogTagLabel } from "../blogTags";
+import ArticleBody from "./ArticleBody";
 import styles from "../Blogs.module.css";
 
 export default async function BlogPostPage({
@@ -14,18 +13,12 @@ export default async function BlogPostPage({
 }) {
   const { locale, slug } = await params;
   const post = await getBlogPost(locale, slug);
-  const t = await getTranslations({ locale, namespace: "blogs" });
 
   if (!post) notFound();
 
   const labels = locale === "de"
     ? { back: "Zurück zu Blogs", read: "Min. Lesezeit" }
     : { back: "Back to blogs", read: "min read" };
-  const paragraphs = post.body
-    .split(/\n{2,}/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean);
-
   return (
     <article className={styles.articlePage}>
       <Link href={`/${locale}/blogs`} className={styles.backLink}>
@@ -34,11 +27,6 @@ export default async function BlogPostPage({
       </Link>
 
       <header className={styles.articleHeader}>
-        <div className={styles.tagRow}>
-          {post.tags.map((tag) => (
-            <span key={tag} className={styles.tag}>{getBlogTagLabel(tag, t)}</span>
-          ))}
-        </div>
         <h1 className={styles.articleTitle}>{post.title}</h1>
         <p className={styles.articleExcerpt}>{post.excerpt}</p>
         <div className={styles.postMeta}>
@@ -70,11 +58,7 @@ export default async function BlogPostPage({
         )}
       </div>
 
-      <div className={styles.articleBody}>
-        {paragraphs.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-      </div>
+      <ArticleBody body={post.body} />
     </article>
   );
 }
