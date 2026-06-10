@@ -126,7 +126,6 @@ const Footer: React.FC = () => {
 
         <div className={style.footerBottom} data-testid="footer-bottom">
           <p>{t("copyright")}</p>
-
           <a
               href="https://djmir0.de"
               target="_blank"
@@ -137,8 +136,8 @@ const Footer: React.FC = () => {
             <Image
                 src="/djmir0.png"
                 alt="developed by djmir0"
-                width={96}
-                height={32}
+                width={116}
+                height={50}
                 className={style.developerLogo}
             />
           </a>

@@ -58,12 +58,20 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     const [workouts, setWorkouts] = useState<DashboardWorkout[]>([]);
     const [recentPosts, setRecentPosts] = useState<DashboardPost[]>([]);
     const [liveCourseIds, setLiveCourseIds] = useState<string[]>([]);
+    const [loadedLocale, setLoadedLocale] = useState<string | null>(null);
+    const isDashboardLoading = loadedLocale !== locale;
 
     useEffect(() => {
         let cancelled = false;
 
         void fetch(`/api/content/dashboard?locale=${locale}`)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Dashboard request failed with status ${response.status}`);
+                }
+
+                return response.json();
+            })
             .then((payload: {
                 liveCourseIds?: string[];
                 workouts?: DashboardWorkout[];
@@ -79,6 +87,9 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 setLiveCourseIds([]);
                 setWorkouts([]);
                 setRecentPosts([]);
+            })
+            .finally(() => {
+                if (!cancelled) setLoadedLocale(locale);
             });
 
         return () => {
@@ -319,51 +330,77 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                         animate="visible"
                         variants={stagger}
                     >
-                        {activeCourses.slice(0, 2).map((course, index) => (
-                            <motion.article
-                                key={course.id}
-                                className={`${styles.featureCard} ${index === 0 ? styles.featureCardLarge : ""}`}
-                                variants={fadeUp}
-                                whileHover={{ y: -4 }}
-                                data-testid={`dashboard-workout-card-${course.id}`}
-                            >
-                                {course.posterImage ? (
-                                    <Image
-                                        src={course.posterImage}
-                                        alt=""
-                                        fill
-                                        loading="eager"
-                                        sizes="(min-width: 1180px) 34vw, (min-width: 860px) 50vw, 100vw"
-                                        className={styles.featureImage}
-                                    />
-                                ) : (
-                                    <div className={styles.featureFallback}>
-                                        <Play size={28} />
-                                    </div>
-                                )}
-                                <div className={styles.cardShade} />
-                                {liveCourseIdSet.has(course.id) ? (
-                                    <span className={styles.liveBadge}>{t("workouts.live")}</span>
-                                ) : null}
-                                <div className={styles.playBadge}>
-                                    <Play size={15} fill="currentColor" />
+                        {!isDashboardLoading
+                            ? activeCourses.slice(0, 2).map((course, index) => (
+                                  <motion.article
+                                      key={course.id}
+                                      className={`${styles.featureCard} ${index === 0 ? styles.featureCardLarge : ""}`}
+                                      initial="hidden"
+                                      animate="visible"
+                                      variants={fadeUp}
+                                      whileHover={{ y: -4 }}
+                                      data-testid={`dashboard-workout-card-${course.id}`}
+                                  >
+                                      {course.posterImage ? (
+                                          <Image
+                                              src={course.posterImage}
+                                              alt=""
+                                              fill
+                                              loading="eager"
+                                              sizes="(min-width: 1180px) 34vw, (min-width: 860px) 50vw, 100vw"
+                                              className={styles.featureImage}
+                                          />
+                                      ) : (
+                                          <div className={styles.featureFallback}>
+                                              <Play size={28} />
+                                          </div>
+                                      )}
+                                      <div className={styles.cardShade} />
+                                      {liveCourseIdSet.has(course.id) ? (
+                                          <span className={styles.liveBadge}>{t("workouts.live")}</span>
+                                      ) : null}
+                                      <div className={styles.playBadge}>
+                                          <Play size={15} fill="currentColor" />
+                                      </div>
+                                      <div className={styles.cardCopy}>
+                                          <span className={styles.cardKicker}>
+                                              {index === 0 ? t("workouts.recommended") : t("workouts.newWorkouts")}
+                                          </span>
+                                          <h2>{course.title}</h2>
+                                          <p>
+                                              {course.durationMinutes
+                                                  ? `${course.durationMinutes} Min`
+                                                  : packageT(course.packageRequired)}
+                                              {course.coach ? ` · ${course.coach}` : ""}
+                                          </p>
+                                      </div>
+                                      <Link
+                                          href={`/${locale}/courses/${course.slug}`}
+                                          className={styles.featureLink}
+                                          aria-label={`${t("workouts.openSession")}: ${course.title}`}
+                                      />
+                                  </motion.article>
+                              ))
+                            : null}
+                        {isDashboardLoading ? (
+                            <>
+                                <div
+                                    className={`${styles.featureCard} ${styles.featureCardLarge} ${styles.featureSkeleton}`}
+                                    aria-hidden="true"
+                                    data-testid="dashboard-feature-loading"
+                                >
+                                    <span className={styles.skeletonPlay} />
+                                    <span className={styles.skeletonCopy} />
                                 </div>
-                                <div className={styles.cardCopy}>
-                                    <span className={styles.cardKicker}>{index === 0 ? t("workouts.recommended") : t("workouts.newWorkouts")}</span>
-                                    <h2>{course.title}</h2>
-                                    <p>
-                                        {course.durationMinutes ? `${course.durationMinutes} Min` : packageT(course.packageRequired)}
-                                        {course.coach ? ` · ${course.coach}` : ""}
-                                    </p>
+                                <div
+                                    className={`${styles.featureCard} ${styles.featureSkeleton} ${styles.featureSkeletonSecondary}`}
+                                    aria-hidden="true"
+                                >
+                                    <span className={styles.skeletonPlay} />
+                                    <span className={styles.skeletonCopy} />
                                 </div>
-                                <Link
-                                    href={`/${locale}/courses/${course.slug}`}
-                                    className={styles.featureLink}
-                                    aria-label={`${t("workouts.openSession")}: ${course.title}`}
-                                />
-                            </motion.article>
-                        ))}
-                        {!activeCourses.length ? (
+                            </>
+                        ) : !activeCourses.length ? (
                             <div className={styles.filterEmptyState}>
                                 <Play size={22} />
                                 <p>{t("workouts.emptyCategory")}</p>
@@ -378,104 +415,109 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             animate="visible"
                             variants={fadeUp}
                         >
-                        <div className={styles.listHeader}>
-                            <span>{t("workouts.newWorkouts")}</span>
-                            <small>{t("workouts.recentDescription")}</small>
-                        </div>
+                            <div className={`${styles.listHeader} ${styles.workoutListHeader}`}>
+                                <span>{t("workouts.newWorkouts")}</span>
+                                <small>{t("workouts.recentDescription")}</small>
+                            </div>
 
-                        <div
-                            className={`${styles.workoutCarousel} ${videoEdges.left ? styles.workoutCarouselHasLeft : ""} ${
-                                videoEdges.right ? styles.workoutCarouselHasRight : ""
-                            }`}
-                        >
-                            {videoEdges.left ? (
-                                <button
-                                    type="button"
-                                    className={`${styles.tabScrollButton} ${styles.videoScrollButtonLeft}`}
-                                    onClick={() => scrollVideos("left")}
-                                    aria-label="Show previous workout videos"
-                                    data-testid="dashboard-workout-videos-scroll-left"
-                                >
-                                    <ChevronLeft size={16} />
-                            </button>
-                        ) : null}
-                            <div ref={videosRef} className={styles.workoutGrid}>
-                                {recentWorkouts.map((course) => (
-                                    <motion.article
-                                        key={course.id}
-                                        className={styles.workoutCard}
-                                        variants={fadeUp}
-                                        whileHover={{ y: -3 }}
-                                        data-testid={`dashboard-workout-list-item-${course.id}`}
+                            <div
+                                className={`${styles.workoutCarousel} ${
+                                    videoEdges.left ? styles.workoutCarouselHasLeft : ""
+                                } ${videoEdges.right ? styles.workoutCarouselHasRight : ""}`}
+                            >
+                                {videoEdges.left ? (
+                                    <button
+                                        type="button"
+                                        className={`${styles.tabScrollButton} ${styles.videoScrollButtonLeft}`}
+                                        onClick={() => scrollVideos("left")}
+                                        aria-label="Show previous workout videos"
+                                        data-testid="dashboard-workout-videos-scroll-left"
                                     >
-                                        <div className={styles.workoutThumb}>
-                                            {course.posterImage ? (
-                                                <Image
-                                                    src={course.posterImage}
-                                                    alt=""
-                                                    fill
-                                                    loading="eager"
-                                                    sizes="7rem"
-                                                    className={styles.workoutImage}
-                                                />
-                                            ) : (
-                                                <span className={styles.workoutThumbFallback}>
-                                                    <Play size={20} />
-                                                </span>
-                                            )}
-                                            <span className={styles.thumbPlay}>
-                                                <Play size={13} fill="currentColor" />
-                                            </span>
-                                            {liveCourseIdSet.has(course.id) ? (
-                                                <span className={styles.liveBadge}>{t("workouts.live")}</span>
-                                            ) : null}
-                                        </div>
-                                        <div className={styles.workoutBody}>
-                                            <h3>{course.title}</h3>
-                                            <div className={styles.metaRow}>
-                                                {course.durationMinutes ? (
-                                                    <span>
-                                                        <Clock3 size={13} />
-                                                        {course.durationMinutes} Min
+                                        <ChevronLeft size={16} />
+                                    </button>
+                                ) : null}
+                                <div ref={videosRef} className={styles.workoutGrid}>
+                                    {recentWorkouts.map((course) => (
+                                        <motion.article
+                                            key={course.id}
+                                            className={styles.workoutCard}
+                                            variants={fadeUp}
+                                            whileHover={{ y: -3 }}
+                                            data-testid={`dashboard-workout-list-item-${course.id}`}
+                                        >
+                                            <div className={styles.workoutThumb}>
+                                                {course.posterImage ? (
+                                                    <Image
+                                                        src={course.posterImage}
+                                                        alt=""
+                                                        fill
+                                                        loading="eager"
+                                                        sizes="7rem"
+                                                        className={styles.workoutImage}
+                                                    />
+                                                ) : (
+                                                    <span className={styles.workoutThumbFallback}>
+                                                        <Play size={20} />
                                                     </span>
-                                                ) : null}
-                                                <span>
-                                                    <Sparkles size={13} />
-                                                    {packageT(course.packageRequired)}
+                                                )}
+                                                <span className={styles.thumbPlay}>
+                                                    <Play size={13} fill="currentColor" />
                                                 </span>
-                                                {course.publishedAt ? (
-                                                    <span>
-                                                        {dateFormatter.format(new Date(course.publishedAt))}
-                                                    </span>
+                                                {liveCourseIdSet.has(course.id) ? (
+                                                    <span className={styles.liveBadge}>{t("workouts.live")}</span>
                                                 ) : null}
                                             </div>
-                                            {course.description || course.coach ? (
-                                                <p className={styles.workoutNote}>
-                                                    {course.description}
-                                                    {course.description && course.coach ? " · " : ""}
-                                                    {course.coach ? coursesT("courseTypes.meta.coach", { name: course.coach }) : null}
-                                                </p>
-                                            ) : null}
-                                        </div>
-                                        <Link href={`/${locale}/courses/${course.slug}`} className={styles.openButton}>
-                                            {t("workouts.openSession")}
-                                            <ArrowUpRight size={14} />
-                                        </Link>
-                                    </motion.article>
-                                ))}
+                                            <div className={styles.workoutBody}>
+                                                <h3>{course.title}</h3>
+                                                <div className={styles.metaRow}>
+                                                    {course.durationMinutes ? (
+                                                        <span>
+                                                            <Clock3 size={13} />
+                                                            {course.durationMinutes} Min
+                                                        </span>
+                                                    ) : null}
+                                                    <span>
+                                                        <Sparkles size={13} />
+                                                        {packageT(course.packageRequired)}
+                                                    </span>
+                                                    {course.publishedAt ? (
+                                                        <span>
+                                                            {dateFormatter.format(new Date(course.publishedAt))}
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+                                                {course.description || course.coach ? (
+                                                    <p className={styles.workoutNote}>
+                                                        {course.description}
+                                                        {course.description && course.coach ? " · " : ""}
+                                                        {course.coach
+                                                            ? coursesT("courseTypes.meta.coach", { name: course.coach })
+                                                            : null}
+                                                    </p>
+                                                ) : null}
+                                            </div>
+                                            <Link
+                                                href={`/${locale}/courses/${course.slug}`}
+                                                className={styles.openButton}
+                                            >
+                                                {t("workouts.openSession")}
+                                                <ArrowUpRight size={14} />
+                                            </Link>
+                                        </motion.article>
+                                    ))}
+                                </div>
+                                {videoEdges.right ? (
+                                    <button
+                                        type="button"
+                                        className={`${styles.tabScrollButton} ${styles.videoScrollButtonRight}`}
+                                        onClick={() => scrollVideos("right")}
+                                        aria-label="Show more workout videos"
+                                        data-testid="dashboard-workout-videos-scroll-right"
+                                    >
+                                        <ChevronRight size={16} />
+                                    </button>
+                                ) : null}
                             </div>
-                            {videoEdges.right ? (
-                                <button
-                                    type="button"
-                                    className={`${styles.tabScrollButton} ${styles.videoScrollButtonRight}`}
-                                    onClick={() => scrollVideos("right")}
-                                    aria-label="Show more workout videos"
-                                    data-testid="dashboard-workout-videos-scroll-right"
-                                >
-                                    <ChevronRight size={16} />
-                                </button>
-                            ) : null}
-                        </div>
                         </motion.section>
                     ) : null}
 
@@ -486,7 +528,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             animate="visible"
                             variants={fadeUp}
                         >
-                            <div className={styles.listHeader}>
+                            <div className={`${styles.listHeader} ${styles.newsListHeader}`}>
                                 <span>{t("news.title")}</span>
                                 <Link href={`/${locale}/blogs`} className={styles.viewAllLink}>
                                     {t("news.viewAll")}
