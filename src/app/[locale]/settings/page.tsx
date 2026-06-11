@@ -1,10 +1,11 @@
 "use client";
 
 import { updateProfile } from "firebase/auth";
-import { doc, onSnapshot, serverTimestamp, writeBatch } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
-import { db } from "../../../../firebase.config";
+import { db, storage } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
 import AppSettings from "./components/AppSettings";
 import AccountManagement from "./components/AccountManagement";
@@ -40,6 +41,7 @@ export default function SettingsPage() {
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
   useEffect(() => {
     if (!userId) {
@@ -136,6 +138,64 @@ export default function SettingsPage() {
     }
   };
 
+  const handlePhotoSelect = async (file: File) => {
+    if (!user || isUploadingPhoto) return;
+
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+    if (!allowedTypes.has(file.type)) {
+      setErrorMessage("Choose a JPG, PNG, or WebP image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage("The profile photo must be smaller than 5 MB.");
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    try {
+      const avatarRef = ref(storage, `users/${user.uid}/profile/avatar`);
+      await uploadBytes(avatarRef, file, {
+        contentType: file.type,
+        cacheControl: "private,max-age=3600",
+      });
+      const downloadUrl = await getDownloadURL(avatarRef);
+      const photoURL = `${downloadUrl}${downloadUrl.includes("?") ? "&" : "?"}v=${Date.now()}`;
+
+      await Promise.all([
+        updateDoc(doc(db, "users", user.uid), {
+          photoURL,
+          updatedAt: serverTimestamp(),
+        }),
+        updateProfile(user, { photoURL }),
+      ]);
+
+      const applyPhoto = (settings: UserSettings) => ({
+        ...settings,
+        profile: {
+          ...settings.profile,
+          profileImageUrl: photoURL,
+        },
+      });
+      setDraftSettings(applyPhoto);
+      setSavedSettings(applyPhoto);
+      setSuccessMessage("Profile photo updated successfully.");
+    } catch (error) {
+      const code = (error as { code?: string } | undefined)?.code;
+      setErrorMessage(
+        code === "storage/unauthorized"
+          ? "Photo upload is not allowed. Deploy the current Storage rules first."
+          : code === "storage/bucket-not-found" || code === "storage/unknown"
+            ? "Firebase Storage is not set up for this project yet. Open Firebase Console, go to Storage, and complete Get started."
+          : "Profile photo could not be uploaded. Please try again.",
+      );
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
   const handleReset = () => {
     setDraftSettings(cloneSettings(savedSettings));
     setSuccessMessage("");
@@ -158,7 +218,12 @@ export default function SettingsPage() {
         </header>
 
         <div className={styles.layout}>
-          <ProfileSettings data={draftSettings.profile} onChange={(value) => updateSection("profile", value)} />
+          <ProfileSettings
+            data={draftSettings.profile}
+            onChange={(value) => updateSection("profile", value)}
+            onPhotoSelect={(file) => void handlePhotoSelect(file)}
+            isUploadingPhoto={isUploadingPhoto}
+          />
           <BodyProgressSettings data={draftSettings.bodyProgress} onChange={(value) => updateSection("bodyProgress", value)} />
           <WorkoutPreferences data={draftSettings.workoutPreferences} onChange={(value) => updateSection("workoutPreferences", value)} />
           <NutritionSettings data={draftSettings.nutrition} onChange={(value) => updateSection("nutrition", value)} />

@@ -20,7 +20,25 @@ function ShellFrame({
 }) {
   const { user, profile, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
   const pathname = usePathname();
+  const isPublicHomeRoute = pathname === `/${locale}` || pathname === `/${locale}/`;
   const isPublicBlogRoute = pathname.startsWith(`/${locale}/blogs`);
+  const isAuthActionRoute = pathname.startsWith(`/${locale}/auth/action`);
+  const isGoogleUser = user?.providerData.some((provider) => provider.providerId === "google.com") ?? false;
+  const requiresProfileSetup = Boolean(
+    user
+      && isGoogleUser
+      && profile
+      && (
+        !profile.email
+        || !profile.firstName
+        || !profile.lastName
+        || !profile.age
+        || !profile.gender
+        || !profile.heightCm
+        || !profile.weightKg
+        || !profile.regionKey
+      ),
+  );
 
   if (loading) {
     return (
@@ -36,7 +54,7 @@ function ShellFrame({
     );
   }
 
-  if (!user && !isPublicBlogRoute) {
+  if (!user && !isPublicHomeRoute && !isPublicBlogRoute && !isAuthActionRoute) {
     return (
       <>
         <ComingSoon openAuth={openAuth} />
@@ -54,7 +72,11 @@ function ShellFrame({
         profilePhoto={profile?.photoURL ?? user?.photoURL}
         openAuth={openAuth}
       />
-      <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      <AuthModal
+        isOpen={isAuthOpen || requiresProfileSetup}
+        onClose={closeAuth}
+        requiresProfileSetup={requiresProfileSetup}
+      />
       <main className={styles.main}>{children}</main>
       <MobileTabBar locale={locale} user={user} openAuth={openAuth} />
       <Footer />

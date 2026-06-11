@@ -12,6 +12,7 @@ interface JoinRequest {
 
 export async function POST(request: Request) {
   const authorization = request.headers.get("authorization");
+  const appCheckToken = request.headers.get("x-firebase-appcheck") ?? "";
   const idToken = authorization?.startsWith("Bearer ") ? authorization.slice(7) : "";
 
   if (!idToken) {
@@ -42,10 +43,12 @@ export async function POST(request: Request) {
   }
 
   try {
-    const [days, userAccess] = await Promise.all([
-      getCalendarDays(locale),
-      getFirebaseUserAccess(uid, idToken),
-    ]);
+    const days = await getCalendarDays(locale).catch(() => {
+      throw new Error("CALENDAR_CONTENT_UNAVAILABLE");
+    });
+    const userAccess = await getFirebaseUserAccess(uid, idToken, appCheckToken).catch(() => {
+      throw new Error("USER_ACCESS_UNAVAILABLE");
+    });
     const event = days.flatMap((day) => day.entries).find((entry) => entry.id === eventId);
 
     if (!event?.liveTrainingLink) {
@@ -66,7 +69,29 @@ export async function POST(request: Request) {
       { url: target.toString() },
       { headers: { "Cache-Control": "no-store" } },
     );
-  } catch {
-    return NextResponse.json({ error: "Session access could not be verified." }, { status: 503 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+
+    if (message === "CALENDAR_CONTENT_UNAVAILABLE") {
+      return NextResponse.json(
+        { error: "Calendar content is temporarily unavailable.", code: "CALENDAR_CONTENT_UNAVAILABLE" },
+        { status: 503 },
+      );
+    }
+
+    if (message === "USER_ACCESS_UNAVAILABLE") {
+      return NextResponse.json(
+        {
+          error: "Membership access could not be verified.",
+          code: "USER_ACCESS_UNAVAILABLE",
+        },
+        { status: 503 },
+      );
+    }
+
+    return NextResponse.json(
+      { error: "Session access could not be verified.", code: "SESSION_ACCESS_UNAVAILABLE" },
+      { status: 503 },
+    );
   }
 }

@@ -1,38 +1,51 @@
 .hero {
   position: relative;
-  min-height: calc(100svh - 4rem);
+  min-height: 100svh;
   isolation: isolate;
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 7rem clamp(1.25rem, 4vw, 5rem) 4rem;
-  color: var(--page-base);
-  background: var(--shell-bg);
+  padding: 7rem clamp(1.25rem, 5.5vw, 6.5rem) 4rem;
+  color: var(--page-ink);
+  background: var(--page-cream-1);
 }
 
 .mediaLayer,
-.scrim {
+.blend {
   position: absolute;
   inset: 0;
   z-index: -2;
 }
 
+.mediaLayer {
+  left: 41%;
+}
+
 .heroImage {
   object-fit: cover;
-  object-position: center 40%;
+  object-position: center 44%;
   transform: scale(1.04);
   animation: heroDrift 16s var(--transition) infinite alternate;
 }
 
-.scrim {
+.blend {
   z-index: -1;
   background:
-    linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.88) 0%, rgba(var(--shell-bg-rgb), 0.7) 38%, rgba(var(--shell-bg-rgb), 0.18) 72%),
-    linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.46) 0%, transparent 42%, rgba(var(--shell-bg-rgb), 0.6) 100%);
+    linear-gradient(
+      90deg,
+      var(--page-cream-1) 0%,
+      var(--page-cream-1) 35%,
+      rgba(var(--page-cream-1-rgb), 0.98) 41%,
+      rgba(var(--page-cream-1-rgb), 0.88) 47%,
+      rgba(var(--page-cream-1-rgb), 0.54) 55%,
+      rgba(var(--page-cream-1-rgb), 0.12) 68%,
+      transparent 82%
+    ),
+    linear-gradient(180deg, rgba(var(--page-cream-1-rgb), 0.08), transparent 60%, rgba(var(--shell-bg-rgb), 0.22));
 }
 
 .content {
-  width: min(100%, 58rem);
+  width: min(48%, 42rem);
 }
 
 .brandMark {
@@ -40,30 +53,38 @@
   align-items: center;
   gap: 0.55rem;
   margin-bottom: 1.4rem;
-  color: var(--page-warm);
+  color: var(--page-olive);
   font-size: 0.78rem;
   font-weight: 900;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .content h1 {
   margin: 0;
-  color: var(--primary);
-  font-size: 2rem;
-  font-style: italic;
+  max-width: 11ch;
+  color: var(--page-ink);
+  font-size: clamp(3.35rem, 5.8vw, 6.8rem);
   font-weight: 950;
-  line-height: 0.88;
-  text-transform: uppercase;
+  letter-spacing: -0.065em;
+  line-height: 0.9;
   text-wrap: balance;
 }
 
 .content p {
-  max-width: 42rem;
+  max-width: 34rem;
   margin: 1.6rem 0 0;
-  color: rgba(var(--page-base-rgb), 0.82);
-  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-  line-height: 1.7;
+  color: var(--page-muted);
+  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  line-height: 1.65;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.35rem;
+  margin-top: 2.2rem;
 }
 
 .cta {
@@ -72,23 +93,75 @@
   justify-content: center;
   gap: 0.75rem;
   min-height: 3.4rem;
-  margin-top: 2.2rem;
   border: 0;
-  border-radius: 999px;
-  background: var(--page-accent);
-  box-shadow: 0 20px 48px rgba(var(--page-accent-rgb), 0.32);
-  color: var(--page-base);
+  border-radius: 0.25rem;
+  background: var(--page-ink);
+  box-shadow: 0 20px 48px rgba(var(--page-ink-rgb), 0.18);
+  color: var(--media-text);
   cursor: pointer;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 950;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   padding: 1rem 1.45rem 1rem 1.7rem;
   text-transform: uppercase;
 }
 
 .cta:hover {
-  background: var(--page-warm);
-  color: var(--shell-bg);
+  background: var(--page-accent);
+}
+
+.textLink {
+  position: relative;
+  color: var(--page-ink);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 0.7rem 0;
+  text-transform: uppercase;
+}
+
+.textLink::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0.45rem;
+  left: 0;
+  height: 1px;
+  background: var(--page-ink);
+  transform-origin: right;
+  transition: transform 0.28s var(--transition);
+}
+
+.textLink:hover::after {
+  transform: scaleX(0.4);
+}
+
+.mediaCaption {
+  position: absolute;
+  right: clamp(1.25rem, 3vw, 3rem);
+  bottom: clamp(1.25rem, 3vw, 2.5rem);
+  display: grid;
+  width: min(22rem, 32vw);
+  grid-template-columns: auto 1fr;
+  gap: 0.8rem;
+  align-items: start;
+  border-top: 1px solid rgba(var(--media-text-rgb), 0.52);
+  color: var(--media-text);
+  padding-top: 0.85rem;
+  text-shadow: 0 2px 20px rgba(var(--shell-bg-rgb), 0.45);
+}
+
+.mediaCaption span {
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+}
+
+.mediaCaption p {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.45;
 }
 
 @keyframes heroDrift {
@@ -103,24 +176,81 @@
 
 @media (min-width: 640px) {
   .hero {
-    min-height: calc(100svh - 5rem);
+    min-height: 100svh;
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .hero {
-    min-height: 86svh;
+    min-height: 100svh;
     align-items: flex-end;
-    padding-top: 6rem;
+    padding: 7rem 1.25rem 3rem;
+    color: var(--media-text);
+    background: var(--shell-bg);
   }
 
-  .scrim {
+  .mediaLayer {
+    left: 0;
+  }
+
+  .heroImage {
+    object-position: 58% center;
+  }
+
+  .blend {
     background:
-      linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.24) 0%, rgba(var(--shell-bg-rgb), 0.64) 42%, rgba(var(--shell-bg-rgb), 0.92) 100%);
+      linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.12) 0%, rgba(var(--shell-bg-rgb), 0.34) 38%, rgba(var(--shell-bg-rgb), 0.92) 82%, var(--shell-bg) 100%),
+      linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.35), transparent 75%);
+  }
+
+  .content {
+    width: min(100%, 39rem);
   }
 
   .content h1 {
-    max-width: 10ch;
+    max-width: 9ch;
+    color: var(--media-text);
+    font-size: clamp(3rem, 14vw, 5.4rem);
+  }
+
+  .content p {
+    color: rgba(var(--media-text-rgb), 0.82);
+  }
+
+  .brandMark {
+    color: var(--page-warm);
+  }
+
+  .cta {
+    background: var(--media-text);
+    color: var(--shell-bg);
+  }
+
+  .textLink {
+    color: var(--media-text);
+  }
+
+  .textLink::after {
+    background: var(--media-text);
+  }
+
+  .mediaCaption {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cta {
+    width: 100%;
+  }
+
+  .textLink {
+    align-self: flex-start;
   }
 }
 

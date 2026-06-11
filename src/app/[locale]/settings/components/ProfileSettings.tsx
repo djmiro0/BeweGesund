@@ -5,6 +5,8 @@ import styles from "../Settings.module.css";
 interface ProfileSettingsProps {
   data: ProfileSettingsData;
   onChange: (data: ProfileSettingsData) => void;
+  onPhotoSelect: (file: File) => void;
+  isUploadingPhoto: boolean;
 }
 
 const genderOptions: Array<{ value: Gender | ""; label: string }> = [
@@ -27,7 +29,12 @@ const mainGoalOptions: Array<{ value: MainGoal; label: string }> = [
   { value: "backPain", label: "Reduce back pain" },
 ];
 
-export default function ProfileSettings({ data, onChange }: ProfileSettingsProps) {
+export default function ProfileSettings({
+  data,
+  onChange,
+  onPhotoSelect,
+  isUploadingPhoto,
+}: ProfileSettingsProps) {
   const update = <Key extends keyof ProfileSettingsData>(key: Key, value: ProfileSettingsData[Key]) => {
     onChange({ ...data, [key]: value });
   };
@@ -39,16 +46,30 @@ export default function ProfileSettings({ data, onChange }: ProfileSettingsProps
       testId="settings-profile-section"
     >
       <div className={styles.profileBlock}>
-        <div
-          className={styles.avatarPlaceholder}
-          data-testid="settings-profile-image"
-          style={data.profileImageUrl ? { backgroundImage: `url("${data.profileImageUrl}")` } : undefined}
-        >
-          {data.profileImageUrl ? null : <span>{data.fullName.charAt(0)}</span>}
-        </div>
+        <label className={styles.avatarUpload}>
+          <div
+            className={styles.avatarPlaceholder}
+            data-testid="settings-profile-image"
+            style={data.profileImageUrl ? { backgroundImage: `url("${data.profileImageUrl}")` } : undefined}
+          >
+            {data.profileImageUrl ? null : <span>{data.fullName.charAt(0)}</span>}
+          </div>
+          <input
+            type="file"
+            aria-label="Change photo"
+            accept="image/jpeg,image/png,image/webp"
+            disabled={isUploadingPhoto}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (file) onPhotoSelect(file);
+              event.target.value = "";
+            }}
+          />
+          <span>{isUploadingPhoto ? "Uploading..." : "Change photo"}</span>
+        </label>
         <div>
           <p className={styles.profileName}>{data.fullName}</p>
-          <p className={styles.profileHint}>Profile image placeholder</p>
+          <p className={styles.profileHint}>JPG, PNG or WebP. Maximum 5 MB.</p>
         </div>
       </div>
 

@@ -15,7 +15,9 @@ import {
   X,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { getToken } from "firebase/app-check";
 import styles from "./Calendar.module.css";
+import { appCheck } from "../../../../firebase.config";
 import { packageRank } from "@/lib/memberPackages";
 import type { CalendarDay } from "@/lib/contentful";
 import { useAuth } from "../components/AuthProvider";
@@ -107,24 +109,30 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
     setJoinError("");
 
     try {
-      const idToken = await user.getIdToken();
+      const [idToken, appCheckResult] = await Promise.all([
+        user.getIdToken(),
+        appCheck ? getToken(appCheck, false).catch(() => null) : Promise.resolve(null),
+      ]);
       const response = await fetch("/api/calendar/join", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${idToken}`,
           "Content-Type": "application/json",
+          ...(appCheckResult?.token
+            ? { "X-Firebase-AppCheck": appCheckResult.token }
+            : {}),
         },
         body: JSON.stringify({ eventId, locale }),
       });
-      const payload = (await response.json()) as { url?: string };
+      const payload = (await response.json()) as { url?: string; error?: string };
 
       if (!response.ok || !payload.url) {
-        throw new Error("Join failed");
+        throw new Error(payload.error || "Join failed");
       }
 
       window.location.assign(payload.url);
-    } catch {
-      setJoinError(t("joinError"));
+    } catch (error) {
+      setJoinError(error instanceof Error && error.message !== "Join failed" ? error.message : t("joinError"));
       setJoiningEventId("");
     }
   };

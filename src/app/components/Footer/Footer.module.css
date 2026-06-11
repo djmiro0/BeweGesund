@@ -227,17 +227,17 @@
 .footerBottom {
   position: relative;
   z-index: 1;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 1.15rem clamp(1rem, 4vw, 2.25rem) 1.6rem;
+  padding:1rem;
   border-top: 1px solid rgba(var(--shell-text-rgb), 0.08);
   color: var(--shell-text-dim);
   font-size: 0.88rem;
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .footerBottom p {
-  margin: 0;
 }
 
 .developerLink {
@@ -245,9 +245,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.65rem;
-  margin-top: 0.75rem;
   color: inherit;
   text-decoration: none;
+  padding-left: 0.5rem;
   transition: color 160ms ease;
 }
 
@@ -256,13 +256,14 @@
 }
 
 .developerLogo {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  object-fit: cover;
+  width: 3rem;
+  height: 3rem;
 }
 
 @media (max-width: 980px) {
+  .footer {
+    margin-bottom: 4rem;
+  }
   .footerInner {
     grid-template-columns: 1fr;
   }
@@ -275,6 +276,8 @@
 @media (max-width: 720px) {
   .footer {
     margin-top: 3.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 5rem;
   }
 
   .footerInner {
@@ -321,6 +324,8 @@
   .footerBottom {
     padding-bottom: 1.35rem;
     font-size: 0.82rem;
-    line-height: 1.5;
+    line-height: 1;
+        flex-direction: column;
+
   }
 }

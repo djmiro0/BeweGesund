@@ -32,7 +32,7 @@ export default function HomePage() {
             ) : (
                 <>
                     <HeroSection openAuth={openAuth} />
-                    <section className={styles.publicSection}>
+                    <section id="programme" className={styles.publicSection}>
                         <div className={styles.publicInner}>
                             <motion.div
                                 initial={{ opacity: 0, y: 28 }}

@@ -53,9 +53,12 @@
   },
   "home": {
     "hero": {
+      "eyebrow": "Movement and prevention",
       "title": "MOVE TOWARD A HEALTHIER BODY",
       "subtitle": "Online movement, rehabilitation, and educational support in German and English.",
-      "cta": "Get Started"
+      "cta": "Get Started",
+      "secondaryCta": "Explore programs",
+      "imageCaption": "Structured training for more confidence, strength, and mobility in everyday life."
     },
     "public": {
       "eyebrow": "Movement. Rehab. Education.",
@@ -137,6 +140,11 @@
     "registerTitle": "Create Account",
     "supportText": "Access member-only live training, live seminars, and personal counseling.",
     "registerSupportText": "Create your account and add the basic health details used to personalize your profile and calculate BMI.",
+    "googleOnboardingTitle": "Complete your profile",
+    "googleOnboardingSupportText": "Google verified your identity. Add the required profile and health details to start using Bewegesund.",
+    "continueWithGoogle": "Continue with Google",
+    "orUseEmail": "or use email",
+    "completeProfile": "Complete profile",
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
     "firstName": "First name",
@@ -219,6 +227,10 @@
     "submitSignIn": "Sign In",
     "submitRegister": "Create Account",
     "forgotPassword": "Forgot your password?",
+    "resetTitle": "Reset password",
+    "resetSupportText": "Enter the email address for your account. We will send a secure link where you can choose a new password.",
+    "sendResetLink": "Send reset link",
+    "backToSignIn": "Back to sign in",
     "resetEmailRequired": "Enter your email address first.",
     "resetEmailSent": "Password reset instructions were sent if an account exists for this email.",
     "verificationSent": "Account created. Check your email and verify the address before signing in.",
@@ -235,8 +247,31 @@
     "healthConsentRequired": "Explicit consent for processing health-related profile data is required.",
     "invalidEmail": "Please enter a valid email address.",
     "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
+    "googlePopupClosed": "The Google window was closed before sign-in was completed.",
+    "googlePopupBlocked": "The browser blocked the Google sign-in window. Allow pop-ups and try again.",
+    "accountExistsWithDifferentCredential": "An account already exists for this email with a different sign-in method.",
     "profileSavePermissionDenied": "Your account was created, but the profile could not be saved because Firestore permissions are not updated yet. Please try again after the rules are deployed.",
     "genericError": "Something went wrong during sign-in. Please try again."
+  },
+  "authAction": {
+    "checkingLink": "Checking the secure link...",
+    "resetTitle": "New password",
+    "resetFor": "Choose a new password for {email}.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "savePassword": "Save password",
+    "resetSuccessTitle": "Password changed",
+    "resetSuccessText": "Your new password is active. You can now use it to sign in.",
+    "verificationSuccessTitle": "Email verified",
+    "verificationSuccessText": "Your email address was verified successfully. Your account is ready.",
+    "continueToApp": "Continue to Bewegesund",
+    "linkErrorTitle": "Invalid link",
+    "invalidLink": "This link does not contain a valid security code.",
+    "expiredLink": "This link is invalid, expired, or has already been used. Please request a new one.",
+    "unsupportedAction": "This action is not supported by the application.",
+    "weakPassword": "The password must be at least 6 characters long.",
+    "passwordMismatch": "The passwords do not match.",
+    "backToApp": "Back to Bewegesund"
   },
   "memberAccess": {
     "badge": "Members only",
@@ -794,7 +829,7 @@
       "responseValue": "Business and counseling inquiries"
     },
     "copyright": "© 2026 Bewegesund. All rights reserved.",
-    "developedBy": "Developed by djmir0"
+    "developedBy": "Developed by"
   },
   "impressum": {
     "title": "Imprint",
