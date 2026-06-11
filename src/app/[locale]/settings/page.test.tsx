@@ -7,7 +7,10 @@ const firebaseMocks = vi.hoisted(() => ({
   batchCommit: vi.fn(),
   batchSet: vi.fn(),
   batchUpdate: vi.fn(),
+  getDownloadURL: vi.fn(),
+  updateDoc: vi.fn(),
   updateProfile: vi.fn(),
+  uploadBytes: vi.fn(),
   user: {
     uid: "user-1",
     email: "real@example.com",
@@ -56,6 +59,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("../../../../firebase.config", () => ({
   db: {},
+  storage: {},
 }));
 
 vi.mock("firebase/auth", async () => {
@@ -88,11 +92,18 @@ vi.mock("firebase/firestore", () => ({
     return vi.fn();
   }),
   serverTimestamp: vi.fn(() => "server-timestamp"),
+  updateDoc: firebaseMocks.updateDoc,
   writeBatch: vi.fn(() => ({
     update: firebaseMocks.batchUpdate,
     set: firebaseMocks.batchSet,
     commit: firebaseMocks.batchCommit,
   })),
+}));
+
+vi.mock("firebase/storage", () => ({
+  getDownloadURL: firebaseMocks.getDownloadURL,
+  ref: vi.fn((_storage, path: string) => path),
+  uploadBytes: firebaseMocks.uploadBytes,
 }));
 
 vi.mock("../components/AuthProvider", () => ({
@@ -107,7 +118,10 @@ describe("SettingsPage", () => {
     firebaseMocks.batchCommit.mockReset().mockResolvedValue(undefined);
     firebaseMocks.batchSet.mockReset();
     firebaseMocks.batchUpdate.mockReset();
+    firebaseMocks.getDownloadURL.mockReset().mockResolvedValue("https://storage.example/avatar?token=test");
+    firebaseMocks.updateDoc.mockReset().mockResolvedValue(undefined);
     firebaseMocks.updateProfile.mockReset().mockResolvedValue(undefined);
+    firebaseMocks.uploadBytes.mockReset().mockResolvedValue(undefined);
   });
 
   it("renders profile and gamification values from Firebase", async () => {
@@ -155,6 +169,31 @@ describe("SettingsPage", () => {
     await user.click(screen.getByRole("button", { name: "Cancel / Reset" }));
 
     expect(screen.getByLabelText("Username")).toHaveValue("real_member");
+  });
+
+  it("uploads and saves a valid profile photo", async () => {
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    const file = new File(["avatar"], "avatar.webp", { type: "image/webp" });
+    await user.upload(await screen.findByLabelText("Change photo"), file);
+
+    await waitFor(() => expect(firebaseMocks.uploadBytes).toHaveBeenCalledTimes(1));
+    expect(firebaseMocks.updateDoc).toHaveBeenCalledWith(
+      expect.stringContaining("users/user-1"),
+      expect.objectContaining({
+        photoURL: expect.stringContaining("https://storage.example/avatar?token=test&v="),
+      }),
+    );
+    expect(firebaseMocks.updateProfile).toHaveBeenCalledWith(
+      firebaseMocks.user,
+      expect.objectContaining({
+        photoURL: expect.stringContaining("https://storage.example/avatar?token=test&v="),
+      }),
+    );
+    expect(screen.getByTestId("settings-success-message")).toHaveTextContent(
+      "Profile photo updated successfully.",
+    );
   });
 
   it("opens account deletion from the bottom of settings", async () => {

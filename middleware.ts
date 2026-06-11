@@ -18,6 +18,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (pathname === "/auth/action") {
+    return NextResponse.next();
+  }
+
   return intlMiddleware(request);
 }
 

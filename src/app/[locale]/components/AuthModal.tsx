@@ -1,26 +1,31 @@
 "use client";
-import { useState } from 'react';
-import { useTranslations } from "next-intl";
+import { useEffect, useState } from 'react';
+import { useLocale, useTranslations } from "next-intl";
 import { auth, db } from "../../../../firebase.config";
 import {
     createUserWithEmailAndPassword,
     deleteUser,
+    GoogleAuthProvider,
     sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
+    signInWithPopup,
     signOut,
     updateProfile,
+    type User,
     type AuthError,
 } from 'firebase/auth';
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { Check, LoaderCircle, X } from 'lucide-react';
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { ArrowLeft, Check, LoaderCircle, Mail, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
 import { memberPackages } from "@/lib/memberPackages";
 import type { UserGender } from "@/lib/userProfile";
+import authTheme from "./AuthTheme.module.css";
 
 interface AuthModalProps {
     isOpen: boolean;
     onClose: () => void;
+    requiresProfileSetup?: boolean;
 }
 
 interface CreateUserProfilePayload {
@@ -95,9 +100,23 @@ interface FirebaseErrorLike {
     };
 }
 
-export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+type AuthView = "signIn" | "register" | "forgotPassword" | "googleOnboarding";
+
+const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });
+
+function splitDisplayName(displayName: string | null) {
+    const parts = displayName?.trim().split(/\s+/).filter(Boolean) ?? [];
+    return {
+        firstName: parts[0] ?? "",
+        lastName: parts.slice(1).join(" "),
+    };
+}
+
+export default function AuthModal({ isOpen, onClose, requiresProfileSetup = false }: AuthModalProps) {
     const t = useTranslations("auth");
     const packageT = useTranslations("packages");
+    const locale = useLocale();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -112,18 +131,21 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [hasAcceptedConsent, setHasAcceptedConsent] = useState(false);
     const [hasAcceptedHealthConsent, setHasAcceptedHealthConsent] = useState(false);
     const [isTermsOpen, setIsTermsOpen] = useState(false);
-    const [isRegister, setIsRegister] = useState(false);
+    const [view, setView] = useState<AuthView>("signIn");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [infoMessage, setInfoMessage] = useState("");
+    const isRegister = view === "register";
+    const isForgotPassword = view === "forgotPassword";
+    const isGoogleOnboarding = view === "googleOnboarding";
+    const isProfileSetup = isRegister || isGoogleOnboarding;
     const termsItems = t.raw("terms.items") as string[];
     const isPasswordMatching = !isRegister || password === confirmPassword;
     const hasRequiredRegistrationFields =
         firstName.trim().length > 0 &&
         lastName.trim().length > 0 &&
         email.trim().length > 0 &&
-        password.length > 0 &&
-        confirmPassword.length > 0 &&
+        (!isRegister || (password.length > 0 && confirmPassword.length > 0)) &&
         Number(age) >= 1 &&
         Number(age) <= 120 &&
         gender.length > 0 &&
@@ -135,9 +157,25 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         isPasswordMatching &&
         hasAcceptedConsent &&
         hasAcceptedHealthConsent;
-    const canSubmit = isRegister
+    const canSubmit = isProfileSetup
         ? hasRequiredRegistrationFields && !isSubmitting
         : email.trim().length > 0 && password.length > 0 && !isSubmitting;
+
+    useEffect(() => {
+        if (
+            !isOpen
+            || !requiresProfileSetup
+            || !auth.currentUser
+            || !auth.currentUser.providerData.some((provider) => provider.providerId === "google.com")
+        ) return;
+
+        const googleUser = auth.currentUser;
+        const name = splitDisplayName(googleUser.displayName);
+        setEmail(googleUser.email ?? "");
+        setFirstName((current) => current || name.firstName);
+        setLastName((current) => current || name.lastName);
+        setView("googleOnboarding");
+    }, [isOpen, requiresProfileSetup]);
 
     const getFriendlyErrorMessage = (error: unknown) => {
         const firebaseError = error as (AuthError & FirebaseErrorLike) | undefined;
@@ -165,6 +203,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 return t("invalidEmail");
             case "auth/too-many-requests":
                 return t("tooManyRequests");
+            case "auth/popup-closed-by-user":
+                return t("googlePopupClosed");
+            case "auth/popup-blocked":
+                return t("googlePopupBlocked");
+            case "auth/account-exists-with-different-credential":
+                return t("accountExistsWithDifferentCredential");
             case "permission-denied":
             case "firestore/permission-denied":
                 return t("profileSavePermissionDenied");
@@ -174,13 +218,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     };
 
     const fullName = `${firstName.trim()} ${lastName.trim()}`;
-    const createProfilePayload = (uid: string, userEmail: string): CreateUserProfilePayload => ({
+    const createProfilePayload = (uid: string, userEmail: string, user?: User): CreateUserProfilePayload => ({
         uid,
         email: userEmail,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         displayName: fullName,
-        photoURL: null,
+        photoURL: user?.photoURL ?? null,
         age: Number(age),
         gender: gender as UserGender,
         heightCm: Number(heightCm),
@@ -231,9 +275,63 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setInfoMessage("");
     };
 
-    const handlePasswordReset = async () => {
+    const getAuthActionSettings = () => ({
+        url: `${window.location.origin}/${locale}`,
+    });
+
+    const openPasswordReset = () => {
+        setPassword("");
+        setConfirmPassword("");
+        setErrorMessage("");
+        setInfoMessage("");
+        setView("forgotPassword");
+    };
+
+    const handleClose = async () => {
+        if (isGoogleOnboarding) {
+            await signOut(auth).catch(() => undefined);
+            resetForm();
+            setView("signIn");
+        }
+        onClose();
+    };
+
+    const handleGoogleSignIn = async () => {
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
+        setErrorMessage("");
+        setInfoMessage("");
+
+        try {
+            const credential = await signInWithPopup(auth, googleProvider);
+            const profileSnapshot = await getDoc(doc(db, "users", credential.user.uid));
+
+            if (profileSnapshot.exists()) {
+                resetForm();
+                onClose();
+                return;
+            }
+
+            const name = splitDisplayName(credential.user.displayName);
+            setEmail(credential.user.email ?? "");
+            setFirstName(name.firstName);
+            setLastName(name.lastName);
+            setPassword("");
+            setConfirmPassword("");
+            setView("googleOnboarding");
+        } catch (error) {
+            setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(error)}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handlePasswordReset = async (event: React.FormEvent) => {
+        event.preventDefault();
+
         if (!email.trim() || isSubmitting) {
-            setErrorMessage(`${t("errorPrefix")} ${t("resetEmailRequired")}`);
+            setErrorMessage(t("resetEmailRequired"));
             return;
         }
 
@@ -242,10 +340,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setInfoMessage("");
 
         try {
-            await sendPasswordResetEmail(auth, email.trim());
+            await sendPasswordResetEmail(auth, email.trim(), getAuthActionSettings());
             setInfoMessage(t("resetEmailSent"));
         } catch (error) {
-            setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(error)}`);
+            setErrorMessage(getFriendlyErrorMessage(error));
         } finally {
             setIsSubmitting(false);
         }
@@ -256,7 +354,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         setIsSubmitting(true);
         setErrorMessage("");
         try {
-            if (isRegister) {
+            if (isProfileSetup) {
                 if (password !== confirmPassword) {
                     setErrorMessage(`${t("errorPrefix")} ${t("passwordMismatch")}`);
                     return;
@@ -272,6 +370,22 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     return;
                 }
 
+                if (isGoogleOnboarding) {
+                    const googleUser = auth.currentUser;
+                    if (!googleUser) {
+                        throw new Error("Google user is no longer authenticated.");
+                    }
+
+                    await setDoc(
+                        doc(db, "users", googleUser.uid),
+                        createProfilePayload(googleUser.uid, googleUser.email ?? email.trim(), googleUser),
+                    );
+                    resetForm();
+                    setView("signIn");
+                    onClose();
+                    return;
+                }
+
                 const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
 
                 try {
@@ -282,11 +396,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         doc(db, "users", credential.user.uid),
                         createProfilePayload(credential.user.uid, credential.user.email ?? email.trim()),
                     );
-                    await sendEmailVerification(credential.user);
+                    await sendEmailVerification(credential.user, getAuthActionSettings());
                     await signOut(auth);
                     setPassword("");
                     setConfirmPassword("");
-                    setIsRegister(false);
+                    setView("signIn");
                     setInfoMessage(t("verificationSent"));
                     return;
                 } catch (profileError) {
@@ -308,22 +422,95 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(var(--navy-rgb),0.92)] backdrop-blur-md p-4">
-            <div className="relative max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-[var(--border-soft)] bg-[radial-gradient(circle_at_top,_rgba(var(--accent-rgb),0.2),_transparent_32%),linear-gradient(180deg,_rgba(var(--navy-rgb),0.98),_rgba(2,35,53,0.98))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)] sm:p-8">
-                <button onClick={onClose} aria-label={t("close")} className="absolute right-4 top-4 rounded-full border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.05)] p-2 text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.1)] hover:text-[var(--text-light)]"><X size={18} /></button>
+        <div className={`${authTheme.scope} ${authTheme.overlay} fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md p-4`}>
+            <div className={`${authTheme.panel} relative max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-[var(--border-soft)] p-6 sm:p-8`}>
+                <button onClick={() => void handleClose()} aria-label={t("close")} className="absolute right-4 top-4 rounded-full border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.05)] p-2 text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.1)] hover:text-[var(--text-light)]"><X size={18} /></button>
                 <div className="mb-6">
                     <div className="mb-3 inline-flex rounded-full border border-[rgba(var(--accent-rgb),0.25)] bg-[rgba(var(--accent-rgb),0.1)] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[var(--highlight-soft)]">
                         Bewegesund
                     </div>
                     <h2 className="text-3xl font-black italic uppercase text-[var(--text-light)]">
-                        {isRegister ? t("registerTitle") : t("signInTitle")}
+                        {isForgotPassword ? t("resetTitle") : isGoogleOnboarding ? t("googleOnboardingTitle") : isRegister ? t("registerTitle") : t("signInTitle")}
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-[var(--text-dim)]">
-                        {isRegister ? t("registerSupportText") : t("supportText")}
+                        {isForgotPassword ? t("resetSupportText") : isGoogleOnboarding ? t("googleOnboardingSupportText") : isRegister ? t("registerSupportText") : t("supportText")}
                     </p>
                 </div>
+                {isForgotPassword ? (
+                    <form onSubmit={handlePasswordReset} className="space-y-4">
+                        <div className="grid h-14 w-14 place-items-center rounded-2xl border border-[rgba(var(--accent-rgb),0.28)] bg-[rgba(var(--accent-rgb),0.12)] text-[var(--highlight-soft)]">
+                            <Mail size={26} />
+                        </div>
+                        <label className="block">
+                            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("email")}</span>
+                            <input
+                                type="email"
+                                placeholder={t("email")}
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
+                                className={`${authTheme.input} w-full rounded-2xl border border-[var(--border-soft)] px-4 py-3 outline-none transition focus:border-[var(--border-strong)]`}
+                                autoComplete="email"
+                                autoFocus
+                                required
+                            />
+                        </label>
+                        {errorMessage ? (
+                            <div className="rounded-2xl border border-[rgba(var(--accent-strong-rgb),0.2)] bg-[var(--status-danger-soft)] px-4 py-3 text-sm text-[var(--highlight-soft)]">
+                                {errorMessage}
+                            </div>
+                        ) : null}
+                        {infoMessage ? (
+                            <div className="rounded-2xl border border-[rgba(var(--page-warm-rgb),0.28)] bg-[rgba(var(--page-warm-rgb),0.1)] px-4 py-3 text-sm leading-6 text-[var(--text-light)]">
+                                {infoMessage}
+                            </div>
+                        ) : null}
+                        <button
+                            disabled={!email.trim() || isSubmitting}
+                            className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                            {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}
+                            {t("sendResetLink")}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setErrorMessage("");
+                                setInfoMessage("");
+                                setView("signIn");
+                            }}
+                            className="flex w-full items-center justify-center gap-2 text-sm font-bold text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
+                        >
+                            <ArrowLeft size={16} />
+                            {t("backToSignIn")}
+                        </button>
+                    </form>
+                ) : (
+                <>
+                {!isProfileSetup ? (
+                    <>
+                        <button
+                            type="button"
+                            onClick={() => void handleGoogleSignIn()}
+                            disabled={isSubmitting}
+                            className={`${authTheme.googleButton} mb-4 flex w-full items-center justify-center gap-3 rounded-full border border-[var(--border-soft)] py-3.5 font-bold transition hover:border-[var(--border-strong)] disabled:cursor-not-allowed disabled:opacity-50`}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.4-.18-2.07H12v3.92h5.38a4.6 4.6 0 0 1-2 3.02v2.54h3.24c1.9-1.75 2.98-4.33 2.98-7.41Z" />
+                                <path fill="#34A853" d="M12 22c2.7 0 4.98-.9 6.63-2.36l-3.24-2.54c-.9.6-2.05.96-3.39.96-2.61 0-4.82-1.76-5.61-4.13H3.04v2.62A10 10 0 0 0 12 22Z" />
+                                <path fill="#FBBC05" d="M6.39 13.93A6 6 0 0 1 6.07 12c0-.67.12-1.32.32-1.93V7.45H3.04A10 10 0 0 0 2 12c0 1.61.38 3.14 1.04 4.55l3.35-2.62Z" />
+                                <path fill="#EA4335" d="M12 5.94c1.47 0 2.79.5 3.82 1.5l2.88-2.88A9.64 9.64 0 0 0 12 2a10 10 0 0 0-8.96 5.45l3.35 2.62C7.18 7.7 9.39 5.94 12 5.94Z" />
+                            </svg>
+                            {t("continueWithGoogle")}
+                        </button>
+                        <div className="mb-4 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-dim)]">
+                            <span className="h-px flex-1 bg-[var(--border-soft)]" />
+                            {t("orUseEmail")}
+                            <span className="h-px flex-1 bg-[var(--border-soft)]" />
+                        </div>
+                    </>
+                ) : null}
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {isRegister ? (
+                    {isProfileSetup ? (
                         <div className="grid gap-4 sm:grid-cols-2">
                             <label className="block">
                                 <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("firstName") })}</span>
@@ -351,15 +538,17 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                             </label>
                         </div>
                     ) : null}
-                    <label className="block">
+                    <label className={isGoogleOnboarding ? "hidden" : "block"}>
                         <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{isRegister ? t("requiredLabel", { label: t("email") }) : t("email")}</span>
                         <input
                             type="email" placeholder={t("email")} value={email} onChange={(e) => setEmail(e.target.value)}
                             className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
                             autoComplete="email"
-                            required
+                            required={!isGoogleOnboarding}
+                            readOnly={isGoogleOnboarding}
                         />
                     </label>
+                    {!isGoogleOnboarding ? (
                     <div className={isRegister ? "grid gap-4 sm:grid-cols-2" : ""}>
                         <label className="block">
                             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{isRegister ? t("requiredLabel", { label: t("password") }) : t("password")}</span>
@@ -388,7 +577,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                             </label>
                         ) : null}
                     </div>
-                    {isRegister ? (
+                    ) : null}
+                    {isProfileSetup ? (
                         <>
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <label className="block">
@@ -563,31 +753,35 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     ) : null}
                     <button disabled={!canSubmit} className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[var(--text-light)] disabled:hover:text-[var(--text-on-warm)]">
                         {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}
-                        {isRegister ? t("submitRegister") : t("submitSignIn")}
+                        {isGoogleOnboarding ? t("completeProfile") : isRegister ? t("submitRegister") : t("submitSignIn")}
                     </button>
                 </form>
-                {!isRegister ? (
+                {!isProfileSetup ? (
                     <button
                         type="button"
-                        onClick={() => void handlePasswordReset()}
+                        onClick={openPasswordReset}
                         className="mt-4 w-full text-sm font-bold text-[var(--highlight-soft)] transition hover:text-[var(--text-light)]"
                     >
                         {t("forgotPassword")}
                     </button>
                 ) : null}
+                {!isGoogleOnboarding ? (
                 <button
                     type="button"
                     onClick={() => {
                         resetForm();
-                        setIsRegister((current) => !current);
+                        setView(isRegister ? "signIn" : "register");
                     }}
                     className="mt-3 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
                 >
                     {isRegister ? t("switchToSignIn") : t("switchToRegister")}
                 </button>
+                ) : null}
+                </>
+                )}
                 {isTermsOpen ? (
-                    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(var(--navy-rgb),0.72)] p-4 backdrop-blur-sm">
-                        <div className="relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-[1.5rem] border border-[var(--border-soft)] bg-[linear-gradient(180deg,_rgba(var(--navy-rgb),0.98),_rgba(2,35,53,0.98))] p-6 shadow-[0_24px_70px_rgba(0,0,0,0.45)]">
+                    <div className={`${authTheme.overlay} fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm`}>
+                        <div className={`${authTheme.panel} relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-[1.5rem] border border-[var(--border-soft)] p-6`}>
                             <button
                                 type="button"
                                 onClick={() => setIsTermsOpen(false)}

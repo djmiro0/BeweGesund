@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, CircleCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import styles from "./HeroSection.module.css";
 
@@ -21,7 +21,7 @@ export default function HeroSection({ openAuth }: { openAuth?: () => void }) {
                     className={styles.heroImage}
                 />
             </div>
-            <div className={styles.scrim} aria-hidden="true" />
+            <div className={styles.blend} aria-hidden="true" />
             <motion.div
                 className={styles.content}
                 initial={{ opacity: 0, y: 28 }}
@@ -34,21 +34,35 @@ export default function HeroSection({ openAuth }: { openAuth?: () => void }) {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.15, duration: 0.5 }}
                 >
-                    <Sparkles size={16} />
-                    Bewegesund
+                    <CircleCheck size={15} />
+                    {t("eyebrow")}
                 </motion.div>
                 <h1>{t("title")}</h1>
                 <p>{t("subtitle")}</p>
-                <motion.button
-                    type="button"
-                    onClick={openAuth}
-                    className={styles.cta}
-                    whileHover={{ y: -3, scale: 1.015 }}
-                    whileTap={{ scale: 0.98 }}
-                >
-                    <span>{t("cta")}</span>
-                    <ArrowRight size={18} />
-                </motion.button>
+                <div className={styles.actions}>
+                    <motion.button
+                        type="button"
+                        onClick={openAuth}
+                        className={styles.cta}
+                        whileHover={{ y: -3, scale: 1.015 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        <span>{t("cta")}</span>
+                        <ArrowRight size={18} />
+                    </motion.button>
+                    <a className={styles.textLink} href="#programme">
+                        {t("secondaryCta")}
+                    </a>
+                </div>
+            </motion.div>
+            <motion.div
+                className={styles.mediaCaption}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            >
+                <span>01</span>
+                <p>{t("imageCaption")}</p>
             </motion.div>
         </section>
     );

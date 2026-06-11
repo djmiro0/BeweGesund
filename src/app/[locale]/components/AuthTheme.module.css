@@ -1,0 +1,81 @@
+.scope {
+  --auth-overlay: rgba(11, 22, 39, 0.58);
+  --auth-panel: #fffaf0;
+  --auth-panel-rgb: 255, 250, 240;
+  --auth-panel-alt: #ffffff;
+  --auth-input: #ffffff;
+  --auth-text: #0b1627;
+  --auth-muted: rgba(11, 22, 39, 0.66);
+  --auth-border: rgba(11, 22, 39, 0.14);
+  --auth-border-strong: rgba(226, 61, 79, 0.42);
+  --auth-secondary-surface: rgba(11, 22, 39, 0.045);
+  --auth-google-bg: #ffffff;
+  --auth-google-text: #0b1627;
+  --auth-shadow: rgba(8, 17, 31, 0.2);
+  --auth-highlight-soft: #8a2431;
+
+  --navy-rgb: var(--auth-panel-rgb);
+  --text-light: var(--auth-text);
+  --text-dim: var(--auth-muted);
+  --border-soft: var(--auth-border);
+  --border-strong: var(--auth-border-strong);
+  --foreground-rgb: 11, 22, 39;
+  --text-on-warm: #ffffff;
+  --highlight-soft: var(--auth-highlight-soft);
+}
+
+:global(:root[data-theme="dark"]) .scope {
+  --auth-overlay: rgba(1, 7, 14, 0.82);
+  --auth-panel: #0d1728;
+  --auth-panel-rgb: 13, 23, 40;
+  --auth-panel-alt: #07101d;
+  --auth-input: #14233a;
+  --auth-text: #f7f1e6;
+  --auth-muted: rgba(247, 241, 230, 0.64);
+  --auth-border: rgba(247, 241, 230, 0.12);
+  --auth-border-strong: rgba(226, 61, 79, 0.48);
+  --auth-secondary-surface: rgba(247, 241, 230, 0.055);
+  --auth-google-bg: #f7f1e6;
+  --auth-google-text: #0b1627;
+  --auth-shadow: rgba(0, 0, 0, 0.42);
+  --auth-highlight-soft: #f6c764;
+
+  --foreground-rgb: 247, 241, 230;
+}
+
+.scope input:not([type="checkbox"]),
+.scope select {
+  color: var(--auth-text);
+  background: var(--auth-input);
+}
+
+.scope select option {
+  color: var(--auth-text);
+  background: var(--auth-panel);
+}
+
+.overlay {
+  background: var(--auth-overlay);
+}
+
+.panel {
+  color: var(--auth-text);
+  background:
+    radial-gradient(circle at top, rgba(var(--accent-rgb), 0.14), transparent 34%),
+    linear-gradient(180deg, var(--auth-panel), var(--auth-panel-alt));
+  box-shadow: 0 30px 80px var(--auth-shadow);
+}
+
+.input {
+  color: var(--auth-text);
+  background: var(--auth-input);
+}
+
+.secondarySurface {
+  background: var(--auth-secondary-surface);
+}
+
+.googleButton {
+  color: var(--auth-google-text);
+  background: var(--auth-google-bg);
+}

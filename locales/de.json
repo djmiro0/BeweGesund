@@ -53,9 +53,12 @@
   },
   "home": {
     "hero": {
+      "eyebrow": "Bewegung und Prävention",
       "title": "BEWEGE DICH IN RICHTUNG EINER GESÜNDEREN KÖRPERHALTUNG",
       "subtitle": "Online-Bewegung, Rehabilitation und edukative Begleitung auf Deutsch und Englisch.",
-      "cta": "Jetzt Starten"
+      "cta": "Jetzt Starten",
+      "secondaryCta": "Programme entdecken",
+      "imageCaption": "Strukturiertes Training für mehr Sicherheit, Kraft und Beweglichkeit im Alltag."
     },
     "public": {
       "eyebrow": "Bewegung. Reha. Bildung.",
@@ -137,6 +140,11 @@
     "registerTitle": "Konto Erstellen",
     "supportText": "Erhalte Zugriff auf Live-Training, Live-Seminare und persönliche Beratung nur für Mitglieder.",
     "registerSupportText": "Erstelle dein Konto und ergänze die grundlegenden Gesundheitsdaten für dein Profil und die BMI-Berechnung.",
+    "googleOnboardingTitle": "Profil vervollständigen",
+    "googleOnboardingSupportText": "Google hat deine Identität bestätigt. Ergänze noch die erforderlichen Profil- und Gesundheitsdaten, um Bewegesund zu nutzen.",
+    "continueWithGoogle": "Mit Google fortfahren",
+    "orUseEmail": "oder mit E-Mail",
+    "completeProfile": "Profil abschließen",
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
     "firstName": "Vorname",
@@ -219,6 +227,10 @@
     "submitSignIn": "Anmelden",
     "submitRegister": "Konto Erstellen",
     "forgotPassword": "Passwort vergessen?",
+    "resetTitle": "Passwort zurücksetzen",
+    "resetSupportText": "Gib die E-Mail-Adresse deines Kontos ein. Wir senden dir einen sicheren Link, über den du ein neues Passwort festlegen kannst.",
+    "sendResetLink": "Reset-Link senden",
+    "backToSignIn": "Zurück zur Anmeldung",
     "resetEmailRequired": "Gib zuerst deine E-Mail-Adresse ein.",
     "resetEmailSent": "Falls für diese E-Mail ein Konto existiert, wurden Anweisungen zum Zurücksetzen gesendet.",
     "verificationSent": "Konto erstellt. Bitte bestätige deine E-Mail-Adresse, bevor du dich anmeldest.",
@@ -235,8 +247,31 @@
     "healthConsentRequired": "Für die Verarbeitung gesundheitsbezogener Profildaten ist eine ausdrückliche Einwilligung erforderlich.",
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "tooManyRequests": "Zu viele Versuche. Bitte warte kurz und versuche es erneut.",
+    "googlePopupClosed": "Das Google-Fenster wurde geschlossen, bevor die Anmeldung abgeschlossen war.",
+    "googlePopupBlocked": "Das Google-Anmeldefenster wurde vom Browser blockiert. Bitte erlaube Pop-ups und versuche es erneut.",
+    "accountExistsWithDifferentCredential": "Für diese E-Mail-Adresse existiert bereits ein Konto mit einer anderen Anmeldemethode.",
     "profileSavePermissionDenied": "Dein Konto wurde erstellt, aber das Profil konnte nicht gespeichert werden, weil die Firestore-Berechtigungen noch nicht aktualisiert sind. Bitte versuche es erneut, nachdem die Regeln deployt wurden.",
     "genericError": "Bei der Anmeldung ist ein Fehler aufgetreten. Bitte versuche es erneut."
+  },
+  "authAction": {
+    "checkingLink": "Der sichere Link wird geprüft...",
+    "resetTitle": "Neues Passwort",
+    "resetFor": "Lege ein neues Passwort für {email} fest.",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "savePassword": "Passwort speichern",
+    "resetSuccessTitle": "Passwort geändert",
+    "resetSuccessText": "Dein neues Passwort ist aktiv. Du kannst dich jetzt damit anmelden.",
+    "verificationSuccessTitle": "E-Mail bestätigt",
+    "verificationSuccessText": "Deine E-Mail-Adresse wurde erfolgreich bestätigt. Dein Konto ist jetzt bereit.",
+    "continueToApp": "Weiter zu Bewegesund",
+    "linkErrorTitle": "Link nicht gültig",
+    "invalidLink": "Dieser Link enthält keinen gültigen Sicherheitscode.",
+    "expiredLink": "Dieser Link ist ungültig, abgelaufen oder wurde bereits verwendet. Fordere bitte einen neuen Link an.",
+    "unsupportedAction": "Diese Aktion wird von der Anwendung nicht unterstützt.",
+    "weakPassword": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein.",
+    "backToApp": "Zurück zu Bewegesund"
   },
   "memberAccess": {
     "badge": "Nur für Mitglieder",
@@ -794,7 +829,7 @@
       "responseValue": "Geschäftliche und beratungsbezogene Anfragen"
     },
     "copyright": "© 2026 BeweGesund. Alle Rechte vorbehalten.",
-    "developedBy": "Entwickelt von djmir0"
+    "developedBy": "Entwickelt von"
   },
   "impressum": {
     "title": "Impressum",
