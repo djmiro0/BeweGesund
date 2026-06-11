@@ -17,9 +17,17 @@ interface HeaderProps {
     profileName?: string | null;
     profilePhoto?: string | null;
     openAuth?: () => void;
+    launchMode?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ locale, user, profileName: storedProfileName, profilePhoto: storedProfilePhoto, openAuth }) => {
+const Header: React.FC<HeaderProps> = ({
+    locale,
+    user,
+    profileName: storedProfileName,
+    profilePhoto: storedProfilePhoto,
+    openAuth,
+    launchMode = false,
+}) => {
     const t = useTranslations("header");
     const router = useRouter();
     const pathname = usePathname();
@@ -31,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ locale, user, profileName: storedProfil
     const profilePhoto = storedProfilePhoto || user?.photoURL;
     const profileInitial = profileName.charAt(0).toUpperCase();
 
-    const navItems = [
+    const navItems = launchMode && !user ? [] : [
         {
             key: "program",
             href: user ? `/${locale}` : `/${locale}/courses`,
@@ -116,25 +124,27 @@ const Header: React.FC<HeaderProps> = ({ locale, user, profileName: storedProfil
                     />
                 </Link>
 
-                <nav className={styles.desktopNav}>
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.key}
-                            href={item.href}
-                            onClick={() => setIsMenuOpen(false)}
-                            aria-current={item.active ? "page" : undefined}
-                            className={`${styles.navLink} ${item.active ? styles.navLinkActive : ""}`}
-                        >
-                            <span
-                                className={`${styles.navUnderline} ${item.active ? styles.navUnderlineActive : ""}`}
-                            />
-                            <span
-                                className={`${styles.navGlow} ${item.active ? styles.navGlowActive : ""}`}
-                            />
-                            <span className={styles.navLabel}>{item.label}</span>
-                        </Link>
-                    ))}
-                </nav>
+                {navItems.length > 0 ? (
+                    <nav className={styles.desktopNav}>
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.key}
+                                href={item.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                aria-current={item.active ? "page" : undefined}
+                                className={`${styles.navLink} ${item.active ? styles.navLinkActive : ""}`}
+                            >
+                                <span
+                                    className={`${styles.navUnderline} ${item.active ? styles.navUnderlineActive : ""}`}
+                                />
+                                <span
+                                    className={`${styles.navGlow} ${item.active ? styles.navGlowActive : ""}`}
+                                />
+                                <span className={styles.navLabel}>{item.label}</span>
+                            </Link>
+                        ))}
+                    </nav>
+                ) : null}
 
                 <div className={styles.actions}>
                     <button
@@ -175,16 +185,18 @@ const Header: React.FC<HeaderProps> = ({ locale, user, profileName: storedProfil
                         </button>
                     ) : null}
 
-                    <button
-                        type="button"
-                        onClick={() => setIsMenuOpen((open) => !open)}
-                        data-testid="mobile-menu-trigger"
-                        aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
-                        aria-expanded={isMenuOpen}
-                        className={styles.menuButton}
-                    >
-                        {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
-                    </button>
+                    {navItems.length > 0 ? (
+                        <button
+                            type="button"
+                            onClick={() => setIsMenuOpen((open) => !open)}
+                            data-testid="mobile-menu-trigger"
+                            aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
+                            aria-expanded={isMenuOpen}
+                            className={styles.menuButton}
+                        >
+                            {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
+                        </button>
+                    ) : null}
                 </div>
             </header>
 
@@ -198,46 +210,48 @@ const Header: React.FC<HeaderProps> = ({ locale, user, profileName: storedProfil
                 />
             ) : null}
 
-            <div
-                data-testid="mobile-menu"
-                className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ""}`}
-            >
-                <nav className={styles.mobileNav}>
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.key}
-                            href={item.href}
-                            onClick={() => setIsMenuOpen(false)}
-                            aria-current={item.active ? "page" : undefined}
-                            className={`${styles.mobileNavLink} ${item.active ? styles.mobileNavLinkActive : ""}`}
-                        >
-                            {item.label}
-                        </Link>
-                    ))}
+            {navItems.length > 0 ? (
+                <div
+                    data-testid="mobile-menu"
+                    className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ""}`}
+                >
+                    <nav className={styles.mobileNav}>
+                        {navItems.map((item) => (
+                            <Link
+                                key={item.key}
+                                href={item.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                aria-current={item.active ? "page" : undefined}
+                                className={`${styles.mobileNavLink} ${item.active ? styles.mobileNavLinkActive : ""}`}
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
 
-                    <div className={styles.mobileAuth}>
-                        {user ? (
-                            <button
-                                onClick={() => signOut(auth)}
-                                className={styles.mobileSignOut}
-                            >
-                                <LogOut size={18} />
-                                {t("signOut")}
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => {
-                                    setIsMenuOpen(false);
-                                    openAuth?.();
-                                }}
-                                className={styles.mobileSignIn}
-                            >
-                                {t("signIn")}
-                            </button>
-                        )}
-                    </div>
-                </nav>
-            </div>
+                        <div className={styles.mobileAuth}>
+                            {user ? (
+                                <button
+                                    onClick={() => signOut(auth)}
+                                    className={styles.mobileSignOut}
+                                >
+                                    <LogOut size={18} />
+                                    {t("signOut")}
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        setIsMenuOpen(false);
+                                        openAuth?.();
+                                    }}
+                                    className={styles.mobileSignIn}
+                                >
+                                    {t("signIn")}
+                                </button>
+                            )}
+                        </div>
+                    </nav>
+                </div>
+            ) : null}
         </>
     );
 };

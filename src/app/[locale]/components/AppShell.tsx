@@ -3,6 +3,7 @@
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
@@ -11,17 +12,16 @@ import { ThemeProvider } from "./ThemeProvider";
 import { getProfileFirstName } from "@/lib/userProfile";
 import styles from "./AppShell.module.css";
 
-function ShellFrame({
+export function ShellFrame({
   children,
   locale,
 }: {
   children: React.ReactNode;
   locale: string;
 }) {
+  const t = useTranslations("home");
   const { user, profile, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
   const pathname = usePathname();
-  const isPublicHomeRoute = pathname === `/${locale}` || pathname === `/${locale}/`;
-  const isPublicBlogRoute = pathname.startsWith(`/${locale}/blogs`);
   const isAuthActionRoute = pathname.startsWith(`/${locale}/auth/action`);
   const isGoogleUser = user?.providerData.some((provider) => provider.providerId === "google.com") ?? false;
   const requiresProfileSetup = Boolean(
@@ -49,14 +49,20 @@ function ShellFrame({
           <span />
         </div>
         <p className={styles.loadingKicker}>BeweGesund</p>
-        <p className={styles.loadingText}>...</p>
+        <p className={styles.loadingText}>{t("loading")}</p>
       </main>
     );
   }
 
-  if (!user && !isPublicHomeRoute && !isPublicBlogRoute && !isAuthActionRoute) {
+  if (!user && !isAuthActionRoute) {
     return (
       <>
+        <Header
+          locale={locale}
+          user={null}
+          openAuth={openAuth}
+          launchMode
+        />
         <ComingSoon openAuth={openAuth} />
         <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
       </>

@@ -156,6 +156,69 @@
   min-height: 1.1rem;
 }
 
+.billingActions {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.billingPlanButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.billingStatus {
+  margin: 0;
+  color: var(--page-muted);
+  font-size: 0.72rem;
+  text-transform: capitalize;
+}
+
+.billingButton {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--page-ink);
+  color: var(--page-base);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  padding: 0.8rem 1rem;
+  text-transform: uppercase;
+}
+
+.billingButton:hover {
+  background: var(--page-accent);
+}
+
+.billingButton:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.billingSpinner {
+  animation: billingSpin 0.8s linear infinite;
+}
+
+.billingError {
+  margin: 0;
+  color: var(--page-accent);
+  font-size: 0.74rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+@keyframes billingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .settingsTrigger {
   display: inline-flex;
   align-items: center;

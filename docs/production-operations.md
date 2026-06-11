@@ -6,6 +6,7 @@
 - `npm run test:component`
 - `npm run build`
 - `npm run build` in `functions/`
+- Complete a Stripe test subscription and Customer Portal cancellation.
 - Verify `/api/health` returns HTTP 200 after deployment.
 - Smoke-test registration, email verification, password reset, settings save, video playback, and account deletion.
 
@@ -16,6 +17,10 @@
 - Mux signing credentials and a mandatory admin upload token
 - `NEXT_PUBLIC_SITE_URL`
 - All `LEGAL_*` provider variables from `.env.example`
+- Stripe Basic and Plus Price IDs, secret key, webhook signing secret, and Customer Portal configuration
+
+Follow `docs/stripe-billing.md` in Stripe test mode before adding any live
+Stripe credentials.
 
 Enable Firebase App Check enforcement for Firestore after the web app is registered and verified.
 
@@ -28,6 +33,7 @@ Configure scheduled Firestore exports in Google Cloud to a dedicated, access-res
 - Monitor `/api/health` from an external uptime service.
 - Configure Vercel alerts for elevated 5xx rates and failed deployments.
 - Configure Firebase alerts for Functions errors, quota usage, and App Check rejection spikes.
+- Configure Stripe webhook failure and failed-payment notifications.
 - Never log passwords, Firebase ID tokens, Mux signing keys, or health-profile values.
 
 ## Incident response

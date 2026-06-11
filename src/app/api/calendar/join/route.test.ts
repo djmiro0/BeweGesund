@@ -75,4 +75,15 @@ describe("calendar join route", () => {
       code: "USER_ACCESS_UNAVAILABLE",
     });
   });
+
+  it("rejects users without an active paid subscription", async () => {
+    mocks.getFirebaseUserAccess.mockResolvedValue({
+      memberPackage: "plus",
+      subscriptionStatus: "free",
+    });
+
+    const response = await POST(request());
+
+    expect(response.status).toBe(403);
+  });
 });

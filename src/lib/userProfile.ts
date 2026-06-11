@@ -4,6 +4,14 @@ import { normalizeMemberPackage } from "@/lib/memberPackages";
 export type OccupationKey = "sedentary" | "standing" | "physical";
 export type AnamnesisStatus = "pending" | "completed" | "review-required";
 export type UserGender = "female" | "male";
+export type SubscriptionStatus = "free" | "trialing" | "active" | "past_due" | "canceled";
+const subscriptionStatuses = new Set<SubscriptionStatus>([
+  "free",
+  "trialing",
+  "active",
+  "past_due",
+  "canceled",
+]);
 
 export interface UserProfileData {
   email: string | null;
@@ -20,6 +28,7 @@ export interface UserProfileData {
   averageStepsPerDay: number | null;
   primaryGoalKey: string | null;
   memberPackage: MemberPackage;
+  subscriptionStatus: SubscriptionStatus;
   startedCourseIds: string[];
   completedCourseIds: string[];
   recommendedCourseIds: string[];
@@ -50,6 +59,7 @@ export const emptyUserProfile: UserProfileData = {
   averageStepsPerDay: null,
   primaryGoalKey: null,
   memberPackage: "basic",
+  subscriptionStatus: "free",
   startedCourseIds: [],
   completedCourseIds: [],
   recommendedCourseIds: [],
@@ -77,6 +87,12 @@ function stringArray(value: unknown) {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
 }
 
+function normalizeSubscriptionStatus(value: unknown): SubscriptionStatus {
+  return typeof value === "string" && subscriptionStatuses.has(value as SubscriptionStatus)
+    ? value as SubscriptionStatus
+    : "free";
+}
+
 function ageFromLegacyDateOfBirth(value: unknown) {
   if (typeof value !== "string" || !value) return null;
 
@@ -98,7 +114,6 @@ export function normalizeUserProfile(data: Record<string, unknown> | undefined):
 
   const occupationKey = data.occupationKey;
   const anamnesisStatusKey = data.anamnesisStatusKey;
-
   return {
     email: optionalString(data.email),
     firstName: optionalString(data.firstName),
@@ -117,6 +132,7 @@ export function normalizeUserProfile(data: Record<string, unknown> | undefined):
     averageStepsPerDay: optionalNumber(data.averageStepsPerDay),
     primaryGoalKey: optionalString(data.primaryGoalKey),
     memberPackage: normalizeMemberPackage(data.memberPackage),
+    subscriptionStatus: normalizeSubscriptionStatus(data.subscriptionStatus),
     startedCourseIds: stringArray(data.startedCourseIds),
     completedCourseIds: stringArray(data.completedCourseIds),
     recommendedCourseIds: stringArray(data.recommendedCourseIds),

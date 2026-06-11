@@ -23,6 +23,18 @@
     "themeLight": "Zum hellen Modus wechseln",
     "themeDark": "Zum dunklen Modus wechseln"
   },
+  "comingSoon": {
+    "eyebrow": "BeweGesund",
+    "title": "Website in Vorbereitung",
+    "description": "Wir bauen gerade eine moderne Plattform für Bewegung, Prävention und digitale Trainingsbegleitung.",
+    "login": "Mitglieder-Login",
+    "phase": "Aufbauphase",
+    "status": {
+      "concept": "Das Konzept steht",
+      "content": "Inhalte werden finalisiert",
+      "access": "Der öffentliche Zugang folgt"
+    }
+  },
   "mobileTabs": {
     "ariaLabel": "Mobile Navigation",
     "tabs": {
@@ -182,9 +194,10 @@
       "thuringia": "Thüringen"
     },
     "packageLabel": "Mitgliedspaket",
-    "packageTemporaryHint": "Neue Konten starten mit Basic. Plus kann aktiviert werden, sobald die Zahlungsabwicklung verfügbar ist.",
+    "packageTemporaryHint": "Wähle jetzt dein Paket. Der Zugriff startet erst, wenn Stripe das Abo bestätigt.",
     "plans": {
       "basic": {
+        "price": "9,99 € pro Monat",
         "description": "Deine Grundlage für selbstständiges Training und fundiertes Gesundheitswissen.",
         "features": [
           "Alle aufgezeichneten Trainings und Programme",
@@ -193,6 +206,7 @@
         ]
       },
       "plus": {
+        "price": "12,99 € pro Monat",
         "description": "Für alle, die live begleitet werden und fachlich immer auf dem neuesten Stand bleiben möchten.",
         "features": [
           "Alles aus dem Basic-Paket",
@@ -247,6 +261,8 @@
     "healthConsentRequired": "Für die Verarbeitung gesundheitsbezogener Profildaten ist eine ausdrückliche Einwilligung erforderlich.",
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "tooManyRequests": "Zu viele Versuche. Bitte warte kurz und versuche es erneut.",
+    "recaptchaNotice": "Diese Registrierung wird durch reCAPTCHA geschützt.",
+    "recaptchaError": "Die Sicherheitsprüfung konnte nicht abgeschlossen werden. Lade die Seite neu und versuche es erneut.",
     "googlePopupClosed": "Das Google-Fenster wurde geschlossen, bevor die Anmeldung abgeschlossen war.",
     "googlePopupBlocked": "Das Google-Anmeldefenster wurde vom Browser blockiert. Bitte erlaube Pop-ups und versuche es erneut.",
     "accountExistsWithDifferentCredential": "Für diese E-Mail-Adresse existiert bereits ein Konto mit einer anderen Anmeldemethode.",
@@ -542,10 +558,13 @@
       "eyebrow": "Mitgliedschaft",
       "title": "Aktives Paket",
       "description": "Dieses Paket steuert den Zugriff auf Kurse und Live-Sessions.",
-      "temporaryHint": "Paketwechsel sind gesperrt, bis eine verifizierte Zahlungsabwicklung verfügbar ist.",
-      "saved": "Paket wurde aktualisiert.",
-      "permissionError": "Paket konnte nicht gespeichert werden. Bitte deploye zuerst die aktuellen Firestore-Regeln.",
-      "error": "Das Paket konnte nicht gespeichert werden."
+      "subscribeBasic": "Basic wählen · 9,99 €/Monat",
+      "subscribePlus": "Plus wählen · 12,99 €/Monat",
+      "manage": "Zahlung verwalten",
+      "processing": "Stripe wird geöffnet",
+      "billingError": "Die Zahlungsverwaltung konnte nicht geöffnet werden. Bitte versuche es erneut.",
+      "status": "Abo-Status",
+      "billingHint": "Zahlungen werden sicher über Stripe verarbeitet. Der Paketzugriff wird aktualisiert, sobald Stripe das Abo bestätigt."
     },
     "actions": {
       "menu": "Profilmenü öffnen",

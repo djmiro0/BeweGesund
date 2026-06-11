@@ -27,6 +27,7 @@ import { memberPackages } from "@/lib/memberPackages";
 import { emptyUserProfile, getProfileFirstName } from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
+import BillingActions from "./BillingActions";
 import ProfileSettingsAccess from "./ProfileSettingsAccess";
 import styles from "./Profile.module.css";
 
@@ -264,7 +265,17 @@ export default function ProfilePage() {
               );
             })}
           </div>
-          <p className={styles.packageHint}>{t("packageSelector.temporaryHint")}</p>
+          <BillingActions
+            locale={locale}
+            subscriptionStatus={profile.subscriptionStatus}
+            basicCheckoutLabel={t("packageSelector.subscribeBasic")}
+            plusCheckoutLabel={t("packageSelector.subscribePlus")}
+            manageLabel={t("packageSelector.manage")}
+            processingLabel={t("packageSelector.processing")}
+            errorLabel={t("packageSelector.billingError")}
+            statusLabel={t("packageSelector.status")}
+          />
+          <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
         </motion.section>
 
         <motion.details

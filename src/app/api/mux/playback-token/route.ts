@@ -82,6 +82,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (userAccess.subscriptionStatus !== "active" && userAccess.subscriptionStatus !== "trialing") {
+      return NextResponse.json(
+        { error: "An active membership is required.", code: "SUBSCRIPTION_REQUIRED" },
+        { status: 403 },
+      );
+    }
+
     if (packageRank[userAccess.memberPackage] < packageRank[course.packageRequired]) {
       return NextResponse.json(
         { error: "Your membership does not include this video.", code: "PACKAGE_REQUIRED" },

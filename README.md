@@ -38,7 +38,6 @@ All gamification and subscription logic belongs in Cloud Functions.
 
 ## Important Functions
 
-- `createUserProfile`
 - `completeLesson`
 - `completeWorkout`
 - `updateStreak`
@@ -46,6 +45,7 @@ All gamification and subscription logic belongs in Cloud Functions.
 - `updateMonthlyLeaderboard`
 - `claimReward`
 - `createStripeCheckoutSession`
+- `createStripeCustomerPortalSession`
 - `stripeWebhook`
 
 ## Local Frontend
@@ -114,4 +114,7 @@ For protected playback, set `MUX_SIGNING_KEY_ID`, `MUX_SIGNING_PRIVATE_KEY`, and
 
 ## Production Readiness
 
-Run the release checks and complete the external service configuration described in `docs/production-operations.md`. Stripe billing is intentionally deferred; new members receive Basic access and package changes remain locked until billing is connected.
+Run the release checks and complete the external service configuration described
+in `docs/production-operations.md`. Stripe Checkout and Customer Portal are
+implemented; configure and verify them in test mode using
+`docs/stripe-billing.md` before enabling live billing.

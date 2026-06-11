@@ -23,6 +23,18 @@
     "themeLight": "Switch to light mode",
     "themeDark": "Switch to dark mode"
   },
+  "comingSoon": {
+    "eyebrow": "BeweGesund",
+    "title": "Website under construction",
+    "description": "We are building a modern platform for movement, prevention, and guided digital training.",
+    "login": "Member sign in",
+    "phase": "Build phase",
+    "status": {
+      "concept": "The concept is ready",
+      "content": "Content is being finalized",
+      "access": "Public access is coming soon"
+    }
+  },
   "mobileTabs": {
     "ariaLabel": "Mobile navigation",
     "tabs": {
@@ -182,9 +194,10 @@
       "thuringia": "Thuringia"
     },
     "packageLabel": "Membership package",
-    "packageTemporaryHint": "New accounts start with Basic. Plus activation will be available when billing is introduced.",
+    "packageTemporaryHint": "Choose your package now. Access starts only after Stripe confirms the subscription.",
     "plans": {
       "basic": {
+        "price": "€9.99 per month",
         "description": "Your foundation for independent training and reliable health knowledge.",
         "features": [
           "All recorded workouts and programs",
@@ -193,6 +206,7 @@
         ]
       },
       "plus": {
+        "price": "€12.99 per month",
         "description": "For members who want live guidance and the latest practical knowledge.",
         "features": [
           "Everything included in Basic",
@@ -247,6 +261,8 @@
     "healthConsentRequired": "Explicit consent for processing health-related profile data is required.",
     "invalidEmail": "Please enter a valid email address.",
     "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
+    "recaptchaNotice": "This registration is protected by reCAPTCHA.",
+    "recaptchaError": "The security check could not be completed. Reload the page and try again.",
     "googlePopupClosed": "The Google window was closed before sign-in was completed.",
     "googlePopupBlocked": "The browser blocked the Google sign-in window. Allow pop-ups and try again.",
     "accountExistsWithDifferentCredential": "An account already exists for this email with a different sign-in method.",
@@ -542,10 +558,13 @@
       "eyebrow": "Membership",
       "title": "Active package",
       "description": "This package controls access to courses and live sessions.",
-      "temporaryHint": "Package changes are locked until verified billing is introduced.",
-      "saved": "Package updated.",
-      "permissionError": "The package could not be saved. Deploy the current Firestore rules first.",
-      "error": "The package could not be saved."
+      "subscribeBasic": "Choose Basic · €9.99/month",
+      "subscribePlus": "Choose Plus · €12.99/month",
+      "manage": "Manage billing",
+      "processing": "Opening Stripe",
+      "billingError": "Billing could not be opened. Please try again.",
+      "status": "Subscription status",
+      "billingHint": "Payments are processed securely by Stripe. Package access updates after Stripe confirms the subscription."
     },
     "actions": {
       "menu": "Open profile menu",
