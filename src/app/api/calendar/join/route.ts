@@ -55,6 +55,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "The session link is not available." }, { status: 404 });
     }
 
+    if (userAccess.subscriptionStatus !== "active" && userAccess.subscriptionStatus !== "trialing") {
+      return NextResponse.json({ error: "An active membership is required." }, { status: 403 });
+    }
+
     if (packageRank[userAccess.memberPackage] < packageRank[event.packageRequired]) {
       return NextResponse.json({ error: "Your membership does not include this session." }, { status: 403 });
     }

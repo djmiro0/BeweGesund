@@ -2,6 +2,7 @@
 
 import { ArrowRight, CircleCheck, Clock3, LockKeyhole, Sparkles } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
+import { useTranslations } from "next-intl";
 import styles from "./ComingSoon.module.css";
 
 interface ComingSoonProps {
@@ -14,6 +15,8 @@ const fadeIn: Variants = {
 };
 
 export default function ComingSoon({ openAuth }: ComingSoonProps) {
+    const t = useTranslations("comingSoon");
+
     return (
         <main className={styles.comingSoon}>
             <motion.section
@@ -36,22 +39,22 @@ export default function ComingSoon({ openAuth }: ComingSoonProps) {
 
                 <div className={styles.heroCopy}>
                     <motion.p className={styles.eyebrow} variants={fadeIn}>
-                        BeweGesund
+                        {t("eyebrow")}
                     </motion.p>
                     <motion.h1 className={styles.title} variants={fadeIn}>
-                        Website in Vorbereitung
+                        {t("title")}
                     </motion.h1>
                     <motion.p className={styles.description} variants={fadeIn}>
-                        Wir bauen gerade eine moderne Plattform für Bewegung, Prävention und digitale Trainingsbegleitung.
+                        {t("description")}
                     </motion.p>
                     <motion.div className={styles.actions} variants={fadeIn}>
                         <button type="button" className={styles.primaryButton} onClick={openAuth}>
-                            Member Login
+                            {t("login")}
                             <ArrowRight size={16} />
                         </button>
                         <span className={styles.statusPill}>
                             <Sparkles size={15} />
-                            Launch Phase
+                            {t("phase")}
                         </span>
                     </motion.div>
                 </div>
@@ -59,15 +62,15 @@ export default function ComingSoon({ openAuth }: ComingSoonProps) {
                 <motion.div className={styles.statusRail} variants={fadeIn}>
                     <div className={styles.statusItem}>
                         <CircleCheck size={18} />
-                        <span>Konzept steht</span>
+                        <span>{t("status.concept")}</span>
                     </div>
                     <div className={styles.statusItem}>
                         <Clock3 size={18} />
-                        <span>Inhalte werden finalisiert</span>
+                        <span>{t("status.content")}</span>
                     </div>
                     <div className={styles.statusItem}>
                         <LockKeyhole size={18} />
-                        <span>Öffentlicher Zugang folgt</span>
+                        <span>{t("status.access")}</span>
                     </div>
                 </motion.div>
             </motion.section>

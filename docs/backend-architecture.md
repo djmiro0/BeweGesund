@@ -87,7 +87,6 @@ These are read-only from the client and can be mirrored from Contentful if neede
 
 ## Functions
 
-- `createUserProfile`
 - `completeLesson`
 - `completeWorkout`
 - `updateStreak`
@@ -95,12 +94,11 @@ These are read-only from the client and can be mirrored from Contentful if neede
 - `updateMonthlyLeaderboard`
 - `claimReward`
 - `createStripeCheckoutSession`
+- `createStripeCustomerPortalSession`
 - `stripeWebhook`
 
 ## Recommended Next Steps
 
-1. Add a Firebase Admin setup for local emulators and production secrets.
-2. Connect `createUserProfile` to the first sign-in/register flow.
-3. Add a typed Firestore client layer on the Next.js side for read-only user data.
-4. Wire Stripe product and price IDs through environment variables.
-5. Decide whether Mux or Cloudflare Stream will power protected video playback.
+1. Add a Firebase Admin setup for local emulators.
+2. Add a typed Firestore client layer on the Next.js side for read-only user data.
+3. Complete the Stripe webhook and Customer Portal test-mode setup.

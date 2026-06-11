@@ -4,10 +4,26 @@ import { logger } from "firebase-functions";
 import { getAuth } from "firebase-admin/auth";
 import Stripe from "stripe";
 import { increment, LEADERBOARDS_COLLECTION, REWARDS_COLLECTION, serverTimestamp, userRef, db } from "./firestore";
-import { stripeSecretKey, stripeWebhookSecret } from "./config";
-import type { CompletionPayload, RegistrationProfilePayload, RewardClaimPayload, StripeCheckoutPayload, UserProfile } from "./types";
+import {
+  appBaseUrl,
+  stripeBasicPriceId,
+  stripePlusPriceId,
+  stripeSecretKey,
+  stripeWebhookSecret,
+} from "./config";
+import type {
+  CompletionPayload,
+  MemberPackage,
+  PremiumStatus,
+  RewardClaimPayload,
+  StripeCheckoutPayload,
+} from "./types";
 
 const REGION = "europe-west3";
+type StripeClient = InstanceType<typeof Stripe>;
+type StripeSubscription = Awaited<ReturnType<StripeClient["subscriptions"]["retrieve"]>>;
+type StripeEvent = ReturnType<StripeClient["webhooks"]["constructEvent"]>;
+type StripeSubscriptionStatus = StripeSubscription["status"];
 
 function requireAuth(auth: { uid: string } | null | undefined) {
   if (!auth?.uid) {
@@ -41,102 +57,85 @@ function computeStreak(lastCompletedAt: Date | null, completedAt: Date) {
   return "reset";
 }
 
-function requireString(value: unknown, field: string) {
-  if (typeof value !== "string" || value.trim().length === 0) {
-    throw new HttpsError("invalid-argument", `${field} is required.`);
-  }
-
-  return value.trim();
+function createStripeClient() {
+  return new Stripe(stripeSecretKey.value(), {
+    apiVersion: "2026-05-27.dahlia",
+  });
 }
 
-function requireNumberInRange(value: unknown, field: string, min: number, max: number) {
-  if (typeof value !== "number" || !Number.isFinite(value) || value < min || value > max) {
-    throw new HttpsError("invalid-argument", `${field} must be between ${min} and ${max}.`);
-  }
-
-  return value;
+function getBillingReturnUrl(locale: unknown) {
+  const safeLocale = locale === "en" ? "en" : "de";
+  return `${appBaseUrl.value().replace(/\/$/, "")}/${safeLocale}/profile`;
 }
 
-function optionalString(value: unknown) {
-  return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+function getStripePriceId(memberPackage: MemberPackage) {
+  return memberPackage === "plus" ? stripePlusPriceId.value() : stripeBasicPriceId.value();
 }
 
-function normalizeRegistrationPayload(data: unknown) {
-  const payload = (data ?? {}) as RegistrationProfilePayload;
-  const occupationKeys = ["sedentary", "standing", "physical"];
-  const regionKeys = [
-    "baden-wuerttemberg",
-    "bavaria",
-    "berlin",
-    "brandenburg",
-    "bremen",
-    "hamburg",
-    "hesse",
-    "lower-saxony",
-    "mecklenburg-western-pomerania",
-    "north-rhine-westphalia",
-    "rhineland-palatinate",
-    "saarland",
-    "saxony",
-    "saxony-anhalt",
-    "schleswig-holstein",
-    "thuringia",
-  ];
-  const anamnesisStatusKeys = ["pending", "completed", "review-required"];
-  const occupationKey = optionalString(payload.occupationKey);
-  const regionKey = requireString(payload.regionKey, "regionKey");
-  const anamnesisStatusKey = payload.anamnesisStatusKey ?? "pending";
-  const memberPackage: UserProfile["memberPackage"] = "basic";
-  const gender = payload.gender;
+function getMemberPackageForPrice(priceId: string | undefined): MemberPackage {
+  if (priceId === stripeBasicPriceId.value()) return "basic";
+  if (priceId === stripePlusPriceId.value()) return "plus";
 
-  if (occupationKey && !occupationKeys.includes(occupationKey)) {
-    throw new HttpsError("invalid-argument", "occupationKey is invalid.");
-  }
+  throw new Error(`Unknown Stripe Price ID: ${priceId ?? "missing"}`);
+}
 
-  if (!regionKeys.includes(regionKey)) {
-    throw new HttpsError("invalid-argument", "regionKey is invalid.");
-  }
+function getStripeCustomerId(customer: StripeSubscription["customer"]) {
+  return typeof customer === "string" ? customer : customer.id;
+}
 
-  if (!anamnesisStatusKeys.includes(anamnesisStatusKey)) {
-    throw new HttpsError("invalid-argument", "anamnesisStatusKey is invalid.");
-  }
+function getInternalSubscriptionStatus(status: StripeSubscriptionStatus): PremiumStatus {
+  if (status === "trialing" || status === "active") return status;
+  if (status === "past_due" || status === "unpaid") return "past_due";
+  return "canceled";
+}
 
-  if (gender !== "female" && gender !== "male") {
-    throw new HttpsError("invalid-argument", "gender must be female or male.");
-  }
-
-  if (payload.consentAccepted !== true) {
-    throw new HttpsError("failed-precondition", "Registration consent is required.");
-  }
-
-  if (payload.healthConsentAccepted !== true) {
-    throw new HttpsError("failed-precondition", "Explicit health-data consent is required.");
-  }
-
-  const displayName = requireString(payload.displayName, "displayName");
-  const displayNameParts = displayName.split(/\s+/);
+function subscriptionAccess(subscription: StripeSubscription) {
+  const internalStatus = getInternalSubscriptionStatus(subscription.status);
 
   return {
-    firstName: optionalString(payload.firstName) ?? displayNameParts[0],
-    lastName: optionalString(payload.lastName) ?? displayNameParts.slice(1).join(" "),
-    displayName,
-    photoURL: optionalString(payload.photoURL),
-    age: requireNumberInRange(payload.age, "age", 1, 120),
-    gender,
-    heightCm: requireNumberInRange(payload.heightCm, "heightCm", 80, 240),
-    weightKg: requireNumberInRange(payload.weightKg, "weightKg", 25, 300),
-    occupationKey,
-    regionKey,
-    averageStepsPerDay:
-      typeof payload.averageStepsPerDay === "number" && Number.isFinite(payload.averageStepsPerDay)
-        ? Math.max(0, payload.averageStepsPerDay)
-        : null,
-    primaryGoalKey: typeof payload.primaryGoalKey === "string" && payload.primaryGoalKey.trim()
-      ? payload.primaryGoalKey.trim()
-      : null,
-    anamnesisStatusKey,
-    memberPackage,
+    memberPackage: getMemberPackageForPrice(subscription.items.data[0]?.price.id),
+    premiumStatus: internalStatus,
+    subscriptionStatus: internalStatus,
+    stripeSubscriptionStatus: subscription.status,
   };
+}
+
+async function syncStripeSubscription(subscription: StripeSubscription) {
+  const uid = subscription.metadata.uid;
+
+  if (!uid) {
+    logger.warn("Stripe subscription is missing Firebase uid metadata.", {
+      subscriptionId: subscription.id,
+    });
+    return;
+  }
+
+  const subscriptionItem = subscription.items.data[0];
+  const customerId = getStripeCustomerId(subscription.customer);
+  const access = subscriptionAccess(subscription);
+
+  await userRef(uid).set(
+    {
+      ...access,
+      stripeCustomerId: customerId,
+      stripeSubscriptionId: subscription.id,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+
+  await userRef(uid).collection("subscriptions").doc(subscription.id).set(
+    {
+      subscriptionId: subscription.id,
+      customerId,
+      priceId: subscriptionItem?.price.id ?? null,
+      status: subscription.status,
+      currentPeriodEnd: subscriptionItem?.current_period_end ?? null,
+      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
 }
 
 async function applyCompletion(userId: string, kind: "lesson" | "workout", payload: CompletionPayload) {
@@ -219,88 +218,41 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
   });
 }
 
-export const createUserProfile = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
-  const uid = requireAuth(request.auth);
-  const authUser = request.auth!;
-  const registrationProfile = normalizeRegistrationPayload(request.data);
-  const ref = userRef(uid);
-  const snapshot = await ref.get();
-
-  if (snapshot.exists) {
-    await ref.set(
-      {
-        firstName: registrationProfile.firstName,
-        lastName: registrationProfile.lastName,
-        displayName: registrationProfile.displayName,
-        photoURL: registrationProfile.photoURL,
-        age: registrationProfile.age,
-        gender: registrationProfile.gender,
-        heightCm: registrationProfile.heightCm,
-        weightKg: registrationProfile.weightKg,
-        occupationKey: registrationProfile.occupationKey,
-        regionKey: registrationProfile.regionKey,
-        averageStepsPerDay: registrationProfile.averageStepsPerDay,
-        primaryGoalKey: registrationProfile.primaryGoalKey,
-        memberPackage: registrationProfile.memberPackage,
-        anamnesisStatusKey: registrationProfile.anamnesisStatusKey,
-        consentAcceptedAt: serverTimestamp(),
-        healthConsentAcceptedAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true },
-    );
-
-    return { ok: true, created: false };
-  }
-
-  const profile: UserProfile = {
-    uid,
-    email: authUser.token.email ?? "",
-    firstName: registrationProfile.firstName,
-    lastName: registrationProfile.lastName,
-    displayName: registrationProfile.displayName,
-    photoURL: registrationProfile.photoURL,
-    age: registrationProfile.age,
-    gender: registrationProfile.gender,
-    heightCm: registrationProfile.heightCm,
-    weightKg: registrationProfile.weightKg,
-    occupationKey: registrationProfile.occupationKey,
-    regionKey: registrationProfile.regionKey,
-    averageStepsPerDay: registrationProfile.averageStepsPerDay,
-    primaryGoalKey: registrationProfile.primaryGoalKey,
-    memberPackage: registrationProfile.memberPackage,
-    startedCourseIds: [],
-    completedCourseIds: [],
-    recommendedCourseIds: [],
-    anamnesisStatusKey: registrationProfile.anamnesisStatusKey,
-    consentAcceptedAt: serverTimestamp(),
-    healthConsentAcceptedAt: serverTimestamp(),
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-    xp: 0,
-    points: 0,
-    premiumStatus: "free",
-    subscriptionStatus: "free",
-    currentStreak: 0,
-    longestStreak: 0,
-    weeklyScore: 0,
-    monthlyScore: 0,
-    weeklyLeaderboardRank: null,
-    monthlyLeaderboardRank: null,
-    claimedRewardIds: [],
-    roles: ["member"],
-  };
-
-  await ref.set(profile);
-
-  return { ok: true, created: true };
-});
-
 export const deleteUserAccount = onCall(
-  { region: REGION, enforceAppCheck: true },
+  {
+    region: REGION,
+    enforceAppCheck: true,
+    secrets: [stripeSecretKey],
+  },
   async (request) => {
     const uid = requireAuth(request.auth);
     const ref = userRef(uid);
+    const profileSnapshot = await ref.get();
+    const subscriptionId = profileSnapshot.get("stripeSubscriptionId") as string | undefined;
+
+    if (subscriptionId) {
+      const stripe = createStripeClient();
+
+      try {
+        const subscription = await stripe.subscriptions.update(subscriptionId, {
+          metadata: { uid: "" },
+        });
+
+        if (subscription.status !== "canceled") {
+          await stripe.subscriptions.cancel(subscriptionId);
+        }
+      } catch (error) {
+        logger.error("Stripe subscription cancellation failed during account deletion.", {
+          uid,
+          subscriptionId,
+          error,
+        });
+        throw new HttpsError(
+          "failed-precondition",
+          "The subscription could not be canceled. The account was not deleted.",
+        );
+      }
+    }
 
     await db.recursiveDelete(ref);
     await getAuth().deleteUser(uid);
@@ -465,37 +417,98 @@ export const claimReward = onCall({ region: REGION, enforceAppCheck: true }, asy
 });
 
 export const createStripeCheckoutSession = onCall(
-  { region: REGION, secrets: [stripeSecretKey] },
+  {
+    region: REGION,
+    enforceAppCheck: true,
+    secrets: [stripeSecretKey],
+  },
   async (request) => {
     const uid = requireAuth(request.auth);
-    const { priceId, successUrl, cancelUrl } = request.data as StripeCheckoutPayload;
+    const { locale, memberPackage } = request.data as StripeCheckoutPayload;
 
-    if (!priceId || !successUrl || !cancelUrl) {
-      throw new HttpsError("invalid-argument", "priceId, successUrl, and cancelUrl are required.");
+    if (memberPackage !== "basic" && memberPackage !== "plus") {
+      throw new HttpsError("invalid-argument", "memberPackage must be basic or plus.");
     }
 
-    const stripe = new Stripe(stripeSecretKey.value(), {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = createStripeClient();
+    const profileRef = userRef(uid);
+    const profileSnapshot = await profileRef.get();
+    const profile = profileSnapshot.data() as {
+      email?: string;
+      stripeCustomerId?: string;
+      subscriptionStatus?: string;
+    } | undefined;
+
+    if (profile?.subscriptionStatus === "active" || profile?.subscriptionStatus === "trialing") {
+      throw new HttpsError("already-exists", "An active subscription already exists.");
+    }
+
+    let customerId = profile?.stripeCustomerId;
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: request.auth?.token.email as string | undefined ?? profile?.email,
+        metadata: { uid },
+      });
+      customerId = customer.id;
+      await profileRef.set({ stripeCustomerId: customerId, updatedAt: serverTimestamp() }, { merge: true });
+    }
+
+    const returnUrl = getBillingReturnUrl(locale);
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+      customer: customerId,
+      line_items: [{
+        price: getStripePriceId(memberPackage),
+        quantity: 1,
+      }],
+      success_url: `${returnUrl}?checkout=success`,
+      cancel_url: `${returnUrl}?checkout=canceled`,
       client_reference_id: uid,
-      metadata: { uid },
+      metadata: { uid, memberPackage },
+      subscription_data: { metadata: { uid, memberPackage } },
       allow_promotion_codes: true,
     });
 
-    await userRef(uid).collection("subscriptions").doc(session.id).set({
+    await profileRef.collection("subscriptions").doc(session.id).set({
       status: "checkout_created",
       sessionId: session.id,
+      customerId,
+      memberPackage,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
 
+    if (!session.url) {
+      throw new HttpsError("internal", "Stripe did not return a checkout URL.");
+    }
+
     return { ok: true, sessionId: session.id, url: session.url };
+  },
+);
+
+export const createStripeCustomerPortalSession = onCall(
+  {
+    region: REGION,
+    enforceAppCheck: true,
+    secrets: [stripeSecretKey],
+  },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const { locale } = request.data as StripeCheckoutPayload;
+    const profileSnapshot = await userRef(uid).get();
+    const customerId = profileSnapshot.get("stripeCustomerId") as string | undefined;
+
+    if (!customerId) {
+      throw new HttpsError("failed-precondition", "No Stripe customer exists for this account.");
+    }
+
+    const session = await createStripeClient().billingPortal.sessions.create({
+      customer: customerId,
+      return_url: getBillingReturnUrl(locale),
+    });
+
+    return { ok: true, url: session.url };
   },
 );
 
@@ -509,11 +522,9 @@ export const stripeWebhook = onRequest(
       return;
     }
 
-    const stripe = new Stripe(stripeSecretKey.value(), {
-      apiVersion: "2025-08-27.basil",
-    });
+    const stripe = createStripeClient();
 
-    let event: Stripe.Event;
+    let event: StripeEvent;
 
     try {
       event = stripe.webhooks.constructEvent(
@@ -527,37 +538,24 @@ export const stripeWebhook = onRequest(
       return;
     }
 
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
-      const uid = session.metadata?.uid ?? session.client_reference_id;
-
-      if (uid) {
-        await userRef(uid).set(
-          {
-            premiumStatus: "active",
-            subscriptionStatus: "active",
-            updatedAt: serverTimestamp(),
-          },
-          { merge: true },
-        );
-      }
+    const processedEvent = await db.collection("stripeWebhookEvents").doc(event.id).get();
+    if (processedEvent.exists) {
+      response.status(200).json({ received: true, duplicate: true });
+      return;
     }
 
-    if (event.type === "customer.subscription.deleted") {
-      const subscription = event.data.object as Stripe.Subscription;
-      const uid = subscription.metadata?.uid;
-
-      if (uid) {
-        await userRef(uid).set(
-          {
-            premiumStatus: "canceled",
-            subscriptionStatus: "canceled",
-            updatedAt: serverTimestamp(),
-          },
-          { merge: true },
-        );
-      }
+    if (
+      event.type === "customer.subscription.created"
+      || event.type === "customer.subscription.updated"
+      || event.type === "customer.subscription.deleted"
+    ) {
+      await syncStripeSubscription(event.data.object as StripeSubscription);
     }
+
+    await db.collection("stripeWebhookEvents").doc(event.id).set({
+      type: event.type,
+      processedAt: serverTimestamp(),
+    });
 
     response.status(200).json({ received: true });
   },

@@ -73,6 +73,18 @@ service cloud.firestore {
           == resource.data.keys().hasAny(["healthConsentAcceptedAt"])
         && (!resource.data.keys().hasAny(["healthConsentAcceptedAt"])
           || request.resource.data.healthConsentAcceptedAt == resource.data.healthConsentAcceptedAt)
+        && request.resource.data.keys().hasAny(["stripeCustomerId"])
+          == resource.data.keys().hasAny(["stripeCustomerId"])
+        && (!resource.data.keys().hasAny(["stripeCustomerId"])
+          || request.resource.data.stripeCustomerId == resource.data.stripeCustomerId)
+        && request.resource.data.keys().hasAny(["stripeSubscriptionId"])
+          == resource.data.keys().hasAny(["stripeSubscriptionId"])
+        && (!resource.data.keys().hasAny(["stripeSubscriptionId"])
+          || request.resource.data.stripeSubscriptionId == resource.data.stripeSubscriptionId)
+        && request.resource.data.keys().hasAny(["stripeSubscriptionStatus"])
+          == resource.data.keys().hasAny(["stripeSubscriptionStatus"])
+        && (!resource.data.keys().hasAny(["stripeSubscriptionStatus"])
+          || request.resource.data.stripeSubscriptionStatus == resource.data.stripeSubscriptionStatus)
         && request.resource.data.roles == resource.data.roles;
     }
 
@@ -125,7 +137,7 @@ service cloud.firestore {
         && request.resource.data.displayName is string
         && hasValidHealthProfile()
         && isValidRegion(request.resource.data.regionKey)
-        && request.resource.data.memberPackage == "basic"
+        && request.resource.data.memberPackage in ["basic", "plus"]
         && request.resource.data.startedCourseIds == []
         && request.resource.data.completedCourseIds == []
         && request.resource.data.recommendedCourseIds == []

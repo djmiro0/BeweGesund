@@ -92,6 +92,16 @@ describe("Header", () => {
     expect(screen.getByTestId("header-brand-logo")).toHaveClass(styles.brandLogo);
   });
 
+  it("hides locked navigation while the public launch screen is active", () => {
+    render(<Header locale="en" launchMode />);
+
+    expect(screen.queryByRole("link", { name: "Program" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Blogs" })).not.toBeInTheDocument();
+    expect(screen.queryByTestId("mobile-menu-trigger")).not.toBeInTheDocument();
+    expect(screen.getByTestId("theme-toggle")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
+  });
+
   it("closes the mobile menu from the blurred page backdrop", async () => {
     const user = userEvent.setup();
     render(<Header locale="en" />);

@@ -6,6 +6,7 @@ import {
     createUserWithEmailAndPassword,
     deleteUser,
     GoogleAuthProvider,
+    initializeRecaptchaConfig,
     sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
@@ -128,6 +129,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     const [weightKg, setWeightKg] = useState('');
     const [occupation, setOccupation] = useState('');
     const [region, setRegion] = useState('');
+    const [selectedPackage, setSelectedPackage] = useState<MemberPackage>("basic");
     const [hasAcceptedConsent, setHasAcceptedConsent] = useState(false);
     const [hasAcceptedHealthConsent, setHasAcceptedHealthConsent] = useState(false);
     const [isTermsOpen, setIsTermsOpen] = useState(false);
@@ -177,6 +179,14 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setView("googleOnboarding");
     }, [isOpen, requiresProfileSetup]);
 
+    useEffect(() => {
+        if (!isOpen || !isRegister) return;
+
+        // Preload Firebase Auth's reCAPTCHA Enterprise configuration so the
+        // registration request can include a fresh bot-protection token.
+        void initializeRecaptchaConfig(auth).catch(() => undefined);
+    }, [isOpen, isRegister]);
+
     const getFriendlyErrorMessage = (error: unknown) => {
         const firebaseError = error as (AuthError & FirebaseErrorLike) | undefined;
         const code = firebaseError?.code;
@@ -203,6 +213,14 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                 return t("invalidEmail");
             case "auth/too-many-requests":
                 return t("tooManyRequests");
+            case "auth/captcha-check-failed":
+            case "auth/missing-recaptcha-token":
+            case "auth/invalid-recaptcha-token":
+            case "auth/invalid-recaptcha-action":
+            case "auth/missing-recaptcha-version":
+            case "auth/invalid-recaptcha-version":
+            case "auth/recaptcha-not-enabled":
+                return t("recaptchaError");
             case "auth/popup-closed-by-user":
                 return t("googlePopupClosed");
             case "auth/popup-blocked":
@@ -233,7 +251,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         regionKey: region,
         averageStepsPerDay: null,
         primaryGoalKey: null,
-        memberPackage: "basic",
+        memberPackage: selectedPackage,
         startedCourseIds: [],
         completedCourseIds: [],
         recommendedCourseIds: [],
@@ -268,6 +286,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setWeightKg("");
         setOccupation("");
         setRegion("");
+        setSelectedPackage("basic");
         setHasAcceptedConsent(false);
         setHasAcceptedHealthConsent(false);
         setIsTermsOpen(false);
@@ -386,6 +405,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     return;
                 }
 
+                await initializeRecaptchaConfig(auth);
                 const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
 
                 try {
@@ -669,12 +689,15 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                                 </legend>
                                 <div className="grid gap-3 sm:grid-cols-2">
                                     {memberPackages.map((packageId) => {
-                                        const isSelected = packageId === "basic";
+                                        const isSelected = packageId === selectedPackage;
                                         const features = t.raw(`plans.${packageId}.features`) as string[];
 
                                         return (
-                                            <div
+                                            <button
+                                                type="button"
                                                 key={packageId}
+                                                onClick={() => setSelectedPackage(packageId)}
+                                                aria-pressed={isSelected}
                                                 className={`relative flex min-h-56 flex-col items-start rounded-2xl border px-5 py-5 text-left transition ${
                                                     isSelected
                                                         ? "border-[var(--highlight)] bg-[linear-gradient(145deg,rgba(var(--accent-rgb),0.22),rgba(var(--navy-rgb),0.46))] text-[var(--text-light)] shadow-[0_14px_40px_rgba(0,0,0,0.18)]"
@@ -693,6 +716,9 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                                                         {isSelected ? <Check size={16} /> : null}
                                                     </span>
                                                 </span>
+                                                <span className="mt-2 text-sm font-black text-[var(--highlight-soft)]">
+                                                    {t(`plans.${packageId}.price`)}
+                                                </span>
                                                 <span className="mt-3 text-sm font-medium leading-6 text-[var(--text-dim)]">
                                                     {t(`plans.${packageId}.description`)}
                                                 </span>
@@ -704,7 +730,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                                                         </span>
                                                     ))}
                                                 </span>
-                                            </div>
+                                            </button>
                                         );
                                     })}
                                 </div>
@@ -750,6 +776,11 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         <div className="rounded-2xl border border-[rgba(var(--page-warm-rgb),0.28)] bg-[rgba(var(--page-warm-rgb),0.1)] px-4 py-3 text-sm text-[var(--text-light)]">
                             {infoMessage}
                         </div>
+                    ) : null}
+                    {isRegister ? (
+                        <p className="text-center text-xs leading-5 text-[var(--text-dim)]">
+                            {t("recaptchaNotice")}
+                        </p>
                     ) : null}
                     <button disabled={!canSubmit} className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[var(--text-light)] disabled:hover:text-[var(--text-on-warm)]">
                         {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}

@@ -44,7 +44,7 @@ describe("Mux playback token route", () => {
     mocks.verifyFirebaseIdToken.mockReset().mockResolvedValue({ uid: "user-1" });
     mocks.getFirebaseUserAccess.mockReset().mockResolvedValue({
       memberPackage: "basic",
-      subscriptionStatus: "free",
+      subscriptionStatus: "active",
     });
     mocks.getCourseDetail.mockReset().mockResolvedValue({
       slug: "course-1",
@@ -65,6 +65,18 @@ describe("Mux playback token route", () => {
       slug: "course-1",
       muxPlaybackId: "playback-1",
       packageRequired: "plus",
+    });
+
+    const response = await POST(request({ playbackId: "playback-1", courseSlug: "course-1" }));
+
+    expect(response.status).toBe(403);
+    expect(mocks.createMuxPlaybackToken).not.toHaveBeenCalled();
+  });
+
+  it("rejects users without an active paid subscription", async () => {
+    mocks.getFirebaseUserAccess.mockResolvedValue({
+      memberPackage: "basic",
+      subscriptionStatus: "free",
     });
 
     const response = await POST(request({ playbackId: "playback-1", courseSlug: "course-1" }));
