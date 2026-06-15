@@ -35,6 +35,18 @@
       "access": "Public access is coming soon"
     }
   },
+  "pwaInstall": {
+    "eyebrow": "Bewegesund App",
+    "title": "Install the app",
+    "description": "Install Bewegesund on your home screen for faster access and an app experience without the browser bar.",
+    "iosDescription": "Apple does not allow websites to open the install dialog automatically. Install the app in two steps:",
+    "iosStepShare": "Tap Share at the bottom of the browser.",
+    "iosStepAdd": "Choose “Add to Home Screen” and confirm.",
+    "install": "Install app",
+    "understood": "Got it",
+    "later": "Later",
+    "close": "Close installation prompt"
+  },
   "mobileTabs": {
     "ariaLabel": "Mobile navigation",
     "tabs": {
@@ -904,6 +916,11 @@
     "eyebrow": "Account settings",
     "title": "Settings",
     "description": "Manage your profile, training, nutrition, privacy, and app preferences. Saved values are synchronized with your Firebase account.",
+    "installApp": {
+      "title": "Install Bewegesund",
+      "description": "Add the app to your home screen.",
+      "action": "Install app"
+    },
     "sections": {
       "profile": {
         "title": "Profile",
@@ -915,6 +932,20 @@
       "body": {
         "title": "Body & Progress",
         "description": "Targets for progress tracking and daily health goals."
+      },
+      "progressPhotos": {
+        "title": "Before & After",
+        "description": "Capture your starting point and add a comparison photo later.",
+        "beforeTitle": "Before photo",
+        "beforeDescription": "Best taken in the first few days under similar lighting conditions.",
+        "afterTitle": "After photo",
+        "afterDescription": "Add it whenever you are ready to compare your progress.",
+        "beforeAction": "Add before photo",
+        "afterAction": "Add after photo",
+        "uploading": "Uploading...",
+        "uploaded": "Photo saved",
+        "empty": "No photo yet",
+        "privacy": "These photos are private and visible only in your account."
       },
       "workout": {
         "title": "Workout Preferences",
@@ -976,6 +1007,7 @@
       "leaderboardUpdates": "Leaderboard updates",
       "emailNotifications": "Email notifications",
       "pushNotifications": "Browser notifications",
+      "progressPhotoReminder": "Remind me about the before photo",
       "publicProfile": "Public profile",
       "showProgress": "Show progress publicly",
       "language": "Language",
@@ -1017,6 +1049,7 @@
       "noAchievements": "No achievements yet"
     },
     "actions": {
+      "backToProfile": "Back to profile",
       "reset": "Cancel / Reset",
       "save": "Save settings",
       "saving": "Saving...",
@@ -1035,9 +1068,28 @@
       "photoPermissionError": "Photo upload is not allowed.",
       "photoStorageError": "Firebase Storage is not configured for this project.",
       "photoError": "The profile photo could not be uploaded.",
+      "progressPhotoTypeError": "Choose a JPG, PNG, or WebP progress photo.",
+      "progressPhotoSizeError": "The progress photo must be smaller than 5 MB.",
+      "progressPhotoSuccess": "Progress photo saved successfully.",
+      "progressPhotoError": "The progress photo could not be uploaded.",
       "passwordResetSent": "A password-change email was sent.",
       "passwordResetError": "The password email could not be sent."
     }
+  },
+  "progressPhotoReminder": {
+    "eyebrow": "Your starting point",
+    "title": "Add a before photo",
+    "description": "A photo from your first few days makes later progress easier to see. You decide whether you want this reminder.",
+    "upload": "Add photo now",
+    "uploading": "Uploading...",
+    "later": "Remind me later",
+    "disable": "Do not remind me again",
+    "close": "Close reminder",
+    "privacy": "Stored privately and visible only to you.",
+    "typeError": "Choose a JPG, PNG, or WebP image.",
+    "sizeError": "The photo must be smaller than 5 MB.",
+    "uploadError": "The photo could not be uploaded.",
+    "saveError": "The reminder could not be disabled."
   },
   "contactPage": {
     "eyebrow": "Direct contact",

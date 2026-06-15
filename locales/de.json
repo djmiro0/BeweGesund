@@ -35,6 +35,18 @@
       "access": "Der öffentliche Zugang folgt"
     }
   },
+  "pwaInstall": {
+    "eyebrow": "Bewegesund App",
+    "title": "App installieren",
+    "description": "Installiere Bewegesund auf deinem Startbildschirm für schnelleren Zugriff und ein App-Erlebnis ohne Browserleiste.",
+    "iosDescription": "Apple erlaubt Websites nicht, den Installationsdialog automatisch zu öffnen. Mit diesen zwei Schritten installierst du die App:",
+    "iosStepShare": "Tippe unten im Browser auf Teilen.",
+    "iosStepAdd": "Wähle „Zum Home-Bildschirm“ und bestätige.",
+    "install": "App installieren",
+    "understood": "Verstanden",
+    "later": "Später",
+    "close": "Installationshinweis schließen"
+  },
   "mobileTabs": {
     "ariaLabel": "Mobile Navigation",
     "tabs": {
@@ -904,6 +916,11 @@
     "eyebrow": "Kontoeinstellungen",
     "title": "Einstellungen",
     "description": "Verwalte Profil, Training, Ernährung, Datenschutz und App-Einstellungen. Gespeicherte Werte werden mit deinem Firebase-Konto synchronisiert.",
+    "installApp": {
+      "title": "Bewegesund installieren",
+      "description": "Füge die App deinem Startbildschirm hinzu.",
+      "action": "App installieren"
+    },
     "sections": {
       "profile": {
         "title": "Profil",
@@ -915,6 +932,20 @@
       "body": {
         "title": "Körper & Fortschritt",
         "description": "Ziele für Fortschritt und tägliche Gesundheitswerte."
+      },
+      "progressPhotos": {
+        "title": "Vorher & Nachher",
+        "description": "Halte deinen Ausgangspunkt fest und ergänze später ein Vergleichsfoto.",
+        "beforeTitle": "Vorher-Foto",
+        "beforeDescription": "Am besten in den ersten Tagen und unter ähnlichen Lichtbedingungen aufnehmen.",
+        "afterTitle": "Nachher-Foto",
+        "afterDescription": "Füge es hinzu, wenn du deinen Fortschritt vergleichen möchtest.",
+        "beforeAction": "Vorher-Foto hinzufügen",
+        "afterAction": "Nachher-Foto hinzufügen",
+        "uploading": "Wird hochgeladen...",
+        "uploaded": "Foto gespeichert",
+        "empty": "Noch kein Foto",
+        "privacy": "Diese Fotos sind privat und nur in deinem Konto sichtbar."
       },
       "workout": {
         "title": "Trainingseinstellungen",
@@ -976,6 +1007,7 @@
       "leaderboardUpdates": "Ranglisten-Updates",
       "emailNotifications": "E-Mail-Benachrichtigungen",
       "pushNotifications": "Browser-Benachrichtigungen",
+      "progressPhotoReminder": "An das Vorher-Foto erinnern",
       "publicProfile": "Öffentliches Profil",
       "showProgress": "Fortschritt öffentlich anzeigen",
       "language": "Sprache",
@@ -1017,6 +1049,7 @@
       "noAchievements": "Noch keine Erfolge"
     },
     "actions": {
+      "backToProfile": "Zurück zum Profil",
       "reset": "Abbrechen / Zurücksetzen",
       "save": "Einstellungen speichern",
       "saving": "Wird gespeichert...",
@@ -1035,9 +1068,28 @@
       "photoPermissionError": "Das Hochladen des Fotos ist nicht erlaubt.",
       "photoStorageError": "Firebase Storage ist für dieses Projekt noch nicht eingerichtet.",
       "photoError": "Das Profilfoto konnte nicht hochgeladen werden.",
+      "progressPhotoTypeError": "Wähle für das Fortschrittsfoto ein JPG-, PNG- oder WebP-Bild.",
+      "progressPhotoSizeError": "Das Fortschrittsfoto muss kleiner als 5 MB sein.",
+      "progressPhotoSuccess": "Das Fortschrittsfoto wurde gespeichert.",
+      "progressPhotoError": "Das Fortschrittsfoto konnte nicht hochgeladen werden.",
       "passwordResetSent": "Eine E-Mail zum Ändern des Passworts wurde gesendet.",
       "passwordResetError": "Die Passwort-E-Mail konnte nicht gesendet werden."
     }
+  },
+  "progressPhotoReminder": {
+    "eyebrow": "Dein Ausgangspunkt",
+    "title": "Vorher-Foto hinzufügen",
+    "description": "Ein Foto aus den ersten Tagen macht deinen späteren Fortschritt leichter sichtbar. Du entscheidest selbst, ob du diese Erinnerung nutzen möchtest.",
+    "upload": "Foto jetzt hinzufügen",
+    "uploading": "Wird hochgeladen...",
+    "later": "Später erinnern",
+    "disable": "Nicht mehr erinnern",
+    "close": "Erinnerung schließen",
+    "privacy": "Privat gespeichert und nur für dich sichtbar.",
+    "typeError": "Wähle ein JPG-, PNG- oder WebP-Bild.",
+    "sizeError": "Das Foto muss kleiner als 5 MB sein.",
+    "uploadError": "Das Foto konnte nicht hochgeladen werden.",
+    "saveError": "Die Erinnerung konnte nicht deaktiviert werden."
   },
   "contactPage": {
     "eyebrow": "Direkter Kontakt",

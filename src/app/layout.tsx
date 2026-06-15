@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
 import "./[locale]/globals.css";
 
 export const metadata: Metadata = {
@@ -7,6 +8,20 @@ export const metadata: Metadata = {
     default: "Bewegesund",
     template: "%s | Bewegesund",
   },
+  manifest: "/manifest.webmanifest",
+  applicationName: "Bewegesund",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Bewegesund",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport = {
+  themeColor: "#9b2b42",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -14,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body>
         {children}
+        <ServiceWorkerRegistration />
         <Analytics />
       </body>
     </html>

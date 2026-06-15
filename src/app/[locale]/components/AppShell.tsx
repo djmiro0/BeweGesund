@@ -9,6 +9,8 @@ import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
 import MobileTabBar from "./MobileTabBar";
+import ProgressPhotoReminder from "./ProgressPhotoReminder";
+import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
 import { useTheme } from "./ThemeProvider";
 import { getProfileFirstName } from "@/lib/userProfile";
@@ -72,6 +74,7 @@ export function ShellFrame({
   if (!user && !isAuthActionRoute) {
     return (
       <>
+        <PwaInstallPrompt />
         <Header
           locale={locale}
           user={null}
@@ -86,6 +89,7 @@ export function ShellFrame({
 
   return (
     <>
+      <PwaInstallPrompt />
       <Header
         locale={locale}
         user={user}
@@ -98,6 +102,7 @@ export function ShellFrame({
         onClose={closeAuth}
         requiresProfileSetup={requiresProfileSetup}
       />
+      <ProgressPhotoReminder />
       <main className={styles.main}>{children}</main>
       <MobileTabBar locale={locale} user={user} openAuth={openAuth} />
       <Footer />

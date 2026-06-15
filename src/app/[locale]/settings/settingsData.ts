@@ -75,6 +75,12 @@ export interface NotificationSettingsData {
   pushNotifications: boolean;
 }
 
+export interface ProgressPhotosData {
+  beforeUploadedAt: string;
+  afterUploadedAt: string;
+  reminderEnabled: boolean;
+}
+
 export interface PrivacySettingsData {
   isPublicProfile: boolean;
   showProgressPublicly: boolean;
@@ -89,6 +95,7 @@ export interface UserSettings {
   nutrition: NutritionSettingsData;
   gamification: GamificationData;
   notifications: NotificationSettingsData;
+  progressPhotos: ProgressPhotosData;
   privacy: PrivacySettingsData;
   app: AppSettingsData;
 }
@@ -150,6 +157,11 @@ export const defaultUserSettings: UserSettings = {
     emailNotifications: false,
     pushNotifications: false,
   },
+  progressPhotos: {
+    beforeUploadedAt: "",
+    afterUploadedAt: "",
+    reminderEnabled: true,
+  },
   privacy: {
     isPublicProfile: false,
     showProgressPublicly: false,
@@ -209,6 +221,10 @@ export function settingsFromFirebase(
     ...settings.notifications,
     ...preferences.notifications,
   };
+  settings.progressPhotos = {
+    ...settings.progressPhotos,
+    ...preferences.progressPhotos,
+  };
   settings.privacy = {
     ...settings.privacy,
     ...preferences.privacy,
@@ -258,6 +274,7 @@ export function storedSettingsFromForm(settings: UserSettings): StoredSettings {
     workoutPreferences: settings.workoutPreferences,
     nutrition: settings.nutrition,
     notifications: settings.notifications,
+    progressPhotos: settings.progressPhotos,
     privacy: settings.privacy,
     app: settings.app,
   };

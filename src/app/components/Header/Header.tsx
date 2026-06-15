@@ -9,11 +9,12 @@ import { auth } from "../../../../firebase.config";
 import { signOut } from 'firebase/auth';
 import { LogOut, Globe, Menu, Moon, Sun, X } from 'lucide-react';
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
+import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
     locale: string;
-    user?: { email?: string | null; displayName?: string | null; photoURL?: string | null } | null;
+    user?: { uid: string; email?: string | null; displayName?: string | null; photoURL?: string | null } | null;
     profileName?: string | null;
     profilePhoto?: string | null;
     openAuth?: () => void;
@@ -89,14 +90,13 @@ const Header: React.FC<HeaderProps> = ({
             aria-current={pathname === `/${locale}/profile` ? "page" : undefined}
             className={`${styles.profileLink} ${pathname === `/${locale}/profile` ? styles.profileLinkActive : ""}`}
         >
-            <span
+            <ProfileAvatar
+                userId={user.uid}
+                photoUrl={profilePhoto}
+                initial={profileInitial}
+                ariaLabel={t("profileAvatarAlt", { name: profileName })}
                 className={styles.profileAvatar}
-                role="img"
-                aria-label={t("profileAvatarAlt", { name: profileName })}
-                style={profilePhoto ? { backgroundImage: `url("${profilePhoto}")` } : undefined}
-            >
-                {profilePhoto ? null : profileInitial}
-            </span>
+            />
             <span className={styles.profileName}>
                 {profileName}
             </span>

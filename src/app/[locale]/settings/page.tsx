@@ -1,9 +1,11 @@
 "use client";
 
 import { updateProfile } from "firebase/auth";
-import { doc, onSnapshot, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ArrowLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { db, storage } from "../../../../firebase.config";
@@ -16,6 +18,7 @@ import NotificationSettings from "./components/NotificationSettings";
 import NutritionSettings from "./components/NutritionSettings";
 import PrivacySettings from "./components/PrivacySettings";
 import ProfileSettings from "./components/ProfileSettings";
+import ProgressPhotoSettings from "./components/ProgressPhotoSettings";
 import WorkoutPreferences from "./components/WorkoutPreferences";
 import {
   defaultUserSettings,
@@ -48,6 +51,7 @@ export default function SettingsPage() {
   const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [uploadingProgressPhoto, setUploadingProgressPhoto] = useState<"before" | "after" | null>(null);
 
   useEffect(() => {
     if (!userId) {
@@ -224,6 +228,63 @@ export default function SettingsPage() {
     }
   };
 
+  const handleProgressPhotoSelect = async (slot: "before" | "after", file: File) => {
+    if (!user || uploadingProgressPhoto) return;
+
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+    if (!allowedTypes.has(file.type)) {
+      setErrorMessage(t("messages.progressPhotoTypeError"));
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage(t("messages.progressPhotoSizeError"));
+      return;
+    }
+
+    setUploadingProgressPhoto(slot);
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    try {
+      const uploadedAt = new Date().toISOString();
+      await uploadBytes(ref(storage, `users/${user.uid}/progress/${slot}`), file, {
+        contentType: file.type,
+        cacheControl: "private,max-age=3600",
+      });
+      await setDoc(
+        doc(db, "users", user.uid, "settings", "preferences"),
+        {
+          progressPhotos: {
+            ...draftSettings.progressPhotos,
+            [`${slot}UploadedAt`]: uploadedAt,
+          },
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+
+      const applyProgressPhoto = (settings: UserSettings) => ({
+        ...settings,
+        progressPhotos: {
+          ...settings.progressPhotos,
+          [`${slot}UploadedAt`]: uploadedAt,
+        },
+      });
+      setDraftSettings(applyProgressPhoto);
+      setSavedSettings(applyProgressPhoto);
+      setSuccessMessage(t("messages.progressPhotoSuccess"));
+    } catch (error) {
+      const code = (error as { code?: string } | undefined)?.code;
+      setErrorMessage(
+        code === "storage/unauthorized"
+          ? t("messages.photoPermissionError")
+          : t("messages.progressPhotoError"),
+      );
+    } finally {
+      setUploadingProgressPhoto(null);
+    }
+  };
+
   const handleReset = () => {
     setDraftSettings(cloneSettings(savedSettings));
     setSuccessMessage("");
@@ -234,6 +295,14 @@ export default function SettingsPage() {
   return (
     <section className={styles.settingsPage} data-testid="settings-page">
       <div className={styles.shell}>
+        <Link
+          href={`/${locale}/profile`}
+          className={styles.backLink}
+          data-testid="settings-back-link"
+        >
+          <ArrowLeft size={18} aria-hidden="true" />
+          <span>{t("actions.backToProfile")}</span>
+        </Link>
         <header className={styles.header}>
           <div>
             <p className={styles.eyebrow}>{t("eyebrow")}</p>
@@ -255,6 +324,15 @@ export default function SettingsPage() {
             unitSystem={draftSettings.app.units}
             onChange={(value) => updateSection("bodyProgress", value)}
           />
+          {user ? (
+            <ProgressPhotoSettings
+              userId={user.uid}
+              data={draftSettings.progressPhotos}
+              uploadingSlot={uploadingProgressPhoto}
+              onChange={(value) => updateSection("progressPhotos", value)}
+              onPhotoSelect={(slot, file) => void handleProgressPhotoSelect(slot, file)}
+            />
+          ) : null}
           <WorkoutPreferences data={draftSettings.workoutPreferences} onChange={(value) => updateSection("workoutPreferences", value)} />
           <NutritionSettings data={draftSettings.nutrition} onChange={(value) => updateSection("nutrition", value)} />
           <GamificationSummary data={draftSettings.gamification} />

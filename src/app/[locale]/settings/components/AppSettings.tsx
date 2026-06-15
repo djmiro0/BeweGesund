@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import type { AppLanguage, AppSettingsData, AppTheme, UnitSystem } from "../settingsData";
 import { SettingsSection, SettingsSelect, SettingsToggle } from "./SettingsControls";
 import styles from "../Settings.module.css";
+import PwaInstallAction from "./PwaInstallAction";
 
 interface AppSettingsProps {
   data: AppSettingsData;
@@ -49,6 +50,7 @@ export default function AppSettings({ data, onChange }: AppSettingsProps) {
           onChange={(checked) => update("videoAutoplay", checked)}
         />
       </div>
+      <PwaInstallAction />
     </SettingsSection>
   );
 }

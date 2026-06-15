@@ -29,6 +29,7 @@ import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import BillingActions from "./BillingActions";
 import ProfileSettingsAccess from "./ProfileSettingsAccess";
+import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Profile.module.css";
 
 const fadeUp = {
@@ -218,14 +219,13 @@ export default function ProfilePage() {
     >
       <div className={styles.shell}>
         <motion.header className={styles.mobileHeader} variants={fadeUp}>
-          <div
+          <ProfileAvatar
+            userId={user.uid}
+            photoUrl={avatar}
+            initial={profileInitial}
             className={styles.avatar}
-            role="img"
-            aria-label={t("avatarAlt", { name: firstName })}
-            style={avatar ? { backgroundImage: `url("${avatar}")` } : undefined}
-          >
-            {avatar ? null : profileInitial}
-          </div>
+            ariaLabel={t("avatarAlt", { name: firstName })}
+          />
           <div className={styles.identityText}>
             <p className={styles.eyebrow}>{t("eyebrow")}</p>
             <h1 className={styles.title}>{firstName}</h1>
@@ -234,10 +234,6 @@ export default function ProfilePage() {
           <ProfileSettingsAccess
             locale={locale}
             openLabel={t("settings.open")}
-            closeLabel={t("settings.close")}
-            title={t("settings.title")}
-            description={t("settings.description")}
-            settingsLabel={t("settings.link")}
           />
         </motion.header>
 

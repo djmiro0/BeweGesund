@@ -49,6 +49,14 @@ vi.mock("./MobileTabBar", () => ({
   default: () => <div data-testid="mobile-tabs" />,
 }));
 
+vi.mock("./ProgressPhotoReminder", () => ({
+  default: () => <div data-testid="progress-photo-reminder" />,
+}));
+
+vi.mock("./PwaInstallPrompt", () => ({
+  default: () => <div data-testid="pwa-install-prompt" />,
+}));
+
 vi.mock("@/app/components/Footer/Footer", () => ({
   default: () => <div data-testid="footer" />,
 }));
