@@ -48,10 +48,20 @@ const firebaseMocks = vi.hoisted(() => ({
 
 vi.mock("next-intl", () => ({
   useLocale: () => "en",
-  useTranslations: () => (key: string) => key,
+  useTranslations: () => (key: string) => ({
+    "fields.fullName": "Full name",
+    "fields.username": "Username",
+    "fields.email": "Email",
+    "sections.profile.changePhoto": "Change photo",
+    "actions.reset": "Cancel / Reset",
+    "actions.save": "Save settings",
+    "messages.saveSuccess": "Settings saved successfully.",
+    "messages.photoSuccess": "Profile photo updated successfully.",
+  })[key] ?? key,
 }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => "/en/settings",
   useRouter: () => ({
     replace: vi.fn(),
   }),

@@ -1,48 +1,60 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import type { FitnessLevel, Gender, MainGoal, ProfileSettingsData } from "../settingsData";
 import { SettingsInput, SettingsSection, SettingsSelect } from "./SettingsControls";
 import styles from "../Settings.module.css";
+import {
+  centimetersToInches,
+  inchesToCentimeters,
+  kilogramsToPounds,
+  poundsToKilograms,
+  roundMeasurement,
+  type UnitSystem,
+} from "@/lib/appPreferences";
 
 interface ProfileSettingsProps {
   data: ProfileSettingsData;
   onChange: (data: ProfileSettingsData) => void;
   onPhotoSelect: (file: File) => void;
   isUploadingPhoto: boolean;
+  unitSystem: UnitSystem;
 }
-
-const genderOptions: Array<{ value: Gender | ""; label: string }> = [
-  { value: "", label: "Select gender" },
-  { value: "female", label: "Female" },
-  { value: "male", label: "Male" },
-];
-
-const fitnessLevelOptions: Array<{ value: FitnessLevel; label: string }> = [
-  { value: "beginner", label: "Beginner" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "advanced", label: "Advanced" },
-];
-
-const mainGoalOptions: Array<{ value: MainGoal; label: string }> = [
-  { value: "lose-weight", label: "Lose weight" },
-  { value: "build-muscle", label: "Build muscle" },
-  { value: "improve-fitness", label: "Improve fitness" },
-  { value: "stay-healthy", label: "Stay healthy" },
-  { value: "backPain", label: "Reduce back pain" },
-];
 
 export default function ProfileSettings({
   data,
   onChange,
   onPhotoSelect,
   isUploadingPhoto,
+  unitSystem,
 }: ProfileSettingsProps) {
+  const t = useTranslations("settings");
+  const isImperial = unitSystem === "imperial";
+  const genderOptions: Array<{ value: Gender | ""; label: string }> = [
+    { value: "", label: t("options.gender.select") },
+    { value: "female", label: t("options.gender.female") },
+    { value: "male", label: t("options.gender.male") },
+  ];
+  const fitnessLevelOptions: Array<{ value: FitnessLevel; label: string }> = [
+    { value: "beginner", label: t("options.fitness.beginner") },
+    { value: "intermediate", label: t("options.fitness.intermediate") },
+    { value: "advanced", label: t("options.fitness.advanced") },
+  ];
+  const mainGoalOptions: Array<{ value: MainGoal; label: string }> = [
+    { value: "lose-weight", label: t("options.goals.loseWeight") },
+    { value: "build-muscle", label: t("options.goals.buildMuscle") },
+    { value: "improve-fitness", label: t("options.goals.improveFitness") },
+    { value: "stay-healthy", label: t("options.goals.stayHealthy") },
+    { value: "backPain", label: t("options.goals.backPain") },
+  ];
   const update = <Key extends keyof ProfileSettingsData>(key: Key, value: ProfileSettingsData[Key]) => {
     onChange({ ...data, [key]: value });
   };
 
   return (
     <SettingsSection
-      title="Profile"
-      description="Basic identity and training profile details."
+      title={t("sections.profile.title")}
+      description={t("sections.profile.description")}
       testId="settings-profile-section"
     >
       <div className={styles.profileBlock}>
@@ -56,7 +68,7 @@ export default function ProfileSettings({
           </div>
           <input
             type="file"
-            aria-label="Change photo"
+            aria-label={t("sections.profile.changePhoto")}
             accept="image/jpeg,image/png,image/webp"
             disabled={isUploadingPhoto}
             onChange={(event) => {
@@ -65,24 +77,46 @@ export default function ProfileSettings({
               event.target.value = "";
             }}
           />
-          <span>{isUploadingPhoto ? "Uploading..." : "Change photo"}</span>
+          <span>{isUploadingPhoto ? t("sections.profile.uploading") : t("sections.profile.changePhoto")}</span>
         </label>
         <div>
           <p className={styles.profileName}>{data.fullName}</p>
-          <p className={styles.profileHint}>JPG, PNG or WebP. Maximum 5 MB.</p>
+          <p className={styles.profileHint}>{t("sections.profile.photoHint")}</p>
         </div>
       </div>
 
       <div className={styles.fieldGrid}>
-        <SettingsInput id="fullName" label="Full name" value={data.fullName} onChange={(value) => update("fullName", value)} />
-        <SettingsInput id="username" label="Username" value={data.username} onChange={(value) => update("username", value)} />
-        <SettingsInput id="email" label="Email" type="email" value={data.email} readOnly onChange={() => undefined} />
-        <SettingsInput id="age" label="Age" type="number" min={1} max={120} value={data.age} onChange={(value) => update("age", Number(value))} />
-        <SettingsSelect id="gender" label="Gender" value={data.gender} options={genderOptions} onChange={(value) => update("gender", value as Gender | "")} />
-        <SettingsInput id="height" label="Height" type="number" min={80} max={240} suffix="cm" value={data.height} onChange={(value) => update("height", Number(value))} />
-        <SettingsInput id="weight" label="Weight" type="number" min={25} max={300} suffix="kg" value={data.weight} onChange={(value) => update("weight", Number(value))} />
-        <SettingsSelect id="fitnessLevel" label="Fitness level" value={data.fitnessLevel} options={fitnessLevelOptions} onChange={(value) => update("fitnessLevel", value as FitnessLevel)} />
-        <SettingsSelect id="mainGoal" label="Main goal" value={data.mainGoal} options={mainGoalOptions} onChange={(value) => update("mainGoal", value as MainGoal)} />
+        <SettingsInput id="fullName" label={t("fields.fullName")} value={data.fullName} onChange={(value) => update("fullName", value)} />
+        <SettingsInput id="username" label={t("fields.username")} value={data.username} onChange={(value) => update("username", value)} />
+        <SettingsInput id="email" label={t("fields.email")} type="email" value={data.email} readOnly onChange={() => undefined} />
+        <SettingsInput id="age" label={t("fields.age")} type="number" min={1} max={120} value={data.age} onChange={(value) => update("age", Number(value))} />
+        <SettingsSelect id="gender" label={t("fields.gender")} value={data.gender} options={genderOptions} onChange={(value) => update("gender", value as Gender | "")} />
+        <SettingsInput
+          id="height"
+          label={t("fields.height")}
+          type="number"
+          min={isImperial ? 31 : 80}
+          max={isImperial ? 95 : 240}
+          suffix={isImperial ? "in" : "cm"}
+          value={isImperial ? roundMeasurement(centimetersToInches(data.height)) : data.height}
+          onChange={(value) => update("height", isImperial
+            ? roundMeasurement(inchesToCentimeters(Number(value)))
+            : Number(value))}
+        />
+        <SettingsInput
+          id="weight"
+          label={t("fields.weight")}
+          type="number"
+          min={isImperial ? 55 : 25}
+          max={isImperial ? 661 : 300}
+          suffix={isImperial ? "lb" : "kg"}
+          value={isImperial ? roundMeasurement(kilogramsToPounds(data.weight)) : data.weight}
+          onChange={(value) => update("weight", isImperial
+            ? roundMeasurement(poundsToKilograms(Number(value)))
+            : Number(value))}
+        />
+        <SettingsSelect id="fitnessLevel" label={t("fields.fitnessLevel")} value={data.fitnessLevel} options={fitnessLevelOptions} onChange={(value) => update("fitnessLevel", value as FitnessLevel)} />
+        <SettingsSelect id="mainGoal" label={t("fields.mainGoal")} value={data.mainGoal} options={mainGoalOptions} onChange={(value) => update("mainGoal", value as MainGoal)} />
       </div>
     </SettingsSection>
   );

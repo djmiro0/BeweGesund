@@ -3,7 +3,8 @@
 import { updateProfile } from "firebase/auth";
 import { doc, onSnapshot, serverTimestamp, updateDoc, writeBatch } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { db, storage } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
@@ -24,6 +25,7 @@ import {
   type UserSettings,
 } from "./settingsData";
 import styles from "./Settings.module.css";
+import { languageToLocale } from "@/lib/appPreferences";
 
 function cloneSettings(settings: UserSettings): UserSettings {
   return structuredClone(settings);
@@ -31,6 +33,10 @@ function cloneSettings(settings: UserSettings): UserSettings {
 
 export default function SettingsPage() {
   const locale = useLocale();
+  const t = useTranslations("settings");
+  const pathname = usePathname();
+  const router = useRouter();
+  const settingsLoadError = t("messages.loadError");
   const { user, profile } = useAuth();
   const userId = user?.uid;
   const [savedSettings, setSavedSettings] = useState<UserSettings>(() => cloneSettings(defaultUserSettings));
@@ -57,11 +63,11 @@ export default function SettingsPage() {
         setPreferencesLoaded(true);
       },
       () => {
-        setErrorMessage("Settings could not be loaded from Firebase.");
+        setErrorMessage(settingsLoadError);
         setPreferencesLoaded(true);
       },
     );
-  }, [userId]);
+  }, [settingsLoadError, userId]);
 
   useEffect(() => {
     if (!user || !profile || !preferencesLoaded || isDirty) return;
@@ -105,6 +111,22 @@ export default function SettingsPage() {
     setErrorMessage("");
 
     try {
+      if (draftSettings.notifications.pushNotifications) {
+        if (typeof Notification === "undefined") {
+          setErrorMessage(t("messages.pushUnsupported"));
+          return;
+        }
+
+        const permission = Notification.permission === "default"
+          ? await Notification.requestPermission()
+          : Notification.permission;
+
+        if (permission !== "granted") {
+          setErrorMessage(t("messages.pushPermissionDenied"));
+          return;
+        }
+      }
+
       const batch = writeBatch(db);
       batch.update(doc(db, "users", user.uid), {
         ...profileUpdateFromSettings(draftSettings),
@@ -125,13 +147,19 @@ export default function SettingsPage() {
 
       setSavedSettings(cloneSettings(draftSettings));
       setIsDirty(false);
-      setSuccessMessage("Settings saved successfully.");
+      setSuccessMessage(t("messages.saveSuccess"));
+
+      const nextLocale = languageToLocale(draftSettings.app.language);
+      if (nextLocale !== locale) {
+        const nextPath = pathname.replace(/^\/(de|en)(?=\/|$)/, `/${nextLocale}`);
+        router.replace(nextPath);
+      }
     } catch (error) {
       const code = (error as { code?: string } | undefined)?.code;
       setErrorMessage(
         code === "permission-denied" || code === "firestore/permission-denied"
-          ? "Settings could not be saved. Deploy the current Firestore rules first."
-          : "Settings could not be saved. Please try again.",
+          ? t("messages.permissionError")
+          : t("messages.saveError"),
       );
     } finally {
       setIsSaving(false);
@@ -143,11 +171,11 @@ export default function SettingsPage() {
 
     const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
     if (!allowedTypes.has(file.type)) {
-      setErrorMessage("Choose a JPG, PNG, or WebP image.");
+      setErrorMessage(t("messages.photoTypeError"));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setErrorMessage("The profile photo must be smaller than 5 MB.");
+      setErrorMessage(t("messages.photoSizeError"));
       return;
     }
 
@@ -181,15 +209,15 @@ export default function SettingsPage() {
       });
       setDraftSettings(applyPhoto);
       setSavedSettings(applyPhoto);
-      setSuccessMessage("Profile photo updated successfully.");
+      setSuccessMessage(t("messages.photoSuccess"));
     } catch (error) {
       const code = (error as { code?: string } | undefined)?.code;
       setErrorMessage(
         code === "storage/unauthorized"
-          ? "Photo upload is not allowed. Deploy the current Storage rules first."
+          ? t("messages.photoPermissionError")
           : code === "storage/bucket-not-found" || code === "storage/unknown"
-            ? "Firebase Storage is not set up for this project yet. Open Firebase Console, go to Storage, and complete Get started."
-          : "Profile photo could not be uploaded. Please try again.",
+            ? t("messages.photoStorageError")
+          : t("messages.photoError"),
       );
     } finally {
       setIsUploadingPhoto(false);
@@ -208,12 +236,9 @@ export default function SettingsPage() {
       <div className={styles.shell}>
         <header className={styles.header}>
           <div>
-            <p className={styles.eyebrow}>Account settings</p>
-            <h1>Settings</h1>
-            <p>
-              Manage profile, training, nutrition, privacy, and app preferences. Saved values are synchronized with
-              your Firebase account and profile.
-            </p>
+            <p className={styles.eyebrow}>{t("eyebrow")}</p>
+            <h1>{t("title")}</h1>
+            <p>{t("description")}</p>
           </div>
         </header>
 
@@ -223,8 +248,13 @@ export default function SettingsPage() {
             onChange={(value) => updateSection("profile", value)}
             onPhotoSelect={(file) => void handlePhotoSelect(file)}
             isUploadingPhoto={isUploadingPhoto}
+            unitSystem={draftSettings.app.units}
           />
-          <BodyProgressSettings data={draftSettings.bodyProgress} onChange={(value) => updateSection("bodyProgress", value)} />
+          <BodyProgressSettings
+            data={draftSettings.bodyProgress}
+            unitSystem={draftSettings.app.units}
+            onChange={(value) => updateSection("bodyProgress", value)}
+          />
           <WorkoutPreferences data={draftSettings.workoutPreferences} onChange={(value) => updateSection("workoutPreferences", value)} />
           <NutritionSettings data={draftSettings.nutrition} onChange={(value) => updateSection("nutrition", value)} />
           <GamificationSummary data={draftSettings.gamification} />
@@ -247,7 +277,7 @@ export default function SettingsPage() {
           )}
           <div className={styles.actionButtons}>
             <button type="button" className={styles.resetButton} onClick={handleReset} disabled={isSaving}>
-              Cancel / Reset
+              {t("actions.reset")}
             </button>
             <button
               type="button"
@@ -256,7 +286,7 @@ export default function SettingsPage() {
               disabled={!isDirty || isSaving}
               data-testid="settings-save-button"
             >
-              {isSaving ? "Saving..." : "Save settings"}
+              {isSaving ? t("actions.saving") : t("actions.save")}
             </button>
           </div>
         </div>

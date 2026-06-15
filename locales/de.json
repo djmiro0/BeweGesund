@@ -248,6 +248,8 @@
     "resetEmailRequired": "Gib zuerst deine E-Mail-Adresse ein.",
     "resetEmailSent": "Falls für diese E-Mail ein Konto existiert, wurden Anweisungen zum Zurücksetzen gesendet.",
     "verificationSent": "Konto erstellt. Bitte bestätige deine E-Mail-Adresse, bevor du dich anmeldest.",
+    "verificationSendFailed": "Das Konto wurde erstellt, aber die Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuche es später erneut.",
+    "emailNotVerified": "Bitte bestätige zuerst deine E-Mail-Adresse.",
     "switchToRegister": "Neu hier? Konto erstellen",
     "switchToSignIn": "Bereits ein Konto? Anmelden",
     "close": "Schließen",
@@ -261,13 +263,15 @@
     "healthConsentRequired": "Für die Verarbeitung gesundheitsbezogener Profildaten ist eine ausdrückliche Einwilligung erforderlich.",
     "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein.",
     "tooManyRequests": "Zu viele Versuche. Bitte warte kurz und versuche es erneut.",
-    "recaptchaNotice": "Diese Registrierung wird durch reCAPTCHA geschützt.",
+    "networkError": "Firebase konnte nicht erreicht werden. Prüfe deine Internetverbindung und versuche es erneut.",
+    "unauthorizedDomain": "Diese Website-Domain ist für Firebase Authentication nicht freigegeben.",
+    "recaptchaNotice": "Firebase kann im Hintergrund eine unsichtbare reCAPTCHA-Prüfung durchführen.",
     "recaptchaError": "Die Sicherheitsprüfung konnte nicht abgeschlossen werden. Lade die Seite neu und versuche es erneut.",
     "googlePopupClosed": "Das Google-Fenster wurde geschlossen, bevor die Anmeldung abgeschlossen war.",
     "googlePopupBlocked": "Das Google-Anmeldefenster wurde vom Browser blockiert. Bitte erlaube Pop-ups und versuche es erneut.",
     "accountExistsWithDifferentCredential": "Für diese E-Mail-Adresse existiert bereits ein Konto mit einer anderen Anmeldemethode.",
-    "profileSavePermissionDenied": "Dein Konto wurde erstellt, aber das Profil konnte nicht gespeichert werden, weil die Firestore-Berechtigungen noch nicht aktualisiert sind. Bitte versuche es erneut, nachdem die Regeln deployt wurden.",
-    "genericError": "Bei der Anmeldung ist ein Fehler aufgetreten. Bitte versuche es erneut."
+    "profileSavePermissionDenied": "Das Profil konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "genericErrorWithCode": "Bei der Anmeldung ist ein Fehler aufgetreten. Fehlercode: {code}"
   },
   "authAction": {
     "checkingLink": "Der sichere Link wird geprüft...",
@@ -896,9 +900,176 @@
     ],
     "note": "Dieser Datenschutzhinweis sollte vor der Veröffentlichung mit projektspezifischer juristischer Formulierung finalisiert werden."
   },
+  "settings": {
+    "eyebrow": "Kontoeinstellungen",
+    "title": "Einstellungen",
+    "description": "Verwalte Profil, Training, Ernährung, Datenschutz und App-Einstellungen. Gespeicherte Werte werden mit deinem Firebase-Konto synchronisiert.",
+    "sections": {
+      "profile": {
+        "title": "Profil",
+        "description": "Persönliche Angaben und Trainingsprofil.",
+        "changePhoto": "Foto ändern",
+        "uploading": "Wird hochgeladen...",
+        "photoHint": "JPG, PNG oder WebP. Maximal 5 MB."
+      },
+      "body": {
+        "title": "Körper & Fortschritt",
+        "description": "Ziele für Fortschritt und tägliche Gesundheitswerte."
+      },
+      "workout": {
+        "title": "Trainingseinstellungen",
+        "description": "Wie und wo deine Trainings geplant werden sollen."
+      },
+      "nutrition": {
+        "title": "Ernährung",
+        "description": "Makroziele und Ernährungspräferenzen."
+      },
+      "gamification": {
+        "title": "Fortschritt",
+        "description": "Deine Punkte, Serien, Platzierungen und Erfolge."
+      },
+      "notifications": {
+        "title": "Benachrichtigungen",
+        "description": "Wähle Erinnerungen und Aktualisierungen aus."
+      },
+      "privacy": {
+        "title": "Datenschutz & Konto",
+        "description": "Sichtbarkeit und Kontosicherheit."
+      },
+      "app": {
+        "title": "App-Einstellungen",
+        "description": "Sprache, Darstellung, Einheiten und Videowiedergabe."
+      }
+    },
+    "fields": {
+      "fullName": "Vollständiger Name",
+      "username": "Benutzername",
+      "email": "E-Mail",
+      "age": "Alter",
+      "gender": "Geschlecht",
+      "height": "Körpergröße",
+      "weight": "Gewicht",
+      "fitnessLevel": "Fitnesslevel",
+      "mainGoal": "Hauptziel",
+      "currentWeight": "Aktuelles Gewicht",
+      "targetWeight": "Zielgewicht",
+      "bodyFat": "Körperfettanteil",
+      "stepGoal": "Schrittziel",
+      "waterGoal": "Wasserziel",
+      "sleepGoal": "Schlafziel",
+      "preferredDays": "Bevorzugte Trainingstage",
+      "workoutDuration": "Trainingsdauer",
+      "trainingLocation": "Trainingsort",
+      "equipment": "Ausrüstung",
+      "difficulty": "Schwierigkeitsgrad",
+      "restTimer": "Pausentimer",
+      "calorieGoal": "Tägliches Kalorienziel",
+      "proteinGoal": "Proteinziel",
+      "carbsGoal": "Kohlenhydratziel",
+      "fatGoal": "Fettziel",
+      "dietPreference": "Ernährungsform",
+      "allergies": "Allergien",
+      "workoutReminders": "Trainingserinnerungen",
+      "mealReminders": "Mahlzeitenerinnerungen",
+      "waterReminders": "Trinkerinnerungen",
+      "challengeUpdates": "Challenge-Updates",
+      "leaderboardUpdates": "Ranglisten-Updates",
+      "emailNotifications": "E-Mail-Benachrichtigungen",
+      "pushNotifications": "Browser-Benachrichtigungen",
+      "publicProfile": "Öffentliches Profil",
+      "showProgress": "Fortschritt öffentlich anzeigen",
+      "language": "Sprache",
+      "theme": "Darstellung",
+      "units": "Einheiten",
+      "videoAutoplay": "Videos automatisch starten"
+    },
+    "options": {
+      "gender": { "select": "Geschlecht auswählen", "female": "Weiblich", "male": "Männlich" },
+      "fitness": { "beginner": "Anfänger", "intermediate": "Fortgeschritten", "advanced": "Erfahren" },
+      "goals": {
+        "loseWeight": "Gewicht reduzieren",
+        "buildMuscle": "Muskeln aufbauen",
+        "improveFitness": "Fitness verbessern",
+        "stayHealthy": "Gesund bleiben",
+        "backPain": "Rückenschmerzen reduzieren"
+      },
+      "location": { "gym": "Fitnessstudio", "home": "Zu Hause", "outdoor": "Draußen" },
+      "equipment": { "none": "Keine Ausrüstung", "dumbbells": "Kurzhanteln", "fullGym": "Komplettes Studio" },
+      "diet": { "normal": "Ausgewogen", "vegetarian": "Vegetarisch", "vegan": "Vegan", "keto": "Keto" },
+      "language": { "english": "Englisch", "german": "Deutsch" },
+      "theme": { "light": "Hell", "dark": "Dunkel", "system": "Systemeinstellung" }
+    },
+    "days": {
+      "monday": "Mo", "tuesday": "Di", "wednesday": "Mi", "thursday": "Do",
+      "friday": "Fr", "saturday": "Sa", "sunday": "So"
+    },
+    "units": { "hours": "Std.", "seconds": "Sek." },
+    "gamification": {
+      "xp": "XP-Punkte",
+      "level": "Aktuelles Level",
+      "streak": "Aktuelle Serie",
+      "days": "{count} Tage",
+      "weeklyRank": "Wochenrang",
+      "monthlyRank": "Monatsrang",
+      "badges": "Abzeichen",
+      "achievements": "Erfolge",
+      "noBadges": "Noch keine Abzeichen",
+      "noAchievements": "Noch keine Erfolge"
+    },
+    "actions": {
+      "reset": "Abbrechen / Zurücksetzen",
+      "save": "Einstellungen speichern",
+      "saving": "Wird gespeichert...",
+      "changePassword": "Passwort ändern"
+    },
+    "messages": {
+      "loadError": "Die Einstellungen konnten nicht geladen werden.",
+      "saveSuccess": "Einstellungen wurden gespeichert.",
+      "permissionError": "Die Einstellungen konnten wegen fehlender Berechtigungen nicht gespeichert werden.",
+      "saveError": "Die Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",
+      "pushUnsupported": "Dieser Browser unterstützt keine Benachrichtigungen.",
+      "pushPermissionDenied": "Browser-Benachrichtigungen wurden nicht erlaubt.",
+      "photoTypeError": "Wähle ein JPG-, PNG- oder WebP-Bild.",
+      "photoSizeError": "Das Profilfoto muss kleiner als 5 MB sein.",
+      "photoSuccess": "Das Profilfoto wurde aktualisiert.",
+      "photoPermissionError": "Das Hochladen des Fotos ist nicht erlaubt.",
+      "photoStorageError": "Firebase Storage ist für dieses Projekt noch nicht eingerichtet.",
+      "photoError": "Das Profilfoto konnte nicht hochgeladen werden.",
+      "passwordResetSent": "Eine E-Mail zum Ändern des Passworts wurde gesendet.",
+      "passwordResetError": "Die Passwort-E-Mail konnte nicht gesendet werden."
+    }
+  },
   "contactPage": {
+    "eyebrow": "Direkter Kontakt",
     "title": "Kontakt",
     "intro": "Nutze diesen Bereich für Beratungsanfragen, Kursfragen und Themen zur geschäftlichen Zusammenarbeit.",
+    "form": {
+      "title": "Nachricht senden",
+      "description": "Beschreibe kurz dein Anliegen. Wir antworten an die angegebene E-Mail-Adresse.",
+      "name": "Name",
+      "email": "E-Mail",
+      "phone": "Telefon (optional)",
+      "topic": "Thema",
+      "message": "Nachricht",
+      "topics": {
+        "consultation": "Persönliche Beratung",
+        "courses": "Kurse und Mitgliedschaft",
+        "business": "Geschäftliche Zusammenarbeit",
+        "other": "Sonstiges"
+      },
+      "submit": "Nachricht senden",
+      "sending": "Wird gesendet...",
+      "success": "Vielen Dank. Deine Nachricht wurde gesendet.",
+      "error": "Die Nachricht konnte nicht gesendet werden. Bitte versuche es später erneut.",
+      "notConfigured": "Der E-Mail-Versand ist noch nicht konfiguriert. Nutze vorerst info@bewegesund.de."
+    },
+    "booking": {
+      "eyebrow": "30 Minuten online",
+      "title": "Beratung buchen",
+      "description": "Wähle direkt einen verfügbaren Termin für ein persönliches Online-Gespräch.",
+      "action": "Termin auswählen",
+      "unavailable": "Die Online-Terminbuchung wird in Kürze freigeschaltet."
+    },
     "cards": [
       {
         "title": "Persönliche Beratung",

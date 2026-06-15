@@ -7,6 +7,7 @@ declare global {
         poster?: string;
         "metadata-video-title"?: string;
         "stream-type"?: "on-demand" | "live";
+        "auto-play"?: string;
       };
     }
   }

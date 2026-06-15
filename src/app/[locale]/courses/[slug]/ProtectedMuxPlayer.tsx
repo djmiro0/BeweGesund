@@ -35,7 +35,7 @@ export default function ProtectedMuxPlayer({
   title,
   messages,
 }: ProtectedMuxPlayerProps) {
-  const { user, loading } = useAuth();
+  const { user, loading, appPreferences } = useAuth();
   const [playbackToken, setPlaybackToken] = useState("");
   const [error, setError] = useState("");
   const fallbackStyle = poster
@@ -141,6 +141,7 @@ export default function ProtectedMuxPlayer({
       poster={poster ?? undefined}
       metadata-video-title={title}
       stream-type="on-demand"
+      auto-play={appPreferences.videoAutoplay ? "muted" : undefined}
       style={{ width: "100%", height: "100%" }}
     />
   );

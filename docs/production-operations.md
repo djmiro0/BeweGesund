@@ -8,7 +8,7 @@
 - `npm run build` in `functions/`
 - Complete a Stripe test subscription and Customer Portal cancellation.
 - Verify `/api/health` returns HTTP 200 after deployment.
-- Smoke-test registration, email verification, password reset, settings save, video playback, and account deletion.
+- Smoke-test registration, email verification, password reset, settings save, video playback, contact delivery, and account deletion.
 
 ## Required production configuration
 
@@ -16,6 +16,7 @@
 - Firebase project ID and Firebase App Check reCAPTCHA v3 site key
 - Mux signing credentials and a mandatory admin upload token
 - `NEXT_PUBLIC_SITE_URL`
+- Resend API key, verified contact sender, recipient address, and optional HTTPS consultation booking URL
 - All `LEGAL_*` provider variables from `.env.example`
 - Stripe Basic and Plus Price IDs, secret key, webhook signing secret, and Customer Portal configuration
 

@@ -4,13 +4,28 @@ import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
 import MobileTabBar from "./MobileTabBar";
 import { ThemeProvider } from "./ThemeProvider";
+import { useTheme } from "./ThemeProvider";
 import { getProfileFirstName } from "@/lib/userProfile";
 import styles from "./AppShell.module.css";
+
+function AppPreferenceEffects() {
+  const { user, appPreferences } = useAuth();
+  const { preference, setThemePreference } = useTheme();
+
+  useEffect(() => {
+    if (user && preference !== appPreferences.theme) {
+      setThemePreference(appPreferences.theme);
+    }
+  }, [appPreferences.theme, preference, setThemePreference, user]);
+
+  return null;
+}
 
 export function ShellFrame({
   children,
@@ -98,10 +113,11 @@ export default function AppShell({
   locale: string;
 }) {
   return (
-    <ThemeProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <AppPreferenceEffects />
         <ShellFrame locale={locale}>{children}</ShellFrame>
-      </AuthProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

@@ -101,6 +101,14 @@ interface FirebaseErrorLike {
     };
 }
 
+function getFirebaseErrorCode(error: unknown) {
+    const firebaseError = error as FirebaseErrorLike | undefined;
+    return firebaseError?.code
+        ?? firebaseError?.error?.message
+        ?? firebaseError?.customData?._tokenResponse?.error?.message
+        ?? "unknown";
+}
+
 type AuthView = "signIn" | "register" | "forgotPassword" | "googleOnboarding";
 
 const googleProvider = new GoogleAuthProvider();
@@ -213,6 +221,11 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                 return t("invalidEmail");
             case "auth/too-many-requests":
                 return t("tooManyRequests");
+            case "auth/network-request-failed":
+                return t("networkError");
+            case "auth/app-not-authorized":
+            case "auth/unauthorized-domain":
+                return t("unauthorizedDomain");
             case "auth/captcha-check-failed":
             case "auth/missing-recaptcha-token":
             case "auth/invalid-recaptcha-token":
@@ -231,7 +244,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
             case "firestore/permission-denied":
                 return t("profileSavePermissionDenied");
             default:
-                return t("genericError");
+                return t("genericErrorWithCode", { code: getFirebaseErrorCode(error) });
         }
     };
 
@@ -405,7 +418,6 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     return;
                 }
 
-                await initializeRecaptchaConfig(auth);
                 const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
 
                 try {
@@ -416,23 +428,51 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         doc(db, "users", credential.user.uid),
                         createProfilePayload(credential.user.uid, credential.user.email ?? email.trim()),
                     );
-                    await sendEmailVerification(credential.user, getAuthActionSettings());
-                    await signOut(auth);
-                    setPassword("");
-                    setConfirmPassword("");
-                    setView("signIn");
-                    setInfoMessage(t("verificationSent"));
-                    return;
                 } catch (profileError) {
                     await deleteUser(credential.user).catch(() => undefined);
                     throw profileError;
                 }
+
+                try {
+                    await sendEmailVerification(credential.user, getAuthActionSettings());
+                } catch (verificationError) {
+                    console.error("Firebase verification email failed", {
+                        code: getFirebaseErrorCode(verificationError),
+                        error: verificationError,
+                    });
+                    await signOut(auth).catch(() => undefined);
+                    setPassword("");
+                    setConfirmPassword("");
+                    setView("signIn");
+                    setErrorMessage(t("verificationSendFailed"));
+                    return;
+                }
+
+                await signOut(auth);
+                setPassword("");
+                setConfirmPassword("");
+                setView("signIn");
+                setInfoMessage(t("verificationSent"));
+                return;
             } else {
-                await signInWithEmailAndPassword(auth, email, password);
+                const credential = await signInWithEmailAndPassword(auth, email, password);
+                const usesPassword = credential.user.providerData.some(
+                    (provider) => provider.providerId === "password",
+                );
+
+                if (usesPassword && !credential.user.emailVerified) {
+                    await signOut(auth);
+                    setErrorMessage(`${t("errorPrefix")} ${t("emailNotVerified")}`);
+                    return;
+                }
             }
             resetForm();
             onClose();
         } catch (error: unknown) {
+            console.error("Firebase authentication failed", {
+                code: getFirebaseErrorCode(error),
+                error,
+            });
             setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(error)}`);
         } finally {
             setIsSubmitting(false);

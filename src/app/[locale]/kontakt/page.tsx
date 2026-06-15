@@ -1,22 +1,17 @@
-"use client";
-
-import { useTranslations } from "next-intl";
-import InfoPage from "@/app/components/InfoPage/InfoPage";
+import ContactPageClient from "./ContactPageClient";
 
 export default function KontaktPage() {
-  const contactT = useTranslations("contactPage");
-  const consultationT = useTranslations("consultationPage");
-  const sections = [
-    ...(contactT.raw("cards") as Array<{ title: string; body: string }>),
-    ...(consultationT.raw("sections") as Array<{ title: string; body: string }>),
-  ];
+  const configuredBookingUrl = process.env.CONSULTATION_BOOKING_URL;
+  let bookingUrl: string | null = null;
 
-  return (
-    <InfoPage
-      title={contactT("title")}
-      intro={contactT("intro")}
-      sections={sections}
-      note={contactT("note")}
-    />
-  );
+  if (configuredBookingUrl) {
+    try {
+      const url = new URL(configuredBookingUrl);
+      bookingUrl = url.protocol === "https:" ? url.toString() : null;
+    } catch {
+      bookingUrl = null;
+    }
+  }
+
+  return <ContactPageClient bookingUrl={bookingUrl} />;
 }
