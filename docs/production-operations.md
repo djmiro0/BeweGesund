@@ -20,6 +20,20 @@
 - All `LEGAL_*` provider variables from `.env.example`
 - Stripe Basic and Plus Price IDs, secret key, webhook signing secret, and Customer Portal configuration
 
+For contact delivery, configure these variables in the deployment provider:
+
+```env
+RESEND_API_KEY=...
+CONTACT_EMAIL_FROM=BeweGesund <kontakt@your-verified-domain.example>
+CONTACT_EMAIL_TO=info@bewegesund.de
+```
+
+`CONTACT_EMAIL_FROM` must use a sender domain verified in Resend. This does not
+move the mailbox to Resend; the recipient can still be an IONOS mailbox through
+`CONTACT_EMAIL_TO`. `CONTACT_EMAIL_TO` is optional in code and defaults to
+`info@bewegesund.de`, but setting it explicitly makes production configuration
+easier to audit.
+
 Follow `docs/stripe-billing.md` in Stripe test mode before adding any live
 Stripe credentials.
 

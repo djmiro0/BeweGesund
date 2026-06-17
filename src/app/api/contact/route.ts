@@ -62,8 +62,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid contact request." }, { status: 400 });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.CONTACT_EMAIL_FROM;
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const from = process.env.CONTACT_EMAIL_FROM?.trim();
   const to = process.env.CONTACT_EMAIL_TO?.trim() || "info@bewegesund.de";
 
   if (!apiKey || !from) {
@@ -108,6 +108,13 @@ export async function POST(request: Request) {
   });
 
   if (!response.ok) {
+    const errorBody = await response.text().catch(() => "");
+    console.error("Contact delivery failed through Resend.", {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorBody.slice(0, 800),
+    });
+
     return NextResponse.json(
       { error: "Contact delivery failed.", code: "CONTACT_DELIVERY_FAILED" },
       { status: 502 },

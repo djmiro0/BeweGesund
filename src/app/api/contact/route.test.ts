@@ -78,4 +78,29 @@ describe("contact route", () => {
       to: ["info@bewegesund.de"],
     });
   });
+
+  it("logs Resend delivery failures without exposing details to the client", async () => {
+    vi.stubEnv("RESEND_API_KEY", "re_test");
+    vi.stubEnv("CONTACT_EMAIL_FROM", "BeweGesund <kontakt@example.com>");
+    vi.stubEnv("CONTACT_EMAIL_TO", "info@example.com");
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ message: "Domain is not verified" }), {
+        status: 403,
+        statusText: "Forbidden",
+      }),
+    );
+
+    const response = await POST(contactRequest());
+
+    expect(response.status).toBe(502);
+    await expect(response.json()).resolves.toMatchObject({ code: "CONTACT_DELIVERY_FAILED" });
+    expect(console.error).toHaveBeenCalledWith(
+      "Contact delivery failed through Resend.",
+      expect.objectContaining({
+        status: 403,
+        body: expect.stringContaining("Domain is not verified"),
+      }),
+    );
+  });
 });

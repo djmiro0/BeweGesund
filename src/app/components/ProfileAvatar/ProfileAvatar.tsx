@@ -22,10 +22,12 @@ export default function ProfileAvatar({
 }: ProfileAvatarProps) {
   const [privatePhotoUrl, setPrivatePhotoUrl] = useState("");
   const [failedPhotoUrl, setFailedPhotoUrl] = useState("");
-  const activePhotoUrl = privatePhotoUrl || photoUrl || "";
+  const activePhotoUrl = photoUrl || privatePhotoUrl || "";
   const showPhoto = Boolean(activePhotoUrl && activePhotoUrl !== failedPhotoUrl);
 
   useEffect(() => {
+    if (photoUrl) return;
+
     let objectUrl = "";
     let cancelled = false;
 

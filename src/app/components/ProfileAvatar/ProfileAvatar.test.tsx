@@ -25,12 +25,27 @@ describe("ProfileAvatar", () => {
     });
   });
 
-  it("loads the authenticated private avatar from Firebase Storage", async () => {
-    mocks.getBlob.mockResolvedValue(new Blob(["avatar"], { type: "image/jpeg" }));
+  it("uses the stored profile photo URL without fetching the private blob", () => {
     render(
       <ProfileAvatar
         userId="user-1"
         photoUrl="https://fallback.example/avatar.jpg"
+        initial="B"
+        ariaLabel="Bakster profile photo"
+      />,
+    );
+
+    expect(screen.getByRole("presentation"))
+      .toHaveAttribute("src", "https://fallback.example/avatar.jpg");
+    expect(mocks.getBlob).not.toHaveBeenCalled();
+  });
+
+  it("loads the authenticated private avatar from Firebase Storage when no URL is stored", async () => {
+    mocks.getBlob.mockResolvedValue(new Blob(["avatar"], { type: "image/jpeg" }));
+    render(
+      <ProfileAvatar
+        userId="user-1"
+        photoUrl={null}
         initial="B"
         ariaLabel="Bakster profile photo"
       />,
