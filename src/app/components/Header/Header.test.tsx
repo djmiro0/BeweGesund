@@ -18,6 +18,7 @@ vi.mock("next-intl", () => ({
       signOut: "Sign out",
       openMenu: "Open menu",
       closeMenu: "Close menu",
+      language: "Language",
       profileFallback: "Member",
       profileLink: "Profile",
       profileAvatarAlt: `Avatar ${values?.name ?? ""}`,
@@ -100,6 +101,29 @@ describe("Header", () => {
     expect(screen.queryByTestId("mobile-menu-trigger")).not.toBeInTheDocument();
     expect(screen.getByTestId("theme-toggle")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
+  });
+
+  it("uses a language dropdown and keeps the current path when changing locale", async () => {
+    const user = userEvent.setup();
+    render(<Header locale="en" />);
+
+    await user.selectOptions(screen.getByLabelText("Language"), "de");
+
+    expect(push).toHaveBeenCalledWith("/de");
+  });
+
+  it("uses a switch control for light and dark mode", async () => {
+    const user = userEvent.setup();
+    render(<Header locale="en" />);
+
+    const themeSwitch = screen.getByTestId("theme-toggle");
+
+    expect(themeSwitch).toHaveAttribute("role", "switch");
+    expect(themeSwitch).toHaveAttribute("aria-checked", "false");
+
+    await user.click(themeSwitch);
+
+    expect(toggleTheme).toHaveBeenCalledTimes(1);
   });
 
   it("closes the mobile menu from the blurred page backdrop", async () => {

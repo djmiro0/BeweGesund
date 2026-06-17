@@ -1,16 +1,21 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ShellFrame } from "./AppShell";
+import { AppPreferenceEffects, ShellFrame } from "./AppShell";
+import { ThemeProvider, useTheme } from "./ThemeProvider";
 
 const mocks = vi.hoisted(() => ({
   pathname: "/de",
   auth: {
     user: null as null | {
+      uid: string;
       displayName: string;
       photoURL: null;
       providerData: Array<{ providerId: string }>;
     },
     profile: null,
+    appPreferences: {
+      theme: "system",
+    },
     loading: false,
     isAuthOpen: false,
     openAuth: vi.fn(),
@@ -63,10 +68,22 @@ vi.mock("@/app/components/Footer/Footer", () => ({
 
 describe("ShellFrame launch routing", () => {
   beforeEach(() => {
-    mocks.pathname = "/de";
-    mocks.auth.user = null;
-    mocks.auth.loading = false;
+  mocks.pathname = "/de";
+  mocks.auth.user = null;
+  mocks.auth.appPreferences = { theme: "system" };
+  mocks.auth.loading = false;
+  window.localStorage.clear();
+  document.documentElement.removeAttribute("data-theme");
+  Object.defineProperty(window, "matchMedia", {
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
   });
+});
 
   it.each(["/de", "/de/blogs", "/de/courses", "/de/about"])(
     "keeps unauthenticated route %s behind the launch screen",
@@ -102,6 +119,7 @@ describe("ShellFrame launch routing", () => {
   it("renders the application for authenticated users", () => {
     mocks.pathname = "/de/courses";
     mocks.auth.user = {
+      uid: "user-1",
       displayName: "Member",
       photoURL: null,
       providerData: [],
@@ -115,5 +133,39 @@ describe("ShellFrame launch routing", () => {
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
     expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
+  });
+
+  it("does not reset a header theme toggle back to the stored remote preference", async () => {
+    function ThemeProbe() {
+      const { theme, toggleTheme } = useTheme();
+
+      return (
+        <button type="button" data-testid="theme-probe" onClick={toggleTheme}>
+          {theme}
+        </button>
+      );
+    }
+
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+    mocks.auth.appPreferences = { theme: "system" };
+
+    render(
+      <ThemeProvider>
+        <AppPreferenceEffects />
+        <ThemeProbe />
+      </ThemeProvider>,
+    );
+
+    await waitFor(() => expect(screen.getByTestId("theme-probe")).toHaveTextContent("light"));
+
+    fireEvent.click(screen.getByTestId("theme-probe"));
+
+    await waitFor(() => expect(screen.getByTestId("theme-probe")).toHaveTextContent("dark"));
+    expect(window.localStorage.getItem("sbewegesund-theme")).toBe("dark");
   });
 });

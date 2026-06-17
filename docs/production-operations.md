@@ -34,6 +34,9 @@ move the mailbox to Resend; the recipient can still be an IONOS mailbox through
 `info@bewegesund.de`, but setting it explicitly makes production configuration
 easier to audit.
 
+Consultation bookings default to `https://cal.eu/bewegesund`. Set
+`CONSULTATION_BOOKING_URL` only when the booking destination should be changed.
+
 Follow `docs/stripe-billing.md` in Stripe test mode before adding any live
 Stripe credentials.
 

@@ -79,7 +79,7 @@ describe("contact route", () => {
     });
   });
 
-  it("logs Resend delivery failures without exposing details to the client", async () => {
+  it("logs Resend delivery failures and includes provider details outside production", async () => {
     vi.stubEnv("RESEND_API_KEY", "re_test");
     vi.stubEnv("CONTACT_EMAIL_FROM", "BeweGesund <kontakt@example.com>");
     vi.stubEnv("CONTACT_EMAIL_TO", "info@example.com");
@@ -94,7 +94,11 @@ describe("contact route", () => {
     const response = await POST(contactRequest());
 
     expect(response.status).toBe(502);
-    await expect(response.json()).resolves.toMatchObject({ code: "CONTACT_DELIVERY_FAILED" });
+    await expect(response.json()).resolves.toMatchObject({
+      code: "CONTACT_DELIVERY_FAILED",
+      providerStatus: 403,
+      providerMessage: expect.stringContaining("Domain is not verified"),
+    });
     expect(console.error).toHaveBeenCalledWith(
       "Contact delivery failed through Resend.",
       expect.objectContaining({
@@ -102,5 +106,24 @@ describe("contact route", () => {
         body: expect.stringContaining("Domain is not verified"),
       }),
     );
+  });
+
+  it("does not expose provider failure details in production", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("RESEND_API_KEY", "re_test");
+    vi.stubEnv("CONTACT_EMAIL_FROM", "BeweGesund <kontakt@example.com>");
+    vi.stubEnv("CONTACT_EMAIL_TO", "info@example.com");
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ message: "Domain is not verified" }), { status: 403 }),
+    );
+
+    const response = await POST(contactRequest());
+
+    expect(response.status).toBe(502);
+    await expect(response.json()).resolves.toEqual({
+      error: "Contact delivery failed.",
+      code: "CONTACT_DELIVERY_FAILED",
+    });
   });
 });

@@ -4,7 +4,7 @@ import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
@@ -16,15 +16,23 @@ import { useTheme } from "./ThemeProvider";
 import { getProfileFirstName } from "@/lib/userProfile";
 import styles from "./AppShell.module.css";
 
-function AppPreferenceEffects() {
+export function AppPreferenceEffects() {
   const { user, appPreferences } = useAuth();
-  const { preference, setThemePreference } = useTheme();
+  const { setThemePreference } = useTheme();
+  const lastAppliedThemeKey = useRef<string | null>(null);
 
   useEffect(() => {
-    if (user && preference !== appPreferences.theme) {
+    if (!user) {
+      lastAppliedThemeKey.current = null;
+      return;
+    }
+
+    const themeKey = `${user.uid}:${appPreferences.theme}`;
+    if (lastAppliedThemeKey.current !== themeKey) {
+      lastAppliedThemeKey.current = themeKey;
       setThemePreference(appPreferences.theme);
     }
-  }, [appPreferences.theme, preference, setThemePreference, user]);
+  }, [appPreferences.theme, setThemePreference, user]);
 
   return null;
 }

@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const subject = `[BeweGesund] ${topic} - ${name}`;
+  const subject = `BeweGesund ${topic} - ${name}`;
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -95,20 +95,20 @@ export async function POST(request: Request) {
         message,
       ].join("\n"),
       html: `
-        <h2>BeweGesund contact request</h2>
-        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
-        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-        <p><strong>Phone:</strong> ${escapeHtml(phone || "-")}</p>
-        <p><strong>Topic:</strong> ${escapeHtml(topic)}</p>
-        <p><strong>Locale:</strong> ${locale}</p>
-        <hr />
-        <p>${escapeHtml(message).replaceAll("\n", "<br />")}</p>
+        <div style=" background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:16px; margin-bottom:16px; "> 
+        <p style="margin:0 0 8px;"><strong>Name:</strong> ${escapeHtml(name)}</p> <p style="margin:0 0 8px;"><strong>Email:</strong> ${escapeHtml(email)}</p> 
+        <p style="margin:0 0 8px;"><strong>Phone:</strong> ${escapeHtml(phone || "-")}</p> <p style="margin:0 0 8px;"><strong>Topic:</strong> ${escapeHtml(topic)}</p> 
+        <p style="margin:0;"> <strong>Locale:</strong> 
+        <span style=" background:#dcfce7; color:#166534; padding:2px 8px; border-radius:999px; font-size:12px; font-weight:600; "> ${escapeHtml(locale)} </span> </p> 
+        </div> <div style=" border-left:4px solid #16a34a; padding-left:16px; line-height:1.6; "> ${escapeHtml(message).replaceAll("\n", "<br />")} 
+        </div>
       `,
     }),
   });
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "");
+    const deliveryError = { error: "Contact delivery failed.", code: "CONTACT_DELIVERY_FAILED" };
     console.error("Contact delivery failed through Resend.", {
       status: response.status,
       statusText: response.statusText,
@@ -116,7 +116,13 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      { error: "Contact delivery failed.", code: "CONTACT_DELIVERY_FAILED" },
+      process.env.NODE_ENV === "production"
+        ? deliveryError
+        : {
+            ...deliveryError,
+            providerStatus: response.status,
+            providerMessage: errorBody.slice(0, 800),
+          },
       { status: 502 },
     );
   }

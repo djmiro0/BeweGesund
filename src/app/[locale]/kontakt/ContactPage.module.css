@@ -81,6 +81,11 @@
   line-height: 1.65;
 }
 
+.bookingCard span {
+  display: block;
+  max-width: 28rem;
+}
+
 .fieldGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -150,6 +155,26 @@
   padding: 1.35rem;
 }
 
+.bookingCard {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.bookingCard svg {
+  color: var(--ui-link);
+}
+
+.bookingCard h2 {
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+.bookingCard a {
+  width: fit-content;
+  min-width: 10rem;
+  margin-top: 0.65rem;
+}
+
 .bookingCard small {
   display: block;
   margin-top: 1rem;
@@ -180,5 +205,9 @@
 
   .page {
     padding-inline: 1rem;
+  }
+
+  .bookingCard a {
+    width: 100%;
   }
 }

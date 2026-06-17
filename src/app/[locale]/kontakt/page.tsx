@@ -1,17 +1,20 @@
 import ContactPageClient from "./ContactPageClient";
 
-export default function KontaktPage() {
-  const configuredBookingUrl = process.env.CONSULTATION_BOOKING_URL;
-  let bookingUrl: string | null = null;
+const defaultBookingUrl = "https://cal.eu/bewegesund";
 
-  if (configuredBookingUrl) {
-    try {
-      const url = new URL(configuredBookingUrl);
-      bookingUrl = url.protocol === "https:" ? url.toString() : null;
-    } catch {
-      bookingUrl = null;
-    }
+export function resolveBookingUrl(configuredBookingUrl = process.env.CONSULTATION_BOOKING_URL) {
+  const candidate = configuredBookingUrl || defaultBookingUrl;
+
+  try {
+    const url = new URL(candidate);
+    return url.protocol === "https:" ? url.toString() : null;
+  } catch {
+    return null;
   }
+}
+
+export default function KontaktPage() {
+  const bookingUrl = resolveBookingUrl();
 
   return <ContactPageClient bookingUrl={bookingUrl} />;
 }
