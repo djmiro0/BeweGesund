@@ -6,9 +6,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight, BookOpen, ChevronLeft, ChevronRight, Clock3, Play, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { memberCourseCategories, memberDashboard } from "@/data";
+import { memberCourseCategories } from "@/data";
 import type { BlogPost, CourseSummary } from "@/lib/contentful";
 import { useAuth } from "./AuthProvider";
+import { getDashboardProgress } from "@/lib/dashboardProgress";
 import styles from "./Dashboard.module.css";
 
 interface DashboardUser {
@@ -49,7 +50,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     const coursesT = useTranslations("courses");
     const packageT = useTranslations("packages");
     const locale = useLocale();
-    const { memberPackage } = useAuth();
+    const { memberPackage, profile } = useAuth();
     const [activeTab, setActiveTab] = useState("for-you");
     const tabsRef = useRef<HTMLElement>(null);
     const videosRef = useRef<HTMLDivElement>(null);
@@ -116,11 +117,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
         [coursesT],
     );
 
-    const recommendedCourseIds = useMemo(
-        () => Array.from(new Set([...memberDashboard.recommendedCourseIds, ...memberDashboard.upcomingCourseIds])),
-        [],
-    );
-    const recommendedCourseIdSet = useMemo(() => new Set(recommendedCourseIds), [recommendedCourseIds]);
+    const {
+        completedCourseCount,
+        upcomingCourseCount,
+        recommendedCourseIds: recommendedCourseIdSet,
+    } = useMemo(() => getDashboardProgress(profile), [profile]);
 
     const tabs = [
         {
@@ -255,11 +256,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                         </div>
                         <div className={styles.statusItem} data-testid="dashboard-overview-upcoming">
                             <span>{t("workouts.status.upcoming")}</span>
-                            <strong>{memberDashboard.upcomingCourseIds.length}</strong>
+                            <strong>{upcomingCourseCount}</strong>
                         </div>
                         <div className={styles.statusItem} data-testid="dashboard-overview-completed">
                             <span>{t("workouts.status.completed")}</span>
-                            <strong>{memberDashboard.completedCourseIds.length}</strong>
+                            <strong>{completedCourseCount}</strong>
                         </div>
                     </div>
                 </motion.header>

@@ -1,5 +1,12 @@
 import type { User } from "firebase/auth";
 import type { UserProfileData } from "@/lib/userProfile";
+import {
+  defaultAppPreferences,
+  normalizeAppPreferences,
+  type AppPreferences,
+} from "@/lib/appPreferences";
+
+export type { AppLanguage, AppTheme, UnitSystem } from "@/lib/appPreferences";
 
 export type FitnessLevel = "beginner" | "intermediate" | "advanced";
 export type MainGoal = "lose-weight" | "build-muscle" | "improve-fitness" | "stay-healthy" | "backPain";
@@ -7,9 +14,6 @@ export type Gender = "female" | "male";
 export type TrainingLocation = "gym" | "home" | "outdoor";
 export type Equipment = "no-equipment" | "dumbbells" | "full-gym";
 export type DietPreference = "normal" | "vegetarian" | "vegan" | "keto";
-export type AppLanguage = "english" | "german" | "serbian";
-export type AppTheme = "light" | "dark" | "system";
-export type UnitSystem = "metric" | "imperial";
 
 export interface ProfileSettingsData {
   profileImageUrl: string;
@@ -71,17 +75,18 @@ export interface NotificationSettingsData {
   pushNotifications: boolean;
 }
 
+export interface ProgressPhotosData {
+  beforeUploadedAt: string;
+  afterUploadedAt: string;
+  reminderEnabled: boolean;
+}
+
 export interface PrivacySettingsData {
   isPublicProfile: boolean;
   showProgressPublicly: boolean;
 }
 
-export interface AppSettingsData {
-  language: AppLanguage;
-  theme: AppTheme;
-  units: UnitSystem;
-  videoAutoplay: boolean;
-}
+export type AppSettingsData = AppPreferences;
 
 export interface UserSettings {
   profile: ProfileSettingsData;
@@ -90,6 +95,7 @@ export interface UserSettings {
   nutrition: NutritionSettingsData;
   gamification: GamificationData;
   notifications: NotificationSettingsData;
+  progressPhotos: ProgressPhotosData;
   privacy: PrivacySettingsData;
   app: AppSettingsData;
 }
@@ -151,16 +157,16 @@ export const defaultUserSettings: UserSettings = {
     emailNotifications: false,
     pushNotifications: false,
   },
+  progressPhotos: {
+    beforeUploadedAt: "",
+    afterUploadedAt: "",
+    reminderEnabled: true,
+  },
   privacy: {
     isPublicProfile: false,
     showProgressPublicly: false,
   },
-  app: {
-    language: "english",
-    theme: "system",
-    units: "metric",
-    videoAutoplay: true,
-  },
+  app: defaultAppPreferences,
 };
 
 type StoredSettings = Partial<Omit<UserSettings, "gamification" | "profile">> & {
@@ -215,15 +221,18 @@ export function settingsFromFirebase(
     ...settings.notifications,
     ...preferences.notifications,
   };
+  settings.progressPhotos = {
+    ...settings.progressPhotos,
+    ...preferences.progressPhotos,
+  };
   settings.privacy = {
     ...settings.privacy,
     ...preferences.privacy,
   };
-  settings.app = {
-    ...settings.app,
-    ...preferences.app,
-    language: preferences.app?.language ?? (locale === "de" ? "german" : "english"),
-  };
+  settings.app = normalizeAppPreferences(
+    preferences.app as Record<string, unknown> | undefined,
+    locale,
+  );
   settings.gamification = {
     xpPoints: profile.xp,
     currentLevel: Math.max(1, Math.floor(profile.xp / 500) + 1),
@@ -265,6 +274,7 @@ export function storedSettingsFromForm(settings: UserSettings): StoredSettings {
     workoutPreferences: settings.workoutPreferences,
     nutrition: settings.nutrition,
     notifications: settings.notifications,
+    progressPhotos: settings.progressPhotos,
     privacy: settings.privacy,
     app: settings.app,
   };

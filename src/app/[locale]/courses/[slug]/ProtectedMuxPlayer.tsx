@@ -18,12 +18,22 @@ interface ProtectedMuxPlayerProps {
     tokenError: string;
     signingMissing: string;
     authError: string;
+    subscriptionRequired: string;
+    packageRequired: string;
+    videoNotFound: string;
+    accessCheckFailed: string;
+    rateLimited: string;
   };
 }
 
 function getPlaybackErrorMessage(errorCode: string | undefined, messages: ProtectedMuxPlayerProps["messages"]) {
   if (errorCode === "MUX_SIGNING_NOT_CONFIGURED") return messages.signingMissing;
   if (errorCode === "AUTH_REQUIRED" || errorCode === "INVALID_AUTH_TOKEN") return messages.authError;
+  if (errorCode === "SUBSCRIPTION_REQUIRED") return messages.subscriptionRequired;
+  if (errorCode === "PACKAGE_REQUIRED") return messages.packageRequired;
+  if (errorCode === "VIDEO_NOT_FOUND" || errorCode === "PLAYBACK_REQUEST_INVALID") return messages.videoNotFound;
+  if (errorCode === "ACCESS_CHECK_FAILED") return messages.accessCheckFailed;
+  if (errorCode === "RATE_LIMITED") return messages.rateLimited;
   return messages.tokenError;
 }
 
@@ -35,7 +45,7 @@ export default function ProtectedMuxPlayer({
   title,
   messages,
 }: ProtectedMuxPlayerProps) {
-  const { user, loading } = useAuth();
+  const { user, loading, appPreferences } = useAuth();
   const [playbackToken, setPlaybackToken] = useState("");
   const [error, setError] = useState("");
   const fallbackStyle = poster
@@ -80,6 +90,13 @@ export default function ProtectedMuxPlayer({
         };
 
         if (!response.ok || !payload.playbackToken) {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn("Mux playback token request failed.", {
+              status: response.status,
+              code: payload.code,
+              error: payload.error,
+            });
+          }
           throw new Error(getPlaybackErrorMessage(payload.code, messages));
         }
 
@@ -141,6 +158,7 @@ export default function ProtectedMuxPlayer({
       poster={poster ?? undefined}
       metadata-video-title={title}
       stream-type="on-demand"
+      auto-play={appPreferences.videoAutoplay ? "muted" : undefined}
       style={{ width: "100%", height: "100%" }}
     />
   );

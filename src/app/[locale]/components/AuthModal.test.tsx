@@ -1,11 +1,12 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import AuthModal from "./AuthModal";
 
 const mocks = vi.hoisted(() => ({
+    callable: vi.fn(),
     getDoc: vi.fn(),
-    initializeRecaptchaConfig: vi.fn(),
+    httpsCallable: vi.fn(),
     signInWithPopup: vi.fn(),
     signOut: vi.fn(),
 }));
@@ -42,8 +43,6 @@ vi.mock("next-intl", () => ({
         region: "Region",
         selectRegionPlaceholder: "Select region",
         regionCompetitionHint: "Region hint",
-        recaptchaNotice: "This registration is protected by reCAPTCHA.",
-        recaptchaError: "Security check failed",
         packageLabel: "Package",
         packageTemporaryHint: "Basic package",
         consentText: "Accept terms",
@@ -62,6 +61,7 @@ vi.mock("next-intl", () => ({
 vi.mock("../../../../firebase.config", () => ({
   auth: { currentUser: null },
   db: {},
+  functions: {},
 }));
 
 vi.mock("firebase/auth", () => ({
@@ -69,8 +69,7 @@ vi.mock("firebase/auth", () => ({
         setCustomParameters() {}
     },
     createUserWithEmailAndPassword: vi.fn(),
-    deleteUser: vi.fn(),
-    initializeRecaptchaConfig: mocks.initializeRecaptchaConfig,
+    deleteUser: vi.fn(() => Promise.resolve()),
   sendEmailVerification: vi.fn(),
   sendPasswordResetEmail: vi.fn(),
   signInWithEmailAndPassword: vi.fn(),
@@ -80,17 +79,23 @@ vi.mock("firebase/auth", () => ({
 }));
 
 vi.mock("firebase/firestore", () => ({
+  deleteDoc: vi.fn(() => Promise.resolve()),
   doc: vi.fn(() => ({})),
   getDoc: mocks.getDoc,
   serverTimestamp: vi.fn(() => "timestamp"),
   setDoc: vi.fn(),
 }));
 
+vi.mock("firebase/functions", () => ({
+  httpsCallable: mocks.httpsCallable,
+}));
+
 describe("AuthModal Google sign-in", () => {
   beforeEach(() => {
     mocks.getDoc.mockReset();
-    mocks.initializeRecaptchaConfig.mockReset();
-    mocks.initializeRecaptchaConfig.mockResolvedValue(undefined);
+    mocks.callable.mockReset();
+    mocks.httpsCallable.mockReset();
+    mocks.httpsCallable.mockReturnValue(mocks.callable);
     mocks.signInWithPopup.mockReset();
     mocks.signOut.mockReset();
   });
@@ -102,16 +107,14 @@ describe("AuthModal Google sign-in", () => {
     expect(screen.getByText("or use email")).toBeInTheDocument();
   });
 
-  it("preloads reCAPTCHA protection when registration opens", async () => {
+  it("opens registration without reCAPTCHA copy", async () => {
     const user = userEvent.setup();
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Create an account" }));
 
-    expect(screen.getByText("This registration is protected by reCAPTCHA.")).toBeInTheDocument();
-    await waitFor(() => {
-      expect(mocks.initializeRecaptchaConfig).toHaveBeenCalledTimes(1);
-    });
+    expect(screen.getByRole("heading", { name: "registerTitle" })).toBeInTheDocument();
+    expect(screen.queryByText(/reCAPTCHA/i)).not.toBeInTheDocument();
   });
 
   it("closes immediately for a returning Google user with a profile", async () => {

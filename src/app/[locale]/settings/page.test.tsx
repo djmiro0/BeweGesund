@@ -8,6 +8,8 @@ const firebaseMocks = vi.hoisted(() => ({
   batchSet: vi.fn(),
   batchUpdate: vi.fn(),
   getDownloadURL: vi.fn(),
+  getBlob: vi.fn(),
+  setDoc: vi.fn(),
   updateDoc: vi.fn(),
   updateProfile: vi.fn(),
   uploadBytes: vi.fn(),
@@ -48,10 +50,21 @@ const firebaseMocks = vi.hoisted(() => ({
 
 vi.mock("next-intl", () => ({
   useLocale: () => "en",
-  useTranslations: () => (key: string) => key,
+  useTranslations: () => (key: string) => ({
+    "fields.fullName": "Full name",
+    "fields.username": "Username",
+    "fields.email": "Email",
+    "sections.profile.changePhoto": "Change photo",
+    "actions.backToProfile": "Back to profile",
+    "actions.reset": "Cancel / Reset",
+    "actions.save": "Save settings",
+    "messages.saveSuccess": "Settings saved successfully.",
+    "messages.photoSuccess": "Profile photo updated successfully.",
+  })[key] ?? key,
 }));
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => "/en/settings",
   useRouter: () => ({
     replace: vi.fn(),
   }),
@@ -87,11 +100,17 @@ vi.mock("firebase/firestore", () => ({
         notifications: {
           waterReminders: true,
         },
+        progressPhotos: {
+          reminderEnabled: true,
+          beforeUploadedAt: "",
+          afterUploadedAt: "",
+        },
       }),
     });
     return vi.fn();
   }),
   serverTimestamp: vi.fn(() => "server-timestamp"),
+  setDoc: firebaseMocks.setDoc,
   updateDoc: firebaseMocks.updateDoc,
   writeBatch: vi.fn(() => ({
     update: firebaseMocks.batchUpdate,
@@ -101,6 +120,7 @@ vi.mock("firebase/firestore", () => ({
 }));
 
 vi.mock("firebase/storage", () => ({
+  getBlob: firebaseMocks.getBlob,
   getDownloadURL: firebaseMocks.getDownloadURL,
   ref: vi.fn((_storage, path: string) => path),
   uploadBytes: firebaseMocks.uploadBytes,
@@ -119,14 +139,25 @@ describe("SettingsPage", () => {
     firebaseMocks.batchSet.mockReset();
     firebaseMocks.batchUpdate.mockReset();
     firebaseMocks.getDownloadURL.mockReset().mockResolvedValue("https://storage.example/avatar?token=test");
+    firebaseMocks.getBlob.mockReset().mockResolvedValue(new Blob(["preview"], { type: "image/jpeg" }));
+    firebaseMocks.setDoc.mockReset().mockResolvedValue(undefined);
     firebaseMocks.updateDoc.mockReset().mockResolvedValue(undefined);
     firebaseMocks.updateProfile.mockReset().mockResolvedValue(undefined);
     firebaseMocks.uploadBytes.mockReset().mockResolvedValue(undefined);
+    vi.stubGlobal("URL", {
+      ...URL,
+      createObjectURL: vi.fn(() => "blob:preview"),
+      revokeObjectURL: vi.fn(),
+    });
   });
 
   it("renders profile and gamification values from Firebase", async () => {
     render(<SettingsPage />);
 
+    expect(screen.getByRole("link", { name: "Back to profile" })).toHaveAttribute(
+      "href",
+      "/en/profile",
+    );
     expect(await screen.findByDisplayValue("Firebase Profile Name")).toBeInTheDocument();
     expect(screen.getByDisplayValue("real@example.com")).toBeInTheDocument();
     expect(screen.getByDisplayValue("180")).toBeInTheDocument();
@@ -193,6 +224,30 @@ describe("SettingsPage", () => {
     );
     expect(screen.getByTestId("settings-success-message")).toHaveTextContent(
       "Profile photo updated successfully.",
+    );
+  });
+
+  it("uploads a private before photo and saves its status", async () => {
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    const file = new File(["before"], "before.jpg", { type: "image/jpeg" });
+    await user.upload(await screen.findByLabelText("sections.progressPhotos.beforeAction"), file);
+
+    await waitFor(() => expect(firebaseMocks.uploadBytes).toHaveBeenCalledWith(
+      "users/user-1/progress/before",
+      file,
+      expect.objectContaining({ contentType: "image/jpeg" }),
+    ));
+    expect(firebaseMocks.setDoc).toHaveBeenCalledWith(
+      expect.stringContaining("settings/preferences"),
+      expect.objectContaining({
+        progressPhotos: expect.objectContaining({
+          beforeUploadedAt: expect.any(String),
+          reminderEnabled: true,
+        }),
+      }),
+      { merge: true },
     );
   });
 

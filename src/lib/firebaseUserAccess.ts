@@ -16,7 +16,6 @@ export interface FirebaseUserAccess {
 export async function getFirebaseUserAccess(
   uid: string,
   idToken: string,
-  appCheckToken?: string,
 ): Promise<FirebaseUserAccess> {
   const projectId = process.env.FIREBASE_PROJECT_ID ?? "sandrin-app";
   const response = await fetch(
@@ -24,7 +23,6 @@ export async function getFirebaseUserAccess(
     {
       headers: {
         Authorization: `Bearer ${idToken}`,
-        ...(appCheckToken ? { "X-Firebase-AppCheck": appCheckToken } : {}),
       },
       cache: "no-store",
     },

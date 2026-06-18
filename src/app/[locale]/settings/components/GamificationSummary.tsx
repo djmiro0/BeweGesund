@@ -1,3 +1,6 @@
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
 import type { GamificationData } from "../settingsData";
 import { SettingsSection } from "./SettingsControls";
 import styles from "../Settings.module.css";
@@ -7,18 +10,20 @@ interface GamificationSummaryProps {
 }
 
 export default function GamificationSummary({ data }: GamificationSummaryProps) {
+  const t = useTranslations("settings");
+  const locale = useLocale();
   const stats = [
-    { label: "XP points", value: data.xpPoints.toLocaleString() },
-    { label: "Current level", value: data.currentLevel },
-    { label: "Current streak", value: `${data.currentStreak} days` },
-    { label: "Weekly rank", value: data.weeklyRank ? `#${data.weeklyRank}` : "-" },
-    { label: "Monthly rank", value: data.monthlyRank ? `#${data.monthlyRank}` : "-" },
+    { label: t("gamification.xp"), value: data.xpPoints.toLocaleString(locale) },
+    { label: t("gamification.level"), value: data.currentLevel },
+    { label: t("gamification.streak"), value: t("gamification.days", { count: data.currentStreak }) },
+    { label: t("gamification.weeklyRank"), value: data.weeklyRank ? `#${data.weeklyRank}` : "-" },
+    { label: t("gamification.monthlyRank"), value: data.monthlyRank ? `#${data.monthlyRank}` : "-" },
   ];
 
   return (
     <SettingsSection
-      title="Gamification"
-      description="Progress rewards and ranking placeholders."
+      title={t("sections.gamification.title")}
+      description={t("sections.gamification.description")}
       testId="settings-gamification-section"
     >
       <div className={styles.statsGrid}>
@@ -32,12 +37,12 @@ export default function GamificationSummary({ data }: GamificationSummaryProps) 
 
       <div className={styles.placeholderGrid}>
         <div className={styles.placeholderBox} data-testid="settings-badges-placeholder">
-          <span>Badges placeholder</span>
-          <p>{data.badges.length ? data.badges.join(" / ") : "No badges yet"}</p>
+          <span>{t("gamification.badges")}</span>
+          <p>{data.badges.length ? data.badges.join(" / ") : t("gamification.noBadges")}</p>
         </div>
         <div className={styles.placeholderBox} data-testid="settings-achievements-placeholder">
-          <span>Achievements placeholder</span>
-          <p>{data.achievements.length ? data.achievements.join(" / ") : "No achievements yet"}</p>
+          <span>{t("gamification.achievements")}</span>
+          <p>{data.achievements.length ? data.achievements.join(" / ") : t("gamification.noAchievements")}</p>
         </div>
       </div>
     </SettingsSection>

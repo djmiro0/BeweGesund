@@ -18,6 +18,7 @@
     "profileAvatarAlt": "{name}'s profile photo",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
+    "language": "Language",
     "lightMode": "Light",
     "darkMode": "Dark",
     "themeLight": "Switch to light mode",
@@ -34,6 +35,18 @@
       "content": "Content is being finalized",
       "access": "Public access is coming soon"
     }
+  },
+  "pwaInstall": {
+    "eyebrow": "Bewegesund App",
+    "title": "Install the app",
+    "description": "Install Bewegesund on your home screen for faster access and an app experience without the browser bar.",
+    "iosDescription": "Apple does not allow websites to open the install dialog automatically. Install the app in two steps:",
+    "iosStepShare": "Tap Share at the bottom of the browser.",
+    "iosStepAdd": "Choose “Add to Home Screen” and confirm.",
+    "install": "Install app",
+    "understood": "Got it",
+    "later": "Later",
+    "close": "Close installation prompt"
   },
   "mobileTabs": {
     "ariaLabel": "Mobile navigation",
@@ -248,6 +261,8 @@
     "resetEmailRequired": "Enter your email address first.",
     "resetEmailSent": "Password reset instructions were sent if an account exists for this email.",
     "verificationSent": "Account created. Check your email and verify the address before signing in.",
+    "verificationSendFailed": "The account was created, but the verification email could not be sent. Please try again later.",
+    "emailNotVerified": "Verify your email address before signing in.",
     "switchToRegister": "New here? Create an account",
     "switchToSignIn": "Already have an account? Sign in",
     "close": "Close",
@@ -261,13 +276,15 @@
     "healthConsentRequired": "Explicit consent for processing health-related profile data is required.",
     "invalidEmail": "Please enter a valid email address.",
     "tooManyRequests": "Too many attempts. Please wait a moment and try again.",
-    "recaptchaNotice": "This registration is protected by reCAPTCHA.",
+    "networkError": "Firebase could not be reached. Check your internet connection and try again.",
+    "unauthorizedDomain": "This website domain is not authorized for Firebase Authentication.",
+    "recaptchaNotice": "Firebase may run an invisible reCAPTCHA check in the background.",
     "recaptchaError": "The security check could not be completed. Reload the page and try again.",
     "googlePopupClosed": "The Google window was closed before sign-in was completed.",
     "googlePopupBlocked": "The browser blocked the Google sign-in window. Allow pop-ups and try again.",
     "accountExistsWithDifferentCredential": "An account already exists for this email with a different sign-in method.",
-    "profileSavePermissionDenied": "Your account was created, but the profile could not be saved because Firestore permissions are not updated yet. Please try again after the rules are deployed.",
-    "genericError": "Something went wrong during sign-in. Please try again."
+    "profileSavePermissionDenied": "The profile could not be saved. Please try again.",
+    "genericErrorWithCode": "Something went wrong during sign-in. Error code: {code}"
   },
   "authAction": {
     "checkingLink": "Checking the secure link...",
@@ -521,7 +538,12 @@
       "signInRequired": "Sign in to watch this course.",
       "tokenError": "Playback token could not be created.",
       "signingMissing": "Mux signing is not configured yet.",
-      "authError": "Please sign in again to watch this course."
+      "authError": "Please sign in again to watch this course.",
+      "subscriptionRequired": "An active membership is required for this video.",
+      "packageRequired": "Your package does not include this video.",
+      "videoNotFound": "This video is not available for the course.",
+      "accessCheckFailed": "Video access could not be verified right now.",
+      "rateLimited": "Too many playback requests. Please try again shortly."
     },
     "meta": {
       "flexibleDuration": "Flexible duration",
@@ -556,14 +578,21 @@
     "mobileTitle": "Holistic fitness education",
     "packageSelector": {
       "eyebrow": "Membership",
-      "title": "Active package",
+      "title": "Package & billing",
       "description": "This package controls access to courses and live sessions.",
-      "subscribeBasic": "Choose Basic · €9.99/month",
-      "subscribePlus": "Choose Plus · €12.99/month",
+      "currentPackage": "Current package",
+      "basicPrice": "€9.99/month",
+      "plusPrice": "€12.99/month",
+      "subscribeBasic": "Choose Basic",
+      "subscribePlus": "Choose Plus",
+      "upgrade": "Upgrade to Plus",
+      "downgrade": "Switch to Basic",
       "manage": "Manage billing",
       "processing": "Opening Stripe",
       "billingError": "Billing could not be opened. Please try again.",
       "status": "Subscription status",
+      "active": "Active",
+      "selected": "Selected",
       "billingHint": "Payments are processed securely by Stripe. Package access updates after Stripe confirms the subscription."
     },
     "actions": {
@@ -715,11 +744,14 @@
       "confirmEyebrow": "Permanent action",
       "confirmTitle": "Delete your account?",
       "confirmText": "To protect your account, enter your password. We will delete your Firestore profile first and then remove your Firebase Auth account.",
+      "googleConfirmText": "To protect your account, confirm your Google sign-in in the popup. We will delete your Firestore profile first and then remove your Firebase Auth account.",
       "passwordLabel": "Current password",
       "passwordPlaceholder": "Enter your password",
       "cancel": "Cancel",
       "confirm": "Delete permanently",
+      "googleConfirm": "Continue with Google and delete",
       "deleting": "Deleting...",
+      "success": "Your account has been deleted successfully.",
       "errors": {
         "invalidPassword": "The password is not correct. Please try again.",
         "recentLogin": "Firebase needs a recent sign-in before deleting the account. Please sign out, sign in again, and retry.",
@@ -896,9 +928,216 @@
     ],
     "note": "This policy should be finalized with project-specific legal wording before publication."
   },
+  "settings": {
+    "eyebrow": "Account settings",
+    "title": "Settings",
+    "description": "Manage your profile, training, nutrition, privacy, and app preferences. Saved values are synchronized with your Firebase account.",
+    "installApp": {
+      "title": "Install Bewegesund",
+      "description": "Add the app to your home screen.",
+      "action": "Install app"
+    },
+    "sections": {
+      "profile": {
+        "title": "Profile",
+        "description": "Personal details and training profile.",
+        "changePhoto": "Change photo",
+        "uploading": "Uploading...",
+        "photoHint": "JPG, PNG, or WebP. Maximum 5 MB."
+      },
+      "body": {
+        "title": "Body & Progress",
+        "description": "Targets for progress tracking and daily health goals."
+      },
+      "progressPhotos": {
+        "title": "Before & After",
+        "description": "Capture your starting point and add a comparison photo later.",
+        "beforeTitle": "Before photo",
+        "beforeDescription": "Best taken in the first few days under similar lighting conditions.",
+        "afterTitle": "After photo",
+        "afterDescription": "Add it whenever you are ready to compare your progress.",
+        "beforeAction": "Add before photo",
+        "afterAction": "Add after photo",
+        "uploading": "Uploading...",
+        "uploaded": "Photo saved",
+        "empty": "No photo yet",
+        "privacy": "These photos are private and visible only in your account."
+      },
+      "workout": {
+        "title": "Workout Preferences",
+        "description": "How and where your workouts should be planned."
+      },
+      "nutrition": {
+        "title": "Nutrition",
+        "description": "Macro targets and diet preferences."
+      },
+      "gamification": {
+        "title": "Progress",
+        "description": "Your points, streaks, rankings, and achievements."
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Choose reminders and updates."
+      },
+      "privacy": {
+        "title": "Privacy & Account",
+        "description": "Visibility and account security."
+      },
+      "app": {
+        "title": "App Settings",
+        "description": "Language, appearance, units, and video playback."
+      }
+    },
+    "fields": {
+      "fullName": "Full name",
+      "username": "Username",
+      "email": "Email",
+      "age": "Age",
+      "gender": "Gender",
+      "height": "Height",
+      "weight": "Weight",
+      "fitnessLevel": "Fitness level",
+      "mainGoal": "Main goal",
+      "currentWeight": "Current weight",
+      "targetWeight": "Target weight",
+      "bodyFat": "Body fat percentage",
+      "stepGoal": "Step goal",
+      "waterGoal": "Water intake goal",
+      "sleepGoal": "Sleep goal",
+      "preferredDays": "Preferred workout days",
+      "workoutDuration": "Workout duration",
+      "trainingLocation": "Training location",
+      "equipment": "Equipment",
+      "difficulty": "Difficulty level",
+      "restTimer": "Rest timer",
+      "calorieGoal": "Daily calorie goal",
+      "proteinGoal": "Protein goal",
+      "carbsGoal": "Carbohydrate goal",
+      "fatGoal": "Fat goal",
+      "dietPreference": "Diet preference",
+      "allergies": "Allergies",
+      "workoutReminders": "Workout reminders",
+      "mealReminders": "Meal reminders",
+      "waterReminders": "Water reminders",
+      "challengeUpdates": "Challenge updates",
+      "leaderboardUpdates": "Leaderboard updates",
+      "emailNotifications": "Email notifications",
+      "pushNotifications": "Browser notifications",
+      "progressPhotoReminder": "Remind me about the before photo",
+      "publicProfile": "Public profile",
+      "showProgress": "Show progress publicly",
+      "language": "Language",
+      "theme": "Theme",
+      "units": "Units",
+      "videoAutoplay": "Video autoplay"
+    },
+    "options": {
+      "gender": { "select": "Select gender", "female": "Female", "male": "Male" },
+      "fitness": { "beginner": "Beginner", "intermediate": "Intermediate", "advanced": "Advanced" },
+      "goals": {
+        "loseWeight": "Lose weight",
+        "buildMuscle": "Build muscle",
+        "improveFitness": "Improve fitness",
+        "stayHealthy": "Stay healthy",
+        "backPain": "Reduce back pain"
+      },
+      "location": { "gym": "Gym", "home": "Home", "outdoor": "Outdoor" },
+      "equipment": { "none": "No equipment", "dumbbells": "Dumbbells", "fullGym": "Full gym" },
+      "diet": { "normal": "Balanced", "vegetarian": "Vegetarian", "vegan": "Vegan", "keto": "Keto" },
+      "language": { "english": "English", "german": "German" },
+      "theme": { "light": "Light", "dark": "Dark", "system": "System setting" }
+    },
+    "days": {
+      "monday": "Mon", "tuesday": "Tue", "wednesday": "Wed", "thursday": "Thu",
+      "friday": "Fri", "saturday": "Sat", "sunday": "Sun"
+    },
+    "units": { "hours": "hrs", "seconds": "sec" },
+    "gamification": {
+      "xp": "XP points",
+      "level": "Current level",
+      "streak": "Current streak",
+      "days": "{count} days",
+      "weeklyRank": "Weekly rank",
+      "monthlyRank": "Monthly rank",
+      "badges": "Badges",
+      "achievements": "Achievements",
+      "noBadges": "No badges yet",
+      "noAchievements": "No achievements yet"
+    },
+    "actions": {
+      "backToProfile": "Back to profile",
+      "reset": "Cancel / Reset",
+      "save": "Save settings",
+      "saving": "Saving...",
+      "changePassword": "Change password"
+    },
+    "messages": {
+      "loadError": "Settings could not be loaded.",
+      "saveSuccess": "Settings saved successfully.",
+      "permissionError": "Settings could not be saved because permission is missing.",
+      "saveError": "Settings could not be saved. Please try again.",
+      "pushUnsupported": "This browser does not support notifications.",
+      "pushPermissionDenied": "Browser notification permission was not granted.",
+      "photoTypeError": "Choose a JPG, PNG, or WebP image.",
+      "photoSizeError": "The profile photo must be smaller than 5 MB.",
+      "photoSuccess": "Profile photo updated successfully.",
+      "photoPermissionError": "Photo upload is not allowed.",
+      "photoStorageError": "Firebase Storage is not configured for this project.",
+      "photoError": "The profile photo could not be uploaded.",
+      "progressPhotoTypeError": "Choose a JPG, PNG, or WebP progress photo.",
+      "progressPhotoSizeError": "The progress photo must be smaller than 5 MB.",
+      "progressPhotoSuccess": "Progress photo saved successfully.",
+      "progressPhotoError": "The progress photo could not be uploaded.",
+      "passwordResetSent": "A password-change email was sent.",
+      "passwordResetError": "The password email could not be sent."
+    }
+  },
+  "progressPhotoReminder": {
+    "eyebrow": "Your starting point",
+    "title": "Add a before photo",
+    "description": "A photo from your first few days makes later progress easier to see. You decide whether you want this reminder.",
+    "upload": "Add photo now",
+    "uploading": "Uploading...",
+    "later": "Remind me later",
+    "disable": "Do not remind me again",
+    "close": "Close reminder",
+    "privacy": "Stored privately and visible only to you.",
+    "typeError": "Choose a JPG, PNG, or WebP image.",
+    "sizeError": "The photo must be smaller than 5 MB.",
+    "uploadError": "The photo could not be uploaded.",
+    "saveError": "The reminder could not be disabled."
+  },
   "contactPage": {
+    "eyebrow": "Direct contact",
     "title": "Contact",
     "intro": "Use this area for consultation requests, course questions, and business cooperation topics.",
+    "form": {
+      "title": "Send a message",
+      "description": "Briefly describe your request. We will reply to the email address you provide.",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "topic": "Topic",
+      "message": "Message",
+      "topics": {
+        "consultation": "Personal consultation",
+        "courses": "Courses and membership",
+        "business": "Business cooperation",
+        "other": "Other"
+      },
+      "submit": "Send message",
+      "sending": "Sending...",
+      "success": "Thank you. Your message was sent.",
+      "error": "The message could not be sent. Please try again later.",
+      "notConfigured": "Email delivery is not configured yet. Please use info@bewegesund.de for now."
+    },
+    "booking": {
+      "eyebrow": "30 minutes online",
+      "title": "Book a consultation",
+      "description": "Choose an available time for a personal online consultation.",
+      "action": "Choose a time",
+      "unavailable": "Online booking will be enabled soon."
+    },
     "cards": [
       {
         "title": "Personal Consultation",

@@ -54,14 +54,13 @@ describe("calendar join route", () => {
     ]);
   });
 
-  it("forwards the App Check token when verifying membership", async () => {
-    const response = await POST(request({ "X-Firebase-AppCheck": "app-check-token" }));
+  it("verifies membership with the Firebase ID token", async () => {
+    const response = await POST(request());
 
     expect(response.status).toBe(200);
     expect(mocks.getFirebaseUserAccess).toHaveBeenCalledWith(
       "user-1",
       "firebase-token",
-      "app-check-token",
     );
   });
 

@@ -92,13 +92,13 @@
 
 .packagePanel {
   display: grid;
-  gap: 0.8rem;
+  gap: 1rem;
   border: 1px solid var(--page-border-soft);
   border-radius: 0.9rem;
   background:
-    linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9));
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.94));
   padding: 1rem;
-  box-shadow: 0 12px 28px rgba(var(--page-ink-rgb), 0.08);
+  box-shadow: 0 16px 34px rgba(var(--page-ink-rgb), 0.1);
 }
 
 .packagePanel h2 {
@@ -117,66 +117,161 @@
   line-height: 1.45;
 }
 
-.packageOptions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
-}
-
-.packageOption {
-  min-width: 0;
-  min-height: 3rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  border: 1px solid var(--page-border-soft);
-  border-radius: 0.7rem;
-  background: rgba(var(--page-soft-rgb), 0.7);
-  padding: 0.65rem 0.4rem;
-  color: var(--page-muted);
-  font-size: 0.72rem;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.packageOption:hover,
-.packageOptionActive {
-  border-color: rgba(var(--secondary-rgb), 0.42);
-  background: rgba(var(--secondary-rgb), 0.12);
-  color: var(--page-ink);
-}
-
-.packageOption:disabled {
-  cursor: wait;
-  opacity: 0.7;
-}
-
 .packageHint {
   min-height: 1.1rem;
 }
 
 .billingActions {
   display: grid;
-  gap: 0.55rem;
+  gap: 0.85rem;
 }
 
-.billingPlanButtons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+.billingStatusBand {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid rgba(var(--secondary-rgb), 0.34);
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(135deg, rgba(var(--secondary-rgb), 0.16), rgba(var(--page-soft-rgb), 0.78) 62%);
+  padding: 0.85rem 0.9rem;
 }
 
-.billingStatus {
+.billingStatusBand p {
   margin: 0;
   color: var(--page-muted);
-  font-size: 0.72rem;
+  font-size: 0.65rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.billingStatusBand strong {
+  display: block;
+  margin-top: 0.12rem;
+  color: var(--page-ink);
+  font-size: clamp(1.35rem, 6vw, 2.1rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.billingStatusBand > span {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.13);
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.8);
+  color: var(--page-ink);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.6rem;
+  text-transform: uppercase;
+}
+
+.billingOverview {
+  display: inline-flex;
+  width: fit-content;
+  gap: 0.35rem;
+  align-items: center;
+  color: var(--page-muted);
+  font-size: 0.7rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.billingOverview strong {
+  color: var(--page-ink);
   text-transform: capitalize;
+}
+
+.billingPlanGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+}
+
+.billingPlanCard {
+  display: flex;
+  min-width: 0;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 0.75rem;
+  background: rgba(var(--page-soft-rgb), 0.58);
+  padding: 0.8rem;
+  transition:
+    border-color 0.24s var(--transition),
+    background 0.24s var(--transition),
+    transform 0.24s var(--transition);
+}
+
+.billingPlanCard:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--secondary-rgb), 0.3);
+}
+
+.billingPlanCardCurrent {
+  border-color: rgba(var(--page-ink-rgb), 0.18);
+  background: rgba(var(--page-soft-rgb), 0.82);
+}
+
+.billingPlanHeader {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.billingPlanHeader h3 {
+  margin: 0;
+  color: var(--page-ink);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.billingPlanHeader p,
+.billingPlanNote {
+  margin: 0.25rem 0 0;
+  color: var(--page-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.billingPlanBadge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0.35rem;
+  align-items: center;
+  border: 1px solid rgba(var(--secondary-rgb), 0.34);
+  border-radius: 999px;
+  background: rgba(var(--secondary-rgb), 0.12);
+  color: var(--page-ink);
+  font-size: 0.62rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.5rem;
+  text-transform: uppercase;
+}
+
+.billingPlanNote {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 7rem;
+  min-height: 2.5rem;
+  text-align: right;
+  text-transform: uppercase;
 }
 
 .billingButton {
   display: inline-flex;
-  min-height: 3rem;
+  width: auto;
+  min-width: 10.5rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
@@ -190,10 +285,34 @@
   letter-spacing: 0.1em;
   padding: 0.8rem 1rem;
   text-transform: uppercase;
+  transition:
+    transform 0.2s var(--transition),
+    background 0.2s var(--transition),
+    border-color 0.2s var(--transition);
 }
 
 .billingButton:hover {
+  transform: translateY(-1px);
   background: var(--page-accent);
+}
+
+.billingButtonChange {
+  background: var(--page-accent);
+}
+
+.billingButtonChange:hover {
+  background: var(--page-ink);
+}
+
+.billingButtonSecondary {
+  justify-self: start;
+  border: 1px solid var(--page-border-soft);
+  background: rgba(var(--page-soft-rgb), 0.72);
+  color: var(--page-ink);
+}
+
+.billingButtonSecondary:hover {
+  background: rgba(var(--secondary-rgb), 0.12);
 }
 
 .billingButton:disabled {
@@ -213,6 +332,42 @@
   line-height: 1.4;
 }
 
+@media (max-width: 540px) {
+  .billingStatusBand,
+  .billingPlanCard {
+    grid-template-columns: 1fr;
+  }
+
+  .billingStatusBand {
+    align-items: start;
+  }
+
+  .billingStatusBand > span {
+    justify-self: start;
+  }
+
+  .billingPlanCard {
+    display: grid;
+  }
+
+  .billingPlanHeader {
+    flex-wrap: wrap;
+  }
+
+  .billingPlanNote {
+    justify-content: flex-start;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .billingButton,
+  .billingButtonSecondary {
+    width: 100%;
+    min-width: 0;
+    justify-self: stretch;
+  }
+}
+
 @keyframes billingSpin {
   to {
     transform: rotate(360deg);
@@ -230,6 +385,7 @@
   background: rgba(var(--page-soft-rgb), 0.9);
   color: var(--page-ink);
   cursor: pointer;
+  text-decoration: none;
   box-shadow: 0 10px 24px rgba(83, 57, 20, 0.12);
   transition:
     transform 0.2s var(--transition),
@@ -241,107 +397,6 @@
   transform: translateY(-1px);
   border-color: rgba(var(--page-accent-rgb), 0.34);
   background: rgba(var(--page-soft-rgb), 1);
-}
-
-.settingsOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 85;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.settingsBackdrop {
-  position: absolute;
-  inset: 0;
-  border: 0;
-  background: rgba(var(--navy-rgb), 0.52);
-  backdrop-filter: blur(10px);
-  cursor: pointer;
-}
-
-.settingsPanel {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  align-content: start;
-  gap: 0.85rem;
-  width: min(86vw, 22rem);
-  min-height: 100%;
-  border-left: 1px solid rgba(var(--page-ink-rgb), 0.12);
-  background:
-    linear-gradient(160deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-cream-2-rgb), 0.98));
-  padding: 1.2rem;
-  box-shadow: -22px 0 54px rgba(0, 0, 0, 0.26);
-  animation: settingsSlideIn 0.24s var(--transition);
-}
-
-.settingsClose {
-  position: absolute;
-  top: 0.9rem;
-  right: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.35rem;
-  height: 2.35rem;
-  border: 1px solid var(--page-border-soft);
-  border-radius: 999px;
-  background: rgba(var(--page-soft-rgb), 0.72);
-  color: var(--page-muted);
-  cursor: pointer;
-}
-
-.settingsPanelIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 999px;
-  background: rgba(var(--page-accent-rgb), 0.12);
-  color: var(--page-accent);
-}
-
-.settingsPanel h2 {
-  margin: 0.35rem 2.6rem 0 0;
-  color: var(--page-ink);
-  font-size: 1.55rem;
-  font-weight: 950;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.settingsPanel p {
-  margin: 0;
-  color: rgba(var(--page-ink-rgb), 0.72);
-  line-height: 1.65;
-}
-
-.settingsLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 3rem;
-  margin-top: 0.35rem;
-  border-radius: 999px;
-  background: var(--page-ink);
-  color: var(--page-base);
-  font-size: 0.82rem;
-  font-weight: 950;
-  letter-spacing: 0.12em;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition:
-    transform 0.2s var(--transition),
-    background 0.2s var(--transition),
-    color 0.2s var(--transition);
-}
-
-.settingsLink:hover {
-  transform: translateY(-2px);
-  background: var(--page-accent);
-  color: var(--text-light);
 }
 
 .pageTitle {
@@ -1104,7 +1159,7 @@
   margin-bottom: 1rem;
   border-radius: 999px;
   background: rgba(var(--accent-strong-rgb), 0.12);
-  color: var(--accent-strong);
+  color:var(--secondary-rgb);
 }
 
 .modalTitle {
@@ -1154,7 +1209,7 @@
   border-radius: 1rem;
   background: rgba(var(--accent-strong-rgb), 0.1);
   padding: 0.85rem 1rem;
-  color: var(--accent-strong);
+  color: var(--secondary-rgb);
   font-size: 0.9rem;
   font-weight: 800;
   line-height: 1.5;
@@ -1179,7 +1234,7 @@
 }
 
 .confirmDeleteButton {
-  background: var(--accent-strong);
+  background: var(--secondary-rgb);
   color: var(--text-light);
 }
 
@@ -1217,21 +1272,10 @@
     min-height: 4.2rem;
   }
 
-  .settingsOverlay {
-    align-items: center;
-    justify-content: center;
-    padding: 1.25rem;
+  .billingPlanGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .settingsPanel {
-    width: min(100%, 25rem);
-    min-height: 0;
-    border: 1px solid rgba(var(--page-ink-rgb), 0.12);
-    border-radius: 1.45rem;
-    padding: 1.35rem;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.32);
-    animation: settingsPopIn 0.22s var(--transition);
-  }
 }
 
 @media (min-width: 1080px) {
@@ -1243,31 +1287,5 @@
 @media (prefers-reduced-motion: reduce) {
   .breathCircle {
     animation: none;
-  }
-
-  .settingsPanel {
-    animation: none;
-  }
-}
-
-@keyframes settingsSlideIn {
-  from {
-    transform: translateX(100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes settingsPopIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
   }
 }

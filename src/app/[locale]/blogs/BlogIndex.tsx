@@ -92,7 +92,6 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
                     src={post.featuredImage}
                     alt=""
                     fill
-                    sizes="(min-width: 1024px) 50vw, 100vw"
                     className={styles.postImage}
                   />
                 </Link>

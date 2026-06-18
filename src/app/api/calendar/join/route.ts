@@ -12,7 +12,6 @@ interface JoinRequest {
 
 export async function POST(request: Request) {
   const authorization = request.headers.get("authorization");
-  const appCheckToken = request.headers.get("x-firebase-appcheck") ?? "";
   const idToken = authorization?.startsWith("Bearer ") ? authorization.slice(7) : "";
 
   if (!idToken) {
@@ -46,7 +45,7 @@ export async function POST(request: Request) {
     const days = await getCalendarDays(locale).catch(() => {
       throw new Error("CALENDAR_CONTENT_UNAVAILABLE");
     });
-    const userAccess = await getFirebaseUserAccess(uid, idToken, appCheckToken).catch(() => {
+    const userAccess = await getFirebaseUserAccess(uid, idToken).catch(() => {
       throw new Error("USER_ACCESS_UNAVAILABLE");
     });
     const event = days.flatMap((day) => day.entries).find((entry) => entry.id === eventId);

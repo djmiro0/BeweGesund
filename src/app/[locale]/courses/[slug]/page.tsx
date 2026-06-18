@@ -213,6 +213,11 @@ export default async function CourseDetailPage({
             tokenError: t("player.tokenError"),
             signingMissing: t("player.signingMissing"),
             authError: t("player.authError"),
+            subscriptionRequired: t("player.subscriptionRequired"),
+            packageRequired: t("player.packageRequired"),
+            videoNotFound: t("player.videoNotFound"),
+            accessCheckFailed: t("player.accessCheckFailed"),
+            rateLimited: t("player.rateLimited"),
           }}
         />
       </section>

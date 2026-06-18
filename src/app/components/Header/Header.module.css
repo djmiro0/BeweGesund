@@ -108,8 +108,8 @@
   gap: 0.5rem;
 }
 
-.languageButton,
-.themeButton,
+.languageSelectWrap,
+.themeSwitch,
 .menuButton {
   display: flex;
   height: 2.25rem;
@@ -124,34 +124,101 @@
   transition: background 0.25s var(--transition), opacity 0.25s var(--transition);
 }
 
-.languageButton:hover,
-.themeButton:hover,
+.languageSelectWrap:hover,
+.themeSwitch:hover,
 .menuButton:hover {
   background: rgba(var(--shell-text-rgb), 0.12);
 }
 
-.languageButton {
-  gap: 0.25rem;
-  padding: 0 0.625rem;
+.languageSelectWrap {
+  position: relative;
+  gap: 0.2rem;
+  padding: 0 0.55rem 0 0.65rem;
 }
 
-.themeButton,
+.languageSelect {
+  border: 0;
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  outline: 0;
+  padding: 0 1rem 0 0;
+}
+
+.languageSelect option {
+  background: var(--shell-bg);
+  color: var(--shell-text);
+}
+
+.languageSelectWrap svg {
+  position: absolute;
+  right: 0.45rem;
+  pointer-events: none;
+}
+
+.themeSwitch {
+  position: relative;
+  width: 4.7rem;
+  gap: 0;
+  overflow: hidden;
+  padding: 0.2rem;
+}
+
 .menuButton {
   width: 2.25rem;
 }
 
-.themeButtonDark {
-  border-color: var(--background);
-  background: var(--primary);
-  color: var(--background);
+.themeSwitchDark {
+  background: rgba(var(--shell-text-rgb), 0.12);
 }
 
-.themeButtonDark:hover {
-  opacity: 0.9;
+.themeSwitchThumb {
+  position: absolute;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  left: 0.2rem;
+  width: calc(50% - 0.2rem);
+  border-radius: 999px;
+  background: var(--shell-text);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  transform: translateX(0);
+  transition: transform 0.25s var(--transition);
 }
 
-.themeLabel {
+.themeSwitchDark .themeSwitchThumb {
+  transform: translateX(100%);
+}
+
+.themeSwitchOption {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  color: rgba(var(--shell-text-rgb), 0.66);
+  transition: color 0.25s var(--transition);
+}
+
+.themeSwitchOption span {
   display: none;
+}
+
+.themeSwitchOptionActive {
+  color: var(--shell-bg);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .signInButton {
@@ -424,17 +491,15 @@
     gap: 0.75rem;
   }
 
-  .languageButton {
+  .languageSelectWrap {
     padding: 0 0.75rem;
   }
 
-  .themeButton {
-    width: auto;
-    gap: 0.5rem;
-    padding: 0 0.75rem;
+  .themeSwitch {
+    width: 8.6rem;
   }
 
-  .themeLabel {
+  .themeSwitchOption span {
     display: inline;
   }
 

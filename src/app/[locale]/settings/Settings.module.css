@@ -10,6 +10,39 @@
   margin: 0 auto;
 }
 
+.backLink {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.15rem;
+  border: 1px solid var(--page-border);
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.82);
+  padding: 0.65rem 0.9rem;
+  color: var(--page-ink);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    transform 0.2s var(--transition),
+    border-color 0.2s var(--transition),
+    background 0.2s var(--transition);
+}
+
+.backLink:hover {
+  transform: translateX(-2px);
+  border-color: rgba(var(--page-accent-rgb), 0.34);
+  background: rgba(var(--page-soft-rgb), 1);
+}
+
+.backLink:focus-visible {
+  outline: 3px solid rgba(var(--page-warm-rgb), 0.78);
+  outline-offset: 3px;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -20,7 +53,7 @@
 
 .header h1 {
   margin: 0.25rem 0 0;
-  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-size: 2rem;
   font-weight: 950;
   line-height: 0.92;
   text-transform: uppercase;
@@ -41,6 +74,10 @@
   font-weight: 950;
   letter-spacing: 0.22em;
   text-transform: uppercase;
+}
+
+.deleteTitle {
+  color: var(--primary-rgb);
 }
 
 .layout {
@@ -225,6 +262,132 @@
   margin: 0.25rem 0 0;
   color: var(--page-muted);
   font-size: 0.9rem;
+}
+
+.progressPhotoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.progressPhotoCard {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+  min-width: 0;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 1rem;
+  background: rgba(var(--page-base-rgb), 0.52);
+  padding: 0.75rem;
+}
+
+.progressPhotoPreview {
+  display: grid;
+  min-height: 11rem;
+  place-items: center;
+  border-radius: 0.8rem;
+  background:
+    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.12), rgba(var(--page-olive-rgb), 0.12)),
+    rgba(var(--page-soft-rgb), 0.72);
+  background-position: center;
+  background-size: cover;
+  color: var(--page-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.progressPhotoCopy strong {
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.progressPhotoCopy p {
+  margin: 0.3rem 0 0;
+  color: var(--page-muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.progressPhotoCopy small {
+  display: block;
+  margin-top: 0.45rem;
+  color: var(--page-olive);
+  font-weight: 900;
+}
+
+.progressPhotoButton {
+  display: flex;
+  min-height: 2.65rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--page-ink);
+  color: var(--page-base);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-align: center;
+}
+
+.progressPhotoButton input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.progressPhotoButton:has(input:disabled) {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.progressPhotoPrivacy {
+  margin: 0;
+  color: var(--page-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.installAppRow {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 1rem;
+  background: rgba(var(--page-base-rgb), 0.52);
+  padding: 0.85rem;
+}
+
+.installAppRow strong {
+  font-weight: 950;
+}
+
+.installAppRow p {
+  margin: 0.3rem 0 0;
+  color: var(--page-muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.installAppButton {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--page-ink);
+  padding: 0.7rem 0.9rem;
+  color: var(--page-base);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 950;
+  cursor: pointer;
 }
 
 .daysGroup {
@@ -470,7 +633,7 @@
   place-items: center;
   border-radius: 999px;
   background: rgba(var(--accent-strong-rgb), 0.12);
-  color: var(--accent-strong);
+  color: var(--secondary-rgb);
 }
 
 .accountManagement h2,
@@ -570,7 +733,7 @@
   border-radius: 0.85rem;
   background: rgba(var(--accent-strong-rgb), 0.1);
   padding: 0.8rem;
-  color: var(--accent-strong);
+  color: var(--secondary-rgb);
   font-weight: 800;
 }
 
@@ -598,8 +761,8 @@
 }
 
 .confirmDeleteButton {
-  background: var(--accent-strong);
-  color: var(--text-light);
+  background: var(--accent);
+  color: var(--primary-rgb);
 }
 
 .confirmDeleteButton:disabled {
@@ -618,8 +781,17 @@
     padding: 5.6rem 0.85rem 2.5rem;
   }
 
+  .progressPhotoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .installAppRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
   .header h1 {
-    font-size: 2.55rem;
+    font-size: 2rem;
   }
 
   .header p {

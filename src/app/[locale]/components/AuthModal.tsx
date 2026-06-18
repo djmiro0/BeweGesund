@@ -1,12 +1,11 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from "next-intl";
-import { auth, db } from "../../../../firebase.config";
+import { auth, db, functions } from "../../../../firebase.config";
 import {
     createUserWithEmailAndPassword,
     deleteUser,
     GoogleAuthProvider,
-    initializeRecaptchaConfig,
     sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
@@ -16,7 +15,8 @@ import {
     type User,
     type AuthError,
 } from 'firebase/auth';
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { ArrowLeft, Check, LoaderCircle, Mail, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
 import { memberPackages } from "@/lib/memberPackages";
@@ -67,6 +67,10 @@ interface CreateUserProfilePayload {
     roles: ["member"];
 }
 
+interface BillingSessionResult {
+    url?: string;
+}
+
 const regionKeys = [
     "baden-wuerttemberg",
     "bavaria",
@@ -99,6 +103,14 @@ interface FirebaseErrorLike {
             };
         };
     };
+}
+
+function getFirebaseErrorCode(error: unknown) {
+    const firebaseError = error as FirebaseErrorLike | undefined;
+    return firebaseError?.code
+        ?? firebaseError?.error?.message
+        ?? firebaseError?.customData?._tokenResponse?.error?.message
+        ?? "unknown";
 }
 
 type AuthView = "signIn" | "register" | "forgotPassword" | "googleOnboarding";
@@ -179,14 +191,6 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setView("googleOnboarding");
     }, [isOpen, requiresProfileSetup]);
 
-    useEffect(() => {
-        if (!isOpen || !isRegister) return;
-
-        // Preload Firebase Auth's reCAPTCHA Enterprise configuration so the
-        // registration request can include a fresh bot-protection token.
-        void initializeRecaptchaConfig(auth).catch(() => undefined);
-    }, [isOpen, isRegister]);
-
     const getFriendlyErrorMessage = (error: unknown) => {
         const firebaseError = error as (AuthError & FirebaseErrorLike) | undefined;
         const code = firebaseError?.code;
@@ -213,6 +217,11 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                 return t("invalidEmail");
             case "auth/too-many-requests":
                 return t("tooManyRequests");
+            case "auth/network-request-failed":
+                return t("networkError");
+            case "auth/app-not-authorized":
+            case "auth/unauthorized-domain":
+                return t("unauthorizedDomain");
             case "auth/captcha-check-failed":
             case "auth/missing-recaptcha-token":
             case "auth/invalid-recaptcha-token":
@@ -231,7 +240,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
             case "firestore/permission-denied":
                 return t("profileSavePermissionDenied");
             default:
-                return t("genericError");
+                return t("genericErrorWithCode", { code: getFirebaseErrorCode(error) });
         }
     };
 
@@ -297,6 +306,29 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     const getAuthActionSettings = () => ({
         url: `${window.location.origin}/${locale}`,
     });
+
+    const openCheckoutForSelectedPackage = async () => {
+        const createSession = httpsCallable<
+            { locale: string; memberPackage: MemberPackage },
+            BillingSessionResult
+        >(functions, "createStripeCheckoutSession");
+        const result = await createSession({ locale, memberPackage: selectedPackage });
+
+        if (!result.data.url) {
+            throw new Error("Stripe session URL is missing.");
+        }
+
+        window.location.assign(result.data.url);
+    };
+
+    const deleteIncompleteAccount = async (user: User) => {
+        await deleteDoc(doc(db, "users", user.uid)).catch(() => undefined);
+        await deleteUser(user).catch(async () => {
+            const deleteUserAccount = httpsCallable(functions, "deleteUserAccount");
+            await deleteUserAccount().catch(() => undefined);
+        });
+        await signOut(auth).catch(() => undefined);
+    };
 
     const openPasswordReset = () => {
         setPassword("");
@@ -395,17 +427,19 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         throw new Error("Google user is no longer authenticated.");
                     }
 
-                    await setDoc(
-                        doc(db, "users", googleUser.uid),
-                        createProfilePayload(googleUser.uid, googleUser.email ?? email.trim(), googleUser),
-                    );
-                    resetForm();
-                    setView("signIn");
-                    onClose();
+                    try {
+                        await setDoc(
+                            doc(db, "users", googleUser.uid),
+                            createProfilePayload(googleUser.uid, googleUser.email ?? email.trim(), googleUser),
+                        );
+                        await openCheckoutForSelectedPackage();
+                    } catch (profileOrCheckoutError) {
+                        await deleteIncompleteAccount(googleUser);
+                        throw profileOrCheckoutError;
+                    }
                     return;
                 }
 
-                await initializeRecaptchaConfig(auth);
                 const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
 
                 try {
@@ -416,23 +450,59 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         doc(db, "users", credential.user.uid),
                         createProfilePayload(credential.user.uid, credential.user.email ?? email.trim()),
                     );
-                    await sendEmailVerification(credential.user, getAuthActionSettings());
-                    await signOut(auth);
-                    setPassword("");
-                    setConfirmPassword("");
-                    setView("signIn");
-                    setInfoMessage(t("verificationSent"));
-                    return;
                 } catch (profileError) {
                     await deleteUser(credential.user).catch(() => undefined);
                     throw profileError;
                 }
+
+                try {
+                    await sendEmailVerification(credential.user, getAuthActionSettings());
+                } catch (verificationError) {
+                    console.error("Firebase verification email failed", {
+                        code: getFirebaseErrorCode(verificationError),
+                        error: verificationError,
+                    });
+                    await signOut(auth).catch(() => undefined);
+                    setPassword("");
+                    setConfirmPassword("");
+                    setView("signIn");
+                    setErrorMessage(t("verificationSendFailed"));
+                    return;
+                }
+
+                try {
+                    await openCheckoutForSelectedPackage();
+                } catch (checkoutError) {
+                    console.error("Stripe checkout could not be opened after registration", {
+                        code: getFirebaseErrorCode(checkoutError),
+                        error: checkoutError,
+                    });
+                    await deleteIncompleteAccount(credential.user);
+                    setPassword("");
+                    setConfirmPassword("");
+                    setView("signIn");
+                    setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(checkoutError)}`);
+                }
+                return;
             } else {
-                await signInWithEmailAndPassword(auth, email, password);
+                const credential = await signInWithEmailAndPassword(auth, email, password);
+                const usesPassword = credential.user.providerData.some(
+                    (provider) => provider.providerId === "password",
+                );
+
+                if (usesPassword && !credential.user.emailVerified) {
+                    await signOut(auth);
+                    setErrorMessage(`${t("errorPrefix")} ${t("emailNotVerified")}`);
+                    return;
+                }
             }
             resetForm();
             onClose();
         } catch (error: unknown) {
+            console.error("Firebase authentication failed", {
+                code: getFirebaseErrorCode(error),
+                error,
+            });
             setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(error)}`);
         } finally {
             setIsSubmitting(false);
@@ -776,11 +846,6 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         <div className="rounded-2xl border border-[rgba(var(--page-warm-rgb),0.28)] bg-[rgba(var(--page-warm-rgb),0.1)] px-4 py-3 text-sm text-[var(--text-light)]">
                             {infoMessage}
                         </div>
-                    ) : null}
-                    {isRegister ? (
-                        <p className="text-center text-xs leading-5 text-[var(--text-dim)]">
-                            {t("recaptchaNotice")}
-                        </p>
                     ) : null}
                     <button disabled={!canSubmit} className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[var(--text-light)] disabled:hover:text-[var(--text-on-warm)]">
                         {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}

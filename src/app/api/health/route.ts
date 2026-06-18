@@ -5,9 +5,9 @@ export function GET() {
   const checks = {
     contentful: Boolean(process.env.CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_DELIVERY_TOKEN),
     firebase: Boolean(process.env.FIREBASE_PROJECT_ID),
-    appCheck: Boolean(process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY),
     muxPlayback: hasMuxSigningConfig(),
     siteUrl: Boolean(process.env.NEXT_PUBLIC_SITE_URL),
+    contactDelivery: Boolean(process.env.RESEND_API_KEY && process.env.CONTACT_EMAIL_FROM),
     legalIdentity: Boolean(
       process.env.LEGAL_PROVIDER_NAME
       && process.env.LEGAL_PROVIDER_ADDRESS

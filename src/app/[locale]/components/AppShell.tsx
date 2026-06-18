@@ -4,13 +4,38 @@ import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
 import MobileTabBar from "./MobileTabBar";
+import ProgressPhotoReminder from "./ProgressPhotoReminder";
+import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
+import { useTheme } from "./ThemeProvider";
 import { getProfileFirstName } from "@/lib/userProfile";
 import styles from "./AppShell.module.css";
+
+export function AppPreferenceEffects() {
+  const { user, appPreferences } = useAuth();
+  const { setThemePreference } = useTheme();
+  const lastAppliedThemeKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      lastAppliedThemeKey.current = null;
+      return;
+    }
+
+    const themeKey = `${user.uid}:${appPreferences.theme}`;
+    if (lastAppliedThemeKey.current !== themeKey) {
+      lastAppliedThemeKey.current = themeKey;
+      setThemePreference(appPreferences.theme);
+    }
+  }, [appPreferences.theme, setThemePreference, user]);
+
+  return null;
+}
 
 export function ShellFrame({
   children,
@@ -57,6 +82,7 @@ export function ShellFrame({
   if (!user && !isAuthActionRoute) {
     return (
       <>
+        <PwaInstallPrompt />
         <Header
           locale={locale}
           user={null}
@@ -69,8 +95,29 @@ export function ShellFrame({
     );
   }
 
+  if (requiresProfileSetup) {
+    return (
+      <>
+        <PwaInstallPrompt />
+        <Header
+          locale={locale}
+          user={user}
+          profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
+          profilePhoto={profile?.photoURL ?? user?.photoURL}
+          openAuth={openAuth}
+        />
+        <AuthModal
+          isOpen
+          onClose={closeAuth}
+          requiresProfileSetup
+        />
+      </>
+    );
+  }
+
   return (
     <>
+      <PwaInstallPrompt />
       <Header
         locale={locale}
         user={user}
@@ -83,6 +130,7 @@ export function ShellFrame({
         onClose={closeAuth}
         requiresProfileSetup={requiresProfileSetup}
       />
+      <ProgressPhotoReminder />
       <main className={styles.main}>{children}</main>
       <MobileTabBar locale={locale} user={user} openAuth={openAuth} />
       <Footer />
@@ -98,10 +146,11 @@ export default function AppShell({
   locale: string;
 }) {
   return (
-    <ThemeProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <AppPreferenceEffects />
         <ShellFrame locale={locale}>{children}</ShellFrame>
-      </AuthProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

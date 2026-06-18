@@ -7,13 +7,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { auth } from "../../../../firebase.config";
 import { signOut } from 'firebase/auth';
-import { LogOut, Globe, Menu, Moon, Sun, X } from 'lucide-react';
+import { ChevronDown, LogOut, Menu, Moon, Sun, X } from 'lucide-react';
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
+import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
     locale: string;
-    user?: { email?: string | null; displayName?: string | null; photoURL?: string | null } | null;
+    user?: { uid: string; email?: string | null; displayName?: string | null; photoURL?: string | null } | null;
     profileName?: string | null;
     profilePhoto?: string | null;
     openAuth?: () => void;
@@ -34,7 +35,6 @@ const Header: React.FC<HeaderProps> = ({
     const { theme, toggleTheme } = useTheme();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const otherLocale = locale === "en" ? "de" : "en";
     const profileName = storedProfileName || user?.displayName?.trim().split(/\s+/)[0] || user?.email?.split("@")[0] || t("profileFallback");
     const profilePhoto = storedProfilePhoto || user?.photoURL;
     const profileInitial = profileName.charAt(0).toUpperCase();
@@ -74,9 +74,10 @@ const Header: React.FC<HeaderProps> = ({
         },
     ];
 
-    const handleLanguageChange = () => {
-        // Menja locale dok čuva trenutnu putanju
-        const newPath = pathname.replace(`/${locale}`, `/${otherLocale}`);
+    const handleLanguageChange = (nextLocale: string) => {
+        if (nextLocale === locale) return;
+
+        const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
         setIsMenuOpen(false);
         router.push(newPath);
     };
@@ -89,14 +90,13 @@ const Header: React.FC<HeaderProps> = ({
             aria-current={pathname === `/${locale}/profile` ? "page" : undefined}
             className={`${styles.profileLink} ${pathname === `/${locale}/profile` ? styles.profileLinkActive : ""}`}
         >
-            <span
+            <ProfileAvatar
+                userId={user.uid}
+                photoUrl={profilePhoto}
+                initial={profileInitial}
+                ariaLabel={t("profileAvatarAlt", { name: profileName })}
                 className={styles.profileAvatar}
-                role="img"
-                aria-label={t("profileAvatarAlt", { name: profileName })}
-                style={profilePhoto ? { backgroundImage: `url("${profilePhoto}")` } : undefined}
-            >
-                {profilePhoto ? null : profileInitial}
-            </span>
+            />
             <span className={styles.profileName}>
                 {profileName}
             </span>
@@ -147,23 +147,39 @@ const Header: React.FC<HeaderProps> = ({
                 ) : null}
 
                 <div className={styles.actions}>
-                    <button
-                        onClick={handleLanguageChange}
-                        className={styles.languageButton}
-                    >
-                        <Globe size={14} />
-                        {otherLocale.toUpperCase()}
-                    </button>
+                    <label className={styles.languageSelectWrap}>
+                        <span className={styles.visuallyHidden}>{t("language")}</span>
+                        <select
+                            value={locale}
+                            onChange={(event) => handleLanguageChange(event.target.value)}
+                            className={styles.languageSelect}
+                            aria-label={t("language")}
+                        >
+                            <option value="de">DE</option>
+                            <option value="en">EN</option>
+                        </select>
+                        <ChevronDown size={14} aria-hidden="true" />
+                    </label>
 
                     <button
+                        type="button"
                         onClick={toggleTheme}
                         data-testid="theme-toggle"
+                        role="switch"
+                        aria-checked={theme === "dark"}
                         aria-label={theme === "light" ? t("themeDark") : t("themeLight")}
                         title={theme === "light" ? t("themeDark") : t("themeLight")}
-                        className={`${styles.themeButton} ${theme === "dark" ? styles.themeButtonDark : ""}`}
+                        className={`${styles.themeSwitch} ${theme === "dark" ? styles.themeSwitchDark : ""}`}
                     >
-                        {theme === "light" ? <Moon size={14} /> : <Sun size={14} />}
-                        <span className={styles.themeLabel}>{theme === "light" ? t("darkMode") : t("lightMode")}</span>
+                        <span className={styles.themeSwitchThumb} aria-hidden="true" />
+                        <span className={`${styles.themeSwitchOption} ${theme === "light" ? styles.themeSwitchOptionActive : ""}`}>
+                            <Sun size={13} />
+                            <span>{t("lightMode")}</span>
+                        </span>
+                        <span className={`${styles.themeSwitchOption} ${theme === "dark" ? styles.themeSwitchOptionActive : ""}`}>
+                            <Moon size={13} />
+                            <span>{t("darkMode")}</span>
+                        </span>
                     </button>
 
                     {user ? profileLink : (
