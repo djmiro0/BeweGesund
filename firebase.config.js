@@ -3,7 +3,6 @@ import { getAuth } from "firebase/auth";
 import { initializeFirestore } from "firebase/firestore";
 import { getFunctions } from "firebase/functions";
 import { getStorage } from "firebase/storage";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,20 +19,6 @@ const firebaseConfig = {
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-export let appCheck = null;
-
-const isAppCheckEnabled = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED === "true";
-
-if (
-  typeof window !== "undefined"
-  && isAppCheckEnabled
-  && process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY
-) {
-  appCheck = initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY),
-    isTokenAutoRefreshEnabled: false,
-  });
-}
 
 export const auth = getAuth(app);
 export const db = initializeFirestore(app, {

@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, LoaderCircle } from "lucide-react";
+import { CheckCircle2, CreditCard, LoaderCircle, Repeat2 } from "lucide-react";
 import { httpsCallable } from "firebase/functions";
 import { useState } from "react";
 import { functions } from "../../../../firebase.config";
@@ -90,6 +90,7 @@ export default function BillingActions({
     { id: "plus", name: plusName, price: plusPrice, checkoutLabel: plusCheckoutLabel },
   ];
   const currentPlan = plans.find((plan) => plan.id === memberPackage) ?? plans[0];
+  const currentStatusLabel = hasManagedSubscription ? activeLabel : selectedLabel;
 
   const openBillingSession = async (
     action: "checkout" | "portal",
@@ -140,10 +141,19 @@ export default function BillingActions({
 
   return (
     <div className={styles.billingActions}>
-      <div className={styles.billingOverview}>
-        <span>{currentLabel}: <strong>{currentPlan.name}</strong></span>
-        <span>{statusLabel}: <strong>{subscriptionStatus}</strong></span>
+      <div className={styles.billingStatusBand}>
+        <div>
+          <p>{currentLabel}</p>
+          <strong>{currentPlan.name}</strong>
+        </div>
+        <span>{currentStatusLabel}</span>
       </div>
+
+      <div className={styles.billingOverview}>
+        <span>{statusLabel}</span>
+        <strong>{subscriptionStatus}</strong>
+      </div>
+
       <div className={styles.billingPlanGrid}>
         {plans.map((plan) => {
           const isCurrent = plan.id === memberPackage;
@@ -165,17 +175,18 @@ export default function BillingActions({
                 </div>
                 {isCurrent ? (
                   <span className={styles.billingPlanBadge}>
-                    {hasManagedSubscription ? activeLabel : selectedLabel}
+                    <CheckCircle2 size={15} />
+                    {currentStatusLabel}
                   </span>
                 ) : null}
               </div>
 
               {isCurrent && hasManagedSubscription ? (
-                <p className={styles.billingPlanNote}>{activeLabel}</p>
+                <p className={styles.billingPlanNote}>{currentLabel}</p>
               ) : (
                 <button
                   type="button"
-                  className={`${styles.billingButton} ${isAvailableChange ? styles.billingButtonSecondary : ""}`}
+                  className={`${styles.billingButton} ${isAvailableChange ? styles.billingButtonChange : ""}`}
                   disabled={isPending}
                   onClick={() => void openBillingSession(actionMode, actionMode === "checkout" ? plan.id : undefined)}
                 >
@@ -193,7 +204,8 @@ export default function BillingActions({
           disabled={isPending}
           onClick={() => void openBillingSession("portal")}
         >
-          {buttonContent(manageLabel, false)}
+          {isPending ? <LoaderCircle className={styles.billingSpinner} size={17} /> : <Repeat2 size={17} />}
+          {isPending ? processingLabel : manageLabel}
         </button>
       ) : null}
       {error ? <p className={styles.billingError} role="alert">{error}</p> : null}

@@ -6,7 +6,6 @@ import {
     createUserWithEmailAndPassword,
     deleteUser,
     GoogleAuthProvider,
-    initializeRecaptchaConfig,
     sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
@@ -16,7 +15,7 @@ import {
     type User,
     type AuthError,
 } from 'firebase/auth';
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { ArrowLeft, Check, LoaderCircle, Mail, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
@@ -192,14 +191,6 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setView("googleOnboarding");
     }, [isOpen, requiresProfileSetup]);
 
-    useEffect(() => {
-        if (!isOpen || !isRegister) return;
-
-        // Preload Firebase Auth's reCAPTCHA Enterprise configuration so the
-        // registration request can include a fresh bot-protection token.
-        void initializeRecaptchaConfig(auth).catch(() => undefined);
-    }, [isOpen, isRegister]);
-
     const getFriendlyErrorMessage = (error: unknown) => {
         const firebaseError = error as (AuthError & FirebaseErrorLike) | undefined;
         const code = firebaseError?.code;
@@ -330,6 +321,15 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         window.location.assign(result.data.url);
     };
 
+    const deleteIncompleteAccount = async (user: User) => {
+        await deleteDoc(doc(db, "users", user.uid)).catch(() => undefined);
+        await deleteUser(user).catch(async () => {
+            const deleteUserAccount = httpsCallable(functions, "deleteUserAccount");
+            await deleteUserAccount().catch(() => undefined);
+        });
+        await signOut(auth).catch(() => undefined);
+    };
+
     const openPasswordReset = () => {
         setPassword("");
         setConfirmPassword("");
@@ -427,11 +427,16 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         throw new Error("Google user is no longer authenticated.");
                     }
 
-                    await setDoc(
-                        doc(db, "users", googleUser.uid),
-                        createProfilePayload(googleUser.uid, googleUser.email ?? email.trim(), googleUser),
-                    );
-                    await openCheckoutForSelectedPackage();
+                    try {
+                        await setDoc(
+                            doc(db, "users", googleUser.uid),
+                            createProfilePayload(googleUser.uid, googleUser.email ?? email.trim(), googleUser),
+                        );
+                        await openCheckoutForSelectedPackage();
+                    } catch (profileOrCheckoutError) {
+                        await deleteIncompleteAccount(googleUser);
+                        throw profileOrCheckoutError;
+                    }
                     return;
                 }
 
@@ -472,11 +477,11 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         code: getFirebaseErrorCode(checkoutError),
                         error: checkoutError,
                     });
-                    await signOut(auth).catch(() => undefined);
+                    await deleteIncompleteAccount(credential.user);
                     setPassword("");
                     setConfirmPassword("");
                     setView("signIn");
-                    setInfoMessage(t("verificationSent"));
+                    setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(checkoutError)}`);
                 }
                 return;
             } else {
@@ -841,11 +846,6 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         <div className="rounded-2xl border border-[rgba(var(--page-warm-rgb),0.28)] bg-[rgba(var(--page-warm-rgb),0.1)] px-4 py-3 text-sm text-[var(--text-light)]">
                             {infoMessage}
                         </div>
-                    ) : null}
-                    {isRegister ? (
-                        <p className="text-center text-xs leading-5 text-[var(--text-dim)]">
-                            {t("recaptchaNotice")}
-                        </p>
                     ) : null}
                     <button disabled={!canSubmit} className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[var(--text-light)] disabled:hover:text-[var(--text-on-warm)]">
                         {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}

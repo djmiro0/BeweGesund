@@ -36,6 +36,7 @@ export default function AccountManagement() {
 
   const getDeleteErrorMessage = (error: unknown) => {
     const code = (error as AuthError | undefined)?.code;
+    const message = (error as Error | undefined)?.message ?? "";
 
     switch (code) {
       case "auth/wrong-password":
@@ -43,6 +44,8 @@ export default function AccountManagement() {
         return t("errors.invalidPassword");
       case "auth/requires-recent-login":
         return t("errors.recentLogin");
+      case "failed-precondition":
+        return message.toLowerCase().includes("recent sign-in") ? t("errors.recentLogin") : t("errors.generic");
       case "permission-denied":
       case "firestore/permission-denied":
         return t("errors.permissionDenied");
@@ -65,13 +68,18 @@ export default function AccountManagement() {
         await reauthenticateWithCredential(user, credential);
       }
 
+      await user.getIdToken(true);
+
       const deleteUserAccount = httpsCallable(functions, "deleteUserAccount");
       await deleteUserAccount();
+      window.alert(t("success"));
       await signOut(auth).catch(() => undefined);
       closeDialog();
       router.replace(`/${locale}`);
     } catch (error) {
-      setDeleteError(getDeleteErrorMessage(error));
+      const errorMessage = getDeleteErrorMessage(error);
+      setDeleteError(errorMessage);
+      window.alert(errorMessage);
     } finally {
       setIsDeleting(false);
     }
@@ -108,7 +116,7 @@ export default function AccountManagement() {
               <AlertTriangle size={24} />
             </span>
             <p className={styles.eyebrow}>{t("confirmEyebrow")}</p>
-            <h2 id="settings-delete-title">{t("confirmTitle")}</h2>
+            <h2  className={styles.deleteTitle} id="settings-delete-title">{t("confirmTitle")}</h2>
             <p className={styles.modalText}>
               {usesGoogleProvider ? t("googleConfirmText") : t("confirmText")}
             </p>

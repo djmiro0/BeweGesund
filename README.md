@@ -65,14 +65,6 @@ npm install
 npm run dev
 ```
 
-For Firebase App Check protected flows, set
-`NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED=true` and
-`NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY` in `.env.local` and in the deployment
-environment. Leave `NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED` empty or unset during
-local development if reCAPTCHA is not fully configured. Stripe billing is
-protected by Firebase Auth and verified Stripe webhooks, so checkout and portal
-sessions do not depend on App Check.
-
 ## Contentful Calendar, Course, and Video Content
 
 The app reads Contentful from runtime environment variables such as `.env.local` in development or deployment provider variables in production. `.env.example` is only a list of required variable names and is not loaded by Next.js automatically. If Contentful is not configured yet, the calendar, courses, and blogs do not render fake fallback entries.

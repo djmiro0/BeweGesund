@@ -751,6 +751,7 @@
       "confirm": "Dauerhaft löschen",
       "googleConfirm": "Mit Google bestätigen und löschen",
       "deleting": "Wird gelöscht...",
+      "success": "Dein Konto wurde erfolgreich gelöscht.",
       "errors": {
         "invalidPassword": "Das Passwort ist nicht korrekt. Bitte versuche es erneut.",
         "recentLogin": "Firebase benötigt eine aktuelle Anmeldung, bevor das Konto gelöscht werden kann. Bitte melde dich ab, melde dich erneut an und versuche es noch einmal.",

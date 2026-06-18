@@ -33,6 +33,15 @@ function requireAuth(auth: { uid: string } | null | undefined) {
   return auth.uid;
 }
 
+function requireRecentSignIn(authTime: unknown) {
+  const authTimeSeconds = typeof authTime === "number" ? authTime : Number(authTime);
+  const fiveMinutesInSeconds = 5 * 60;
+
+  if (!Number.isFinite(authTimeSeconds) || Date.now() / 1000 - authTimeSeconds > fiveMinutesInSeconds) {
+    throw new HttpsError("failed-precondition", "Recent sign-in is required before deleting the account.");
+  }
+}
+
 function computeStreak(lastCompletedAt: Date | null, completedAt: Date) {
   if (!lastCompletedAt) {
     return 1;
@@ -66,6 +75,11 @@ function createStripeClient() {
 function getBillingReturnUrl(locale: unknown) {
   const safeLocale = locale === "en" ? "en" : "de";
   return `${appBaseUrl.value().replace(/\/$/, "")}/${safeLocale}/profile`;
+}
+
+function getCheckoutReturnUrl(locale: unknown) {
+  const safeLocale = locale === "en" ? "en" : "de";
+  return `${appBaseUrl.value().replace(/\/$/, "")}/${safeLocale}`;
 }
 
 function getStripePriceId(memberPackage: MemberPackage) {
@@ -221,11 +235,12 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
 export const deleteUserAccount = onCall(
   {
     region: REGION,
-    enforceAppCheck: true,
     secrets: [stripeSecretKey],
   },
   async (request) => {
     const uid = requireAuth(request.auth);
+    requireRecentSignIn(request.auth?.token.auth_time);
+
     const ref = userRef(uid);
     const profileSnapshot = await ref.get();
     const subscriptionId = profileSnapshot.get("stripeSubscriptionId") as string | undefined;
@@ -262,17 +277,17 @@ export const deleteUserAccount = onCall(
   },
 );
 
-export const completeLesson = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
+export const completeLesson = onCall({ region: REGION }, async (request) => {
   const uid = requireAuth(request.auth);
   return applyCompletion(uid, "lesson", request.data as CompletionPayload);
 });
 
-export const completeWorkout = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
+export const completeWorkout = onCall({ region: REGION }, async (request) => {
   const uid = requireAuth(request.auth);
   return applyCompletion(uid, "workout", request.data as CompletionPayload);
 });
 
-export const updateStreak = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
+export const updateStreak = onCall({ region: REGION }, async (request) => {
   const uid = requireAuth(request.auth);
   const ref = userRef(uid);
   const snapshot = await ref.get();
@@ -358,7 +373,7 @@ export const updateMonthlyLeaderboard = onSchedule(
   },
 );
 
-export const claimReward = onCall({ region: REGION, enforceAppCheck: true }, async (request) => {
+export const claimReward = onCall({ region: REGION }, async (request) => {
   const uid = requireAuth(request.auth);
   const { rewardId } = request.data as RewardClaimPayload;
 
@@ -452,7 +467,7 @@ export const createStripeCheckoutSession = onCall(
       await profileRef.set({ stripeCustomerId: customerId, updatedAt: serverTimestamp() }, { merge: true });
     }
 
-    const returnUrl = getBillingReturnUrl(locale);
+    const returnUrl = getCheckoutReturnUrl(locale);
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",

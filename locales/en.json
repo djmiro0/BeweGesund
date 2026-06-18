@@ -751,6 +751,7 @@
       "confirm": "Delete permanently",
       "googleConfirm": "Continue with Google and delete",
       "deleting": "Deleting...",
+      "success": "Your account has been deleted successfully.",
       "errors": {
         "invalidPassword": "The password is not correct. Please try again.",
         "recentLogin": "Firebase needs a recent sign-in before deleting the account. Please sign out, sign in again, and retry.",

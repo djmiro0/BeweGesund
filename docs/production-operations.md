@@ -37,12 +37,6 @@ easier to audit.
 Consultation bookings default to `https://cal.eu/bewegesund`. Set
 `CONSULTATION_BOOKING_URL` only when the booking destination should be changed.
 
-For Firebase App Check, configure the web app with the reCAPTCHA v3 provider and
-set its site key as `NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY`. The reCAPTCHA/App
-Check domain allowlist must include the production domain, Vercel preview
-domains if previews are used for testing, and `localhost` for local development.
-Use the site key, not the reCAPTCHA secret key.
-
 Follow `docs/stripe-billing.md` in Stripe test mode before adding any live
 Stripe credentials.
 

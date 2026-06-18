@@ -76,6 +76,10 @@
   text-transform: uppercase;
 }
 
+.deleteTitle {
+  color: var(--primary-rgb);
+}
+
 .layout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -629,7 +633,7 @@
   place-items: center;
   border-radius: 999px;
   background: rgba(var(--accent-strong-rgb), 0.12);
-  color: var(--accent-strong);
+  color: var(--secondary-rgb);
 }
 
 .accountManagement h2,
@@ -729,7 +733,7 @@
   border-radius: 0.85rem;
   background: rgba(var(--accent-strong-rgb), 0.1);
   padding: 0.8rem;
-  color: var(--accent-strong);
+  color: var(--secondary-rgb);
   font-weight: 800;
 }
 
@@ -757,8 +761,8 @@
 }
 
 .confirmDeleteButton {
-  background: var(--accent-strong);
-  color: var(--text-light);
+  background: var(--accent);
+  color: var(--primary-rgb);
 }
 
 .confirmDeleteButton:disabled {

@@ -5,14 +5,24 @@ import { ThemeProvider, useTheme } from "./ThemeProvider";
 
 const mocks = vi.hoisted(() => ({
   pathname: "/de",
-  auth: {
-    user: null as null | {
-      uid: string;
-      displayName: string;
-      photoURL: null;
-      providerData: Array<{ providerId: string }>;
+    auth: {
+      user: null as null | {
+        uid: string;
+        displayName: string;
+        photoURL: null;
+        providerData: Array<{ providerId: string }>;
+      },
+    profile: null as null | {
+      email?: string;
+      firstName?: string;
+      lastName?: string;
+      age?: number | null;
+      gender?: string;
+      heightCm?: number | null;
+      weightKg?: number | null;
+      regionKey?: string;
+      photoURL?: string | null;
     },
-    profile: null,
     appPreferences: {
       theme: "system",
     },
@@ -70,6 +80,7 @@ describe("ShellFrame launch routing", () => {
   beforeEach(() => {
   mocks.pathname = "/de";
   mocks.auth.user = null;
+  mocks.auth.profile = null;
   mocks.auth.appPreferences = { theme: "system" };
   mocks.auth.loading = false;
   window.localStorage.clear();
@@ -133,6 +144,38 @@ describe("ShellFrame launch routing", () => {
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
     expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
+  });
+
+  it("keeps app-only prompts hidden while a Google user completes registration", () => {
+    mocks.pathname = "/de/courses";
+    mocks.auth.user = {
+      uid: "google-user",
+      displayName: "Google Member",
+      photoURL: null,
+      providerData: [{ providerId: "google.com" }],
+    };
+    mocks.auth.profile = {
+      email: "member@example.com",
+      firstName: "Google",
+      lastName: "",
+      age: null,
+      gender: "",
+      heightCm: null,
+      weightKg: null,
+      regionKey: "",
+      photoURL: null,
+    };
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByTestId("auth-modal")).toBeInTheDocument();
+    expect(screen.queryByTestId("progress-photo-reminder")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("page-content")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("mobile-tabs")).not.toBeInTheDocument();
   });
 
   it("does not reset a header theme toggle back to the stored remote preference", async () => {

@@ -92,13 +92,13 @@
 
 .packagePanel {
   display: grid;
-  gap: 0.8rem;
+  gap: 1rem;
   border: 1px solid var(--page-border-soft);
   border-radius: 0.9rem;
   background:
-    linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9));
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.94));
   padding: 1rem;
-  box-shadow: 0 12px 28px rgba(var(--page-ink-rgb), 0.08);
+  box-shadow: 0 16px 34px rgba(var(--page-ink-rgb), 0.1);
 }
 
 .packagePanel h2 {
@@ -123,43 +123,86 @@
 
 .billingActions {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.85rem;
+}
+
+.billingStatusBand {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid rgba(var(--secondary-rgb), 0.34);
+  border-radius: 0.75rem;
+  background:
+    linear-gradient(135deg, rgba(var(--secondary-rgb), 0.16), rgba(var(--page-soft-rgb), 0.78) 62%);
+  padding: 0.85rem 0.9rem;
+}
+
+.billingStatusBand p {
+  margin: 0;
+  color: var(--page-muted);
+  font-size: 0.65rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.billingStatusBand strong {
+  display: block;
+  margin-top: 0.12rem;
+  color: var(--page-ink);
+  font-size: clamp(1.35rem, 6vw, 2.1rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.billingStatusBand > span {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.13);
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.8);
+  color: var(--page-ink);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  padding: 0.35rem 0.6rem;
+  text-transform: uppercase;
 }
 
 .billingOverview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 1rem;
-  color: var(--page-muted);
-  font-size: 0.72rem;
-  font-weight: 850;
-  text-transform: capitalize;
-}
-
-.billingOverview span {
   display: inline-flex;
-  gap: 0.3rem;
+  width: fit-content;
+  gap: 0.35rem;
+  align-items: center;
+  color: var(--page-muted);
+  font-size: 0.7rem;
+  font-weight: 850;
+  text-transform: uppercase;
 }
 
 .billingOverview strong {
   color: var(--page-ink);
+  text-transform: capitalize;
 }
 
 .billingPlanGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .billingPlanCard {
-  display: grid;
+  display: flex;
   min-width: 0;
-  gap: 1rem;
-  align-content: space-between;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
   border: 1px solid var(--page-border-soft);
-  border-radius: 0.85rem;
-  background: rgba(var(--page-soft-rgb), 0.66);
-  padding: 0.9rem;
+  border-radius: 0.75rem;
+  background: rgba(var(--page-soft-rgb), 0.58);
+  padding: 0.8rem;
   transition:
     border-color 0.24s var(--transition),
     background 0.24s var(--transition),
@@ -168,14 +211,12 @@
 
 .billingPlanCard:hover {
   transform: translateY(-1px);
-  border-color: rgba(var(--secondary-rgb), 0.32);
+  border-color: rgba(var(--secondary-rgb), 0.3);
 }
 
 .billingPlanCardCurrent {
-  border-color: rgba(var(--secondary-rgb), 0.48);
-  background:
-    linear-gradient(135deg, rgba(var(--secondary-rgb), 0.13), transparent 70%),
-    rgba(var(--page-soft-rgb), 0.72);
+  border-color: rgba(var(--page-ink-rgb), 0.18);
+  background: rgba(var(--page-soft-rgb), 0.82);
 }
 
 .billingPlanHeader {
@@ -201,7 +242,10 @@
 }
 
 .billingPlanBadge {
+  display: inline-flex;
   flex: 0 0 auto;
+  gap: 0.35rem;
+  align-items: center;
   border: 1px solid rgba(var(--secondary-rgb), 0.34);
   border-radius: 999px;
   background: rgba(var(--secondary-rgb), 0.12);
@@ -214,15 +258,20 @@
 }
 
 .billingPlanNote {
-  min-height: 3rem;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  min-width: 7rem;
+  min-height: 2.5rem;
+  text-align: right;
+  text-transform: uppercase;
 }
 
 .billingButton {
   display: inline-flex;
-  width: 100%;
-  min-height: 3rem;
+  width: auto;
+  min-width: 10.5rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
@@ -236,13 +285,27 @@
   letter-spacing: 0.1em;
   padding: 0.8rem 1rem;
   text-transform: uppercase;
+  transition:
+    transform 0.2s var(--transition),
+    background 0.2s var(--transition),
+    border-color 0.2s var(--transition);
 }
 
 .billingButton:hover {
+  transform: translateY(-1px);
   background: var(--page-accent);
 }
 
+.billingButtonChange {
+  background: var(--page-accent);
+}
+
+.billingButtonChange:hover {
+  background: var(--page-ink);
+}
+
 .billingButtonSecondary {
+  justify-self: start;
   border: 1px solid var(--page-border-soft);
   background: rgba(var(--page-soft-rgb), 0.72);
   color: var(--page-ink);
@@ -267,6 +330,42 @@
   font-size: 0.74rem;
   font-weight: 750;
   line-height: 1.4;
+}
+
+@media (max-width: 540px) {
+  .billingStatusBand,
+  .billingPlanCard {
+    grid-template-columns: 1fr;
+  }
+
+  .billingStatusBand {
+    align-items: start;
+  }
+
+  .billingStatusBand > span {
+    justify-self: start;
+  }
+
+  .billingPlanCard {
+    display: grid;
+  }
+
+  .billingPlanHeader {
+    flex-wrap: wrap;
+  }
+
+  .billingPlanNote {
+    justify-content: flex-start;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .billingButton,
+  .billingButtonSecondary {
+    width: 100%;
+    min-width: 0;
+    justify-self: stretch;
+  }
 }
 
 @keyframes billingSpin {
@@ -1060,7 +1159,7 @@
   margin-bottom: 1rem;
   border-radius: 999px;
   background: rgba(var(--accent-strong-rgb), 0.12);
-  color: var(--accent-strong);
+  color:var(--secondary-rgb);
 }
 
 .modalTitle {
@@ -1110,7 +1209,7 @@
   border-radius: 1rem;
   background: rgba(var(--accent-strong-rgb), 0.1);
   padding: 0.85rem 1rem;
-  color: var(--accent-strong);
+  color: var(--secondary-rgb);
   font-size: 0.9rem;
   font-weight: 800;
   line-height: 1.5;
@@ -1135,7 +1234,7 @@
 }
 
 .confirmDeleteButton {
-  background: var(--accent-strong);
+  background: var(--secondary-rgb);
   color: var(--text-light);
 }
 

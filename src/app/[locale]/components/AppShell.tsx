@@ -95,6 +95,26 @@ export function ShellFrame({
     );
   }
 
+  if (requiresProfileSetup) {
+    return (
+      <>
+        <PwaInstallPrompt />
+        <Header
+          locale={locale}
+          user={user}
+          profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
+          profilePhoto={profile?.photoURL ?? user?.photoURL}
+          openAuth={openAuth}
+        />
+        <AuthModal
+          isOpen
+          onClose={closeAuth}
+          requiresProfileSetup
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <PwaInstallPrompt />
