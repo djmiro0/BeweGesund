@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { resolveBookingUrl } from "./page";
+import { resolveBookingUrl } from "./booking";
 
 describe("KontaktPage booking URL", () => {
   afterEach(() => {
