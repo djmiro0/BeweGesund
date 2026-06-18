@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from "next-intl";
-import { auth, db } from "../../../../firebase.config";
+import { auth, db, functions } from "../../../../firebase.config";
 import {
     createUserWithEmailAndPassword,
     deleteUser,
@@ -17,6 +17,7 @@ import {
     type AuthError,
 } from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { ArrowLeft, Check, LoaderCircle, Mail, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
 import { memberPackages } from "@/lib/memberPackages";
@@ -65,6 +66,10 @@ interface CreateUserProfilePayload {
     monthlyLeaderboardRank: null;
     claimedRewardIds: string[];
     roles: ["member"];
+}
+
+interface BillingSessionResult {
+    url?: string;
 }
 
 const regionKeys = [
@@ -311,6 +316,20 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         url: `${window.location.origin}/${locale}`,
     });
 
+    const openCheckoutForSelectedPackage = async () => {
+        const createSession = httpsCallable<
+            { locale: string; memberPackage: MemberPackage },
+            BillingSessionResult
+        >(functions, "createStripeCheckoutSession");
+        const result = await createSession({ locale, memberPackage: selectedPackage });
+
+        if (!result.data.url) {
+            throw new Error("Stripe session URL is missing.");
+        }
+
+        window.location.assign(result.data.url);
+    };
+
     const openPasswordReset = () => {
         setPassword("");
         setConfirmPassword("");
@@ -412,9 +431,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         doc(db, "users", googleUser.uid),
                         createProfilePayload(googleUser.uid, googleUser.email ?? email.trim(), googleUser),
                     );
-                    resetForm();
-                    setView("signIn");
-                    onClose();
+                    await openCheckoutForSelectedPackage();
                     return;
                 }
 
@@ -448,11 +465,19 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     return;
                 }
 
-                await signOut(auth);
-                setPassword("");
-                setConfirmPassword("");
-                setView("signIn");
-                setInfoMessage(t("verificationSent"));
+                try {
+                    await openCheckoutForSelectedPackage();
+                } catch (checkoutError) {
+                    console.error("Stripe checkout could not be opened after registration", {
+                        code: getFirebaseErrorCode(checkoutError),
+                        error: checkoutError,
+                    });
+                    await signOut(auth).catch(() => undefined);
+                    setPassword("");
+                    setConfirmPassword("");
+                    setView("signIn");
+                    setInfoMessage(t("verificationSent"));
+                }
                 return;
             } else {
                 const credential = await signInWithEmailAndPassword(auth, email, password);

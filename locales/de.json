@@ -538,7 +538,12 @@
       "signInRequired": "Melde dich an, um diesen Kurs anzusehen.",
       "tokenError": "Der Wiedergabe-Token konnte nicht erstellt werden.",
       "signingMissing": "Mux Signing ist noch nicht konfiguriert.",
-      "authError": "Bitte melde dich erneut an, um diesen Kurs anzusehen."
+      "authError": "Bitte melde dich erneut an, um diesen Kurs anzusehen.",
+      "subscriptionRequired": "Für dieses Video ist eine aktive Mitgliedschaft erforderlich.",
+      "packageRequired": "Dein Paket enthält dieses Video nicht.",
+      "videoNotFound": "Dieses Video ist für den Kurs nicht verfügbar.",
+      "accessCheckFailed": "Der Videozugang konnte gerade nicht geprüft werden.",
+      "rateLimited": "Zu viele Wiedergabe-Anfragen. Bitte versuche es gleich erneut."
     },
     "meta": {
       "flexibleDuration": "Flexible Dauer",
@@ -573,14 +578,21 @@
     "mobileTitle": "Ganzheitliche Fitnessbildung",
     "packageSelector": {
       "eyebrow": "Mitgliedschaft",
-      "title": "Aktives Paket",
+      "title": "Paket & Zahlung",
       "description": "Dieses Paket steuert den Zugriff auf Kurse und Live-Sessions.",
-      "subscribeBasic": "Basic wählen · 9,99 €/Monat",
-      "subscribePlus": "Plus wählen · 12,99 €/Monat",
+      "currentPackage": "Aktuelles Paket",
+      "basicPrice": "9,99 €/Monat",
+      "plusPrice": "12,99 €/Monat",
+      "subscribeBasic": "Basic wählen",
+      "subscribePlus": "Plus wählen",
+      "upgrade": "Auf Plus upgraden",
+      "downgrade": "Zu Basic wechseln",
       "manage": "Zahlung verwalten",
       "processing": "Stripe wird geöffnet",
       "billingError": "Die Zahlungsverwaltung konnte nicht geöffnet werden. Bitte versuche es erneut.",
       "status": "Abo-Status",
+      "active": "Aktiv",
+      "selected": "Ausgewählt",
       "billingHint": "Zahlungen werden sicher über Stripe verarbeitet. Der Paketzugriff wird aktualisiert, sobald Stripe das Abo bestätigt."
     },
     "actions": {
@@ -732,10 +744,12 @@
       "confirmEyebrow": "Dauerhafte Aktion",
       "confirmTitle": "Konto löschen?",
       "confirmText": "Gib zum Schutz deines Kontos dein Passwort ein. Wir löschen zuerst dein Firestore-Profil und danach dein Firebase-Auth-Konto.",
+      "googleConfirmText": "Bestätige zum Schutz deines Kontos deine Google-Anmeldung im Popup. Wir löschen zuerst dein Firestore-Profil und danach dein Firebase-Auth-Konto.",
       "passwordLabel": "Aktuelles Passwort",
       "passwordPlaceholder": "Passwort eingeben",
       "cancel": "Abbrechen",
       "confirm": "Dauerhaft löschen",
+      "googleConfirm": "Mit Google bestätigen und löschen",
       "deleting": "Wird gelöscht...",
       "errors": {
         "invalidPassword": "Das Passwort ist nicht korrekt. Bitte versuche es erneut.",

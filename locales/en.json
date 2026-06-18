@@ -538,7 +538,12 @@
       "signInRequired": "Sign in to watch this course.",
       "tokenError": "Playback token could not be created.",
       "signingMissing": "Mux signing is not configured yet.",
-      "authError": "Please sign in again to watch this course."
+      "authError": "Please sign in again to watch this course.",
+      "subscriptionRequired": "An active membership is required for this video.",
+      "packageRequired": "Your package does not include this video.",
+      "videoNotFound": "This video is not available for the course.",
+      "accessCheckFailed": "Video access could not be verified right now.",
+      "rateLimited": "Too many playback requests. Please try again shortly."
     },
     "meta": {
       "flexibleDuration": "Flexible duration",
@@ -573,14 +578,21 @@
     "mobileTitle": "Holistic fitness education",
     "packageSelector": {
       "eyebrow": "Membership",
-      "title": "Active package",
+      "title": "Package & billing",
       "description": "This package controls access to courses and live sessions.",
-      "subscribeBasic": "Choose Basic · €9.99/month",
-      "subscribePlus": "Choose Plus · €12.99/month",
+      "currentPackage": "Current package",
+      "basicPrice": "€9.99/month",
+      "plusPrice": "€12.99/month",
+      "subscribeBasic": "Choose Basic",
+      "subscribePlus": "Choose Plus",
+      "upgrade": "Upgrade to Plus",
+      "downgrade": "Switch to Basic",
       "manage": "Manage billing",
       "processing": "Opening Stripe",
       "billingError": "Billing could not be opened. Please try again.",
       "status": "Subscription status",
+      "active": "Active",
+      "selected": "Selected",
       "billingHint": "Payments are processed securely by Stripe. Package access updates after Stripe confirms the subscription."
     },
     "actions": {
@@ -732,10 +744,12 @@
       "confirmEyebrow": "Permanent action",
       "confirmTitle": "Delete your account?",
       "confirmText": "To protect your account, enter your password. We will delete your Firestore profile first and then remove your Firebase Auth account.",
+      "googleConfirmText": "To protect your account, confirm your Google sign-in in the popup. We will delete your Firestore profile first and then remove your Firebase Auth account.",
       "passwordLabel": "Current password",
       "passwordPlaceholder": "Enter your password",
       "cancel": "Cancel",
       "confirm": "Delete permanently",
+      "googleConfirm": "Continue with Google and delete",
       "deleting": "Deleting...",
       "errors": {
         "invalidPassword": "The password is not correct. Please try again.",

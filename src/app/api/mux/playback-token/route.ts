@@ -95,7 +95,14 @@ export async function POST(request: Request) {
         { status: 403 },
       );
     }
-  } catch {
+  } catch (error) {
+    console.error("Mux playback access check failed.", {
+      uid,
+      courseSlug,
+      locale,
+      error: error instanceof Error ? error.message : String(error),
+    });
+
     return NextResponse.json(
       { error: "Video access could not be verified.", code: "ACCESS_CHECK_FAILED" },
       { status: 503 },

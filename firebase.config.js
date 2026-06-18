@@ -22,10 +22,16 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 export let appCheck = null;
 
-if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY) {
+const isAppCheckEnabled = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED === "true";
+
+if (
+  typeof window !== "undefined"
+  && isAppCheckEnabled
+  && process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY
+) {
   appCheck = initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider(process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY),
-    isTokenAutoRefreshEnabled: true,
+    isTokenAutoRefreshEnabled: false,
   });
 }
 

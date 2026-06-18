@@ -5,7 +5,6 @@ import {
   Activity,
   Award,
   BookOpen,
-  Check,
   ChevronDown,
   Crown,
   Dumbbell,
@@ -23,7 +22,6 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { activeScheduleDays, memberCourses } from "@/data";
-import { memberPackages } from "@/lib/memberPackages";
 import { emptyUserProfile, getProfileFirstName } from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
@@ -243,32 +241,24 @@ export default function ProfilePage() {
             <h2>{t("packageSelector.title")}</h2>
             <p>{t("packageSelector.description")}</p>
           </div>
-          <div className={styles.packageOptions}>
-            {memberPackages.map((packageId) => {
-              const isSelected = profile.memberPackage === packageId;
-
-              return (
-                <button
-                  key={packageId}
-                  type="button"
-                  className={`${styles.packageOption} ${isSelected ? styles.packageOptionActive : ""}`}
-                  aria-pressed={isSelected}
-                  disabled
-                >
-                  <span>{packageT(packageId)}</span>
-                  {isSelected ? <Check size={17} /> : null}
-                </button>
-              );
-            })}
-          </div>
           <BillingActions
             locale={locale}
+            memberPackage={profile.memberPackage}
             subscriptionStatus={profile.subscriptionStatus}
+            basicName={packageT("basic")}
+            plusName={packageT("plus")}
+            basicPrice={t("packageSelector.basicPrice")}
+            plusPrice={t("packageSelector.plusPrice")}
             basicCheckoutLabel={t("packageSelector.subscribeBasic")}
             plusCheckoutLabel={t("packageSelector.subscribePlus")}
+            upgradeLabel={t("packageSelector.upgrade")}
+            downgradeLabel={t("packageSelector.downgrade")}
             manageLabel={t("packageSelector.manage")}
             processingLabel={t("packageSelector.processing")}
             errorLabel={t("packageSelector.billingError")}
+            currentLabel={t("packageSelector.currentPackage")}
+            activeLabel={t("packageSelector.active")}
+            selectedLabel={t("packageSelector.selected")}
             statusLabel={t("packageSelector.status")}
           />
           <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>

@@ -2,7 +2,9 @@
 
 The application uses Stripe Checkout for the Basic and Plus subscriptions and Stripe
 Customer Portal for payment-method updates and cancellation. Firestore access
-is updated only from verified Stripe webhooks.
+is updated only from verified Stripe webhooks. Checkout and Customer Portal
+callable functions require a signed-in Firebase user, but they intentionally do
+not enforce Firebase App Check so billing does not depend on reCAPTCHA.
 
 ## Test-mode setup
 

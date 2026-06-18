@@ -419,7 +419,6 @@ export const claimReward = onCall({ region: REGION, enforceAppCheck: true }, asy
 export const createStripeCheckoutSession = onCall(
   {
     region: REGION,
-    enforceAppCheck: true,
     secrets: [stripeSecretKey],
   },
   async (request) => {
@@ -490,7 +489,6 @@ export const createStripeCheckoutSession = onCall(
 export const createStripeCustomerPortalSession = onCall(
   {
     region: REGION,
-    enforceAppCheck: true,
     secrets: [stripeSecretKey],
   },
   async (request) => {

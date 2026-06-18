@@ -4,7 +4,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import AuthModal from "./AuthModal";
 
 const mocks = vi.hoisted(() => ({
+    callable: vi.fn(),
     getDoc: vi.fn(),
+    httpsCallable: vi.fn(),
     initializeRecaptchaConfig: vi.fn(),
     signInWithPopup: vi.fn(),
     signOut: vi.fn(),
@@ -62,6 +64,7 @@ vi.mock("next-intl", () => ({
 vi.mock("../../../../firebase.config", () => ({
   auth: { currentUser: null },
   db: {},
+  functions: {},
 }));
 
 vi.mock("firebase/auth", () => ({
@@ -86,9 +89,16 @@ vi.mock("firebase/firestore", () => ({
   setDoc: vi.fn(),
 }));
 
+vi.mock("firebase/functions", () => ({
+  httpsCallable: mocks.httpsCallable,
+}));
+
 describe("AuthModal Google sign-in", () => {
   beforeEach(() => {
     mocks.getDoc.mockReset();
+    mocks.callable.mockReset();
+    mocks.httpsCallable.mockReset();
+    mocks.httpsCallable.mockReturnValue(mocks.callable);
     mocks.initializeRecaptchaConfig.mockReset();
     mocks.initializeRecaptchaConfig.mockResolvedValue(undefined);
     mocks.signInWithPopup.mockReset();

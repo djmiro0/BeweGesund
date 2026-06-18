@@ -1,7 +1,14 @@
 "use client";
 
 import { AlertTriangle, Trash2, X } from "lucide-react";
-import { EmailAuthProvider, reauthenticateWithCredential, signOut, type AuthError } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  GoogleAuthProvider,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
+  signOut,
+  type AuthError,
+} from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -19,6 +26,7 @@ export default function AccountManagement() {
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const usesGoogleProvider = user?.providerData?.some((provider) => provider.providerId === "google.com") ?? false;
 
   const closeDialog = () => {
     setIsDeleteOpen(false);
@@ -44,14 +52,19 @@ export default function AccountManagement() {
   };
 
   const handleDeleteProfile = async () => {
-    if (!user?.email || !deletePassword || isDeleting) return;
+    if (!user || isDeleting || (!usesGoogleProvider && (!user.email || !deletePassword))) return;
 
     setIsDeleting(true);
     setDeleteError("");
 
     try {
-      const credential = EmailAuthProvider.credential(user.email, deletePassword);
-      await reauthenticateWithCredential(user, credential);
+      if (usesGoogleProvider) {
+        await reauthenticateWithPopup(user, new GoogleAuthProvider());
+      } else if (user.email) {
+        const credential = EmailAuthProvider.credential(user.email, deletePassword);
+        await reauthenticateWithCredential(user, credential);
+      }
+
       const deleteUserAccount = httpsCallable(functions, "deleteUserAccount");
       await deleteUserAccount();
       await signOut(auth).catch(() => undefined);
@@ -96,17 +109,21 @@ export default function AccountManagement() {
             </span>
             <p className={styles.eyebrow}>{t("confirmEyebrow")}</p>
             <h2 id="settings-delete-title">{t("confirmTitle")}</h2>
-            <p className={styles.modalText}>{t("confirmText")}</p>
-            <label className={styles.passwordLabel}>
-              <span>{t("passwordLabel")}</span>
-              <input
-                type="password"
-                value={deletePassword}
-                onChange={(event) => setDeletePassword(event.target.value)}
-                placeholder={t("passwordPlaceholder")}
-                autoComplete="current-password"
-              />
-            </label>
+            <p className={styles.modalText}>
+              {usesGoogleProvider ? t("googleConfirmText") : t("confirmText")}
+            </p>
+            {!usesGoogleProvider ? (
+              <label className={styles.passwordLabel}>
+                <span>{t("passwordLabel")}</span>
+                <input
+                  type="password"
+                  value={deletePassword}
+                  onChange={(event) => setDeletePassword(event.target.value)}
+                  placeholder={t("passwordPlaceholder")}
+                  autoComplete="current-password"
+                />
+              </label>
+            ) : null}
             {deleteError ? <p className={styles.deleteError}>{deleteError}</p> : null}
             <div className={styles.modalActions}>
               <button type="button" className={styles.cancelButton} onClick={closeDialog}>
@@ -115,10 +132,10 @@ export default function AccountManagement() {
               <button
                 type="button"
                 className={styles.confirmDeleteButton}
-                disabled={!deletePassword || isDeleting}
+                disabled={(!usesGoogleProvider && !deletePassword) || isDeleting}
                 onClick={() => void handleDeleteProfile()}
               >
-                {isDeleting ? t("deleting") : t("confirm")}
+                {isDeleting ? t("deleting") : usesGoogleProvider ? t("googleConfirm") : t("confirm")}
               </button>
             </div>
           </div>

@@ -53,7 +53,7 @@
 
 .header h1 {
   margin: 0.25rem 0 0;
-  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-size: 2rem;
   font-weight: 950;
   line-height: 0.92;
   text-transform: uppercase;
@@ -787,7 +787,7 @@
   }
 
   .header h1 {
-    font-size: 2.55rem;
+    font-size: 2rem;
   }
 
   .header p {
