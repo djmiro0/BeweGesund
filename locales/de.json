@@ -6,6 +6,7 @@
       "courses": "Kurse",
       "settings": "Einstellungen",
       "calendar": "Live-Kalender",
+      "relaxation": "Meditation & Entspannung",
       "blogs": "Blogs",
       "consultation": "Beratung",
       "about": "Über Uns",
@@ -54,6 +55,7 @@
       "home": "Start",
       "courses": "Kurse",
       "calendar": "Kalender",
+      "relaxation": "Ruhe",
       "blogs": "Blogs",
       "profile": "Profil",
       "about": "Info"
@@ -577,13 +579,19 @@
     "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
     "filterHint": "Nach Thema filtern",
     "filterAria": "Blog-Tags",
+    "searchLabel": "Blogs suchen",
+    "searchPlaceholder": "Nach Titel, Thema oder Autor suchen...",
+    "clearSearch": "Suche löschen",
     "readArticle": "Artikel lesen",
     "empty": "Zu diesem Tag gibt es noch keine passenden Artikel.",
     "tags": {
       "all": "Alle",
       "nutrition": "Ernährung",
       "health": "Gesundheit",
-      "training": "Sport / Training"
+      "training": "Schmerzlinderung",
+      "selfcheck": "Selfcheck / Selbsttest",
+      "stress": "Stress",
+      "motivation": "Motivation"
     }
   },
   "packages": {
@@ -869,6 +877,50 @@
       }
     ]
   },
+  "relaxation": {
+    "eyebrow": "Innere Ruhe",
+    "title": "Meditation & Entspannung",
+    "intro": "Ein ruhiger Bereich für geführte Meditation, entspannende Musik, Atemübungen gegen Stress und Body-Scan-Routinen.",
+    "categoryAria": "Meditations- und Entspannungsbereiche",
+    "categories": [
+      {
+        "title": "Geführte Meditation",
+        "description": "Kurze und klare Audios für mehr Fokus, Ruhe und bewusste Pausen."
+      },
+      {
+        "title": "Musik zur Entspannung",
+        "description": "Sorgfältig ausgewählte Klänge für Regeneration und innere Balance."
+      },
+      {
+        "title": "Atmung gegen Stress",
+        "description": "Einfache Atemsessions, die dich aus Anspannung zurück in einen ruhigeren Rhythmus führen."
+      },
+      {
+        "title": "Körper-Scan",
+        "description": "Sanfte Wahrnehmungsübungen, um Spannungen im Körper besser zu erkennen und loszulassen."
+      }
+    ],
+    "music": {
+      "eyebrow": "Audio-Bereich",
+      "title": "Entspannungsmusik",
+      "durationAria": "Session-Dauer wählen",
+      "paragraphs": [
+        "In diesem Bereich findest du sorgfältig ausgewählte Audioinhalte, die zur Beruhigung von Körper und Geist gedacht sind. Die Musik hilft dir dabei, dich zu entspannen, Spannungen abzubauen und leichter von deinem Alltag in einen Zustand von Ruhe und Balance zu wechseln.",
+        "Du kannst die Dauer der Session auswählen und die Musik abspielen, während du atmest, dich leicht dehnst oder sanfte Bewegungen aus dem Körper heraus ausführst. Dieser Inhalt ist Teil deiner Routine zur Regeneration und inneren Ausgeglichenheit.",
+        "Dieser Bereich ist für allgemeines Wohlbefinden und Entspannung gedacht."
+      ]
+    },
+    "musicPlayer": {
+      "title": "Entspannungsmusik",
+      "durationAria": "Session-Dauer wählen",
+      "durationOption": "{minutes} Min",
+      "session": "{minutes} Minuten Session",
+      "play": "Abspielen",
+      "pause": "Pause",
+      "close": "Session schließen",
+      "generated": "Temporärer Entspannungsklang, bis die finalen Audio-Dateien ergänzt werden."
+    }
+  },
   "footer": {
     "brand": "Bewegesund",
     "tagline": "Bewegung, Rehabilitation und Bildung mit einem klareren Weg zu gesünderem Alltag.",
@@ -883,6 +935,7 @@
       "programs": "Programme",
       "courses": "Kurse",
       "calendar": "Live-Kalender",
+      "relaxation": "Meditation & Entspannung",
       "blogs": "Blogs",
       "consultation": "Beratung",
       "impressum": "Impressum",

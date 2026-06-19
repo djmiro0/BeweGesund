@@ -26,6 +26,7 @@ import { emptyUserProfile, getProfileFirstName } from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import BillingActions from "./BillingActions";
+import BreathingSession from "./BreathingSession";
 import ProfileSettingsAccess from "./ProfileSettingsAccess";
 import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Profile.module.css";
@@ -354,9 +355,7 @@ export default function ProfilePage() {
                 );
               })}
             </div>
-            <div className={styles.breathCircle}>
-              <span>{t("cards.calm.breathe")}</span>
-            </div>
+            <BreathingSession locale={locale} triggerLabel={t("cards.calm.breathe")} />
           </motion.details>
         </div>
 

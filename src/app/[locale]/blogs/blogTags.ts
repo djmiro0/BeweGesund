@@ -1,6 +1,14 @@
 import type { BlogTag } from "@/lib/contentful";
 
-export const blogTagOptions: Array<"all" | BlogTag> = ["all", "nutrition", "health", "training"];
+export const blogTagOptions: Array<"all" | BlogTag> = [
+  "all",
+  "nutrition",
+  "health",
+  "training",
+  "selfcheck",
+  "stress",
+  "motivation",
+];
 
 export function getBlogTagLabel(
   tag: "all" | BlogTag,

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Clock, ImageIcon } from "lucide-react";
 import { getBlogPost, getBlogPosts, type BlogPost } from "@/lib/contentful";
 import ArticleBody from "./ArticleBody";
+import BlogSelfCheck from "./BlogSelfCheck";
 import styles from "../Blogs.module.css";
 
 function getRecommendedPost(currentPost: BlogPost, posts: BlogPost[]) {
@@ -88,6 +89,8 @@ export default async function BlogPostPage({
       </div>
 
       <ArticleBody body={post.body} />
+
+      {post.tags.includes("selfcheck") ? <BlogSelfCheck locale={locale} /> : null}
 
       {recommendedPost ? (
         <aside className={styles.recommendedPost} aria-labelledby="recommended-blog-title">

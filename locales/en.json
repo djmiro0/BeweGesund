@@ -6,6 +6,7 @@
       "courses": "Courses",
       "settings": "Settings",
       "calendar": "Live Calendar",
+      "relaxation": "Meditation & Relaxation",
       "blogs": "Blogs",
       "consultation": "Consultation",
       "about": "About",
@@ -54,6 +55,7 @@
       "home": "Home",
       "courses": "Courses",
       "calendar": "Calendar",
+      "relaxation": "Calm",
       "blogs": "Blogs",
       "profile": "Profile",
       "about": "About"
@@ -577,13 +579,19 @@
     "articleCount": "{count, plural, one {# article} other {# articles}}",
     "filterHint": "Filter by topic",
     "filterAria": "Blog tags",
+    "searchLabel": "Search blogs",
+    "searchPlaceholder": "Search by title, topic, or author...",
+    "clearSearch": "Clear search",
     "readArticle": "Read article",
     "empty": "No articles match this tag yet.",
     "tags": {
       "all": "All",
       "nutrition": "Nutrition",
       "health": "Health",
-      "training": "Sport / Training"
+      "training": "Pain Relief",
+      "selfcheck": "Selfcheck / Self-test",
+      "stress": "Stress",
+      "motivation": "Motivation"
     }
   },
   "packages": {
@@ -869,6 +877,50 @@
       }
     ]
   },
+  "relaxation": {
+    "eyebrow": "Inner calm",
+    "title": "Meditation & Relaxation",
+    "intro": "A quiet area for guided meditation, relaxation music, breathing against stress, and body scan routines.",
+    "categoryAria": "Meditation and relaxation areas",
+    "categories": [
+      {
+        "title": "Guided Meditation",
+        "description": "Short, clear audio sessions for focus, calm, and conscious breaks."
+      },
+      {
+        "title": "Relaxation Music",
+        "description": "Carefully selected sounds for recovery and inner balance."
+      },
+      {
+        "title": "Breathing Against Stress",
+        "description": "Simple breathing sessions that guide you from tension into a calmer rhythm."
+      },
+      {
+        "title": "Body Scan",
+        "description": "Gentle awareness exercises to notice and release body tension."
+      }
+    ],
+    "music": {
+      "eyebrow": "Audio area",
+      "title": "Relaxation Music",
+      "durationAria": "Choose session duration",
+      "paragraphs": [
+        "In this section, you will find carefully selected audio tracks designed to calm both body and mind. The music is intended to help you relax, release tension, and more easily transition from everyday stress into a state of calm and balance.",
+        "You can choose the duration of your session and play the music while breathing, doing light stretching, or performing gentle body movements. This content is part of your routine for recovery and inner balance.",
+        "This section is intended for general well-being and relaxation."
+      ]
+    },
+    "musicPlayer": {
+      "title": "Relaxation Music",
+      "durationAria": "Choose session duration",
+      "durationOption": "{minutes} min",
+      "session": "{minutes} minute session",
+      "play": "Play",
+      "pause": "Pause",
+      "close": "Close session",
+      "generated": "Temporary relaxation sound until the final audio files are added."
+    }
+  },
   "footer": {
     "brand": "Bewegesund",
     "tagline": "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
@@ -883,6 +935,7 @@
       "programs": "Program",
       "courses": "Courses",
       "calendar": "Live Calendar",
+      "relaxation": "Meditation & Relaxation",
       "blogs": "Blogs",
       "consultation": "Consultation",
       "impressum": "Imprint",

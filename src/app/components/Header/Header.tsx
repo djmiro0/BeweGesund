@@ -61,6 +61,12 @@ const Header: React.FC<HeaderProps> = ({
             active: pathname === `/${locale}/calendar`,
         },
         {
+            key: "relaxation",
+            href: `/${locale}/meditation-entspannung`,
+            label: t("nav.relaxation"),
+            active: pathname === `/${locale}/meditation-entspannung`,
+        },
+        {
             key: "blogs",
             href: `/${locale}/blogs`,
             label: t("nav.blogs"),
