@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { ArrowUpRight, BookOpen, Clock, ImageIcon, Search } from "lucide-react";
+import { ArrowUpRight, BookOpen, Clock, ImageIcon, Search, X } from "lucide-react";
 import type { BlogPost, BlogTag } from "@/lib/contentful";
 import { blogTagOptions, getBlogTagLabel } from "./blogTags";
 import styles from "./Blogs.module.css";
@@ -23,10 +23,25 @@ const fadeUp = {
 export default function BlogIndex({ locale, posts }: BlogIndexProps) {
   const t = useTranslations("blogs");
   const [activeTag, setActiveTag] = useState<"all" | BlogTag>("all");
-  const filteredPosts = useMemo(
-    () => posts.filter((post) => activeTag === "all" || post.tags.includes(activeTag)),
-    [activeTag, posts],
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const updateSearchQuery = (value: string) => {
+    setSearchQuery(value);
+  };
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      const matchesTag = activeTag === "all" || post.tags.includes(activeTag);
+      const matchesSearch = !normalizedSearchQuery
+        || [
+          post.title,
+          post.excerpt,
+          post.author,
+          ...post.tags.map((tag) => getBlogTagLabel(tag, t)),
+        ].some((value) => value.toLowerCase().includes(normalizedSearchQuery));
+
+      return matchesTag && matchesSearch;
+    });
+  }, [activeTag, normalizedSearchQuery, posts, t]);
 
   return (
     <section className={styles.blogsPage}>
@@ -55,23 +70,47 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
         </div>
       </motion.header>
 
-      <div className={styles.filterRail} aria-label={t("filterAria")}>
-        {blogTagOptions.map((tag) => (
-          <button
-            key={tag}
-            type="button"
-            className={`${styles.filterButton} ${activeTag === tag ? styles.filterButtonActive : ""}`}
-            onClick={() => setActiveTag(tag)}
-            aria-pressed={activeTag === tag}
-          >
-            {getBlogTagLabel(tag, t)}
-          </button>
-        ))}
+      <div className={styles.filterPanel}>
+        <label className={styles.searchField}>
+          <Search size={18} aria-hidden="true" />
+          <span className={styles.visuallyHidden}>{t("searchLabel")}</span>
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(event) => updateSearchQuery(event.target.value)}
+            onInput={(event) => updateSearchQuery(event.currentTarget.value)}
+            placeholder={t("searchPlaceholder")}
+          />
+          {searchQuery ? (
+            <button
+              type="button"
+              className={styles.clearSearchButton}
+              aria-label={t("clearSearch")}
+              onClick={() => updateSearchQuery("")}
+            >
+              <X size={16} />
+            </button>
+          ) : null}
+        </label>
+
+        <div className={styles.filterRail} aria-label={t("filterAria")}>
+          {blogTagOptions.map((tag) => (
+            <button
+              key={tag}
+              type="button"
+              className={`${styles.filterButton} ${activeTag === tag ? styles.filterButtonActive : ""}`}
+              onClick={() => setActiveTag(tag)}
+              aria-pressed={activeTag === tag}
+            >
+              {getBlogTagLabel(tag, t)}
+            </button>
+          ))}
+        </div>
       </div>
 
       {filteredPosts.length ? (
         <motion.div
-          key={activeTag}
+          key={`${activeTag}-${normalizedSearchQuery}`}
           className={styles.postGrid}
           initial="hidden"
           animate="visible"
@@ -92,6 +131,7 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
                     src={post.featuredImage}
                     alt=""
                     fill
+                    sizes="(min-width: 1120px) 508px, (min-width: 981px) calc((100vw - 4.2rem) / 2), calc(100vw - 3.7rem)"
                     className={styles.postImage}
                   />
                 </Link>

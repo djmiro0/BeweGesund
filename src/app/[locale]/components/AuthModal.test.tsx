@@ -50,6 +50,19 @@ vi.mock("next-intl", () => ({
         "terms.link": "View terms",
         "plans.basic.description": "Basic",
         "plans.plus.description": "Plus",
+        "validation.title": "Complete these items to continue:",
+        "validation.firstName": "Enter your first name.",
+        "validation.lastName": "Enter your last name.",
+        "validation.email": "Enter your email address.",
+        "validation.password": "Enter a password.",
+        "validation.confirmPassword": "Confirm your password.",
+        "validation.age": "Enter an age between 1 and 120.",
+        "validation.gender": "Select your gender.",
+        "validation.height": "Enter a height between 80 and 240 cm.",
+        "validation.weight": "Enter a weight between 25 and 300 kg.",
+        "validation.region": "Select your federal state.",
+        "validation.consent": "Accept the terms of use.",
+        "validation.healthConsent": "Accept health data processing.",
       })[key] ?? key;
 
     return Object.assign(translate, {
@@ -115,6 +128,18 @@ describe("AuthModal Google sign-in", () => {
 
     expect(screen.getByRole("heading", { name: "registerTitle" })).toBeInTheDocument();
     expect(screen.queryByText(/reCAPTCHA/i)).not.toBeInTheDocument();
+  });
+
+  it("explains why registration cannot be submitted yet", async () => {
+    const user = userEvent.setup();
+
+    render(<AuthModal isOpen onClose={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "Create an account" }));
+
+    expect(screen.getByText("Complete these items to continue:")).toBeInTheDocument();
+    expect(screen.getByText("Enter your first name.")).toBeInTheDocument();
+    expect(screen.getByText("Accept the terms of use.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "submitRegister" })).toBeDisabled();
   });
 
   it("closes immediately for a returning Google user with a profile", async () => {

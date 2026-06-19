@@ -37,13 +37,15 @@ const richTextOptions: Options = {
       const height = fields.file.details?.image?.height ?? 675;
 
       return (
-        <Image
-          src={url.startsWith("//") ? `https:${url}` : url}
-          alt={fields.description ?? fields.title ?? ""}
-          width={width}
-          height={height}
-          sizes="(min-width: 768px) 720px, 100vw"
-        />
+        <figure className={styles.embeddedImage}>
+          <Image
+            src={url.startsWith("//") ? `https:${url}` : url}
+            alt={fields.description ?? fields.title ?? ""}
+            width={width}
+            height={height}
+            sizes="(min-width: 768px) 860px, calc(100vw - 1.7rem)"
+          />
+        </figure>
       );
     },
   },

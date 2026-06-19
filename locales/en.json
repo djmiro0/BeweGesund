@@ -6,6 +6,7 @@
       "courses": "Courses",
       "settings": "Settings",
       "calendar": "Live Calendar",
+      "relaxation": "Meditation & Relaxation",
       "blogs": "Blogs",
       "consultation": "Consultation",
       "about": "About",
@@ -54,6 +55,7 @@
       "home": "Home",
       "courses": "Courses",
       "calendar": "Calendar",
+      "relaxation": "Calm",
       "blogs": "Blogs",
       "profile": "Profile",
       "about": "About"
@@ -268,7 +270,7 @@
     "close": "Close",
     "errorPrefix": "Sign in failed:",
     "providerDisabled": "Account creation is currently disabled in Firebase. Please enable Email/Password sign-in in the Firebase console.",
-    "invalidCredential": "The email or password is incorrect.",
+    "invalidCredential": "The email or password is incorrect. Check both fields or use password reset if this account uses email sign-in.",
     "emailInUse": "An account with this email already exists.",
     "weakPassword": "Please choose a stronger password.",
     "passwordMismatch": "The passwords do not match.",
@@ -284,7 +286,25 @@
     "googlePopupBlocked": "The browser blocked the Google sign-in window. Allow pop-ups and try again.",
     "accountExistsWithDifferentCredential": "An account already exists for this email with a different sign-in method.",
     "profileSavePermissionDenied": "The profile could not be saved. Please try again.",
-    "genericErrorWithCode": "Something went wrong during sign-in. Error code: {code}"
+    "genericErrorWithCode": "Something went wrong during sign-in. Error code: {code}",
+    "validation": {
+      "title": "Complete these items to continue:",
+      "signInEmail": "Enter your email address.",
+      "signInPassword": "Enter your password.",
+      "firstName": "Enter your first name.",
+      "lastName": "Enter your last name.",
+      "email": "Enter your email address.",
+      "password": "Enter a password.",
+      "confirmPassword": "Confirm your password.",
+      "passwordMismatch": "Make sure both passwords match.",
+      "age": "Enter an age between 1 and 120.",
+      "gender": "Select your gender.",
+      "height": "Enter a height between 80 and 240 cm.",
+      "weight": "Enter a weight between 25 and 300 kg.",
+      "region": "Select your federal state.",
+      "consent": "Accept the terms of use.",
+      "healthConsent": "Accept health data processing."
+    }
   },
   "authAction": {
     "checkingLink": "Checking the secure link...",
@@ -559,13 +579,19 @@
     "articleCount": "{count, plural, one {# article} other {# articles}}",
     "filterHint": "Filter by topic",
     "filterAria": "Blog tags",
+    "searchLabel": "Search blogs",
+    "searchPlaceholder": "Search by title, topic, or author...",
+    "clearSearch": "Clear search",
     "readArticle": "Read article",
     "empty": "No articles match this tag yet.",
     "tags": {
       "all": "All",
       "nutrition": "Nutrition",
       "health": "Health",
-      "training": "Sport / Training"
+      "training": "Pain Relief",
+      "selfcheck": "Selfcheck / Self-test",
+      "stress": "Stress",
+      "motivation": "Motivation"
     }
   },
   "packages": {
@@ -851,6 +877,50 @@
       }
     ]
   },
+  "relaxation": {
+    "eyebrow": "Inner calm",
+    "title": "Meditation & Relaxation",
+    "intro": "A quiet area for guided meditation, relaxation music, breathing against stress, and body scan routines.",
+    "categoryAria": "Meditation and relaxation areas",
+    "categories": [
+      {
+        "title": "Guided Meditation",
+        "description": "Short, clear audio sessions for focus, calm, and conscious breaks."
+      },
+      {
+        "title": "Relaxation Music",
+        "description": "Carefully selected sounds for recovery and inner balance."
+      },
+      {
+        "title": "Breathing Against Stress",
+        "description": "Simple breathing sessions that guide you from tension into a calmer rhythm."
+      },
+      {
+        "title": "Body Scan",
+        "description": "Gentle awareness exercises to notice and release body tension."
+      }
+    ],
+    "music": {
+      "eyebrow": "Audio area",
+      "title": "Relaxation Music",
+      "durationAria": "Choose session duration",
+      "paragraphs": [
+        "In this section, you will find carefully selected audio tracks designed to calm both body and mind. The music is intended to help you relax, release tension, and more easily transition from everyday stress into a state of calm and balance.",
+        "You can choose the duration of your session and play the music while breathing, doing light stretching, or performing gentle body movements. This content is part of your routine for recovery and inner balance.",
+        "This section is intended for general well-being and relaxation."
+      ]
+    },
+    "musicPlayer": {
+      "title": "Relaxation Music",
+      "durationAria": "Choose session duration",
+      "durationOption": "{minutes} min",
+      "session": "{minutes} minute session",
+      "play": "Play",
+      "pause": "Pause",
+      "close": "Close session",
+      "generated": "Temporary relaxation sound until the final audio files are added."
+    }
+  },
   "footer": {
     "brand": "Bewegesund",
     "tagline": "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
@@ -865,6 +935,7 @@
       "programs": "Program",
       "courses": "Courses",
       "calendar": "Live Calendar",
+      "relaxation": "Meditation & Relaxation",
       "blogs": "Blogs",
       "consultation": "Consultation",
       "impressum": "Imprint",

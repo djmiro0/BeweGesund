@@ -174,6 +174,32 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     const canSubmit = isProfileSetup
         ? hasRequiredRegistrationFields && !isSubmitting
         : email.trim().length > 0 && password.length > 0 && !isSubmitting;
+    const registrationRequirements = [
+        ...(firstName.trim().length === 0 ? [t("validation.firstName")] : []),
+        ...(lastName.trim().length === 0 ? [t("validation.lastName")] : []),
+        ...(email.trim().length === 0 ? [t("validation.email")] : []),
+        ...(isRegister && password.length === 0 ? [t("validation.password")] : []),
+        ...(isRegister && confirmPassword.length === 0 ? [t("validation.confirmPassword")] : []),
+        ...(isRegister && password.length > 0 && confirmPassword.length > 0 && !isPasswordMatching
+            ? [t("validation.passwordMismatch")]
+            : []),
+        ...(Number(age) < 1 || Number(age) > 120 ? [t("validation.age")] : []),
+        ...(gender.length === 0 ? [t("validation.gender")] : []),
+        ...(Number(heightCm) < 80 || Number(heightCm) > 240 ? [t("validation.height")] : []),
+        ...(Number(weightKg) < 25 || Number(weightKg) > 300 ? [t("validation.weight")] : []),
+        ...(region.length === 0 ? [t("validation.region")] : []),
+        ...(!hasAcceptedConsent ? [t("validation.consent")] : []),
+        ...(!hasAcceptedHealthConsent ? [t("validation.healthConsent")] : []),
+    ];
+    const signInRequirements = [
+        ...(email.trim().length === 0 ? [t("validation.signInEmail")] : []),
+        ...(password.length === 0 ? [t("validation.signInPassword")] : []),
+    ];
+    const formRequirements = isProfileSetup ? registrationRequirements : signInRequirements;
+    const shouldShowFormRequirements =
+        !isSubmitting &&
+        formRequirements.length > 0 &&
+        (isProfileSetup || email.trim().length > 0 || password.length > 0);
 
     useEffect(() => {
         if (
@@ -845,6 +871,16 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     {infoMessage ? (
                         <div className="rounded-2xl border border-[rgba(var(--page-warm-rgb),0.28)] bg-[rgba(var(--page-warm-rgb),0.1)] px-4 py-3 text-sm text-[var(--text-light)]">
                             {infoMessage}
+                        </div>
+                    ) : null}
+                    {shouldShowFormRequirements ? (
+                        <div className="rounded-2xl border border-[rgba(var(--page-warm-rgb),0.24)] bg-[rgba(var(--page-warm-rgb),0.08)] px-4 py-3 text-sm leading-6 text-[var(--text-dim)]">
+                            <p className="m-0 font-black text-[var(--text-light)]">{t("validation.title")}</p>
+                            <ul className="m-0 mt-2 grid gap-1 pl-5">
+                                {formRequirements.map((requirement) => (
+                                    <li key={requirement}>{requirement}</li>
+                                ))}
+                            </ul>
                         </div>
                     ) : null}
                     <button disabled={!canSubmit} className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-[var(--text-light)] disabled:hover:text-[var(--text-on-warm)]">

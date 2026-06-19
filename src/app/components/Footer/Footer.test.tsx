@@ -33,7 +33,9 @@ vi.mock("next-intl", () => ({
       "links.home": "Home",
       "links.about": "About",
       "links.programs": "Program",
+      "links.courses": "Courses",
       "links.calendar": "Live Calendar",
+      "links.relaxation": "Meditation & Relaxation",
       "links.blogs": "Blogs",
       "links.impressum": "Imprint",
       "links.privacy": "Privacy Policy",
@@ -62,7 +64,7 @@ describe("Footer", () => {
   it("keeps navigation, legal links, and contact metadata accessible", () => {
     render(<Footer />);
 
-    expect(screen.getAllByTestId("footer-navigation-link")).toHaveLength(6);
+    expect(screen.getAllByTestId("footer-navigation-link")).toHaveLength(7);
     expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(2);
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("Online by appointment");
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("German and English");

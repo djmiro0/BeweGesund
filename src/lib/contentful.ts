@@ -71,7 +71,7 @@ export interface CourseSummary {
   liveTrainingLink: string | null;
 }
 
-export type BlogTag = "nutrition" | "health" | "training";
+export type BlogTag = "nutrition" | "health" | "training" | "selfcheck" | "stress" | "motivation";
 
 export interface BlogPost {
   id: string;
@@ -669,12 +669,21 @@ export async function getCourseDetail(locale: string, slug: string): Promise<Cou
 }
 
 function normalizeBlogTags(tags: string[] | undefined): BlogTag[] {
-  const validTags: BlogTag[] = ["nutrition", "health", "training"];
+  const validTags: BlogTag[] = ["nutrition", "health", "training", "selfcheck", "stress", "motivation"];
+  const aliases: Record<string, BlogTag> = {
+    selfchack: "selfcheck",
+    selfcheck: "selfcheck",
+    "self-test": "selfcheck",
+    selbsttest: "selfcheck",
+    schmerzlinderung: "training",
+    "pain-relief": "training",
+  };
 
   return Array.from(
     new Set(
       (tags ?? [])
-        .map((tag) => tag.toLowerCase().trim())
+        .map((tag) => normalizeKey(tag))
+        .map((tag) => (tag ? aliases[tag] ?? tag : ""))
         .filter((tag): tag is BlogTag => validTags.includes(tag as BlogTag)),
     ),
   );
