@@ -268,7 +268,7 @@
     "close": "Schließen",
     "errorPrefix": "Anmeldung fehlgeschlagen:",
     "providerDisabled": "Die Kontoerstellung ist in Firebase derzeit deaktiviert. Bitte aktiviere Email/Passwort-Anmeldung in der Firebase-Konsole.",
-    "invalidCredential": "Die E-Mail-Adresse oder das Passwort ist nicht korrekt.",
+    "invalidCredential": "Die E-Mail-Adresse oder das Passwort ist nicht korrekt. Prüfe beide Felder oder nutze das Zurücksetzen des Passworts, falls dieses Konto per E-Mail angemeldet wird.",
     "emailInUse": "Für diese E-Mail-Adresse existiert bereits ein Konto.",
     "weakPassword": "Bitte wähle ein stärkeres Passwort.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
@@ -284,7 +284,25 @@
     "googlePopupBlocked": "Das Google-Anmeldefenster wurde vom Browser blockiert. Bitte erlaube Pop-ups und versuche es erneut.",
     "accountExistsWithDifferentCredential": "Für diese E-Mail-Adresse existiert bereits ein Konto mit einer anderen Anmeldemethode.",
     "profileSavePermissionDenied": "Das Profil konnte nicht gespeichert werden. Bitte versuche es erneut.",
-    "genericErrorWithCode": "Bei der Anmeldung ist ein Fehler aufgetreten. Fehlercode: {code}"
+    "genericErrorWithCode": "Bei der Anmeldung ist ein Fehler aufgetreten. Fehlercode: {code}",
+    "validation": {
+      "title": "Ergänze diese Angaben, um fortzufahren:",
+      "signInEmail": "Gib deine E-Mail-Adresse ein.",
+      "signInPassword": "Gib dein Passwort ein.",
+      "firstName": "Gib deinen Vornamen ein.",
+      "lastName": "Gib deinen Nachnamen ein.",
+      "email": "Gib deine E-Mail-Adresse ein.",
+      "password": "Gib ein Passwort ein.",
+      "confirmPassword": "Bestätige dein Passwort.",
+      "passwordMismatch": "Beide Passwörter müssen übereinstimmen.",
+      "age": "Gib ein Alter zwischen 1 und 120 ein.",
+      "gender": "Wähle dein Geschlecht aus.",
+      "height": "Gib eine Körpergröße zwischen 80 und 240 cm ein.",
+      "weight": "Gib ein Gewicht zwischen 25 und 300 kg ein.",
+      "region": "Wähle dein Bundesland aus.",
+      "consent": "Akzeptiere die Nutzungsbedingungen.",
+      "healthConsent": "Bestätige die Verarbeitung der Gesundheitsdaten."
+    }
   },
   "authAction": {
     "checkingLink": "Der sichere Link wird geprüft...",
