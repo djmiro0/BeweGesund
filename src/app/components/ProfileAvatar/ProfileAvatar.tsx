@@ -61,6 +61,7 @@ export default function ProfileAvatar({
         <img
           src={activePhotoUrl}
           alt=""
+          referrerPolicy="no-referrer"
           onError={() => {
             if (activePhotoUrl === privatePhotoUrl) {
               setPrivatePhotoUrl("");

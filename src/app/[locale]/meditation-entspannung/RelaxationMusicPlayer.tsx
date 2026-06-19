@@ -5,7 +5,13 @@ import { Pause, Play, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import styles from "./Relaxation.module.css";
 
-const durations = [5, 10, 20, 30];
+interface SessionOption {
+  minutes: number;
+  title: string;
+  description: string;
+  benefits: string[];
+  bestFor: string;
+}
 
 type AudioWindow = Window & typeof globalThis & {
   webkitAudioContext?: typeof AudioContext;
@@ -19,6 +25,7 @@ function formatTime(seconds: number) {
 
 export default function RelaxationMusicPlayer() {
   const t = useTranslations("relaxation.musicPlayer");
+  const sessionOptions = t.raw("options") as SessionOption[];
   const [selectedMinutes, setSelectedMinutes] = useState<number | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -113,10 +120,23 @@ export default function RelaxationMusicPlayer() {
   return (
     <>
       <div className={styles.durationRail} aria-label={t("durationAria")}>
-        {durations.map((minutes) => (
-          <button key={minutes} type="button" onClick={() => openSession(minutes)}>
-            {t("durationOption", { minutes })}
-          </button>
+        {sessionOptions.map((option) => (
+          <article key={option.minutes} className={styles.durationCard}>
+            <div className={styles.durationCardHeader}>
+              <span>{t("durationOption", { minutes: option.minutes })}</span>
+              <strong>{option.title}</strong>
+            </div>
+            <p>{option.description}</p>
+            <div className={styles.benefitList}>
+              {option.benefits.map((benefit) => (
+                <span key={benefit}>{benefit}</span>
+              ))}
+            </div>
+            <p className={styles.bestFor}>{option.bestFor}</p>
+            <button type="button" onClick={() => openSession(option.minutes)}>
+              {t("startOption", { minutes: option.minutes })}
+            </button>
+          </article>
         ))}
       </div>
 

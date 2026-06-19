@@ -13,7 +13,7 @@ import ProgressPhotoReminder from "./ProgressPhotoReminder";
 import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
 import { useTheme } from "./ThemeProvider";
-import { getProfileFirstName } from "@/lib/userProfile";
+import { getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
 import styles from "./AppShell.module.css";
 
 export function AppPreferenceEffects() {
@@ -103,7 +103,7 @@ export function ShellFrame({
           locale={locale}
           user={user}
           profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
-          profilePhoto={profile?.photoURL ?? user?.photoURL}
+          profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
           openAuth={openAuth}
         />
         <AuthModal
@@ -122,7 +122,7 @@ export function ShellFrame({
         locale={locale}
         user={user}
         profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
-        profilePhoto={profile?.photoURL ?? user?.photoURL}
+        profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
         openAuth={openAuth}
       />
       <AuthModal

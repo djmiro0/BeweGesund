@@ -762,6 +762,12 @@
       "you": "Du · aktuelle Woche",
       "placeholder": "Vorschaudaten. Echte Punkte werden in der Gamification-Phase mit Trainings, Videos und Blogaktivitäten verbunden."
     },
+    "account": {
+      "eyebrow": "Konto",
+      "title": "Sitzung beenden",
+      "description": "Melde dich hier ab, wenn du das Profil auf diesem Gerät nicht weiter geöffnet lassen möchtest.",
+      "signOut": "Abmelden"
+    },
     "delete": {
       "eyebrow": "Kontoverwaltung",
       "title": "Profil löschen",
@@ -914,11 +920,58 @@
       "title": "Entspannungsmusik",
       "durationAria": "Session-Dauer wählen",
       "durationOption": "{minutes} Min",
+      "startOption": "{minutes} Min starten",
       "session": "{minutes} Minuten Session",
       "play": "Abspielen",
       "pause": "Pause",
       "close": "Session schließen",
-      "generated": "Temporärer Entspannungsklang, bis die finalen Audio-Dateien ergänzt werden."
+      "generated": "Temporärer Entspannungsklang, bis die finalen Audio-Dateien ergänzt werden.",
+      "options": [
+        {
+          "minutes": 5,
+          "title": "Schneller Reset",
+          "description": "Für einen kurzen Moment zwischen Terminen, nach Bildschirmzeit oder wenn du nur wenig Energie hast.",
+          "benefits": [
+            "hilft beim Ankommen im Moment",
+            "senkt das innere Tempo",
+            "macht den Einstieg besonders leicht"
+          ],
+          "bestFor": "Ideal, wenn du wenig Zeit hast und trotzdem bewusst pausieren möchtest."
+        },
+        {
+          "minutes": 10,
+          "title": "Fokus & Atemrhythmus",
+          "description": "Genug Zeit, um ruhiger zu atmen, Gedanken zu sortieren und wieder klarer weiterzumachen.",
+          "benefits": [
+            "unterstützt Konzentration",
+            "gibt Raum für bewusste Atmung",
+            "passt gut in eine tägliche Routine"
+          ],
+          "bestFor": "Ideal vor Arbeit, Lernen, Bewegung oder nach einem stressigen Moment."
+        },
+        {
+          "minutes": 20,
+          "title": "Tiefere Entspannung",
+          "description": "Eine längere Session, um körperliche Anspannung wahrzunehmen und den Wechsel in Ruhe deutlicher zu spüren.",
+          "benefits": [
+            "mehr Zeit für Körperwahrnehmung",
+            "unterstützt Regeneration",
+            "hilft beim Loslassen von Alltagsdruck"
+          ],
+          "bestFor": "Ideal am Abend, nach Training oder wenn du spürbar runterfahren möchtest."
+        },
+        {
+          "minutes": 30,
+          "title": "Volle Regenerationszeit",
+          "description": "Für Tage, an denen du bewusst tiefer in Ruhe gehen und Körper und Geist länger begleiten möchtest.",
+          "benefits": [
+            "mehr Raum für Entspannung und Erholung",
+            "gut kombinierbar mit Dehnen oder Body Scan",
+            "stärkt das Gefühl einer vollständigen Pause"
+          ],
+          "bestFor": "Ideal für Wochenenden, Abendroutine oder bewusste Selbstfürsorge."
+        }
+      ]
     }
   },
   "footer": {

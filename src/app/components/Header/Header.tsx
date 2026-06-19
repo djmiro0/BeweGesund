@@ -5,9 +5,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { auth } from "../../../../firebase.config";
-import { signOut } from 'firebase/auth';
-import { ChevronDown, LogOut, Menu, Moon, Sun, X } from 'lucide-react';
+import { ChevronDown, Menu, Moon, Sun, X } from 'lucide-react';
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
 import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Header.module.css";
@@ -197,16 +195,6 @@ const Header: React.FC<HeaderProps> = ({
                         </button>
                     )}
 
-                    {user ? (
-                        <button
-                            onClick={() => signOut(auth)}
-                            className={styles.signOutButton}
-                        >
-                            <LogOut size={18} />
-                            <span>{t("signOut")}</span>
-                        </button>
-                    ) : null}
-
                     {navItems.length > 0 ? (
                         <button
                             type="button"
@@ -250,16 +238,8 @@ const Header: React.FC<HeaderProps> = ({
                             </Link>
                         ))}
 
-                        <div className={styles.mobileAuth}>
-                            {user ? (
-                                <button
-                                    onClick={() => signOut(auth)}
-                                    className={styles.mobileSignOut}
-                                >
-                                    <LogOut size={18} />
-                                    {t("signOut")}
-                                </button>
-                            ) : (
+                        {!user ? (
+                            <div className={styles.mobileAuth}>
                                 <button
                                     onClick={() => {
                                         setIsMenuOpen(false);
@@ -269,8 +249,8 @@ const Header: React.FC<HeaderProps> = ({
                                 >
                                     {t("signIn")}
                                 </button>
-                            )}
-                        </div>
+                            </div>
+                        ) : null}
                     </nav>
                 </div>
             ) : null}
