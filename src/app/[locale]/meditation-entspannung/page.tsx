@@ -42,14 +42,16 @@ export default function MeditationRelaxationPage() {
       </section>
 
       <section className={styles.musicSection} aria-labelledby="relaxation-music-title">
-        <div>
-          <p className={styles.eyebrow}>{t("music.eyebrow")}</p>
-          <h2 id="relaxation-music-title">{t("music.title")}</h2>
-        </div>
-        <div className={styles.musicText}>
-          {(t.raw("music.paragraphs") as string[]).map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
+        <div className={styles.musicIntro}>
+          <div className={styles.musicHeading}>
+            <p className={styles.eyebrow}>{t("music.eyebrow")}</p>
+            <h2 id="relaxation-music-title">{t("music.title")}</h2>
+          </div>
+          <div className={styles.musicText}>
+            {(t.raw("music.paragraphs") as string[]).map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </div>
         <RelaxationMusicPlayer />
       </section>

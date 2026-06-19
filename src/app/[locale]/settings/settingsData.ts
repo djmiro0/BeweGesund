@@ -1,5 +1,5 @@
 import type { User } from "firebase/auth";
-import type { UserProfileData } from "@/lib/userProfile";
+import { getAuthUserPhotoURL, type UserProfileData } from "@/lib/userProfile";
 import {
   defaultAppPreferences,
   normalizeAppPreferences,
@@ -193,7 +193,7 @@ export function settingsFromFirebase(
   settings.profile = {
     ...settings.profile,
     ...preferences.profile,
-    profileImageUrl: user.photoURL ?? profile.photoURL ?? "",
+    profileImageUrl: getAuthUserPhotoURL(user) ?? profile.photoURL ?? "",
     fullName: profile.displayName ?? user.displayName ?? "",
     username: preferences.profile?.username ?? user.email?.split("@")[0] ?? "",
     email: user.email ?? profile.email ?? "",

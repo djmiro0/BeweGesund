@@ -316,8 +316,19 @@
 }
 
 .billingButton:disabled {
+  pointer-events: none;
+}
+
+.billingButton:disabled:not(.billingButtonSelected) {
   cursor: wait;
   opacity: 0.62;
+}
+
+.billingButtonSelected {
+  border: 1px solid rgba(var(--secondary-rgb), 0.34);
+  background: rgba(var(--secondary-rgb), 0.12);
+  color: var(--page-ink);
+  cursor: not-allowed;
 }
 
 .billingSpinner {
@@ -422,10 +433,21 @@
 
 .mobileCard {
   overflow: hidden;
-  border: 1px solid rgba(var(--page-ink-rgb), 0.14);
-  border-radius: 1.1rem;
-  background: rgba(var(--page-soft-rgb), 0.92);
-  box-shadow: 0 12px 34px rgba(83, 57, 20, 0.13);
+  border: 1px solid rgba(var(--page-ink-rgb), 0.1);
+  border-radius: 0.95rem;
+  background:
+    linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.96), rgba(var(--page-soft-alt-rgb), 0.9));
+  box-shadow: 0 16px 38px rgba(var(--page-ink-rgb), 0.1);
+  transition:
+    border-color 0.22s var(--transition),
+    transform 0.22s var(--transition),
+    box-shadow 0.22s var(--transition);
+}
+
+.mobileCard:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--page-accent-rgb), 0.22);
+  box-shadow: 0 20px 46px rgba(var(--page-ink-rgb), 0.13);
 }
 
 .mobileCard[open] .chevron {
@@ -433,14 +455,23 @@
 }
 
 .cardSummary {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 0.55rem;
+  gap: 0.75rem;
   align-items: center;
-  min-height: 3rem;
+  min-height: 4.35rem;
   list-style: none;
   cursor: pointer;
-  padding: 0.72rem 0.82rem;
+  padding: 1rem 1.05rem;
+}
+
+.cardSummary::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0.28rem;
+  background: var(--card-accent, var(--page-accent));
+  content: "";
 }
 
 .cardSummary::-webkit-details-marker {
@@ -449,14 +480,15 @@
 
 .cardSummary > span {
   min-width: 0;
-  color: #111827;
-  font-size: clamp(1.28rem, 6vw, 1.75rem);
+  color: var(--page-ink);
+  font-size: clamp(1.08rem, 4vw, 1.35rem);
   font-weight: 950;
-  line-height: 0.98;
+  line-height: 1.04;
 }
 
 .cardSummary svg {
   flex: 0 0 auto;
+  color: var(--card-accent, var(--page-accent));
 }
 
 .chevron {
@@ -464,24 +496,24 @@
   transition: transform 0.24s var(--transition);
 }
 
-.bodyCard .cardSummary {
-  background: linear-gradient(180deg, #ffd7d2, #f8bbb5);
+.bodyCard {
+  --card-accent: #d97872;
 }
 
-.trainingCard .cardSummary {
-  background: linear-gradient(180deg, #c8ecd4, #a9dbc0);
+.trainingCard {
+  --card-accent: #5fa77a;
 }
 
-.calmCard .cardSummary {
-  background: linear-gradient(180deg, #c9edf4, #a9dbe7);
+.calmCard {
+  --card-accent: #4f91a2;
 }
 
-.badgeCard .cardSummary {
-  background: linear-gradient(180deg, #ead8f2, #d8bbe6);
+.badgeCard {
+  --card-accent: #9a73b6;
 }
 
-.leagueCard .cardSummary {
-  background: linear-gradient(180deg, #cce8f3, #abd5e3);
+.leagueCard {
+  --card-accent: #5d9bb0;
 }
 
 .bodyPreview {
@@ -581,10 +613,10 @@
 }
 
 .twoColumnRow .cardSummary {
-  min-height: 3.45rem;
+  min-height: 4.35rem;
   grid-template-columns: minmax(0, 1fr) 2.25rem;
-  gap: 0.7rem;
-  padding: 0.78rem 0.82rem;
+  gap: 0.75rem;
+  padding: 1rem 1.05rem;
 }
 
 .twoColumnRow .cardSummary .chevron {
@@ -594,8 +626,8 @@
 .twoColumnRow .cardSummary > span {
   grid-column: 1;
   min-width: 0;
-  font-size: clamp(1.08rem, 5.4vw, 1.45rem);
-  line-height: 0.98;
+  font-size: clamp(1rem, 3.4vw, 1.22rem);
+  line-height: 1.06;
   overflow-wrap: normal;
 }
 
@@ -1095,6 +1127,64 @@
   line-height: 1.5;
 }
 
+.accountPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.1);
+  border-radius: 0.95rem;
+  background:
+    linear-gradient(135deg, rgba(var(--page-soft-rgb), 0.95), rgba(var(--page-soft-alt-rgb), 0.9));
+  padding: 1rem;
+  box-shadow: 0 16px 38px rgba(var(--page-ink-rgb), 0.1);
+}
+
+.accountPanel h2 {
+  margin: 0.18rem 0 0;
+  color: var(--page-ink);
+  font-size: 1.05rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.accountPanel p:last-child {
+  margin: 0.35rem 0 0;
+  color: var(--page-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.profileSignOutButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.14);
+  border-radius: 0.75rem;
+  background: rgba(var(--page-ink-rgb), 0.06);
+  color: var(--page-ink);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  padding: 0.82rem 1rem;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s var(--transition),
+    background 0.2s var(--transition),
+    color 0.2s var(--transition),
+    transform 0.2s var(--transition);
+}
+
+.profileSignOutButton:hover {
+  transform: translateY(-1px);
+  border-color: rgba(var(--page-accent-rgb), 0.3);
+  background: rgba(var(--page-accent-rgb), 0.1);
+  color: var(--page-accent);
+}
+
 .staticHeader {
   display: flex;
   align-items: flex-start;
@@ -1394,6 +1484,16 @@
 @media (min-width: 1080px) {
   .shell {
     width: min(100%, 68rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .accountPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .profileSignOutButton {
+    width: 100%;
   }
 }
 

@@ -762,6 +762,12 @@
       "you": "You · current week",
       "placeholder": "Preview data. Real points will be connected to workouts, videos, and blog activity in the gamification phase."
     },
+    "account": {
+      "eyebrow": "Account",
+      "title": "End session",
+      "description": "Sign out here when you do not want to keep this profile open on this device.",
+      "signOut": "Sign out"
+    },
     "delete": {
       "eyebrow": "Account control",
       "title": "Delete profile",
@@ -914,11 +920,58 @@
       "title": "Relaxation Music",
       "durationAria": "Choose session duration",
       "durationOption": "{minutes} min",
+      "startOption": "Start {minutes} min",
       "session": "{minutes} minute session",
       "play": "Play",
       "pause": "Pause",
       "close": "Close session",
-      "generated": "Temporary relaxation sound until the final audio files are added."
+      "generated": "Temporary relaxation sound until the final audio files are added.",
+      "options": [
+        {
+          "minutes": 5,
+          "title": "Quick reset",
+          "description": "A small pause between appointments, after screen time, or when your energy is low.",
+          "benefits": [
+            "helps you arrive in the moment",
+            "slows the inner pace",
+            "makes starting very easy"
+          ],
+          "bestFor": "Best when time is short but you still want a conscious pause."
+        },
+        {
+          "minutes": 10,
+          "title": "Focus & breathing rhythm",
+          "description": "Enough time to breathe more calmly, settle your thoughts, and return with more clarity.",
+          "benefits": [
+            "supports concentration",
+            "creates room for conscious breathing",
+            "fits well into a daily routine"
+          ],
+          "bestFor": "Best before work, learning, movement, or after a stressful moment."
+        },
+        {
+          "minutes": 20,
+          "title": "Deeper relaxation",
+          "description": "A longer session to notice physical tension and feel the shift into calm more clearly.",
+          "benefits": [
+            "more time for body awareness",
+            "supports recovery",
+            "helps release everyday pressure"
+          ],
+          "bestFor": "Best in the evening, after training, or when you want to wind down properly."
+        },
+        {
+          "minutes": 30,
+          "title": "Full recovery window",
+          "description": "For days when you want to go deeper into calm and support body and mind for longer.",
+          "benefits": [
+            "more room for relaxation and recovery",
+            "pairs well with stretching or a body scan",
+            "strengthens the feeling of a complete pause"
+          ],
+          "bestFor": "Best for weekends, evening routines, or intentional self-care."
+        }
+      ]
     }
   },
   "footer": {

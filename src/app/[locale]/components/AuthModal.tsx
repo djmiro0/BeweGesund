@@ -20,7 +20,7 @@ import { httpsCallable } from "firebase/functions";
 import { ArrowLeft, Check, LoaderCircle, Mail, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
 import { memberPackages } from "@/lib/memberPackages";
-import type { UserGender } from "@/lib/userProfile";
+import { getAuthUserPhotoURL, type UserGender } from "@/lib/userProfile";
 import authTheme from "./AuthTheme.module.css";
 
 interface AuthModalProps {
@@ -277,7 +277,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         displayName: fullName,
-        photoURL: user?.photoURL ?? null,
+        photoURL: getAuthUserPhotoURL(user),
         age: Number(age),
         gender: gender as UserGender,
         heightCm: Number(heightCm),

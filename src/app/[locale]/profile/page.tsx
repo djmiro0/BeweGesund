@@ -1,5 +1,6 @@
 "use client";
 
+import { signOut } from "firebase/auth";
 import { motion } from "framer-motion";
 import {
   Activity,
@@ -9,6 +10,7 @@ import {
   Crown,
   Dumbbell,
   HeartPulse,
+  LogOut,
   Medal,
   PersonStanding,
   Ruler,
@@ -21,8 +23,9 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { auth } from "../../../../firebase.config";
 import { activeScheduleDays, memberCourses } from "@/data";
-import { emptyUserProfile, getProfileFirstName } from "@/lib/userProfile";
+import { emptyUserProfile, getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import BillingActions from "./BillingActions";
@@ -68,7 +71,7 @@ export default function ProfilePage() {
 
   const firstName = getProfileFirstName(profile, user.displayName) || t("values.notProvided");
   const email = user.email || profile.email || t("values.notProvided");
-  const avatar = profile.photoURL || user.photoURL;
+  const avatar = getAuthUserPhotoURL(user) || profile.photoURL;
   const profileInitial = firstName.charAt(0).toUpperCase();
 
   const handleSectionToggle = (section: ProfileSection, isOpen: boolean) => {
@@ -417,6 +420,22 @@ export default function ProfilePage() {
             ))}
           </div>
           <p className={styles.leaderboardNote}>{t("leaderboard.placeholder")}</p>
+        </motion.section>
+
+        <motion.section className={styles.accountPanel} variants={fadeUp}>
+          <div>
+            <p className={styles.panelEyebrow}>{t("account.eyebrow")}</p>
+            <h2>{t("account.title")}</h2>
+            <p>{t("account.description")}</p>
+          </div>
+          <button
+            type="button"
+            className={styles.profileSignOutButton}
+            onClick={() => void signOut(auth)}
+          >
+            <LogOut size={18} />
+            {t("account.signOut")}
+          </button>
         </motion.section>
       </div>
 

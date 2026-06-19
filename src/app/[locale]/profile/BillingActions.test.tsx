@@ -43,10 +43,7 @@ describe("BillingActions", () => {
     mocks.httpsCallable.mockReturnValue(mocks.callable);
   });
 
-  it.each([
-    ["Choose Basic", "basic"],
-    ["Choose Plus", "plus"],
-  ] as const)("starts checkout for the %s plan", async (buttonLabel, memberPackage) => {
+  it("starts checkout for a non-selected free plan", async () => {
     const user = userEvent.setup();
     mocks.callable.mockResolvedValue({ data: {} });
 
@@ -56,11 +53,37 @@ describe("BillingActions", () => {
         subscriptionStatus="free"
       />,
     );
-    await user.click(screen.getByRole("button", { name: buttonLabel }));
+    await user.click(screen.getByRole("button", { name: "Choose Plus" }));
 
     expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "createStripeCheckoutSession");
-    expect(mocks.callable).toHaveBeenCalledWith({ locale: "en", memberPackage });
+    expect(mocks.callable).toHaveBeenCalledWith({ locale: "en", memberPackage: "plus" });
     expect(screen.getByRole("alert")).toHaveTextContent("Billing failed");
+  });
+
+  it("disables the currently selected Basic package button", () => {
+    render(
+      <BillingActions
+        {...labels}
+        memberPackage="basic"
+        subscriptionStatus="free"
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Selected" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Choose Plus" })).toBeEnabled();
+  });
+
+  it("disables the currently selected Plus package button", () => {
+    render(
+      <BillingActions
+        {...labels}
+        memberPackage="plus"
+        subscriptionStatus="free"
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Selected" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Choose Basic" })).toBeEnabled();
   });
 
   it("opens billing management for an active member", async () => {
@@ -128,7 +151,7 @@ describe("BillingActions", () => {
         subscriptionStatus="free"
       />,
     );
-    await user.click(screen.getByRole("button", { name: "Choose Basic" }));
+    await user.click(screen.getByRole("button", { name: "Choose Plus" }));
 
     expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "createStripeCheckoutSession");
     expect(screen.getByRole("alert")).toHaveTextContent("Billing failed");

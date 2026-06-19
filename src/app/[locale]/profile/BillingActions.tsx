@@ -158,6 +158,7 @@ export default function BillingActions({
         {plans.map((plan) => {
           const isCurrent = plan.id === memberPackage;
           const isAvailableChange = hasManagedSubscription && !isCurrent;
+          const isDisabled = isPending || isCurrent;
           const actionLabel = hasManagedSubscription
             ? plan.id === "plus" ? upgradeLabel : downgradeLabel
             : plan.checkoutLabel;
@@ -181,18 +182,22 @@ export default function BillingActions({
                 ) : null}
               </div>
 
-              {isCurrent && hasManagedSubscription ? (
-                <p className={styles.billingPlanNote}>{currentLabel}</p>
-              ) : (
-                <button
-                  type="button"
-                  className={`${styles.billingButton} ${isAvailableChange ? styles.billingButtonChange : ""}`}
-                  disabled={isPending}
-                  onClick={() => void openBillingSession(actionMode, actionMode === "checkout" ? plan.id : undefined)}
-                >
-                  {buttonContent(actionLabel)}
-                </button>
-              )}
+              <button
+                type="button"
+                className={`${styles.billingButton} ${isAvailableChange ? styles.billingButtonChange : ""} ${isCurrent ? styles.billingButtonSelected : ""}`}
+                disabled={isDisabled}
+                onClick={() => {
+                  if (isCurrent) return;
+                  void openBillingSession(actionMode, actionMode === "checkout" ? plan.id : undefined);
+                }}
+              >
+                {isCurrent ? (
+                  <>
+                    <CheckCircle2 size={17} />
+                    {currentStatusLabel}
+                  </>
+                ) : buttonContent(actionLabel)}
+              </button>
             </article>
           );
         })}

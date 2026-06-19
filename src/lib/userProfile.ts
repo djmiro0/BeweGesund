@@ -158,3 +158,18 @@ export function getProfileFirstName(profile: UserProfileData, fallback?: string 
     ?? fallback?.trim().split(/\s+/)[0]
     ?? "";
 }
+
+export function getAuthUserPhotoURL(
+  user: {
+    photoURL?: string | null;
+    providerData?: Array<{ photoURL?: string | null }>;
+  } | null | undefined,
+) {
+  const authPhotoURL = optionalString(user?.photoURL);
+  if (authPhotoURL) return authPhotoURL;
+
+  return user?.providerData
+    ?.map((provider) => optionalString(provider.photoURL))
+    .find((photoURL): photoURL is string => Boolean(photoURL))
+    ?? null;
+}
