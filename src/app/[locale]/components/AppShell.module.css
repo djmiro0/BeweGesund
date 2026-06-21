@@ -81,6 +81,128 @@
   font-weight: 750;
 }
 
+.paymentGate {
+  display: grid;
+  gap: 1.2rem;
+  width: min(100%, 58rem);
+  margin: 0 auto;
+  padding: 7rem 1rem 2rem;
+  color: var(--ui-text);
+}
+
+.paymentGateIntro {
+  display: grid;
+  gap: 0.65rem;
+  border: 1px solid var(--ui-border);
+  border-radius: 0.65rem;
+  background:
+    linear-gradient(135deg, var(--ui-warm-soft), transparent 44%),
+    var(--ui-bg-alt);
+  padding: clamp(1.2rem, 4vw, 1.6rem);
+}
+
+.paymentGateIcon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ui-warm-soft);
+  color: var(--ui-link);
+}
+
+.paymentGateEyebrow {
+  margin: 0;
+  color: var(--ui-link);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.paymentGate h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.paymentGateIntro > p:last-child,
+.paymentGateNote,
+.paymentPlanCard p {
+  margin: 0;
+  color: var(--ui-muted);
+  line-height: 1.65;
+}
+
+.paymentPlanGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.paymentPlanCard {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+  border: 1px solid var(--ui-border);
+  border-radius: 0.65rem;
+  background: var(--ui-bg-alt);
+  padding: 1rem;
+}
+
+.paymentPlanCard h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: 0;
+}
+
+.paymentPlanCard strong {
+  color: var(--ui-link);
+  font-size: 1rem;
+}
+
+.paymentPlanCard button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--ui-link);
+  color: var(--ui-bg);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  padding: 0.85rem 1rem;
+  text-transform: uppercase;
+}
+
+.paymentPlanCard button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.paymentSpinner {
+  animation: loadingSpin 0.9s linear infinite;
+}
+
+.paymentError {
+  margin: 0;
+  border: 1px solid rgba(var(--secondary-rgb), 0.24);
+  border-radius: 0.5rem;
+  background: rgba(var(--secondary-rgb), 0.08);
+  padding: 0.8rem 0.95rem;
+  color: var(--ui-text);
+  font-weight: 850;
+}
+
+.paymentGateNote {
+  font-size: 0.9rem;
+}
+
 @keyframes loadingSpin {
   to {
     transform: rotate(360deg);
@@ -108,5 +230,11 @@
 
 @media (max-width: 1023px) {
   .main {
+  }
+}
+
+@media (max-width: 720px) {
+  .paymentPlanGrid {
+    grid-template-columns: 1fr;
   }
 }

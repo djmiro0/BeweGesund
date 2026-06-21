@@ -31,6 +31,7 @@ const labels = {
   processingLabel: "Opening Stripe",
   errorLabel: "Billing failed",
   currentLabel: "Current package",
+  inactiveLabel: "No active package",
   activeLabel: "Active",
   selectedLabel: "Selected",
   statusLabel: "Subscription status",
@@ -60,7 +61,7 @@ describe("BillingActions", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Billing failed");
   });
 
-  it("disables the currently selected Basic package button", () => {
+  it("keeps both package checkout buttons available for free members", () => {
     render(
       <BillingActions
         {...labels}
@@ -69,11 +70,12 @@ describe("BillingActions", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Selected" })).toBeDisabled();
+    expect(screen.getByText("No active package")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Choose Basic" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Choose Plus" })).toBeEnabled();
   });
 
-  it("disables the currently selected Plus package button", () => {
+  it("does not treat a free Plus package value as an active package", () => {
     render(
       <BillingActions
         {...labels}
@@ -82,8 +84,9 @@ describe("BillingActions", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Selected" })).toBeDisabled();
+    expect(screen.getByText("No active package")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Choose Basic" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Choose Plus" })).toBeEnabled();
   });
 
   it("opens billing management for an active member", async () => {

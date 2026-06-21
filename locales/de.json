@@ -49,6 +49,24 @@
     "later": "Später",
     "close": "Installationshinweis schließen"
   },
+  "paymentRequired": {
+    "eyebrow": "Zahlung erforderlich",
+    "title": "Schließe deine Mitgliedschaft ab",
+    "description": "Dein Konto ist angelegt, aber der Mitgliederbereich wird erst freigeschaltet, wenn Stripe die Zahlung bestätigt. Wähle dein Paket und schließe den Checkout ab.",
+    "processing": "Stripe wird geöffnet",
+    "error": "Der Checkout konnte gerade nicht geöffnet werden. Bitte versuche es erneut.",
+    "note": "Der Zugriff wird ausschließlich durch den bestätigten Stripe-Webhook aktiviert. Wenn du den Checkout abbrichst oder die Zahlung fehlschlägt, bleibt der Zugang gesperrt.",
+    "basic": {
+      "price": "9,99 €/Monat",
+      "description": "Basiszugang zu Kursen und On-Demand-Inhalten.",
+      "action": "Basic bezahlen"
+    },
+    "plus": {
+      "price": "12,99 €/Monat",
+      "description": "Erweiterter Zugang inklusive Plus-Formaten und Live-Angeboten.",
+      "action": "Plus bezahlen"
+    }
+  },
   "mobileTabs": {
     "ariaLabel": "Mobile Navigation",
     "tabs": {
@@ -178,6 +196,8 @@
     "lastName": "Nachname",
     "email": "E-Mail-Adresse",
     "password": "Passwort",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort ausblenden",
     "confirmPassword": "Passwort bestätigen",
     "age": "Alter",
     "gender": "Geschlecht",
@@ -617,6 +637,7 @@
       "processing": "Stripe wird geöffnet",
       "billingError": "Die Zahlungsverwaltung konnte nicht geöffnet werden. Bitte versuche es erneut.",
       "status": "Abo-Status",
+      "inactive": "Kein aktives Paket",
       "active": "Aktiv",
       "selected": "Ausgewählt",
       "billingHint": "Zahlungen werden sicher über Stripe verarbeitet. Der Paketzugriff wird aktualisiert, sobald Stripe das Abo bestätigt."

@@ -49,6 +49,24 @@
     "later": "Later",
     "close": "Close installation prompt"
   },
+  "paymentRequired": {
+    "eyebrow": "Payment required",
+    "title": "Complete your membership",
+    "description": "Your account exists, but the member area unlocks only after Stripe confirms the payment. Choose your package and complete checkout.",
+    "processing": "Opening Stripe",
+    "error": "Checkout could not be opened right now. Please try again.",
+    "note": "Access is activated only by the verified Stripe webhook. If checkout is canceled or payment fails, access stays locked.",
+    "basic": {
+      "price": "€9.99/month",
+      "description": "Core access to courses and on-demand content.",
+      "action": "Pay for Basic"
+    },
+    "plus": {
+      "price": "€12.99/month",
+      "description": "Extended access including Plus formats and live offers.",
+      "action": "Pay for Plus"
+    }
+  },
   "mobileTabs": {
     "ariaLabel": "Mobile navigation",
     "tabs": {
@@ -178,6 +196,8 @@
     "lastName": "Last name",
     "email": "Email address",
     "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "confirmPassword": "Confirm password",
     "age": "Age",
     "gender": "Gender",
@@ -617,6 +637,7 @@
       "processing": "Opening Stripe",
       "billingError": "Billing could not be opened. Please try again.",
       "status": "Subscription status",
+      "inactive": "No active package",
       "active": "Active",
       "selected": "Selected",
       "billingHint": "Payments are processed securely by Stripe. Package access updates after Stripe confirms the subscription."

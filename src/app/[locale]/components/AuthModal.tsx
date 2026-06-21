@@ -17,7 +17,7 @@ import {
 } from 'firebase/auth';
 import { deleteDoc, doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { ArrowLeft, Check, LoaderCircle, Mail, X } from 'lucide-react';
+import { ArrowLeft, Check, Eye, EyeOff, LoaderCircle, Mail, X } from 'lucide-react';
 import type { MemberPackage } from "@/data";
 import { memberPackages } from "@/lib/memberPackages";
 import { getAuthUserPhotoURL, type UserGender } from "@/lib/userProfile";
@@ -126,6 +126,10 @@ function splitDisplayName(displayName: string | null) {
     };
 }
 
+function isValidEmailAddress(value: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
 export default function AuthModal({ isOpen, onClose, requiresProfileSetup = false }: AuthModalProps) {
     const t = useTranslations("auth");
     const packageT = useTranslations("packages");
@@ -149,16 +153,22 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [infoMessage, setInfoMessage] = useState("");
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+    const [hasAttemptedProfileSubmit, setHasAttemptedProfileSubmit] = useState(false);
     const isRegister = view === "register";
     const isForgotPassword = view === "forgotPassword";
     const isGoogleOnboarding = view === "googleOnboarding";
     const isProfileSetup = isRegister || isGoogleOnboarding;
+    const trimmedEmail = email.trim();
+    const hasValidEmail = trimmedEmail.length === 0 || isValidEmailAddress(trimmedEmail);
     const termsItems = t.raw("terms.items") as string[];
     const isPasswordMatching = !isRegister || password === confirmPassword;
     const hasRequiredRegistrationFields =
         firstName.trim().length > 0 &&
         lastName.trim().length > 0 &&
-        email.trim().length > 0 &&
+        trimmedEmail.length > 0 &&
+        hasValidEmail &&
         (!isRegister || (password.length > 0 && confirmPassword.length > 0)) &&
         Number(age) >= 1 &&
         Number(age) <= 120 &&
@@ -172,12 +182,13 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         hasAcceptedConsent &&
         hasAcceptedHealthConsent;
     const canSubmit = isProfileSetup
-        ? hasRequiredRegistrationFields && !isSubmitting
-        : email.trim().length > 0 && password.length > 0 && !isSubmitting;
+        ? !isSubmitting
+        : trimmedEmail.length > 0 && password.length > 0 && !isSubmitting;
     const registrationRequirements = [
         ...(firstName.trim().length === 0 ? [t("validation.firstName")] : []),
         ...(lastName.trim().length === 0 ? [t("validation.lastName")] : []),
-        ...(email.trim().length === 0 ? [t("validation.email")] : []),
+        ...(trimmedEmail.length === 0 ? [t("validation.email")] : []),
+        ...(trimmedEmail.length > 0 && !hasValidEmail ? [t("invalidEmail")] : []),
         ...(isRegister && password.length === 0 ? [t("validation.password")] : []),
         ...(isRegister && confirmPassword.length === 0 ? [t("validation.confirmPassword")] : []),
         ...(isRegister && password.length > 0 && confirmPassword.length > 0 && !isPasswordMatching
@@ -192,14 +203,15 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         ...(!hasAcceptedHealthConsent ? [t("validation.healthConsent")] : []),
     ];
     const signInRequirements = [
-        ...(email.trim().length === 0 ? [t("validation.signInEmail")] : []),
+        ...(trimmedEmail.length === 0 ? [t("validation.signInEmail")] : []),
+        ...(trimmedEmail.length > 0 && !hasValidEmail ? [t("invalidEmail")] : []),
         ...(password.length === 0 ? [t("validation.signInPassword")] : []),
     ];
     const formRequirements = isProfileSetup ? registrationRequirements : signInRequirements;
     const shouldShowFormRequirements =
         !isSubmitting &&
         formRequirements.length > 0 &&
-        (isProfileSetup || email.trim().length > 0 || password.length > 0);
+        (isProfileSetup ? hasAttemptedProfileSubmit : trimmedEmail.length > 0 || password.length > 0);
 
     useEffect(() => {
         if (
@@ -271,7 +283,12 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     };
 
     const fullName = `${firstName.trim()} ${lastName.trim()}`;
-    const createProfilePayload = (uid: string, userEmail: string, user?: User): CreateUserProfilePayload => ({
+    const createProfilePayload = (
+        uid: string,
+        userEmail: string,
+        memberPackage: MemberPackage,
+        user?: User,
+    ): CreateUserProfilePayload => ({
         uid,
         email: userEmail,
         firstName: firstName.trim(),
@@ -286,7 +303,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         regionKey: region,
         averageStepsPerDay: null,
         primaryGoalKey: null,
-        memberPackage: selectedPackage,
+        memberPackage,
         startedCourseIds: [],
         completedCourseIds: [],
         recommendedCourseIds: [],
@@ -327,6 +344,9 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setIsTermsOpen(false);
         setErrorMessage("");
         setInfoMessage("");
+        setIsPasswordVisible(false);
+        setIsConfirmPasswordVisible(false);
+        setHasAttemptedProfileSubmit(false);
     };
 
     const getAuthActionSettings = () => ({
@@ -407,8 +427,13 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     const handlePasswordReset = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (!email.trim() || isSubmitting) {
+        if (!trimmedEmail || isSubmitting) {
             setErrorMessage(t("resetEmailRequired"));
+            return;
+        }
+
+        if (!isValidEmailAddress(trimmedEmail)) {
+            setErrorMessage(t("invalidEmail"));
             return;
         }
 
@@ -417,7 +442,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setInfoMessage("");
 
         try {
-            await sendPasswordResetEmail(auth, email.trim(), getAuthActionSettings());
+            await sendPasswordResetEmail(auth, trimmedEmail, getAuthActionSettings());
             setInfoMessage(t("resetEmailSent"));
         } catch (error) {
             setErrorMessage(getFriendlyErrorMessage(error));
@@ -432,6 +457,12 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setErrorMessage("");
         try {
             if (isProfileSetup) {
+                setHasAttemptedProfileSubmit(true);
+
+                if (!hasRequiredRegistrationFields) {
+                    return;
+                }
+
                 if (password !== confirmPassword) {
                     setErrorMessage(`${t("errorPrefix")} ${t("passwordMismatch")}`);
                     return;
@@ -456,7 +487,12 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     try {
                         await setDoc(
                             doc(db, "users", googleUser.uid),
-                            createProfilePayload(googleUser.uid, googleUser.email ?? email.trim(), googleUser),
+                            createProfilePayload(
+                                googleUser.uid,
+                                googleUser.email ?? trimmedEmail,
+                                selectedPackage,
+                                googleUser,
+                            ),
                         );
                         await openCheckoutForSelectedPackage();
                     } catch (profileOrCheckoutError) {
@@ -466,7 +502,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     return;
                 }
 
-                const credential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+                const credential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
 
                 try {
                     await updateProfile(credential.user, {
@@ -474,7 +510,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     });
                     await setDoc(
                         doc(db, "users", credential.user.uid),
-                        createProfilePayload(credential.user.uid, credential.user.email ?? email.trim()),
+                        createProfilePayload(credential.user.uid, credential.user.email ?? trimmedEmail, selectedPackage),
                     );
                 } catch (profileError) {
                     await deleteUser(credential.user).catch(() => undefined);
@@ -511,7 +547,12 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                 }
                 return;
             } else {
-                const credential = await signInWithEmailAndPassword(auth, email, password);
+                if (!trimmedEmail || !isValidEmailAddress(trimmedEmail)) {
+                    setErrorMessage(`${t("errorPrefix")} ${t("invalidEmail")}`);
+                    return;
+                }
+
+                const credential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
                 const usesPassword = credential.user.providerData.some(
                     (provider) => provider.providerId === "password",
                 );
@@ -535,6 +576,42 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         }
     };
 
+    const renderPasswordInput = ({
+        value,
+        onChange,
+        placeholder,
+        autoComplete,
+        isVisible,
+        onToggleVisibility,
+    }: {
+        value: string;
+        onChange: (value: string) => void;
+        placeholder: string;
+        autoComplete: string;
+        isVisible: boolean;
+        onToggleVisibility: () => void;
+    }) => (
+        <div className="relative">
+            <input
+                type={isVisible ? "text" : "password"}
+                placeholder={placeholder}
+                value={value}
+                onChange={(event) => onChange(event.target.value)}
+                className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 pr-12 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
+                autoComplete={autoComplete}
+                required
+            />
+            <button
+                type="button"
+                onClick={onToggleVisibility}
+                aria-label={isVisible ? t("hidePassword") : t("showPassword")}
+                className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.08)] hover:text-[var(--text-light)] focus:outline-none focus:ring-2 focus:ring-[var(--border-strong)]"
+            >
+                {isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
+            </button>
+        </div>
+    );
+
     if (!isOpen) return null;
 
     return (
@@ -553,7 +630,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     </p>
                 </div>
                 {isForgotPassword ? (
-                    <form onSubmit={handlePasswordReset} className="space-y-4">
+                    <form onSubmit={handlePasswordReset} noValidate className="space-y-4">
                         <div className="grid h-14 w-14 place-items-center rounded-2xl border border-[rgba(var(--accent-rgb),0.28)] bg-[rgba(var(--accent-rgb),0.12)] text-[var(--highlight-soft)]">
                             <Mail size={26} />
                         </div>
@@ -581,7 +658,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                             </div>
                         ) : null}
                         <button
-                            disabled={!email.trim() || isSubmitting}
+                            disabled={!trimmedEmail || isSubmitting}
                             className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45"
                         >
                             {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}
@@ -625,7 +702,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         </div>
                     </>
                 ) : null}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} noValidate className="space-y-4">
                     {isProfileSetup ? (
                         <div className="grid gap-4 sm:grid-cols-2">
                             <label className="block">
@@ -668,25 +745,26 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     <div className={isRegister ? "grid gap-4 sm:grid-cols-2" : ""}>
                         <label className="block">
                             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{isRegister ? t("requiredLabel", { label: t("password") }) : t("password")}</span>
-                            <input
-                                type="password" placeholder={t("password")} value={password} onChange={(e) => setPassword(e.target.value)}
-                                className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
-                                autoComplete={isRegister ? "new-password" : "current-password"}
-                                required
-                            />
+                            {renderPasswordInput({
+                                value: password,
+                                onChange: setPassword,
+                                placeholder: t("password"),
+                                autoComplete: isRegister ? "new-password" : "current-password",
+                                isVisible: isPasswordVisible,
+                                onToggleVisibility: () => setIsPasswordVisible((current) => !current),
+                            })}
                         </label>
                         {isRegister ? (
                             <label className="block">
                                 <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("requiredLabel", { label: t("confirmPassword") })}</span>
-                                <input
-                                    type="password"
-                                    placeholder={t("confirmPassword")}
-                                    value={confirmPassword}
-                                    onChange={(event) => setConfirmPassword(event.target.value)}
-                                    className="w-full rounded-2xl border border-[var(--border-soft)] bg-[rgba(var(--navy-rgb),0.4)] px-4 py-3 text-[var(--text-light)] outline-none transition focus:border-[var(--border-strong)] focus:bg-[rgba(var(--navy-rgb),0.7)]"
-                                    autoComplete="new-password"
-                                    required
-                                />
+                                {renderPasswordInput({
+                                    value: confirmPassword,
+                                    onChange: setConfirmPassword,
+                                    placeholder: t("confirmPassword"),
+                                    autoComplete: "new-password",
+                                    isVisible: isConfirmPasswordVisible,
+                                    onToggleVisibility: () => setIsConfirmPasswordVisible((current) => !current),
+                                })}
                                 {confirmPassword && !isPasswordMatching ? (
                                     <span className="mt-2 block text-sm font-bold text-[var(--highlight-soft)]">{t("passwordMismatch")}</span>
                                 ) : null}

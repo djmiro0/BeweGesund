@@ -9,12 +9,23 @@ import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
 import MobileTabBar from "./MobileTabBar";
+import PaymentRequired from "./PaymentRequired";
 import ProgressPhotoReminder from "./ProgressPhotoReminder";
 import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
 import { useTheme } from "./ThemeProvider";
 import { getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
 import styles from "./AppShell.module.css";
+
+const paidAccessRoutes = ["courses", "calendar", "settings", "consultation"];
+
+function isPaidAccessRoute(pathname: string, locale: string) {
+  const localizedPath = `/${locale}`;
+
+  return paidAccessRoutes.some((route) => (
+    pathname === `${localizedPath}/${route}` || pathname.startsWith(`${localizedPath}/${route}/`)
+  ));
+}
 
 export function AppPreferenceEffects() {
   const { user, appPreferences } = useAuth();
@@ -64,6 +75,15 @@ export function ShellFrame({
         || !profile.regionKey
       ),
   );
+  const hasActiveSubscription =
+    profile?.subscriptionStatus === "active" || profile?.subscriptionStatus === "trialing";
+  const requiresPayment = Boolean(
+    user
+      && profile
+      && !requiresProfileSetup
+      && !hasActiveSubscription
+      && isPaidAccessRoute(pathname, locale),
+  );
 
   if (loading) {
     return (
@@ -111,6 +131,29 @@ export function ShellFrame({
           onClose={closeAuth}
           requiresProfileSetup
         />
+      </>
+    );
+  }
+
+  if (requiresPayment) {
+    return (
+      <>
+        <PwaInstallPrompt />
+        <Header
+          locale={locale}
+          user={user}
+          profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
+          profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
+          openAuth={openAuth}
+        />
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={closeAuth}
+        />
+        <main className={styles.main}>
+          <PaymentRequired locale={locale} />
+        </main>
+        <Footer />
       </>
     );
   }

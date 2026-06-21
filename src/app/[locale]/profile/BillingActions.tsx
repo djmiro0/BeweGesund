@@ -30,6 +30,7 @@ interface BillingActionsProps {
   processingLabel: string;
   errorLabel: string;
   currentLabel: string;
+  inactiveLabel: string;
   activeLabel: string;
   selectedLabel: string;
   statusLabel: string;
@@ -78,6 +79,7 @@ export default function BillingActions({
   processingLabel,
   errorLabel,
   currentLabel,
+  inactiveLabel,
   activeLabel,
   selectedLabel,
   statusLabel,
@@ -89,7 +91,9 @@ export default function BillingActions({
     { id: "basic", name: basicName, price: basicPrice, checkoutLabel: basicCheckoutLabel },
     { id: "plus", name: plusName, price: plusPrice, checkoutLabel: plusCheckoutLabel },
   ];
-  const currentPlan = plans.find((plan) => plan.id === memberPackage) ?? plans[0];
+  const currentPlan = hasManagedSubscription
+    ? plans.find((plan) => plan.id === memberPackage) ?? plans[0]
+    : null;
   const currentStatusLabel = hasManagedSubscription ? activeLabel : selectedLabel;
 
   const openBillingSession = async (
@@ -144,9 +148,9 @@ export default function BillingActions({
       <div className={styles.billingStatusBand}>
         <div>
           <p>{currentLabel}</p>
-          <strong>{currentPlan.name}</strong>
+          <strong>{currentPlan?.name ?? inactiveLabel}</strong>
         </div>
-        <span>{currentStatusLabel}</span>
+        {currentPlan ? <span>{currentStatusLabel}</span> : null}
       </div>
 
       <div className={styles.billingOverview}>
@@ -156,7 +160,7 @@ export default function BillingActions({
 
       <div className={styles.billingPlanGrid}>
         {plans.map((plan) => {
-          const isCurrent = plan.id === memberPackage;
+          const isCurrent = hasManagedSubscription && plan.id === memberPackage;
           const isAvailableChange = hasManagedSubscription && !isCurrent;
           const isDisabled = isPending || isCurrent;
           const actionLabel = hasManagedSubscription
