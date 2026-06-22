@@ -9,19 +9,19 @@
   --primary: #ffffff;
   --secondary: #e23d4f;
   --tertiary: #88992d;
-  --quaternary: #f6c764;
+  --quaternary: #7ccbd3;
 
   --primary-rgb: 255, 255, 255;
   --secondary-rgb: 226, 61, 79;
   --tertiary-rgb: 136, 153, 45;
-  --quaternary-rgb: 246, 199, 100;
+  --quaternary-rgb: 124, 203, 211;
 
   --page-ink: #0b1627;
   --page-ink-rgb: 11, 22, 39;
-  --page-soft: #fffaf0;
-  --page-soft-rgb: 255, 250, 240;
-  --page-soft-alt: #fff7e7;
-  --page-soft-alt-rgb: 255, 247, 231;
+  --page-soft: #f4fbff;
+  --page-soft-rgb: 244, 251, 255;
+  --page-soft-alt: #edf7fb;
+  --page-soft-alt-rgb: 237, 247, 251;
   --page-cream-1: #ffffff;
   --page-cream-1-rgb: 255, 255, 255;
   --page-cream-2: #ffffff;
@@ -94,7 +94,7 @@
   --ui-border-soft: rgba(var(--foreground-rgb), 0.08);
   --ui-accent: var(--page-accent);
   --ui-accent-soft: rgba(var(--page-accent-rgb), 0.12);
-  --ui-warm: #946414;
+  --ui-warm: #216b78;
   --ui-warm-soft: rgba(var(--page-warm-rgb), 0.18);
   --ui-olive: #586a17;
   --ui-olive-soft: rgba(var(--page-olive-rgb), 0.16);
@@ -135,8 +135,8 @@
   --page-accent-rgb: 226, 61, 79;
   --page-olive: #a5b44a;
   --page-olive-rgb: 165, 180, 74;
-  --page-warm: #f6c764;
-  --page-warm-rgb: 246, 199, 100;
+  --page-warm: #8bd8e2;
+  --page-warm-rgb: 139, 216, 226;
   --page-ink: #f7f1e6;
   --page-ink-rgb: 247, 241, 230;
   --page-soft: #111f34;

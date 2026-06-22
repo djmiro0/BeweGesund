@@ -1,7 +1,7 @@
 .scope {
   --auth-overlay: rgba(11, 22, 39, 0.58);
-  --auth-panel: #fffaf0;
-  --auth-panel-rgb: 255, 250, 240;
+  --auth-panel: #f4fbff;
+  --auth-panel-rgb: 244, 251, 255;
   --auth-panel-alt: #ffffff;
   --auth-input: #ffffff;
   --auth-text: #0b1627;
@@ -38,7 +38,7 @@
   --auth-google-bg: #f7f1e6;
   --auth-google-text: #0b1627;
   --auth-shadow: rgba(0, 0, 0, 0.42);
-  --auth-highlight-soft: #f6c764;
+  --auth-highlight-soft: #8bd8e2;
 
   --foreground-rgb: 247, 241, 230;
 }
