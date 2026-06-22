@@ -10,7 +10,7 @@ describe("PWA manifest", () => {
       start_url: "/de",
       scope: "/",
       display: "standalone",
-      background_color: "#f5efe4",
+      background_color: "#f4fbff",
       theme_color: "#9b2b42",
       icons: [
         expect.objectContaining({ src: "/icon-192.png", sizes: "192x192" }),
