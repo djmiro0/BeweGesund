@@ -32,6 +32,7 @@ import BillingActions from "./BillingActions";
 import BreathingSession from "./BreathingSession";
 import ProfileSettingsAccess from "./ProfileSettingsAccess";
 import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
+import WearableIntegration from "./WearableIntegration";
 import styles from "./Profile.module.css";
 
 const fadeUp = {
@@ -267,6 +268,10 @@ export default function ProfilePage() {
             statusLabel={t("packageSelector.status")}
           />
           <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
+        </motion.section>
+
+        <motion.section variants={fadeUp}>
+          <WearableIntegration locale={locale} />
         </motion.section>
 
         <motion.details

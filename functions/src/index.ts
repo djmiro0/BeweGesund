@@ -2,10 +2,13 @@ import { HttpsError, onCall, onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { logger } from "firebase-functions";
 import { getAuth } from "firebase-admin/auth";
+import { randomBytes } from "crypto";
 import Stripe from "stripe";
 import { increment, LEADERBOARDS_COLLECTION, REWARDS_COLLECTION, serverTimestamp, userRef, db } from "./firestore";
 import {
   appBaseUrl,
+  fitbitClientId,
+  fitbitClientSecret,
   stripeBasicPriceId,
   stripePlusPriceId,
   stripeSecretKey,
@@ -24,6 +27,69 @@ type StripeClient = InstanceType<typeof Stripe>;
 type StripeSubscription = Awaited<ReturnType<StripeClient["subscriptions"]["retrieve"]>>;
 type StripeEvent = ReturnType<StripeClient["webhooks"]["constructEvent"]>;
 type StripeSubscriptionStatus = StripeSubscription["status"];
+
+interface FitbitTokenResponse {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  scope?: string;
+  user_id?: string;
+}
+
+interface FitbitActivityResponse {
+  summary?: {
+    steps?: number;
+    fairlyActiveMinutes?: number;
+    lightlyActiveMinutes?: number;
+    veryActiveMinutes?: number;
+    caloriesOut?: number;
+  };
+}
+
+interface FitbitHeartResponse {
+  "activities-heart"?: Array<{
+    value?: {
+      restingHeartRate?: number;
+    };
+  }>;
+}
+
+interface FitbitSleepResponse {
+  summary?: {
+    totalMinutesAsleep?: number;
+  };
+}
+
+function getFitbitRedirectUri() {
+  const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT || "sandrin-app";
+  return `https://${REGION}-${projectId}.cloudfunctions.net/fitbitOAuthCallback`;
+}
+
+function createRandomToken() {
+  return randomBytes(32).toString("base64url");
+}
+
+function getFitbitAuthorizationHeader() {
+  return `Basic ${Buffer.from(`${fitbitClientId.value()}:${fitbitClientSecret.value()}`).toString("base64")}`;
+}
+
+function getFitbitTokenExpiresAt(expiresInSeconds: number) {
+  return Date.now() + Math.max(60, expiresInSeconds - 60) * 1000;
+}
+
+function todayIsoDate(locale = "de-DE") {
+  const parts = new Intl.DateTimeFormat(locale, {
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  return `${year}-${month}-${day}`;
+}
 
 function requireAuth(auth: { uid: string } | null | undefined) {
   if (!auth?.uid) {
@@ -522,6 +588,249 @@ export const createStripeCustomerPortalSession = onCall(
     });
 
     return { ok: true, url: session.url };
+  },
+);
+
+export const createFitbitAuthorizationUrl = onCall(
+  { region: REGION },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const locale = request.data?.locale === "en" ? "en" : "de";
+    const state = createRandomToken();
+    const redirectUri = getFitbitRedirectUri();
+
+    await db.collection("fitbitOAuthStates").doc(state).set({
+      uid,
+      locale,
+      createdAt: serverTimestamp(),
+      expiresAtMs: Date.now() + 10 * 60 * 1000,
+    });
+
+    const params = new URLSearchParams({
+      response_type: "code",
+      client_id: fitbitClientId.value(),
+      redirect_uri: redirectUri,
+      scope: "activity heartrate sleep profile weight",
+      state,
+      prompt: "consent",
+    });
+
+    return {
+      ok: true,
+      url: `https://www.fitbit.com/oauth2/authorize?${params.toString()}`,
+    };
+  },
+);
+
+async function exchangeFitbitCode(code: string) {
+  const response = await fetch("https://api.fitbit.com/oauth2/token", {
+    method: "POST",
+    headers: {
+      Authorization: getFitbitAuthorizationHeader(),
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: getFitbitRedirectUri(),
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Fitbit token exchange failed with status ${response.status}.`);
+  }
+
+  return await response.json() as FitbitTokenResponse;
+}
+
+async function refreshFitbitToken(uid: string, refreshToken: string) {
+  const response = await fetch("https://api.fitbit.com/oauth2/token", {
+    method: "POST",
+    headers: {
+      Authorization: getFitbitAuthorizationHeader(),
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new HttpsError("failed-precondition", "Fitbit authorization has expired. Reconnect Fitbit.");
+  }
+
+  const token = await response.json() as FitbitTokenResponse;
+  await userRef(uid).collection("wearables").doc("fitbit").set(
+    {
+      accessToken: token.access_token,
+      refreshToken: token.refresh_token,
+      expiresAtMs: getFitbitTokenExpiresAt(token.expires_in),
+      scope: token.scope ?? null,
+      fitbitUserId: token.user_id ?? null,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+
+  return token.access_token;
+}
+
+async function getFitbitAccessToken(uid: string) {
+  const connectionRef = userRef(uid).collection("wearables").doc("fitbit");
+  const snapshot = await connectionRef.get();
+
+  if (!snapshot.exists) {
+    throw new HttpsError("failed-precondition", "Fitbit is not connected.");
+  }
+
+  const data = snapshot.data() as {
+    accessToken?: string;
+    refreshToken?: string;
+    expiresAtMs?: number;
+  };
+
+  if (!data.accessToken || !data.refreshToken) {
+    throw new HttpsError("failed-precondition", "Fitbit connection is incomplete.");
+  }
+
+  if (!data.expiresAtMs || data.expiresAtMs <= Date.now() + 60_000) {
+    return await refreshFitbitToken(uid, data.refreshToken);
+  }
+
+  return data.accessToken;
+}
+
+async function fetchFitbitJson<T>(accessToken: string, path: string): Promise<T> {
+  const response = await fetch(`https://api.fitbit.com/1/user/-/${path}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    throw new HttpsError("unavailable", `Fitbit request failed with status ${response.status}.`);
+  }
+
+  return await response.json() as T;
+}
+
+async function syncFitbitDailySummaryForUser(uid: string, date: string) {
+  const accessToken = await getFitbitAccessToken(uid);
+  const [activity, heart, sleep] = await Promise.all([
+    fetchFitbitJson<FitbitActivityResponse>(accessToken, `activities/date/${date}.json`),
+    fetchFitbitJson<FitbitHeartResponse>(accessToken, `activities/heart/date/${date}/1d.json`),
+    fetchFitbitJson<FitbitSleepResponse>(accessToken, `sleep/date/${date}.json`),
+  ]);
+
+  const summary = activity.summary ?? {};
+  const activeMinutes =
+    (summary.lightlyActiveMinutes ?? 0)
+    + (summary.fairlyActiveMinutes ?? 0)
+    + (summary.veryActiveMinutes ?? 0);
+  const dailySummary = {
+    provider: "fitbit",
+    date,
+    steps: summary.steps ?? 0,
+    activeMinutes,
+    caloriesOut: summary.caloriesOut ?? null,
+    restingHeartRate: heart["activities-heart"]?.[0]?.value?.restingHeartRate ?? null,
+    sleepMinutes: sleep.summary?.totalMinutesAsleep ?? null,
+  };
+
+  await userRef(uid).collection("healthDaily").doc(date).set(
+    {
+      ...dailySummary,
+      syncedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+
+  return dailySummary;
+}
+
+export const fitbitOAuthCallback = onRequest(
+  { region: REGION, secrets: [fitbitClientSecret] },
+  async (request, response) => {
+    const code = typeof request.query.code === "string" ? request.query.code : "";
+    const state = typeof request.query.state === "string" ? request.query.state : "";
+    const stateRef = db.collection("fitbitOAuthStates").doc(state);
+    const stateSnapshot = state ? await stateRef.get() : null;
+
+    if (!code || !stateSnapshot?.exists) {
+      response.status(400).send("Invalid Fitbit authorization callback.");
+      return;
+    }
+
+    const stateData = stateSnapshot.data() as { uid?: string; locale?: string; expiresAtMs?: number };
+    if (!stateData.uid || !stateData.expiresAtMs || stateData.expiresAtMs < Date.now()) {
+      await stateRef.delete().catch(() => undefined);
+      response.status(400).send("Expired Fitbit authorization callback.");
+      return;
+    }
+
+    try {
+      const token = await exchangeFitbitCode(code);
+      await userRef(stateData.uid).collection("wearables").doc("fitbit").set(
+        {
+          provider: "fitbit",
+          fitbitUserId: token.user_id ?? null,
+          accessToken: token.access_token,
+          refreshToken: token.refresh_token,
+          expiresAtMs: getFitbitTokenExpiresAt(token.expires_in),
+          scope: token.scope ?? null,
+          connectedAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+      await stateRef.delete().catch(() => undefined);
+      await syncFitbitDailySummaryForUser(stateData.uid, todayIsoDate());
+
+      const safeLocale = stateData.locale === "en" ? "en" : "de";
+      response.redirect(`${appBaseUrl.value().replace(/\/$/, "")}/${safeLocale}/profile?wearable=fitbit-connected`);
+    } catch (error) {
+      logger.error("Fitbit authorization failed.", error);
+      response.status(502).send("Fitbit authorization failed.");
+    }
+  },
+);
+
+export const syncFitbitDailySummary = onCall(
+  { region: REGION, secrets: [fitbitClientSecret] },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const date = typeof request.data?.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(request.data.date)
+      ? request.data.date
+      : todayIsoDate();
+
+    const summary = await syncFitbitDailySummaryForUser(uid, date);
+    return { ok: true, summary };
+  },
+);
+
+export const getFitbitConnectionStatus = onCall(
+  { region: REGION },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const snapshot = await userRef(uid).collection("wearables").doc("fitbit").get();
+
+    if (!snapshot.exists) {
+      return { connected: false };
+    }
+
+    const data = snapshot.data() as { updatedAt?: unknown; fitbitUserId?: string };
+    return {
+      connected: true,
+      fitbitUserId: data.fitbitUserId ?? null,
+    };
+  },
+);
+
+export const disconnectFitbit = onCall(
+  { region: REGION },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    await userRef(uid).collection("wearables").doc("fitbit").delete();
+    return { ok: true };
   },
 );
 
