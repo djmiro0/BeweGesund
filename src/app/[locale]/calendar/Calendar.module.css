@@ -1,8 +1,33 @@
 .calendarContainer {
+  --calendar-bg:
+    radial-gradient(circle at 12% 0%, rgba(var(--shell-surface-rgb), 0.12), transparent 18rem),
+    radial-gradient(circle at 92% 4%, rgba(var(--page-olive-rgb), 0.1), transparent 18rem),
+    linear-gradient(180deg, var(--page-cream-1), var(--page-cream-2));
+  --calendar-surface: rgba(var(--page-soft-rgb), 0.82);
+  --calendar-surface-strong: rgba(var(--page-soft-rgb), 0.96);
+  --calendar-card: rgba(var(--page-soft-rgb), 0.72);
+  --calendar-border: var(--page-border);
+  --calendar-text: var(--page-ink);
+  --calendar-muted: var(--page-muted);
+  --calendar-shadow: var(--page-shadow);
   min-height: 78vh;
   padding: 7rem clamp(1rem, 3vw, 2rem) 4rem;
-  color: var(--ui-text);
-  background: var(--ui-bg);
+  color: var(--calendar-text);
+  background: var(--calendar-bg);
+}
+
+:global(:root[data-theme="dark"]) .calendarContainer {
+  --calendar-bg:
+    radial-gradient(circle at 12% 0%, rgba(var(--shell-surface-rgb), 0.38), transparent 18rem),
+    radial-gradient(circle at 92% 4%, rgba(var(--page-olive-rgb), 0.1), transparent 18rem),
+    linear-gradient(180deg, var(--shell-bg-alt), var(--shell-bg));
+  --calendar-surface: rgba(var(--shell-surface-rgb), 0.72);
+  --calendar-surface-strong: rgba(var(--shell-surface-rgb), 0.9);
+  --calendar-card: rgba(var(--shell-bg-alt-rgb), 0.72);
+  --calendar-border: var(--shell-border);
+  --calendar-text: var(--shell-text);
+  --calendar-muted: var(--shell-text-muted);
+  --calendar-shadow: var(--shadow-color);
 }
 
 .headerBlock,
@@ -82,8 +107,12 @@
   align-items: stretch;
   gap: 0.5rem;
   margin-bottom: 1rem;
-  border-block: 1px solid var(--ui-border);
-  padding: 0.55rem 0;
+  border: 1px solid var(--calendar-border);
+  border-radius: 1.2rem;
+  background: var(--calendar-surface);
+  box-shadow: 0 14px 34px var(--calendar-shadow);
+  padding: 0.55rem;
+  backdrop-filter: blur(18px);
 }
 
 .dayStrip {
@@ -99,9 +128,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--ui-border);
-  color: var(--ui-text);
-  background: var(--ui-bg-alt);
+  border: 1px solid var(--calendar-border);
+  color: var(--calendar-text);
+  background: var(--calendar-card);
   cursor: pointer;
   transition:
     border-color 0.2s var(--transition),
@@ -118,15 +147,15 @@
 .dayArrow:hover,
 .calendarOpenButton:hover,
 .pickerCloseButton:hover {
-  border-color: var(--ui-accent);
-  background: var(--ui-accent);
-  color: #ffffff;
+  border-color: rgba(var(--page-accent-rgb), 0.24);
+  background: rgba(var(--page-accent-rgb), 0.1);
+  color: var(--calendar-text);
 }
 
 .calendarOpenButton {
-  border-color: var(--ui-text);
-  background: var(--ui-text);
-  color: var(--ui-bg);
+  border-color: rgba(var(--page-accent-rgb), 0.22);
+  background: rgba(var(--page-accent-rgb), 0.1);
+  color: var(--page-accent);
 }
 
 .dayButton {
@@ -141,7 +170,7 @@
   border-radius: 0.65rem;
   padding: 0.72rem 0.85rem;
   background: transparent;
-  color: var(--ui-text);
+  color: var(--calendar-text);
   text-align: left;
   cursor: pointer;
   transition:
@@ -151,13 +180,13 @@
 }
 
 .dayButton:hover {
-  border-color: var(--ui-border);
-  background: var(--ui-bg-alt);
+  border-color: var(--calendar-border);
+  background: var(--calendar-card);
 }
 
 .dayButtonActive {
-  border-color: var(--ui-text);
-  color: var(--ui-bg);
+  border-color: rgba(var(--page-accent-rgb), 0.2);
+  color: var(--calendar-text);
 }
 
 .dayButtonTop,
@@ -181,7 +210,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: var(--ui-text);
+  background: rgba(var(--page-accent-rgb), 0.1);
 }
 
 .pickerBackdrop {
@@ -192,18 +221,19 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: rgba(4, 10, 18, 0.68);
-  backdrop-filter: blur(8px);
+  background: rgba(var(--page-ink-rgb), 0.34);
+  backdrop-filter: blur(10px);
 }
 
 .pickerModal {
   width: min(100%, 460px);
-  border: 1px solid var(--ui-border);
-  border-radius: 1.25rem;
+  border: 1px solid var(--calendar-border);
+  border-radius: 1.2rem;
   padding: 1.25rem;
-  color: var(--ui-text);
-  background: var(--ui-bg-alt);
-  box-shadow: 0 24px 70px var(--page-shadow);
+  color: var(--calendar-text);
+  background: var(--calendar-surface-strong);
+  box-shadow: 0 24px 70px var(--calendar-shadow);
+  backdrop-filter: blur(18px);
 }
 
 .pickerHeader {
@@ -318,13 +348,13 @@
 }
 
 .pickerModal :global(.react-calendar__tile--active) {
-  border-color: var(--ui-text);
-  color: var(--ui-bg);
-  background: var(--ui-text);
+  border-color: rgba(var(--page-accent-rgb), 0.24);
+  color: var(--calendar-text);
+  background: rgba(var(--page-accent-rgb), 0.12);
 }
 
 .calendarHasEvents {
-  background: var(--ui-olive-soft);
+  background: rgba(var(--page-olive-rgb), 0.12);
 }
 
 .calendarEventCount {
@@ -338,14 +368,18 @@
   height: 17px;
   border-radius: 999px;
   color: #ffffff;
-  background: var(--ui-accent);
+  background: var(--page-accent);
   font-size: 0.58rem;
   font-weight: 950;
 }
 
 .schedulePanel {
-  border-top: 2px solid var(--ui-text);
-  padding-top: 1.25rem;
+  border: 1px solid var(--calendar-border);
+  border-radius: 1.2rem;
+  background: var(--calendar-surface-strong);
+  box-shadow: 0 14px 34px var(--calendar-shadow);
+  padding: 1rem;
+  backdrop-filter: blur(18px);
 }
 
 .panelHeader {
@@ -354,7 +388,7 @@
   justify-content: space-between;
   gap: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--ui-border);
+  border-bottom: 1px solid var(--calendar-border);
 }
 
 .panelLabel {
@@ -381,11 +415,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  border: 1px solid var(--ui-border);
+  border: 1px solid var(--calendar-border);
   border-radius: 999px;
   padding: 0.4rem 0.62rem;
-  color: var(--ui-muted);
-  background: var(--ui-bg-alt);
+  color: var(--calendar-muted);
+  background: var(--calendar-card);
   font-size: 0.68rem;
   font-weight: 850;
 }
@@ -401,10 +435,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid var(--ui-border);
+  border-bottom: 1px solid var(--calendar-border);
   padding: 1.05rem 0.2rem;
-  background-color: var(--ui-bg-alt);
-  border-radius: 3px;
+  background-color: transparent;
+  border-radius: 0.72rem;
   transition:
     background 0.2s var(--transition),
     padding 0.2s var(--transition);
@@ -412,7 +446,7 @@
 
 .sessionCard:hover {
   padding-inline: 0.75rem;
-  background: var(--ui-bg-alt);
+  background: var(--calendar-card);
 }
 
 .sessionIncluded {

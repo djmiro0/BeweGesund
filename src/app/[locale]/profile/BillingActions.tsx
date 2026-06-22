@@ -30,6 +30,7 @@ interface BillingActionsProps {
   processingLabel: string;
   errorLabel: string;
   currentLabel: string;
+  inactiveLabel: string;
   activeLabel: string;
   selectedLabel: string;
   statusLabel: string;
@@ -45,6 +46,11 @@ interface BillingPlan {
   price: string;
   checkoutLabel: string;
 }
+
+type PendingBillingAction =
+  | { action: "checkout"; memberPackage: MemberPackage }
+  | { action: "portal"; memberPackage?: MemberPackage }
+  | null;
 
 function getBillingErrorDetails(error: unknown) {
   if (error && typeof error === "object") {
@@ -78,27 +84,32 @@ export default function BillingActions({
   processingLabel,
   errorLabel,
   currentLabel,
+  inactiveLabel,
   activeLabel,
   selectedLabel,
   statusLabel,
 }: BillingActionsProps) {
-  const [isPending, setIsPending] = useState(false);
+  const [pendingAction, setPendingAction] = useState<PendingBillingAction>(null);
   const [error, setError] = useState("");
   const hasManagedSubscription = MANAGED_SUBSCRIPTION_STATUSES.has(subscriptionStatus);
   const plans: BillingPlan[] = [
     { id: "basic", name: basicName, price: basicPrice, checkoutLabel: basicCheckoutLabel },
     { id: "plus", name: plusName, price: plusPrice, checkoutLabel: plusCheckoutLabel },
   ];
-  const currentPlan = plans.find((plan) => plan.id === memberPackage) ?? plans[0];
+  const currentPlan = hasManagedSubscription
+    ? plans.find((plan) => plan.id === memberPackage) ?? plans[0]
+    : null;
   const currentStatusLabel = hasManagedSubscription ? activeLabel : selectedLabel;
 
   const openBillingSession = async (
     action: "checkout" | "portal",
     selectedPackage?: MemberPackage,
   ) => {
-    if (isPending) return;
+    if (pendingAction) return;
 
-    setIsPending(true);
+    setPendingAction(action === "checkout"
+      ? { action, memberPackage: selectedPackage ?? "basic" }
+      : { action, memberPackage: selectedPackage });
     setError("");
 
     try {
@@ -112,7 +123,7 @@ export default function BillingActions({
         functions,
         functionName,
       );
-      const payload = selectedPackage ? { locale, memberPackage: selectedPackage } : { locale };
+      const payload = action === "checkout" && selectedPackage ? { locale, memberPackage: selectedPackage } : { locale };
       const result = await createSession(payload);
 
       if (!result.data.url) {
@@ -126,11 +137,11 @@ export default function BillingActions({
       }
 
       setError(errorLabel);
-      setIsPending(false);
+      setPendingAction(null);
     }
   };
 
-  const buttonContent = (label: string, isLoading = isPending) => (
+  const buttonContent = (label: string, isLoading: boolean) => (
     <>
       {isLoading
         ? <LoaderCircle className={styles.billingSpinner} size={17} />
@@ -144,9 +155,9 @@ export default function BillingActions({
       <div className={styles.billingStatusBand}>
         <div>
           <p>{currentLabel}</p>
-          <strong>{currentPlan.name}</strong>
+          <strong>{currentPlan?.name ?? inactiveLabel}</strong>
         </div>
-        <span>{currentStatusLabel}</span>
+        {currentPlan ? <span>{currentStatusLabel}</span> : null}
       </div>
 
       <div className={styles.billingOverview}>
@@ -156,9 +167,10 @@ export default function BillingActions({
 
       <div className={styles.billingPlanGrid}>
         {plans.map((plan) => {
-          const isCurrent = plan.id === memberPackage;
+          const isCurrent = hasManagedSubscription && plan.id === memberPackage;
           const isAvailableChange = hasManagedSubscription && !isCurrent;
-          const isDisabled = isPending || isCurrent;
+          const isButtonPending = pendingAction?.memberPackage === plan.id;
+          const isDisabled = Boolean(pendingAction) || isCurrent;
           const actionLabel = hasManagedSubscription
             ? plan.id === "plus" ? upgradeLabel : downgradeLabel
             : plan.checkoutLabel;
@@ -188,7 +200,7 @@ export default function BillingActions({
                 disabled={isDisabled}
                 onClick={() => {
                   if (isCurrent) return;
-                  void openBillingSession(actionMode, actionMode === "checkout" ? plan.id : undefined);
+                  void openBillingSession(actionMode, plan.id);
                 }}
               >
                 {isCurrent ? (
@@ -196,7 +208,7 @@ export default function BillingActions({
                     <CheckCircle2 size={17} />
                     {currentStatusLabel}
                   </>
-                ) : buttonContent(actionLabel)}
+                ) : buttonContent(actionLabel, isButtonPending)}
               </button>
             </article>
           );
@@ -206,11 +218,13 @@ export default function BillingActions({
         <button
           type="button"
           className={`${styles.billingButton} ${styles.billingButtonSecondary}`}
-          disabled={isPending}
+          disabled={Boolean(pendingAction)}
           onClick={() => void openBillingSession("portal")}
         >
-          {isPending ? <LoaderCircle className={styles.billingSpinner} size={17} /> : <Repeat2 size={17} />}
-          {isPending ? processingLabel : manageLabel}
+          {pendingAction?.action === "portal" && !pendingAction.memberPackage
+            ? <LoaderCircle className={styles.billingSpinner} size={17} />
+            : <Repeat2 size={17} />}
+          {pendingAction?.action === "portal" && !pendingAction.memberPackage ? processingLabel : manageLabel}
         </button>
       ) : null}
       {error ? <p className={styles.billingError} role="alert">{error}</p> : null}

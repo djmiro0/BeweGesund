@@ -2,10 +2,14 @@ import { HttpsError, onCall, onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { logger } from "firebase-functions";
 import { getAuth } from "firebase-admin/auth";
+import { randomBytes } from "crypto";
 import Stripe from "stripe";
 import { increment, LEADERBOARDS_COLLECTION, REWARDS_COLLECTION, serverTimestamp, userRef, db } from "./firestore";
 import {
   appBaseUrl,
+  functionsBaseUrl,
+  googleHealthClientId,
+  googleHealthClientSecret,
   stripeBasicPriceId,
   stripePlusPriceId,
   stripeSecretKey,
@@ -24,6 +28,64 @@ type StripeClient = InstanceType<typeof Stripe>;
 type StripeSubscription = Awaited<ReturnType<StripeClient["subscriptions"]["retrieve"]>>;
 type StripeEvent = ReturnType<StripeClient["webhooks"]["constructEvent"]>;
 type StripeSubscriptionStatus = StripeSubscription["status"];
+type StripeCheckoutSession = Awaited<ReturnType<StripeClient["checkout"]["sessions"]["retrieve"]>>;
+
+interface GoogleHealthTokenResponse {
+  access_token: string;
+  expires_in: number;
+  refresh_token?: string;
+  scope?: string;
+  refresh_token_expires_in?: number;
+}
+
+interface GoogleHealthIdentityResponse {
+  legacyUserId?: string;
+  healthUserId?: string;
+}
+
+interface GoogleHealthRollupResponse {
+  rollupDataPoints?: Array<Record<string, unknown>>;
+}
+
+const GOOGLE_HEALTH_PROVIDER = "googleHealth";
+const GOOGLE_HEALTH_SCOPES = [
+  "https://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly",
+  "https://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly",
+  "https://www.googleapis.com/auth/googlehealth.profile.readonly",
+  "https://www.googleapis.com/auth/googlehealth.sleep.readonly",
+];
+
+function getGoogleHealthRedirectUri() {
+  return `${functionsBaseUrl.value().replace(/\/$/, "")}/googleHealthOAuthCallback`;
+}
+
+function createRandomToken() {
+  return randomBytes(32).toString("base64url");
+}
+
+function getGoogleHealthTokenExpiresAt(expiresInSeconds: number) {
+  return Date.now() + Math.max(60, expiresInSeconds - 60) * 1000;
+}
+
+function getCivilDateParts(date: string) {
+  const [year, month, day] = date.split("-").map((part) => Number(part));
+
+  return { year, month, day };
+}
+
+function todayIsoDate(locale = "de-DE") {
+  const parts = new Intl.DateTimeFormat(locale, {
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date());
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  return `${year}-${month}-${day}`;
+}
 
 function requireAuth(auth: { uid: string } | null | undefined) {
   if (!auth?.uid) {
@@ -114,8 +176,8 @@ function subscriptionAccess(subscription: StripeSubscription) {
   };
 }
 
-async function syncStripeSubscription(subscription: StripeSubscription) {
-  const uid = subscription.metadata.uid;
+async function syncStripeSubscription(subscription: StripeSubscription, fallbackUid?: string | null) {
+  const uid = subscription.metadata.uid || fallbackUid;
 
   if (!uid) {
     logger.warn("Stripe subscription is missing Firebase uid metadata.", {
@@ -150,6 +212,24 @@ async function syncStripeSubscription(subscription: StripeSubscription) {
     },
     { merge: true },
   );
+}
+
+async function syncStripeCheckoutSession(stripe: StripeClient, session: StripeCheckoutSession) {
+  if (session.mode !== "subscription") return;
+
+  const subscriptionId = typeof session.subscription === "string"
+    ? session.subscription
+    : session.subscription?.id;
+
+  if (!subscriptionId) {
+    logger.warn("Stripe checkout session is missing subscription.", {
+      sessionId: session.id,
+    });
+    return;
+  }
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  await syncStripeSubscription(subscription, session.client_reference_id ?? session.metadata?.uid);
 }
 
 async function applyCompletion(userId: string, kind: "lesson" | "workout", payload: CompletionPayload) {
@@ -476,7 +556,7 @@ export const createStripeCheckoutSession = onCall(
         price: getStripePriceId(memberPackage),
         quantity: 1,
       }],
-      success_url: `${returnUrl}?checkout=success`,
+      success_url: `${returnUrl}?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${returnUrl}?checkout=canceled`,
       client_reference_id: uid,
       metadata: { uid, memberPackage },
@@ -501,6 +581,45 @@ export const createStripeCheckoutSession = onCall(
   },
 );
 
+export const confirmStripeCheckoutSession = onCall(
+  {
+    region: REGION,
+    secrets: [stripeSecretKey],
+  },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const sessionId = typeof request.data?.sessionId === "string" ? request.data.sessionId : "";
+
+    if (!sessionId.startsWith("cs_")) {
+      throw new HttpsError("invalid-argument", "A valid Stripe checkout session ID is required.");
+    }
+
+    const profileSnapshot = await userRef(uid).get();
+    const customerId = profileSnapshot.get("stripeCustomerId") as string | undefined;
+    const stripe = createStripeClient();
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const sessionCustomerId = typeof session.customer === "string"
+      ? session.customer
+      : session.customer?.id;
+
+    if (session.client_reference_id !== uid && session.metadata?.uid !== uid) {
+      throw new HttpsError("permission-denied", "The checkout session does not belong to this user.");
+    }
+
+    if (customerId && sessionCustomerId !== customerId) {
+      throw new HttpsError("permission-denied", "The checkout customer does not match this user.");
+    }
+
+    if (session.mode !== "subscription" || session.status !== "complete") {
+      throw new HttpsError("failed-precondition", "The checkout session is not complete.");
+    }
+
+    await syncStripeCheckoutSession(stripe, session);
+
+    return { ok: true };
+  },
+);
+
 export const createStripeCustomerPortalSession = onCall(
   {
     region: REGION,
@@ -522,6 +641,322 @@ export const createStripeCustomerPortalSession = onCall(
     });
 
     return { ok: true, url: session.url };
+  },
+);
+
+export const createGoogleHealthAuthorizationUrl = onCall(
+  { region: REGION },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const locale = request.data?.locale === "en" ? "en" : "de";
+    const state = createRandomToken();
+    const redirectUri = getGoogleHealthRedirectUri();
+
+    await db.collection("googleHealthOAuthStates").doc(state).set({
+      uid,
+      locale,
+      createdAt: serverTimestamp(),
+      expiresAtMs: Date.now() + 10 * 60 * 1000,
+    });
+
+    const params = new URLSearchParams({
+      response_type: "code",
+      client_id: googleHealthClientId.value(),
+      redirect_uri: redirectUri,
+      scope: GOOGLE_HEALTH_SCOPES.join(" "),
+      state,
+      access_type: "offline",
+      prompt: "consent",
+    });
+
+    return {
+      ok: true,
+      url: `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`,
+    };
+  },
+);
+
+async function exchangeGoogleHealthCode(code: string) {
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: googleHealthClientId.value(),
+      client_secret: googleHealthClientSecret.value(),
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: getGoogleHealthRedirectUri(),
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Google Health token exchange failed with status ${response.status}.`);
+  }
+
+  return await response.json() as GoogleHealthTokenResponse;
+}
+
+async function refreshGoogleHealthToken(uid: string, refreshToken: string) {
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: googleHealthClientId.value(),
+      client_secret: googleHealthClientSecret.value(),
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new HttpsError("failed-precondition", "Google Health authorization has expired. Reconnect wearable.");
+  }
+
+  const token = await response.json() as GoogleHealthTokenResponse;
+  await userRef(uid).collection("wearables").doc(GOOGLE_HEALTH_PROVIDER).set(
+    {
+      accessToken: token.access_token,
+      refreshToken: token.refresh_token ?? refreshToken,
+      expiresAtMs: getGoogleHealthTokenExpiresAt(token.expires_in),
+      refreshTokenExpiresAtMs: token.refresh_token_expires_in
+        ? Date.now() + token.refresh_token_expires_in * 1000
+        : null,
+      scope: token.scope ?? null,
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+
+  return token.access_token;
+}
+
+async function getGoogleHealthAccessToken(uid: string) {
+  const connectionRef = userRef(uid).collection("wearables").doc(GOOGLE_HEALTH_PROVIDER);
+  const snapshot = await connectionRef.get();
+
+  if (!snapshot.exists) {
+    throw new HttpsError("failed-precondition", "Google Health is not connected.");
+  }
+
+  const data = snapshot.data() as {
+    accessToken?: string;
+    refreshToken?: string;
+    expiresAtMs?: number;
+  };
+
+  if (!data.accessToken || !data.refreshToken) {
+    throw new HttpsError("failed-precondition", "Google Health connection is incomplete.");
+  }
+
+  if (!data.expiresAtMs || data.expiresAtMs <= Date.now() + 60_000) {
+    return await refreshGoogleHealthToken(uid, data.refreshToken);
+  }
+
+  return data.accessToken;
+}
+
+async function fetchGoogleHealthJson<T>(
+  accessToken: string,
+  path: string,
+  init?: { method?: "GET" | "POST"; body?: unknown },
+): Promise<T> {
+  const response = await fetch(`https://health.googleapis.com/v4/${path}`, {
+    method: init?.method ?? "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: "application/json",
+      ...(init?.body ? { "Content-Type": "application/json" } : {}),
+    },
+    body: init?.body ? JSON.stringify(init.body) : undefined,
+  });
+
+  if (!response.ok) {
+    throw new HttpsError("unavailable", `Google Health request failed with status ${response.status}.`);
+  }
+
+  return await response.json() as T;
+}
+
+function firstRollupNumber(response: GoogleHealthRollupResponse, dataType: string, keys: string[]) {
+  const data = response.rollupDataPoints?.[0]?.[dataType];
+  if (!data || typeof data !== "object") return null;
+  const record = data as Record<string, unknown>;
+
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "number") return value;
+    if (typeof value === "string" && value.trim()) {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) return parsed;
+    }
+  }
+
+  return null;
+}
+
+function secondsToRoundedMinutes(value: number | null) {
+  if (value == null) return null;
+  return Math.round(value / 60);
+}
+
+function googleHealthDailyRollupBody(date: string) {
+  const parts = getCivilDateParts(date);
+
+  return {
+    range: {
+      start: {
+        date: parts,
+        time: { hours: 0, minutes: 0, seconds: 0, nanos: 0 },
+      },
+      end: {
+        date: parts,
+        time: { hours: 23, minutes: 59, seconds: 59, nanos: 0 },
+      },
+    },
+    windowSizeDays: 1,
+  };
+}
+
+async function syncGoogleHealthDailySummaryForUser(uid: string, date: string) {
+  const accessToken = await getGoogleHealthAccessToken(uid);
+  const body = googleHealthDailyRollupBody(date);
+  const [steps, activeMinutes, restingHeartRate, sleep] = await Promise.all([
+    fetchGoogleHealthJson<GoogleHealthRollupResponse>(
+      accessToken,
+      "users/me/dataTypes/steps/dataPoints:dailyRollUp",
+      { method: "POST", body },
+    ).catch(() => ({ rollupDataPoints: [] })),
+    fetchGoogleHealthJson<GoogleHealthRollupResponse>(
+      accessToken,
+      "users/me/dataTypes/active-minutes/dataPoints:dailyRollUp",
+      { method: "POST", body },
+    ).catch(() => ({ rollupDataPoints: [] })),
+    fetchGoogleHealthJson<GoogleHealthRollupResponse>(
+      accessToken,
+      "users/me/dataTypes/daily-resting-heart-rate/dataPoints:reconcile",
+      { method: "POST", body },
+    ).catch(() => ({ rollupDataPoints: [] })),
+    fetchGoogleHealthJson<GoogleHealthRollupResponse>(
+      accessToken,
+      "users/me/dataTypes/sleep/dataPoints:dailyRollUp",
+      { method: "POST", body },
+    ).catch(() => ({ rollupDataPoints: [] })),
+  ]);
+
+  const activeMinutesSeconds = firstRollupNumber(activeMinutes, "activeMinutes", ["durationSumSeconds"]);
+  const activeMinutesCount = firstRollupNumber(activeMinutes, "activeMinutes", ["minutesSum", "countSum", "count"]);
+  const sleepSeconds = firstRollupNumber(sleep, "sleep", ["durationSumSeconds"]);
+  const sleepMinutes = firstRollupNumber(sleep, "sleep", ["minutesAsleep", "minutesInSleepPeriod"]);
+  const dailySummary = {
+    provider: GOOGLE_HEALTH_PROVIDER,
+    date,
+    steps: firstRollupNumber(steps, "steps", ["countSum", "count"]) ?? 0,
+    activeMinutes: secondsToRoundedMinutes(activeMinutesSeconds) ?? activeMinutesCount ?? 0,
+    caloriesOut: null,
+    restingHeartRate: firstRollupNumber(restingHeartRate, "dailyRestingHeartRate", ["beatsPerMinute", "bpm", "average"]) ?? null,
+    sleepMinutes: secondsToRoundedMinutes(sleepSeconds) ?? sleepMinutes,
+  };
+
+  await userRef(uid).collection("healthDaily").doc(date).set(
+    {
+      ...dailySummary,
+      syncedAt: serverTimestamp(),
+    },
+    { merge: true },
+  );
+
+  return dailySummary;
+}
+
+export const googleHealthOAuthCallback = onRequest(
+  { region: REGION, secrets: [googleHealthClientSecret] },
+  async (request, response) => {
+    const code = typeof request.query.code === "string" ? request.query.code : "";
+    const state = typeof request.query.state === "string" ? request.query.state : "";
+    const stateRef = db.collection("googleHealthOAuthStates").doc(state);
+    const stateSnapshot = state ? await stateRef.get() : null;
+
+    if (!code || !stateSnapshot?.exists) {
+      response.status(400).send("Invalid Google Health authorization callback.");
+      return;
+    }
+
+    const stateData = stateSnapshot.data() as { uid?: string; locale?: string; expiresAtMs?: number };
+    if (!stateData.uid || !stateData.expiresAtMs || stateData.expiresAtMs < Date.now()) {
+      await stateRef.delete().catch(() => undefined);
+      response.status(400).send("Expired Google Health authorization callback.");
+      return;
+    }
+
+    try {
+      const token = await exchangeGoogleHealthCode(code);
+      const identity = await fetchGoogleHealthJson<GoogleHealthIdentityResponse>(token.access_token, "users/me/identity");
+      await userRef(stateData.uid).collection("wearables").doc(GOOGLE_HEALTH_PROVIDER).set(
+        {
+          provider: GOOGLE_HEALTH_PROVIDER,
+          healthUserId: identity.healthUserId ?? null,
+          legacyUserId: identity.legacyUserId ?? null,
+          accessToken: token.access_token,
+          refreshToken: token.refresh_token,
+          expiresAtMs: getGoogleHealthTokenExpiresAt(token.expires_in),
+          refreshTokenExpiresAtMs: token.refresh_token_expires_in
+            ? Date.now() + token.refresh_token_expires_in * 1000
+            : null,
+          scope: token.scope ?? null,
+          connectedAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+      await stateRef.delete().catch(() => undefined);
+      await syncGoogleHealthDailySummaryForUser(stateData.uid, todayIsoDate());
+
+      const safeLocale = stateData.locale === "en" ? "en" : "de";
+      response.redirect(`${appBaseUrl.value().replace(/\/$/, "")}/${safeLocale}/profile?wearable=google-health-connected`);
+    } catch (error) {
+      logger.error("Google Health authorization failed.", error);
+      response.status(502).send("Google Health authorization failed.");
+    }
+  },
+);
+
+export const syncGoogleHealthDailySummary = onCall(
+  { region: REGION, secrets: [googleHealthClientSecret] },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const date = typeof request.data?.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(request.data.date)
+      ? request.data.date
+      : todayIsoDate();
+
+    const summary = await syncGoogleHealthDailySummaryForUser(uid, date);
+    return { ok: true, summary };
+  },
+);
+
+export const getGoogleHealthConnectionStatus = onCall(
+  { region: REGION },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const snapshot = await userRef(uid).collection("wearables").doc(GOOGLE_HEALTH_PROVIDER).get();
+
+    if (!snapshot.exists) {
+      return { connected: false };
+    }
+
+    const data = snapshot.data() as { updatedAt?: unknown; healthUserId?: string };
+    return {
+      connected: true,
+      healthUserId: data.healthUserId ?? null,
+    };
+  },
+);
+
+export const disconnectGoogleHealth = onCall(
+  { region: REGION },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    await userRef(uid).collection("wearables").doc(GOOGLE_HEALTH_PROVIDER).delete();
+    return { ok: true };
   },
 );
 
@@ -563,6 +998,8 @@ export const stripeWebhook = onRequest(
       || event.type === "customer.subscription.deleted"
     ) {
       await syncStripeSubscription(event.data.object as StripeSubscription);
+    } else if (event.type === "checkout.session.completed") {
+      await syncStripeCheckoutSession(stripe, event.data.object as StripeCheckoutSession);
     }
 
     await db.collection("stripeWebhookEvents").doc(event.id).set({

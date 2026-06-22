@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { getBlogPosts, getCourses } from "@/lib/contentful";
+import { getBlogPosts, getCourses, getMeditationRelaxationItems } from "@/lib/contentful";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const locale = url.searchParams.get("locale") ?? "de";
-  const [courses, posts] = await Promise.all([
+  const [courses, posts, meditations] = await Promise.all([
     getCourses(locale),
     getBlogPosts(locale),
+    getMeditationRelaxationItems(locale),
   ]);
 
   const liveCourseIds = Array.from(new Set(
@@ -33,5 +34,14 @@ export async function GET(request: Request) {
     return post;
   });
 
-  return NextResponse.json({ liveCourseIds, workouts, recentPosts });
+  const meditationItems = meditations
+    .filter((item) => item.muxPlaybackId)
+    .map(({ instructions, ...item }) => {
+      void instructions;
+      return item;
+    });
+
+  const recentMeditations = meditationItems.slice(0, 3);
+
+  return NextResponse.json({ liveCourseIds, workouts, recentPosts, meditationItems, recentMeditations });
 }

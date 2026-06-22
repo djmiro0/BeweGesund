@@ -39,6 +39,7 @@ vi.mock("next-intl", () => ({
       "links.blogs": "Blogs",
       "links.impressum": "Imprint",
       "links.privacy": "Privacy Policy",
+      "links.terms": "Terms of Service",
       "links.contact": "Contact",
       "contactItems.availabilityLabel": "Availability",
       "contactItems.availabilityValue": "Online by appointment",
@@ -65,7 +66,7 @@ describe("Footer", () => {
     render(<Footer />);
 
     expect(screen.getAllByTestId("footer-navigation-link")).toHaveLength(7);
-    expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(2);
+    expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(3);
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("Online by appointment");
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("German and English");
     expect(screen.getByTestId("footer-bottom")).toHaveTextContent("© 2026 Bewegesund. All rights reserved.");

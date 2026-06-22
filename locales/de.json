@@ -2,6 +2,7 @@
   "header": {
     "logo": "Bewegesund",
     "nav": {
+      "home": "Startseite",
       "program": "Programme",
       "courses": "Kurse",
       "settings": "Einstellungen",
@@ -48,6 +49,24 @@
     "understood": "Verstanden",
     "later": "Später",
     "close": "Installationshinweis schließen"
+  },
+  "paymentRequired": {
+    "eyebrow": "Zahlung erforderlich",
+    "title": "Schließe deine Mitgliedschaft ab",
+    "description": "Dein Konto ist angelegt, aber der Mitgliederbereich wird erst freigeschaltet, wenn Stripe die Zahlung bestätigt. Wähle dein Paket und schließe den Checkout ab.",
+    "processing": "Stripe wird geöffnet",
+    "error": "Der Checkout konnte gerade nicht geöffnet werden. Bitte versuche es erneut.",
+    "note": "Der Zugriff wird ausschließlich durch den bestätigten Stripe-Webhook aktiviert. Wenn du den Checkout abbrichst oder die Zahlung fehlschlägt, bleibt der Zugang gesperrt.",
+    "basic": {
+      "price": "9,99 €/Monat",
+      "description": "Basiszugang zu Kursen und On-Demand-Inhalten.",
+      "action": "Basic bezahlen"
+    },
+    "plus": {
+      "price": "12,99 €/Monat",
+      "description": "Erweiterter Zugang inklusive Plus-Formaten und Live-Angeboten.",
+      "action": "Plus bezahlen"
+    }
   },
   "mobileTabs": {
     "ariaLabel": "Mobile Navigation",
@@ -135,7 +154,7 @@
         "explorePrograms": "Programm ansehen"
       },
       "workouts": {
-        "title": "Workouts",
+        "title": "Dashboard",
         "subtitle": "Wähle einen Schwerpunkt und trainiere mit den Sessions, die zu deinem aktuellen Plan passen.",
         "forYou": "Für dich",
         "forYouDescription": "Empfohlene Sessions aus deinem aktuellen Weg.",
@@ -158,6 +177,14 @@
         "viewAll": "Alle ansehen",
         "read": "Artikel lesen",
         "readTime": "{count} Min. Lesezeit"
+      },
+      "meditation": {
+        "description": "Geführte Meditationen, Entspannungsmusik, Atemübungen und Body-Scan-Videos für innere Ruhe.",
+        "kicker": "Meditation & Entspannung",
+        "empty": "In Meditation & Entspannung sind noch keine Videos veröffentlicht.",
+        "latestTitle": "Neueste Meditation Videos",
+        "duration": "{count} Min",
+        "open": "Video öffnen"
       }
     },
     "loading": "WIRD GELADEN..."
@@ -178,6 +205,8 @@
     "lastName": "Nachname",
     "email": "E-Mail-Adresse",
     "password": "Passwort",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort ausblenden",
     "confirmPassword": "Passwort bestätigen",
     "age": "Alter",
     "gender": "Geschlecht",
@@ -617,9 +646,34 @@
       "processing": "Stripe wird geöffnet",
       "billingError": "Die Zahlungsverwaltung konnte nicht geöffnet werden. Bitte versuche es erneut.",
       "status": "Abo-Status",
+      "inactive": "Kein aktives Paket",
       "active": "Aktiv",
       "selected": "Ausgewählt",
       "billingHint": "Zahlungen werden sicher über Stripe verarbeitet. Der Paketzugriff wird aktualisiert, sobald Stripe das Abo bestätigt."
+    },
+    "wearables": {
+      "eyebrow": "Wearables",
+      "title": "Google Health verbinden",
+      "description": "Synchronisiere tägliche Aktivitätsdaten, damit dein Plan besser auf Schlaf, Bewegung und Belastung reagieren kann.",
+      "connected": "Verbunden",
+      "notConnected": "Nicht verbunden",
+      "connect": "Google Health verbinden",
+      "opening": "Google Health wird geöffnet",
+      "sync": "Jetzt synchronisieren",
+      "syncing": "Synchronisiert",
+      "disconnect": "Trennen",
+      "steps": "Schritte",
+      "activeMinutes": "Aktivzeit",
+      "sleep": "Schlaf",
+      "restingHeartRate": "Ruhepuls",
+      "minutes": "{count} Min",
+      "hours": "{count} Std",
+      "bpm": "{count} bpm",
+      "privacy": "BeweGesund speichert nur zusammengefasste Tageswerte. Du kannst die Verbindung jederzeit trennen.",
+      "connectError": "Google Health konnte gerade nicht geöffnet werden. Bitte prüfe die Konfiguration.",
+      "syncError": "Health-Daten konnten gerade nicht synchronisiert werden.",
+      "disconnectError": "Die Google-Health-Verbindung konnte gerade nicht getrennt werden.",
+      "statusError": "Der Google-Health-Status konnte gerade nicht geladen werden."
     },
     "actions": {
       "menu": "Profilmenü öffnen",
@@ -916,6 +970,37 @@
         "Dieser Bereich ist für allgemeines Wohlbefinden und Entspannung gedacht."
       ]
     },
+    "videos": {
+      "eyebrow": "Video-Bereich",
+      "title": "Meditationsvideos",
+      "description": "Hier erscheinen deine geführten Meditations-, Atem- und Body-Scan-Videos aus Contentful, sobald sie mit der Kategorie meditation-entspannung veröffentlicht sind.",
+      "duration": "{count} Min",
+      "empty": "Die ersten Meditationsvideos werden angezeigt, sobald sie in Contentful veröffentlicht sind."
+    },
+    "subtype": {
+      "back": "Zurück zur Übersicht",
+      "videoCount": "{count, plural, =0 {Noch keine Videos} one {# Video} other {# Videos}}",
+      "panelText": "Ruhige Einheiten für deine persönliche Regenerationsroutine.",
+      "emptyTitle": "Noch keine Inhalte veröffentlicht",
+      "emptyText": "Sobald passende Videos in Contentful veröffentlicht sind, erscheinen sie hier."
+    },
+    "detail": {
+      "instructionsTitle": "Bevor du beginnst",
+      "videoAvailable": "Video verfügbar"
+    },
+    "player": {
+      "videoPending": "Dieses Video wird vorbereitet.",
+      "preparingVideo": "Dein Video wird vorbereitet...",
+      "signInRequired": "Bitte melde dich an, um dieses Video abzuspielen.",
+      "tokenError": "Das Video konnte nicht gestartet werden. Bitte versuche es erneut.",
+      "signingMissing": "Die sichere Videowiedergabe ist noch nicht konfiguriert.",
+      "authError": "Deine Sitzung konnte nicht geprüft werden. Bitte melde dich erneut an.",
+      "subscriptionRequired": "Für dieses Video ist eine aktive Mitgliedschaft erforderlich.",
+      "packageRequired": "Dein aktuelles Paket enthält dieses Video nicht.",
+      "videoNotFound": "Das angeforderte Video ist nicht verfügbar.",
+      "accessCheckFailed": "Der Videozugang konnte gerade nicht geprüft werden.",
+      "rateLimited": "Zu viele Wiedergabe-Anfragen. Bitte warte kurz und versuche es erneut."
+    },
     "musicPlayer": {
       "title": "Entspannungsmusik",
       "durationAria": "Session-Dauer wählen",
@@ -993,6 +1078,7 @@
       "consultation": "Beratung",
       "impressum": "Impressum",
       "privacy": "Datenschutz",
+      "terms": "Nutzungsbedingungen",
       "contact": "Kontakt"
     },
     "contactItems": {

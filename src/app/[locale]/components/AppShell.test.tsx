@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => ({
       weightKg?: number | null;
       regionKey?: string;
       photoURL?: string | null;
+      subscriptionStatus?: string;
     },
     appPreferences: {
       theme: "system",
@@ -62,6 +63,10 @@ vi.mock("./AuthModal", () => ({
 
 vi.mock("./MobileTabBar", () => ({
   default: () => <div data-testid="mobile-tabs" />,
+}));
+
+vi.mock("./PaymentRequired", () => ({
+  default: () => <div data-testid="payment-required" />,
 }));
 
 vi.mock("./ProgressPhotoReminder", () => ({
@@ -144,6 +149,132 @@ describe("ShellFrame launch routing", () => {
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
     expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
+  });
+
+  it("blocks the application for authenticated users without paid access", () => {
+    mocks.pathname = "/de/courses";
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+    mocks.auth.profile = {
+      email: "member@example.com",
+      firstName: "Paid",
+      lastName: "Pending",
+      age: 42,
+      gender: "female",
+      heightCm: 170,
+      weightKg: 70,
+      regionKey: "berlin",
+      photoURL: null,
+      subscriptionStatus: "free",
+    };
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByTestId("payment-required")).toBeInTheDocument();
+    expect(screen.queryByTestId("page-content")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("mobile-tabs")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("progress-photo-reminder")).not.toBeInTheDocument();
+  });
+
+  it("keeps the home page visible for authenticated users without paid access", () => {
+    mocks.pathname = "/de";
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+    mocks.auth.profile = {
+      email: "member@example.com",
+      firstName: "Paid",
+      lastName: "Pending",
+      age: 42,
+      gender: "female",
+      heightCm: 170,
+      weightKg: 70,
+      regionKey: "berlin",
+      photoURL: null,
+      subscriptionStatus: "free",
+    };
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByTestId("page-content")).toBeInTheDocument();
+    expect(screen.queryByTestId("payment-required")).not.toBeInTheDocument();
+  });
+
+  it("keeps the profile page visible for authenticated users without paid access", () => {
+    mocks.pathname = "/de/profile";
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+    mocks.auth.profile = {
+      email: "member@example.com",
+      firstName: "Paid",
+      lastName: "Pending",
+      age: 42,
+      gender: "female",
+      heightCm: 170,
+      weightKg: 70,
+      regionKey: "berlin",
+      photoURL: null,
+      subscriptionStatus: "free",
+    };
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByTestId("page-content")).toBeInTheDocument();
+    expect(screen.queryByTestId("payment-required")).not.toBeInTheDocument();
+  });
+
+  it("renders the application for authenticated users with active paid access", () => {
+    mocks.pathname = "/de/courses";
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+    mocks.auth.profile = {
+      email: "member@example.com",
+      firstName: "Paid",
+      lastName: "Member",
+      age: 42,
+      gender: "female",
+      heightCm: 170,
+      weightKg: 70,
+      regionKey: "berlin",
+      photoURL: null,
+      subscriptionStatus: "active",
+    };
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByTestId("page-content")).toBeInTheDocument();
+    expect(screen.queryByTestId("payment-required")).not.toBeInTheDocument();
   });
 
   it("keeps app-only prompts hidden while a Google user completes registration", () => {
