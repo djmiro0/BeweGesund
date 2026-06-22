@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, BookOpen, ChevronLeft, ChevronRight, Clock3, Play, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { memberCourseCategories } from "@/data";
-import type { BlogPost, CourseSummary } from "@/lib/contentful";
+import type { BlogPost, CourseSummary, MeditationRelaxationItem } from "@/lib/contentful";
 import { useAuth } from "./AuthProvider";
 import { getDashboardProgress } from "@/lib/dashboardProgress";
 import styles from "./Dashboard.module.css";
@@ -18,6 +18,7 @@ interface DashboardUser {
 
 type DashboardWorkout = Omit<CourseSummary, "liveTrainingLink">;
 type DashboardPost = Omit<BlogPost, "body">;
+type DashboardMeditation = Omit<MeditationRelaxationItem, "instructions">;
 
 const visibleCategoryIds = ["reha", "healthy-living", "overweight", "definition", "pre-post-birth", "corporate-fitness"];
 const categoryAliases: Record<string, string> = {
@@ -48,9 +49,11 @@ const stagger = {
 export default function Dashboard({ user }: { user: DashboardUser }) {
     const t = useTranslations("home.dashboard");
     const coursesT = useTranslations("courses");
+    const relaxationT = useTranslations("relaxation");
     const packageT = useTranslations("packages");
+    const packageSelectorT = useTranslations("profile.packageSelector");
     const locale = useLocale();
-    const { memberPackage, profile } = useAuth();
+    const { profile } = useAuth();
     const [activeTab, setActiveTab] = useState("for-you");
     const tabsRef = useRef<HTMLElement>(null);
     const videosRef = useRef<HTMLDivElement>(null);
@@ -58,6 +61,8 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     const [videoEdges, setVideoEdges] = useState({ left: false, right: false });
     const [workouts, setWorkouts] = useState<DashboardWorkout[]>([]);
     const [recentPosts, setRecentPosts] = useState<DashboardPost[]>([]);
+    const [meditationItems, setMeditationItems] = useState<DashboardMeditation[]>([]);
+    const [recentMeditations, setRecentMeditations] = useState<DashboardMeditation[]>([]);
     const [liveCourseIds, setLiveCourseIds] = useState<string[]>([]);
     const [loadedLocale, setLoadedLocale] = useState<string | null>(null);
     const isDashboardLoading = loadedLocale !== locale;
@@ -77,17 +82,23 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 liveCourseIds?: string[];
                 workouts?: DashboardWorkout[];
                 recentPosts?: DashboardPost[];
+                meditationItems?: DashboardMeditation[];
+                recentMeditations?: DashboardMeditation[];
             }) => {
                 if (cancelled) return;
                 setLiveCourseIds(payload.liveCourseIds ?? []);
                 setWorkouts(payload.workouts ?? []);
                 setRecentPosts(payload.recentPosts ?? []);
+                setMeditationItems(payload.meditationItems ?? []);
+                setRecentMeditations(payload.recentMeditations ?? []);
             })
             .catch(() => {
                 if (cancelled) return;
                 setLiveCourseIds([]);
                 setWorkouts([]);
                 setRecentPosts([]);
+                setMeditationItems([]);
+                setRecentMeditations([]);
             })
             .finally(() => {
                 if (!cancelled) setLoadedLocale(locale);
@@ -122,6 +133,9 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
         upcomingCourseCount,
         recommendedCourseIds: recommendedCourseIdSet,
     } = useMemo(() => getDashboardProgress(profile), [profile]);
+    const activePackageLabel = profile?.subscriptionStatus === "active" || profile?.subscriptionStatus === "trialing"
+        ? packageT(profile.memberPackage)
+        : packageSelectorT("inactive");
 
     const tabs = [
         {
@@ -134,10 +148,17 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
             label: category.title,
             description: category.description,
         })),
+        {
+            id: "meditation-relaxation",
+            label: relaxationT("title"),
+            description: t("meditation.description"),
+        },
     ];
 
     const activeGroup = tabs.find((tab) => tab.id === activeTab) ?? tabs[0];
     const activeCourses = useMemo(() => {
+        if (activeTab === "meditation-relaxation") return [];
+
         if (activeTab === "for-you") {
             const recommended = workouts.filter((course) =>
                 [course.id, course.slug, course.subcategoryKey]
@@ -149,7 +170,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
 
         return workouts.filter((course) => canonicalCategory(course.categoryKey) === activeTab);
     }, [activeTab, recommendedCourseIdSet, workouts]);
+    const activeMeditations = activeTab === "meditation-relaxation" ? meditationItems : [];
+    const activeDashboardItems = activeTab === "meditation-relaxation" ? activeMeditations : activeCourses;
     const recentWorkouts = workouts.slice(0, 8);
+    const getMeditationHref = (item: DashboardMeditation) =>
+        `/${locale}/meditation-entspannung/${item.subcategoryKey || "guided-meditation"}/${item.slug}`;
 
     const scrollTabs = (direction: "left" | "right") => {
         const tabsElement = tabsRef.current;
@@ -252,7 +277,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                     <div className={styles.statusStrip}>
                         <div className={styles.statusItem} data-testid="dashboard-overview-package">
                             <span>{t("workouts.status.package")}</span>
-                            <strong>{packageT(memberPackage)}</strong>
+                            <strong>{activePackageLabel}</strong>
                         </div>
                         <div className={styles.statusItem} data-testid="dashboard-overview-upcoming">
                             <span>{t("workouts.status.upcoming")}</span>
@@ -321,7 +346,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             <p className={styles.panelEyebrow}>{activeGroup.label}</p>
                             <h2>{activeGroup.description}</h2>
                         </div>
-                        <span className={styles.sessionCount}>{t("workouts.sessions", { count: activeCourses.length })}</span>
+                        <span className={styles.sessionCount}>{t("workouts.sessions", { count: activeDashboardItems.length })}</span>
                     </motion.section>
 
                     <motion.div
@@ -332,7 +357,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                         variants={stagger}
                     >
                         {!isDashboardLoading
-                            ? activeCourses.slice(0, 2).map((course, index) => (
+                            ? activeDashboardItems.slice(0, 2).map((course, index) => (
                                   <motion.article
                                       key={course.id}
                                       className={`${styles.featureCard} ${index === 0 ? styles.featureCardLarge : ""}`}
@@ -357,7 +382,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                           </div>
                                       )}
                                       <div className={styles.cardShade} />
-                                      {liveCourseIdSet.has(course.id) ? (
+                                      {activeTab !== "meditation-relaxation" && liveCourseIdSet.has(course.id) ? (
                                           <span className={styles.liveBadge}>{t("workouts.live")}</span>
                                       ) : null}
                                       <div className={styles.playBadge}>
@@ -365,18 +390,22 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                       </div>
                                       <div className={styles.cardCopy}>
                                           <span className={styles.cardKicker}>
-                                              {index === 0 ? t("workouts.recommended") : t("workouts.newWorkouts")}
+                                              {activeTab === "meditation-relaxation"
+                                                  ? t("meditation.kicker")
+                                                  : index === 0 ? t("workouts.recommended") : t("workouts.newWorkouts")}
                                           </span>
                                           <h2>{course.title}</h2>
                                           <p>
                                               {course.durationMinutes
                                                   ? `${course.durationMinutes} Min`
                                                   : packageT(course.packageRequired)}
-                                              {course.coach ? ` · ${course.coach}` : ""}
+                                              {"coach" in course && course.coach ? ` · ${course.coach}` : ""}
                                           </p>
                                       </div>
                                       <Link
-                                          href={`/${locale}/courses/${course.slug}`}
+                                          href={activeTab === "meditation-relaxation"
+                                              ? getMeditationHref(course as DashboardMeditation)
+                                              : `/${locale}/courses/${course.slug}`}
                                           className={styles.featureLink}
                                           aria-label={`${t("workouts.openSession")}: ${course.title}`}
                                       />
@@ -401,10 +430,10 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                     <span className={styles.skeletonCopy} />
                                 </div>
                             </>
-                        ) : !activeCourses.length ? (
+                        ) : !activeDashboardItems.length ? (
                             <div className={styles.filterEmptyState}>
                                 <Play size={22} />
-                                <p>{t("workouts.emptyCategory")}</p>
+                                <p>{activeTab === "meditation-relaxation" ? t("meditation.empty") : t("workouts.emptyCategory")}</p>
                             </div>
                         ) : null}
                     </motion.div>
@@ -567,6 +596,62 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                             {post.excerpt ? <p className={styles.newsExcerpt}>{post.excerpt}</p> : null}
                                             <Link href={`/${locale}/blogs/${post.slug}`} className={styles.newsReadLink}>
                                                 {t("news.read")}
+                                                <ArrowUpRight size={14} />
+                                            </Link>
+                                        </div>
+                                    </motion.article>
+                                ))}
+                            </div>
+                        </motion.section>
+                    ) : null}
+
+                    {recentMeditations.length ? (
+                        <motion.section
+                            className={styles.newsPanel}
+                            initial="hidden"
+                            animate="visible"
+                            variants={fadeUp}
+                        >
+                            <div className={`${styles.listHeader} ${styles.newsListHeader}`}>
+                                <span>{t("meditation.latestTitle")}</span>
+                                <Link href={`/${locale}/meditation-entspannung`} className={styles.viewAllLink}>
+                                    {t("news.viewAll")}
+                                    <ArrowUpRight size={14} />
+                                </Link>
+                            </div>
+                            <div className={styles.newsGrid}>
+                                {recentMeditations.map((item) => (
+                                    <motion.article
+                                        key={item.id}
+                                        className={styles.newsCard}
+                                        variants={fadeUp}
+                                        whileHover={{ y: -3 }}
+                                    >
+                                        <Link href={getMeditationHref(item)} className={`${styles.newsImage} ${styles.meditationImage}`}>
+                                            {item.posterImage ? (
+                                                <Image
+                                                    src={item.posterImage}
+                                                    alt=""
+                                                    fill
+                                                    sizes="(min-width: 1180px) 18rem, (min-width: 720px) 33vw, 88vw"
+                                                />
+                                            ) : (
+                                                <Sparkles size={24} />
+                                            )}
+                                        </Link>
+                                        <div className={styles.newsBody}>
+                                            <p className={styles.newsMeta}>
+                                                {item.publishedAt ? dateFormatter.format(new Date(item.publishedAt)) : relaxationT("title")}
+                                                {item.durationMinutes ? (
+                                                    <span>{t("meditation.duration", { count: item.durationMinutes })}</span>
+                                                ) : null}
+                                            </p>
+                                            <h3>
+                                                <Link href={getMeditationHref(item)}>{item.title}</Link>
+                                            </h3>
+                                            {item.description ? <p className={styles.newsExcerpt}>{item.description}</p> : null}
+                                            <Link href={getMeditationHref(item)} className={styles.newsReadLink}>
+                                                {t("meditation.open")}
                                                 <ArrowUpRight size={14} />
                                             </Link>
                                         </div>

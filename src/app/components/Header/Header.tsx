@@ -39,9 +39,9 @@ const Header: React.FC<HeaderProps> = ({
 
     const navItems = launchMode && !user ? [] : [
         {
-            key: "program",
+            key: "home",
             href: user ? `/${locale}` : `/${locale}/courses`,
-            label: t("nav.program"),
+            label: t("nav.home"),
             active: user ? pathname === `/${locale}` : pathname === `/${locale}/courses`,
         },
         ...(user

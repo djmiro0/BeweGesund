@@ -1,14 +1,23 @@
-"use client";
-
-import { Music2, ScanHeart, Sparkles, Waves, Wind } from "lucide-react";
-import { useTranslations } from "next-intl";
-import RelaxationMusicPlayer from "./RelaxationMusicPlayer";
+import Link from "next/link";
+import { ArrowRight, Music2, ScanHeart, Sparkles, Waves, Wind } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import styles from "./Relaxation.module.css";
 
 const categoryIcons = [Sparkles, Music2, Wind, ScanHeart] as const;
+const relaxationSubcategoryKeys = [
+  "guided-meditation",
+  "relaxation-music",
+  "breathing-against-stress",
+  "body-scan",
+] as const;
 
-export default function MeditationRelaxationPage() {
-  const t = useTranslations("relaxation");
+export default async function MeditationRelaxationPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "relaxation" });
   const categories = t.raw("categories") as Array<{ title: string; description: string }>;
 
   return (
@@ -28,32 +37,29 @@ export default function MeditationRelaxationPage() {
       <section className={styles.categoryGrid} aria-label={t("categoryAria")}>
         {categories.map((category, index) => {
           const Icon = categoryIcons[index] ?? Sparkles;
+          const subcategoryKey = relaxationSubcategoryKeys[index] ?? relaxationSubcategoryKeys[0];
 
           return (
-            <article key={category.title} className={styles.categoryItem}>
-              <span className={styles.categoryIcon}>
-                <Icon size={22} />
-              </span>
-              <h2>{category.title}</h2>
-              <p>{category.description}</p>
-            </article>
+            <Link
+              key={category.title}
+              href={`/${locale}/meditation-entspannung/${subcategoryKey}`}
+              className={styles.categoryItem}
+            >
+              <div className={styles.categoryHead}>
+                <span className={styles.categoryIcon}>
+                  <Icon size={22} />
+                </span>
+                <span className={styles.categoryAction} aria-hidden="true">
+                  <ArrowRight size={17} />
+                </span>
+              </div>
+              <div>
+                <h2>{category.title}</h2>
+                <p>{category.description}</p>
+              </div>
+            </Link>
           );
         })}
-      </section>
-
-      <section className={styles.musicSection} aria-labelledby="relaxation-music-title">
-        <div className={styles.musicIntro}>
-          <div className={styles.musicHeading}>
-            <p className={styles.eyebrow}>{t("music.eyebrow")}</p>
-            <h2 id="relaxation-music-title">{t("music.title")}</h2>
-          </div>
-          <div className={styles.musicText}>
-            {(t.raw("music.paragraphs") as string[]).map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-        </div>
-        <RelaxationMusicPlayer />
       </section>
     </main>
   );

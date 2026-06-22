@@ -11,6 +11,7 @@ const publicRoutes = [
   "/kontakt",
   "/impressum",
   "/datenschutz",
+  "/nutzungsbedingungen",
 ] as const;
 
 const routePriority: Record<(typeof publicRoutes)[number], number> = {
@@ -22,6 +23,7 @@ const routePriority: Record<(typeof publicRoutes)[number], number> = {
   "/kontakt": 0.7,
   "/impressum": 0.3,
   "/datenschutz": 0.3,
+  "/nutzungsbedingungen": 0.3,
 };
 
 const routeChangeFrequency: Record<
@@ -36,6 +38,7 @@ const routeChangeFrequency: Record<
   "/kontakt": "monthly",
   "/impressum": "yearly",
   "/datenschutz": "yearly",
+  "/nutzungsbedingungen": "yearly",
 };
 
 function getBaseUrl() {

@@ -753,6 +753,14 @@
   color: var(--page-warm);
 }
 
+.meditationImage {
+  background:
+    radial-gradient(circle at 28% 18%, rgba(var(--page-olive-rgb), 0.24), transparent 7rem),
+    linear-gradient(135deg, rgba(var(--page-soft-rgb), 0.9), rgba(var(--page-accent-rgb), 0.18)),
+    var(--shell-bg);
+  color: var(--page-olive);
+}
+
 .newsImage img {
   object-fit: cover;
   transition: transform 0.4s var(--transition);

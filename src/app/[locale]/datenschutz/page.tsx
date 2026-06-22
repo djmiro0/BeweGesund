@@ -21,7 +21,15 @@ export default async function DatenschutzPage({ params }: { params: Promise<{ lo
         },
         {
           title: "Dienstleister und Empfänger",
-          body: "Firebase/Google verarbeitet Authentifizierungs- und Profildaten, Vercel stellt die Webanwendung bereit, Contentful liefert redaktionelle Inhalte, Mux stellt geschützte Videos bereit und Vercel Analytics verarbeitet technische Nutzungsdaten. Mit eingesetzten Auftragsverarbeitern sind die erforderlichen Datenschutzvereinbarungen abzuschließen.",
+          body: "Firebase/Google verarbeitet Authentifizierungs- und Profildaten, Vercel stellt die Webanwendung bereit, Contentful liefert redaktionelle Inhalte, Mux stellt geschützte Videos bereit, Stripe verarbeitet Zahlungsdaten und Vercel Analytics verarbeitet technische Nutzungsdaten. Mit eingesetzten Auftragsverarbeitern sind die erforderlichen Datenschutzvereinbarungen abzuschließen.",
+        },
+        {
+          title: "Google Health und Wearable-Daten",
+          body: "Wenn du Google Health freiwillig verbindest, verarbeiten wir über die von dir freigegebenen Google Health APIs zusammengefasste Tageswerte wie Schritte, aktive Minuten, Schlafdauer und Ruhepuls. Wir speichern keine Rohdatenströme, sondern nur Tageszusammenfassungen in deinem Konto. Die Verarbeitung erfolgt nur mit deiner ausdrücklichen Einwilligung zur Personalisierung von Trainings- und Gesundheitsfunktionen. Du kannst die Verbindung jederzeit im Profil trennen.",
+        },
+        {
+          title: "Google API Limited Use",
+          body: "Die Nutzung von über Google APIs erhaltenen Informationen erfolgt nach der Google API Services User Data Policy einschließlich der Limited-Use-Anforderungen. Google-Health-Daten werden nicht verkauft, nicht für Werbung verwendet und nicht an Dritte weitergegeben, außer soweit dies zur Bereitstellung der App-Funktionen, zur Sicherheit, zur Einhaltung gesetzlicher Pflichten oder mit deiner ausdrücklichen Zustimmung erforderlich ist.",
         },
         {
           title: "Speicherdauer und Löschung",
@@ -51,7 +59,15 @@ export default async function DatenschutzPage({ params }: { params: Promise<{ lo
         },
         {
           title: "Processors and recipients",
-          body: "Firebase/Google processes authentication and profile data, Vercel hosts the application, Contentful supplies editorial content, Mux provides protected video, and Vercel Analytics processes technical usage data. Required data-processing agreements must be maintained with service providers.",
+          body: "Firebase/Google processes authentication and profile data, Vercel hosts the application, Contentful supplies editorial content, Mux provides protected video, Stripe processes payment data, and Vercel Analytics processes technical usage data. Required data-processing agreements must be maintained with service providers.",
+        },
+        {
+          title: "Google Health and wearable data",
+          body: "If you voluntarily connect Google Health, we process summarized daily values made available through the Google Health APIs you authorize, such as steps, active minutes, sleep duration, and resting heart rate. We do not store raw data streams; we store only daily summaries in your account. Processing is based on your explicit consent for personalized training and health features. You can disconnect the integration at any time in your profile.",
+        },
+        {
+          title: "Google API Limited Use",
+          body: "Use of information received from Google APIs follows the Google API Services User Data Policy, including the Limited Use requirements. Google Health data is not sold, not used for advertising, and not shared with third parties except as necessary to provide app functionality, maintain security, comply with law, or with your explicit consent.",
         },
         {
           title: "Retention and deletion",

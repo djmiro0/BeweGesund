@@ -4,13 +4,14 @@ import { getFirebaseUserAccess } from "@/lib/firebaseUserAccess";
 import { packageRank } from "@/lib/memberPackages";
 import { createMuxPlaybackToken, hasMuxSigningConfig } from "@/lib/muxSigning";
 import { consumeRateLimit } from "@/lib/serverRateLimit";
-import { getCourseDetail } from "@/lib/contentful";
+import { getCourseDetail, getMeditationRelaxationItem } from "@/lib/contentful";
 
 export const runtime = "nodejs";
 
 interface PlaybackTokenRequest {
   playbackId?: string;
   courseSlug?: string;
+  contentType?: "course" | "meditationRelaxation";
   locale?: string;
 }
 
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => ({}))) as PlaybackTokenRequest;
   const playbackId = body.playbackId?.trim();
   const courseSlug = body.courseSlug?.trim();
+  const contentType = body.contentType === "meditationRelaxation" ? "meditationRelaxation" : "course";
   const locale = body.locale === "de" ? "de" : "en";
 
   if (!playbackId || !courseSlug) {
@@ -70,12 +72,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const [course, userAccess] = await Promise.all([
-      getCourseDetail(locale, courseSlug),
+    const [content, userAccess] = await Promise.all([
+      contentType === "meditationRelaxation"
+        ? getMeditationRelaxationItem(locale, courseSlug)
+        : getCourseDetail(locale, courseSlug),
       getFirebaseUserAccess(uid, idToken),
     ]);
 
-    if (!course || course.muxPlaybackId !== playbackId) {
+    if (!content || content.muxPlaybackId !== playbackId) {
       return NextResponse.json(
         { error: "The requested video is not available.", code: "VIDEO_NOT_FOUND" },
         { status: 404 },
@@ -89,7 +93,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (packageRank[userAccess.memberPackage] < packageRank[course.packageRequired]) {
+    if (packageRank[userAccess.memberPackage] < packageRank[content.packageRequired]) {
       return NextResponse.json(
         { error: "Your membership does not include this video.", code: "PACKAGE_REQUIRED" },
         { status: 403 },
@@ -99,6 +103,7 @@ export async function POST(request: Request) {
     console.error("Mux playback access check failed.", {
       uid,
       courseSlug,
+      contentType,
       locale,
       error: error instanceof Error ? error.message : String(error),
     });

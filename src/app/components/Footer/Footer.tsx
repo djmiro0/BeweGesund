@@ -30,6 +30,7 @@ const Footer: React.FC = () => {
   const legalLinks = [
     { href: `/${locale}/impressum`, label: t("links.impressum"), icon: FileText },
     { href: `/${locale}/datenschutz`, label: t("links.privacy"), icon: ShieldCheck },
+    { href: `/${locale}/nutzungsbedingungen`, label: t("links.terms"), icon: FileText },
   ];
 
   const contactItems = [

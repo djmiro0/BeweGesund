@@ -19,7 +19,7 @@ interface ConnectionStatusResult {
   connected?: boolean;
 }
 
-interface FitbitSummary {
+interface WearableSummary {
   steps?: number;
   activeMinutes?: number;
   restingHeartRate?: number | null;
@@ -27,13 +27,13 @@ interface FitbitSummary {
 }
 
 interface SyncResult {
-  summary?: FitbitSummary;
+  summary?: WearableSummary;
 }
 
 export default function WearableIntegration({ locale }: WearableIntegrationProps) {
   const t = useTranslations("profile.wearables");
   const [isConnected, setIsConnected] = useState(false);
-  const [summary, setSummary] = useState<FitbitSummary | null>(null);
+  const [summary, setSummary] = useState<WearableSummary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [error, setError] = useState("");
@@ -42,7 +42,7 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     setError("");
 
     try {
-      const getStatus = httpsCallable<unknown, ConnectionStatusResult>(functions, "getFitbitConnectionStatus");
+      const getStatus = httpsCallable<unknown, ConnectionStatusResult>(functions, "getGoogleHealthConnectionStatus");
       const status = await getStatus({});
       setIsConnected(Boolean(status.data.connected));
     } catch {
@@ -59,7 +59,7 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     setError("");
 
     try {
-      const sync = httpsCallable<unknown, SyncResult>(functions, "syncFitbitDailySummary");
+      const sync = httpsCallable<unknown, SyncResult>(functions, "syncGoogleHealthDailySummary");
       const result = await sync({});
       setSummary(result.data.summary ?? null);
       setIsConnected(true);
@@ -80,7 +80,7 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     }
   }, [isConnected, summary]);
 
-  const connectFitbit = async () => {
+  const connectWearable = async () => {
     if (isSyncing) return;
 
     setIsSyncing(true);
@@ -89,11 +89,11 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     try {
       const createUrl = httpsCallable<{ locale: string }, AuthorizationResult>(
         functions,
-        "createFitbitAuthorizationUrl",
+        "createGoogleHealthAuthorizationUrl",
       );
       const result = await createUrl({ locale });
 
-      if (!result.data.url) throw new Error("Missing Fitbit authorization URL.");
+      if (!result.data.url) throw new Error("Missing Google Health authorization URL.");
 
       window.location.assign(result.data.url);
     } catch {
@@ -102,14 +102,14 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     }
   };
 
-  const disconnectFitbit = async () => {
+  const disconnectWearable = async () => {
     if (isSyncing) return;
 
     setIsSyncing(true);
     setError("");
 
     try {
-      const disconnect = httpsCallable<unknown, { ok?: boolean }>(functions, "disconnectFitbit");
+      const disconnect = httpsCallable<unknown, { ok?: boolean }>(functions, "disconnectGoogleHealth");
       await disconnect({});
       setIsConnected(false);
       setSummary(null);
@@ -179,13 +179,13 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
               {isSyncing ? <LoaderCircle className={styles.billingSpinner} size={17} /> : <PlugZap size={17} />}
               {isSyncing ? t("syncing") : t("sync")}
             </button>
-            <button type="button" onClick={() => void disconnectFitbit()} disabled={isLoading || isSyncing}>
+            <button type="button" onClick={() => void disconnectWearable()} disabled={isLoading || isSyncing}>
               <Unplug size={17} />
               {t("disconnect")}
             </button>
           </>
         ) : (
-          <button type="button" onClick={() => void connectFitbit()} disabled={isLoading || isSyncing}>
+          <button type="button" onClick={() => void connectWearable()} disabled={isLoading || isSyncing}>
             {isSyncing ? <LoaderCircle className={styles.billingSpinner} size={17} /> : <PlugZap size={17} />}
             {isSyncing ? t("opening") : t("connect")}
           </button>

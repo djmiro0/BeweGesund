@@ -2,6 +2,7 @@
   "header": {
     "logo": "Bewegesund",
     "nav": {
+      "home": "Home",
       "program": "Program",
       "courses": "Courses",
       "settings": "Settings",
@@ -153,7 +154,7 @@
         "explorePrograms": "View program"
       },
       "workouts": {
-        "title": "Workouts",
+        "title": "Dashboard",
         "subtitle": "Choose a focus area and continue with the sessions that match your current plan.",
         "forYou": "For You",
         "forYouDescription": "Recommended sessions from your current path.",
@@ -176,6 +177,14 @@
         "viewAll": "View all",
         "read": "Read article",
         "readTime": "{count} min read"
+      },
+      "meditation": {
+        "description": "Guided meditations, relaxation music, breathing sessions, and body scan videos for inner calm.",
+        "kicker": "Meditation & Relaxation",
+        "empty": "No Meditation & Relaxation videos are published yet.",
+        "latestTitle": "Latest meditation videos",
+        "duration": "{count} min",
+        "open": "Open video"
       }
     },
     "loading": "LOADING..."
@@ -644,12 +653,12 @@
     },
     "wearables": {
       "eyebrow": "Wearables",
-      "title": "Connect Fitbit",
+      "title": "Connect Google Health",
       "description": "Sync daily activity data so your plan can respond better to sleep, movement, and load.",
       "connected": "Connected",
       "notConnected": "Not connected",
-      "connect": "Connect Fitbit",
-      "opening": "Opening Fitbit",
+      "connect": "Connect Google Health",
+      "opening": "Opening Google Health",
       "sync": "Sync now",
       "syncing": "Syncing",
       "disconnect": "Disconnect",
@@ -661,10 +670,10 @@
       "hours": "{count} h",
       "bpm": "{count} bpm",
       "privacy": "BeweGesund stores only summarized daily values. You can disconnect at any time.",
-      "connectError": "Fitbit could not be opened right now. Please check the configuration.",
-      "syncError": "Fitbit data could not be synced right now.",
-      "disconnectError": "Fitbit could not be disconnected right now.",
-      "statusError": "Fitbit status could not be loaded right now."
+      "connectError": "Google Health could not be opened right now. Please check the configuration.",
+      "syncError": "Health data could not be synced right now.",
+      "disconnectError": "Google Health could not be disconnected right now.",
+      "statusError": "Google Health status could not be loaded right now."
     },
     "actions": {
       "menu": "Open profile menu",
@@ -961,6 +970,37 @@
         "This section is intended for general well-being and relaxation."
       ]
     },
+    "videos": {
+      "eyebrow": "Video area",
+      "title": "Meditation videos",
+      "description": "Your guided meditation, breathing, and body scan videos from Contentful appear here as soon as they are published with the meditation-entspannung category.",
+      "duration": "{count} min",
+      "empty": "The first meditation videos will appear here once they are published in Contentful."
+    },
+    "subtype": {
+      "back": "Back to overview",
+      "videoCount": "{count, plural, =0 {No videos yet} one {# video} other {# videos}}",
+      "panelText": "Calm sessions for your personal recovery routine.",
+      "emptyTitle": "No content published yet",
+      "emptyText": "As soon as matching videos are published in Contentful, they will appear here."
+    },
+    "detail": {
+      "instructionsTitle": "Before you start",
+      "videoAvailable": "Video available"
+    },
+    "player": {
+      "videoPending": "This video is being prepared.",
+      "preparingVideo": "Preparing your video...",
+      "signInRequired": "Please sign in to play this video.",
+      "tokenError": "The video could not be started. Please try again.",
+      "signingMissing": "Secure video playback is not configured yet.",
+      "authError": "Your session could not be verified. Please sign in again.",
+      "subscriptionRequired": "An active membership is required to play this video.",
+      "packageRequired": "Your current package does not include this video.",
+      "videoNotFound": "The requested video is not available.",
+      "accessCheckFailed": "Video access could not be verified right now.",
+      "rateLimited": "Too many playback requests. Please wait a moment and try again."
+    },
     "musicPlayer": {
       "title": "Relaxation Music",
       "durationAria": "Choose session duration",
@@ -1038,6 +1078,7 @@
       "consultation": "Consultation",
       "impressum": "Imprint",
       "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
       "contact": "Contact"
     },
     "contactItems": {

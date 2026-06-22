@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   createMuxPlaybackToken: vi.fn(() => "signed-token"),
   getCourseDetail: vi.fn(),
+  getMeditationRelaxationItem: vi.fn(),
   getFirebaseUserAccess: vi.fn(),
   verifyFirebaseIdToken: vi.fn(),
 }));
@@ -22,6 +23,7 @@ vi.mock("@/lib/muxSigning", () => ({
 
 vi.mock("@/lib/contentful", () => ({
   getCourseDetail: mocks.getCourseDetail,
+  getMeditationRelaxationItem: mocks.getMeditationRelaxationItem,
 }));
 
 import { POST } from "./route";
@@ -49,6 +51,11 @@ describe("Mux playback token route", () => {
     mocks.getCourseDetail.mockReset().mockResolvedValue({
       slug: "course-1",
       muxPlaybackId: "playback-1",
+      packageRequired: "basic",
+    });
+    mocks.getMeditationRelaxationItem.mockReset().mockResolvedValue({
+      slug: "meditation-1",
+      muxPlaybackId: "meditation-playback-1",
       packageRequired: "basic",
     });
     mocks.createMuxPlaybackToken.mockClear();
@@ -95,5 +102,20 @@ describe("Mux playback token route", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toMatchObject({ playbackToken: "signed-token" });
     expect(mocks.createMuxPlaybackToken).toHaveBeenCalledWith("playback-1");
+  });
+
+  it("signs only a matching meditation and relaxation playback ID", async () => {
+    const response = await POST(request({
+      playbackId: "meditation-playback-1",
+      courseSlug: "meditation-1",
+      contentType: "meditationRelaxation",
+      locale: "en",
+    }));
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({ playbackToken: "signed-token" });
+    expect(mocks.getCourseDetail).not.toHaveBeenCalled();
+    expect(mocks.getMeditationRelaxationItem).toHaveBeenCalledWith("en", "meditation-1");
+    expect(mocks.createMuxPlaybackToken).toHaveBeenCalledWith("meditation-playback-1");
   });
 });

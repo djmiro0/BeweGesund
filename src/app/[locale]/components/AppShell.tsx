@@ -5,6 +5,8 @@ import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../../../firebase.config";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
@@ -44,6 +46,43 @@ export function AppPreferenceEffects() {
       setThemePreference(appPreferences.theme);
     }
   }, [appPreferences.theme, setThemePreference, user]);
+
+  return null;
+}
+
+export function CheckoutReturnSync() {
+  const { user } = useAuth();
+  const processedSessionRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!user || typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    const sessionId = url.searchParams.get("session_id");
+
+    if (url.searchParams.get("checkout") !== "success" || !sessionId) return;
+    if (processedSessionRef.current === sessionId) return;
+
+    processedSessionRef.current = sessionId;
+
+    const confirmSession = httpsCallable<
+      { sessionId: string },
+      { ok: boolean }
+    >(functions, "confirmStripeCheckoutSession");
+
+    void confirmSession({ sessionId })
+      .catch((error) => {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("Stripe checkout session could not be confirmed.", error);
+        }
+      })
+      .finally(() => {
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete("checkout");
+        cleanUrl.searchParams.delete("session_id");
+        window.history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+      });
+  }, [user]);
 
   return null;
 }
@@ -192,6 +231,7 @@ export default function AppShell({
     <AuthProvider>
       <ThemeProvider>
         <AppPreferenceEffects />
+        <CheckoutReturnSync />
         <ShellFrame locale={locale}>{children}</ShellFrame>
       </ThemeProvider>
     </AuthProvider>

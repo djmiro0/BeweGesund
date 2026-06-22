@@ -15,11 +15,13 @@ not enforce Firebase App Check so billing does not depend on reCAPTCHA.
 
 2. Copy `functions/.env.example` to `functions/.env.sandrin-app`.
 3. Set `APP_BASE_URL` to the deployed test URL and
-   set both Stripe Price IDs:
+   `FUNCTIONS_BASE_URL` to the deployed Cloud Functions base URL for the
+   Firebase project, then set both Stripe Price IDs:
 
    ```env
    STRIPE_BASIC_PRICE_ID=price_...
    STRIPE_PLUS_PRICE_ID=price_...
+   FUNCTIONS_BASE_URL=https://europe-west3-project-id.cloudfunctions.net
    ```
 4. Store the test secret key:
 
@@ -41,6 +43,7 @@ not enforce Firebase App Check so billing does not depend on reCAPTCHA.
 
    Subscribe it to:
 
+   - `checkout.session.completed`
    - `customer.subscription.created`
    - `customer.subscription.updated`
    - `customer.subscription.deleted`

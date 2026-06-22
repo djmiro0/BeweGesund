@@ -110,6 +110,22 @@ Create a `course` content type with these fields:
 - `publishedAt` date/time, optional sort fallback
 - `coach`, `categoryKey`, `categoryTitle`, `categoryDescription`, `unlocksPerWeek`, `note`, and `order` are also supported if you add them later
 
+Create a separate `meditationRelaxation` content type for Meditation & Relaxation videos. Add one entry per video:
+
+- `title` short text, required; visible video title, for example `Guided Meditation: Finding Calm`
+- `slug` short text, required; stable URL slug, for example `guided-meditation-finding-calm`
+- `description` long text; short text shown in the category list and detail page
+- `instructions` long text; optional longer instructions shown below the video
+- `muxPlaybackId` short text, required for playback; signed Mux playback ID for the uploaded video
+- `subcategoryKey` short text, required; one of `guided-meditation`, `relaxation-music`, `breathing-against-stress`, or `body-scan`
+- `packageRequired` short text, one of `basic`, `plus`
+- `durationMinutes` integer; number of minutes, for example `10`
+- `level` short text; optional label, for example `All levels`
+- `posterImage`, `featuredImage`, or `image` media; poster/thumbnail image
+- `publishedAt` date/time; optional sort fallback
+- `coach` short text; optional name
+- `order` integer; optional manual ordering value
+
 Mux owns uploaded video files and playback. Contentful owns the editorial metadata and stores the Mux `playbackId` once the video is ready. Course playback is protected through `POST /api/mux/playback-token`: the client sends the Firebase ID token, the route verifies it, and the app returns a short-lived signed Mux playback token.
 
 To create a Mux direct upload URL from the app backend, set `MUX_TOKEN_ID`, `MUX_TOKEN_SECRET`, and `MUX_ADMIN_UPLOAD_TOKEN`, then call `POST /api/mux/direct-upload` with `Authorization: Bearer <MUX_ADMIN_UPLOAD_TOKEN>`. New direct uploads are created with signed playback policy. The endpoint fails closed when any credential is missing.

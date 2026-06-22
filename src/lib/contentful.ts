@@ -49,6 +49,23 @@ export interface CourseDetail {
   posterImage: string | null;
 }
 
+export interface MeditationRelaxationItem {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  instructions: string;
+  subcategoryKey: string;
+  durationMinutes: number | null;
+  level: string;
+  coach: string;
+  packageRequired: MemberPackage;
+  muxPlaybackId: string | null;
+  posterImage: string | null;
+  order: number;
+  publishedAt: string;
+}
+
 export interface CourseSummary {
   id: string;
   title: string;
@@ -184,10 +201,34 @@ type CourseFields = Partial<{
   liveTrainingLink: string;
 }>;
 
+type MeditationRelaxationFields = Partial<{
+  title: string;
+  slug: string;
+  description: string;
+  instructions: string;
+  durationMinutes: number;
+  duration: number;
+  level: string;
+  subcategoryKey: string | string[];
+  coach: string;
+  packageRequired: MemberPackage;
+  muxPlaybackId: string;
+  posterImage: ContentfulAssetField;
+  image: ContentfulAssetField;
+  featuredImage: ContentfulAssetField;
+  order: number;
+  publishedAt: string;
+}>;
+
 const defaultCalendarContentType = "calendarEvent";
 const defaultVideoContentType = "trainingVideo";
 const defaultBlogContentType = "blogPost";
 const defaultCourseContentType = "course";
+const defaultMeditationRelaxationContentType = "meditationRelaxation";
+const fallbackMeditationRelaxationContentTypes = [
+  defaultMeditationRelaxationContentType,
+  "meditationAndRelaxation",
+];
 
 function hasContentfulConfig() {
   return Boolean(process.env.CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_DELIVERY_TOKEN);
@@ -251,8 +292,30 @@ async function fetchEntries<TFields>(
   return (await response.json()) as ContentfulCollection<TFields>;
 }
 
+async function fetchMeditationRelaxationEntries(
+  locale: string,
+  searchParams: Record<string, string> = {},
+) {
+  const configuredContentType = process.env.CONTENTFUL_MEDITATION_RELAXATION_CONTENT_TYPE;
+
+  if (configuredContentType) {
+    return fetchEntries<MeditationRelaxationFields>(configuredContentType, locale, searchParams);
+  }
+
+  for (const contentType of fallbackMeditationRelaxationContentTypes) {
+    const collection = await fetchEntries<MeditationRelaxationFields>(contentType, locale, searchParams);
+    if (collection?.items.length) return collection;
+  }
+
+  return null;
+}
+
 function normalizeFormat(value: string | undefined): ContentfulCalendarFormat {
   return value === "seminar" ? "seminar" : "training";
+}
+
+function normalizeMemberPackage(value: string | undefined, fallback: MemberPackage = "basic"): MemberPackage {
+  return value === "plus" || value === "basic" ? value : fallback;
 }
 
 function normalizeStringList(value: string | string[] | undefined) {
@@ -283,6 +346,25 @@ function normalizeKey(value: unknown) {
     .trim()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function canonicalMeditationRelaxationSubcategory(value: unknown) {
+  const key = normalizeKey(value);
+  const aliases: Record<string, string> = {
+    "gefuehrte-meditation": "guided-meditation",
+    "gefuhrte-meditation": "guided-meditation",
+    "musik-zur-entspannung": "relaxation-music",
+    "entspannungsmusik": "relaxation-music",
+    "atmung-gegen-stress": "breathing-against-stress",
+    "disanjem-protiv-stresa": "breathing-against-stress",
+    "breathing-against-stress": "breathing-against-stress",
+    "guided-meditation": "guided-meditation",
+    "relaxation-music": "relaxation-music",
+    "body-scan": "body-scan",
+    bodyscan: "body-scan",
+  };
+
+  return key ? aliases[key] ?? key : "";
 }
 
 function titleFromKey(value: string) {
@@ -320,7 +402,7 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
         durationMinutes: Number(item.fields.durationMinutes ?? 30),
         formatKey: normalizeFormat(item.fields.format),
         coach: item.fields.coach ?? "Sandra",
-        packageRequired: "plus",
+        packageRequired: normalizeMemberPackage(item.fields.packageRequired, "plus"),
         muxPlaybackId: item.fields.muxPlaybackId ?? null,
         isLive: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink),
       } satisfies CalendarEvent;
@@ -504,9 +586,10 @@ function mapCourseDetail(
     duration: item.fields.duration ? String(item.fields.duration) : "",
     level: item.fields.level ?? "",
     coach: item.fields.coach ?? "",
-    packageRequired: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink)
-      ? "plus"
-      : "basic",
+    packageRequired: normalizeMemberPackage(
+      item.fields.packageRequired,
+      item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink) ? "plus" : "basic",
+    ),
     muxPlaybackId: item.fields.muxPlaybackId ?? null,
     posterImage: normalizeImage(
       item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
@@ -540,10 +623,11 @@ function mapCourseSummary(
     unlocksPerWeek: item.fields.unlocksPerWeek ? Number(item.fields.unlocksPerWeek) : null,
     note: item.fields.note ?? "",
     coach: item.fields.coach ?? "",
-    packageRequired: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink)
-      ? "plus"
-      : "basic",
-    subcategoryKey: normalizeKey(item.fields.subcategoryKey) ?? "",
+    packageRequired: normalizeMemberPackage(
+      item.fields.packageRequired,
+      item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink) ? "plus" : "basic",
+    ),
+    subcategoryKey: canonicalMeditationRelaxationSubcategory(item.fields.subcategoryKey),
     posterImage: normalizeImage(
       item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
       assetUrls,
@@ -666,6 +750,75 @@ export async function getCourseDetail(locale: string, slug: string): Promise<Cou
   const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
 
   return mapCourseDetail(collection.items[0], assetUrls);
+}
+
+function mapMeditationRelaxationItem(
+  item: ContentfulEntry<MeditationRelaxationFields>,
+  assetUrls: Map<string, string>,
+): MeditationRelaxationItem | null {
+  if (!item.fields.title) return null;
+
+  const durationMinutes = item.fields.durationMinutes ?? item.fields.duration;
+
+  return {
+    id: item.sys.id,
+    title: item.fields.title,
+    slug: item.fields.slug ?? item.sys.id,
+    description: item.fields.description ?? "",
+    instructions: item.fields.instructions ?? "",
+    subcategoryKey: canonicalMeditationRelaxationSubcategory(item.fields.subcategoryKey),
+    durationMinutes: durationMinutes ? Number(durationMinutes) : null,
+    level: item.fields.level ?? "",
+    coach: item.fields.coach ?? "",
+    packageRequired: normalizeMemberPackage(item.fields.packageRequired),
+    muxPlaybackId: item.fields.muxPlaybackId ?? null,
+    posterImage: normalizeImage(
+      item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
+      assetUrls,
+    ) || null,
+    order: Number(item.fields.order ?? 0),
+    publishedAt: item.fields.publishedAt ?? "",
+  };
+}
+
+export async function getMeditationRelaxationItems(locale: string): Promise<MeditationRelaxationItem[]> {
+  const collection = await fetchMeditationRelaxationEntries(locale);
+
+  if (!collection?.items.length) return [];
+
+  const assetUrls = buildAssetUrlMap(collection);
+
+  return collection.items
+    .map((item) => mapMeditationRelaxationItem(item, assetUrls))
+    .filter((item): item is MeditationRelaxationItem => Boolean(item))
+    .sort((a, b) => {
+      if (a.order !== b.order) return a.order - b.order;
+      const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return bDate - aDate || a.title.localeCompare(b.title);
+    });
+}
+
+export async function getMeditationRelaxationItem(
+  locale: string,
+  slug: string,
+): Promise<MeditationRelaxationItem | null> {
+  const collection = await fetchMeditationRelaxationEntries(locale, {
+    "fields.slug": slug,
+    limit: "1",
+  });
+
+  if (!collection?.items.length) return null;
+
+  const fallbackCollection = locale === "en"
+    ? null
+    : await fetchMeditationRelaxationEntries("en", {
+        "sys.id": collection.items[0].sys.id,
+        limit: "1",
+      });
+  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+
+  return mapMeditationRelaxationItem(collection.items[0], assetUrls);
 }
 
 function normalizeBlogTags(tags: string[] | undefined): BlogTag[] {
