@@ -11,6 +11,7 @@ import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
 import MobileTabBar from "./MobileTabBar";
+import NavigationFeedback from "./NavigationFeedback";
 import PaymentRequired from "./PaymentRequired";
 import ProgressPhotoReminder from "./ProgressPhotoReminder";
 import PwaInstallPrompt from "./PwaInstallPrompt";
@@ -150,6 +151,7 @@ export function ShellFrame({
         />
         <ComingSoon openAuth={openAuth} />
         <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+        <NavigationFeedback />
       </>
     );
   }
@@ -170,6 +172,7 @@ export function ShellFrame({
           onClose={closeAuth}
           requiresProfileSetup
         />
+        <NavigationFeedback />
       </>
     );
   }
@@ -189,6 +192,7 @@ export function ShellFrame({
           isOpen={isAuthOpen}
           onClose={closeAuth}
         />
+        <NavigationFeedback />
         <main className={styles.main}>
           <PaymentRequired locale={locale} />
         </main>
@@ -212,9 +216,10 @@ export function ShellFrame({
         onClose={closeAuth}
         requiresProfileSetup={requiresProfileSetup}
       />
+      <NavigationFeedback />
       <ProgressPhotoReminder />
       <main className={styles.main}>{children}</main>
-      <MobileTabBar locale={locale} user={user} openAuth={openAuth} />
+      <MobileTabBar locale={locale} />
       <Footer />
     </>
   );

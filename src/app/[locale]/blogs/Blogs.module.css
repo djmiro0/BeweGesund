@@ -281,6 +281,17 @@
   text-transform: uppercase;
 }
 
+.backLink {
+  position: sticky;
+  top: 5.25rem;
+  z-index: 5;
+  border: 1px solid var(--ui-border);
+  border-radius: 999px;
+  background: var(--ui-bg-alt);
+  box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.08);
+  padding: 0.62rem 0.82rem;
+}
+
 .readLink:hover,
 .backLink:hover {
   color: var(--ui-text);

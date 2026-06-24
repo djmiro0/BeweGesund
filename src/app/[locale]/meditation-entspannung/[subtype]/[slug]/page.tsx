@@ -10,7 +10,6 @@ const relaxationSubcategoryKeys = new Set([
   "guided-meditation",
   "relaxation-music",
   "breathing-against-stress",
-  "body-scan",
 ]);
 
 export default async function MeditationRelaxationDetailPage({

@@ -179,7 +179,7 @@
         "readTime": "{count} Min. Lesezeit"
       },
       "meditation": {
-        "description": "Geführte Meditationen, Entspannungsmusik, Atemübungen und Body-Scan-Videos für innere Ruhe.",
+        "description": "Geführte Meditationen, Entspannungsmusik und Atemübungen für innere Ruhe.",
         "kicker": "Meditation & Entspannung",
         "empty": "In Meditation & Entspannung sind noch keine Videos veröffentlicht.",
         "latestTitle": "Neueste Meditation Videos",
@@ -940,7 +940,7 @@
   "relaxation": {
     "eyebrow": "Innere Ruhe",
     "title": "Meditation & Entspannung",
-    "intro": "Ein ruhiger Bereich für geführte Meditation, entspannende Musik, Atemübungen gegen Stress und Body-Scan-Routinen.",
+    "intro": "Ein ruhiger Bereich für geführte Meditation, entspannende Musik und Atemübungen gegen Stress.",
     "categoryAria": "Meditations- und Entspannungsbereiche",
     "categories": [
       {
@@ -954,10 +954,6 @@
       {
         "title": "Atmung gegen Stress",
         "description": "Einfache Atemsessions, die dich aus Anspannung zurück in einen ruhigeren Rhythmus führen."
-      },
-      {
-        "title": "Körper-Scan",
-        "description": "Sanfte Wahrnehmungsübungen, um Spannungen im Körper besser zu erkennen und loszulassen."
       }
     ],
     "music": {
@@ -973,7 +969,7 @@
     "videos": {
       "eyebrow": "Video-Bereich",
       "title": "Meditationsvideos",
-      "description": "Hier erscheinen deine geführten Meditations-, Atem- und Body-Scan-Videos aus Contentful, sobald sie mit der Kategorie meditation-entspannung veröffentlicht sind.",
+      "description": "Hier erscheinen deine geführten Meditations- und Atemvideos aus Contentful, sobald sie mit der Kategorie meditation-entspannung veröffentlicht sind.",
       "duration": "{count} Min",
       "empty": "Die ersten Meditationsvideos werden angezeigt, sobald sie in Contentful veröffentlicht sind."
     },
@@ -1009,6 +1005,8 @@
       "session": "{minutes} Minuten Session",
       "play": "Abspielen",
       "pause": "Pause",
+      "playAll": "Alles abspielen",
+      "stopAll": "Alles stoppen",
       "close": "Session schließen",
       "generated": "Temporärer Entspannungsklang, bis die finalen Audio-Dateien ergänzt werden.",
       "options": [
@@ -1051,10 +1049,74 @@
           "description": "Für Tage, an denen du bewusst tiefer in Ruhe gehen und Körper und Geist länger begleiten möchtest.",
           "benefits": [
             "mehr Raum für Entspannung und Erholung",
-            "gut kombinierbar mit Dehnen oder Body Scan",
+            "gut kombinierbar mit Dehnen oder ruhigem Atmen",
             "stärkt das Gefühl einer vollständigen Pause"
           ],
           "bestFor": "Ideal für Wochenenden, Abendroutine oder bewusste Selbstfürsorge."
+        }
+      ]
+    },
+    "breathingTechniques": {
+      "title": "5 Atemtechniken gegen Stress",
+      "intro": "Wähle eine Technik aus, starte die ruhige Hintergrundmusik und folge den Schritten in deinem Tempo. Jede Übung ist kurz genug für den Alltag und kann bei Bedarf verlängert werden.",
+      "musicNote": "Leichte Musik ist vorläufig generiert",
+      "play": "Musik starten",
+      "pause": "Musik stoppen",
+      "sections": [
+        {
+          "title": "Lange Ausatmung",
+          "duration": "2-3 Min",
+          "description": "Eine schnelle Technik, wenn der Körper angespannt ist und du wieder ruhiger werden möchtest.",
+          "steps": [
+            "Atme durch die Nase ruhig ein.",
+            "Atme deutlich länger aus als ein.",
+            "Wiederhole den Rhythmus, bis der Körper weicher wird."
+          ],
+          "music": "Musik: sehr weich, langsam und ohne klare Melodie."
+        },
+        {
+          "title": "4-6 Atmung",
+          "duration": "3-5 Min",
+          "description": "Ein einfacher Rhythmus, der den Fokus bindet und das Tempo im Nervensystem senkt.",
+          "steps": [
+            "Zähle beim Einatmen bis vier.",
+            "Zähle beim Ausatmen bis sechs.",
+            "Bleibe entspannt, ohne den Atem zu pressen."
+          ],
+          "music": "Musik: gleichmäßiger, warmer Pad-Klang."
+        },
+        {
+          "title": "Box Breathing",
+          "duration": "4 Min",
+          "description": "Eine klare Struktur für Momente, in denen Gedanken schnell kreisen.",
+          "steps": [
+            "Vier zählen und einatmen.",
+            "Vier zählen und halten.",
+            "Vier zählen und ausatmen, dann vier zählen und halten."
+          ],
+          "music": "Musik: ruhig und rhythmisch, mit sanften Pausen."
+        },
+        {
+          "title": "Hand-auf-Herz Atmung",
+          "duration": "3 Min",
+          "description": "Eine beruhigende Übung, die Atmung und Körperkontakt verbindet.",
+          "steps": [
+            "Lege eine Hand auf den Brustkorb und eine auf den Bauch.",
+            "Atme langsam in Richtung der unteren Hand.",
+            "Lasse die Schultern mit jeder Ausatmung sinken."
+          ],
+          "music": "Musik: warm, nah und besonders leise."
+        },
+        {
+          "title": "Summende Ausatmung",
+          "duration": "2-4 Min",
+          "description": "Das sanfte Summen verlängert die Ausatmung und kann innere Unruhe spürbar reduzieren.",
+          "steps": [
+            "Atme locker durch die Nase ein.",
+            "Atme aus und summe dabei leise.",
+            "Spüre die Vibration im Brustraum und wiederhole es langsam."
+          ],
+          "music": "Musik: tiefer, fließender Hintergrund ohne starke Höhen."
         }
       ]
     }

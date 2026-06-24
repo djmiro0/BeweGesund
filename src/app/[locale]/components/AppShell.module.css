@@ -81,6 +81,45 @@
   font-weight: 750;
 }
 
+.navigationFeedback {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--shell-bg-rgb), 0.34);
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  animation: navigationFadeIn 0.16s var(--transition) both;
+}
+
+.navigationFeedbackPanel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.12);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.96), rgba(var(--page-base-rgb), 0.92)),
+    var(--page-soft);
+  box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.22);
+  color: var(--page-ink);
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  padding: 0.78rem 1rem;
+  text-transform: uppercase;
+}
+
+.navigationSpinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 2px solid rgba(var(--page-ink-rgb), 0.16);
+  border-top-color: var(--page-accent);
+  border-radius: 999px;
+  animation: loadingSpin 0.72s linear infinite;
+}
+
 .paymentGate {
   display: grid;
   gap: 1.2rem;
@@ -228,6 +267,16 @@
   }
 }
 
+@keyframes navigationFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @media (max-width: 1023px) {
   .main {
   }
@@ -236,5 +285,12 @@
 @media (max-width: 720px) {
   .paymentPlanGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navigationFeedback,
+  .navigationSpinner {
+    animation: none;
   }
 }

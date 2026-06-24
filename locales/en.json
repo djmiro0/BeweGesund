@@ -179,7 +179,7 @@
         "readTime": "{count} min read"
       },
       "meditation": {
-        "description": "Guided meditations, relaxation music, breathing sessions, and body scan videos for inner calm.",
+        "description": "Guided meditations, relaxation music, and breathing sessions for inner calm.",
         "kicker": "Meditation & Relaxation",
         "empty": "No Meditation & Relaxation videos are published yet.",
         "latestTitle": "Latest meditation videos",
@@ -940,7 +940,7 @@
   "relaxation": {
     "eyebrow": "Inner calm",
     "title": "Meditation & Relaxation",
-    "intro": "A quiet area for guided meditation, relaxation music, breathing against stress, and body scan routines.",
+    "intro": "A quiet area for guided meditation, relaxation music, and breathing against stress.",
     "categoryAria": "Meditation and relaxation areas",
     "categories": [
       {
@@ -954,10 +954,6 @@
       {
         "title": "Breathing Against Stress",
         "description": "Simple breathing sessions that guide you from tension into a calmer rhythm."
-      },
-      {
-        "title": "Body Scan",
-        "description": "Gentle awareness exercises to notice and release body tension."
       }
     ],
     "music": {
@@ -973,7 +969,7 @@
     "videos": {
       "eyebrow": "Video area",
       "title": "Meditation videos",
-      "description": "Your guided meditation, breathing, and body scan videos from Contentful appear here as soon as they are published with the meditation-entspannung category.",
+      "description": "Your guided meditation and breathing videos from Contentful appear here as soon as they are published with the meditation-entspannung category.",
       "duration": "{count} min",
       "empty": "The first meditation videos will appear here once they are published in Contentful."
     },
@@ -1009,6 +1005,8 @@
       "session": "{minutes} minute session",
       "play": "Play",
       "pause": "Pause",
+      "playAll": "Play all",
+      "stopAll": "Stop all",
       "close": "Close session",
       "generated": "Temporary relaxation sound until the final audio files are added.",
       "options": [
@@ -1051,10 +1049,74 @@
           "description": "For days when you want to go deeper into calm and support body and mind for longer.",
           "benefits": [
             "more room for relaxation and recovery",
-            "pairs well with stretching or a body scan",
+            "pairs well with stretching or calm breathing",
             "strengthens the feeling of a complete pause"
           ],
           "bestFor": "Best for weekends, evening routines, or intentional self-care."
+        }
+      ]
+    },
+    "breathingTechniques": {
+      "title": "5 breathing techniques against stress",
+      "intro": "Choose one technique, start the calm background music, and follow the steps at your own pace. Each exercise is short enough for everyday use and can be extended when needed.",
+      "musicNote": "Soft music is generated for now",
+      "play": "Start music",
+      "pause": "Stop music",
+      "sections": [
+        {
+          "title": "Long exhale",
+          "duration": "2-3 min",
+          "description": "A fast technique when the body feels tense and you want to settle again.",
+          "steps": [
+            "Breathe in gently through the nose.",
+            "Exhale noticeably longer than you inhale.",
+            "Repeat the rhythm until the body feels softer."
+          ],
+          "music": "Music: very soft, slow, and without a strong melody."
+        },
+        {
+          "title": "4-6 breathing",
+          "duration": "3-5 min",
+          "description": "A simple rhythm that gives the mind a focus and slows the nervous system down.",
+          "steps": [
+            "Count to four while inhaling.",
+            "Count to six while exhaling.",
+            "Stay relaxed without forcing the breath."
+          ],
+          "music": "Music: steady, warm pad sound."
+        },
+        {
+          "title": "Box breathing",
+          "duration": "4 min",
+          "description": "A clear structure for moments when thoughts are moving quickly.",
+          "steps": [
+            "Count to four and inhale.",
+            "Count to four and hold.",
+            "Count to four and exhale, then count to four and hold."
+          ],
+          "music": "Music: calm and rhythmic, with gentle pauses."
+        },
+        {
+          "title": "Hand-on-heart breathing",
+          "duration": "3 min",
+          "description": "A soothing exercise that connects breathing with gentle body contact.",
+          "steps": [
+            "Place one hand on the chest and one on the belly.",
+            "Breathe slowly toward the lower hand.",
+            "Let the shoulders drop with every exhale."
+          ],
+          "music": "Music: warm, close, and especially quiet."
+        },
+        {
+          "title": "Humming exhale",
+          "duration": "2-4 min",
+          "description": "Soft humming extends the exhale and can noticeably reduce inner restlessness.",
+          "steps": [
+            "Breathe in loosely through the nose.",
+            "Exhale and hum quietly.",
+            "Notice the vibration in the chest and repeat slowly."
+          ],
+          "music": "Music: low, flowing background without sharp highs."
         }
       ]
     }
