@@ -3,13 +3,13 @@
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../../../firebase.config";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
+import LoadingScreen from "./LoadingScreen";
 import MobileTabBar from "./MobileTabBar";
 import NavigationFeedback from "./NavigationFeedback";
 import PaymentRequired from "./PaymentRequired";
@@ -95,7 +95,6 @@ export function ShellFrame({
   children: React.ReactNode;
   locale: string;
 }) {
-  const t = useTranslations("home");
   const { user, profile, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
   const pathname = usePathname();
   const isAuthActionRoute = pathname.startsWith(`/${locale}/auth/action`);
@@ -126,17 +125,7 @@ export function ShellFrame({
   );
 
   if (loading) {
-    return (
-      <main className={styles.loadingScreen}>
-        <div className={styles.loadingMark} aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-        <p className={styles.loadingKicker}>BeweGesund</p>
-        <p className={styles.loadingText}>{t("loading")}</p>
-      </main>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user && !isAuthActionRoute) {

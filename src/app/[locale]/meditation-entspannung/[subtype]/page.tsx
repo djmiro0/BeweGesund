@@ -60,6 +60,14 @@ export default async function MeditationRelaxationSubtypePage({
         musicNote: string;
         play: string;
         pause: string;
+        education: {
+          summary: string;
+          title: string;
+          intro: string;
+          items: Array<{ title: string; basis: string; howItWorks: string }>;
+          disclaimerTitle: string;
+          disclaimer: string;
+        };
         sections: Array<{
           title: string;
           duration: string;

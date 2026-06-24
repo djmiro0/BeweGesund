@@ -1062,61 +1062,95 @@
       "musicNote": "Soft music is generated for now",
       "play": "Start music",
       "pause": "Stop music",
+      "education": {
+        "summary": "Why these breathing techniques can help",
+        "title": "Quick guide: breathing, nervous system, and relaxation",
+        "intro": "This overview summarizes the background behind the five techniques. It is meant for users who want to understand why a breathing rhythm may feel calming, focusing, or supportive before sleep.",
+        "items": [
+          {
+            "title": "Quick Calm - prolonged exhalation",
+            "basis": "Neurobiology and vagus nerve activation",
+            "howItWorks": "During exhalation, heart rate tends to slow. Extending the exhale can give the autonomic nervous system a signal of safety and support the shift from tension toward calm."
+          },
+          {
+            "title": "Deep Relaxation - diaphragmatic breathing",
+            "basis": "Clinical psychology and behavioral therapy",
+            "howItWorks": "Stress often leads to shallow chest breathing. Moving the breath lower into the belly and diaphragm can reduce muscle tension and encourage parasympathetic activity."
+          },
+          {
+            "title": "Focus - box breathing",
+            "basis": "Structured breath control in high-pressure performance",
+            "howItWorks": "The steady pattern of inhaling, holding, exhaling, and holding gives the mind a clear anchor. Controlled breath holds can help stabilize breathing and build mental clarity."
+          },
+          {
+            "title": "Before Bed - the 4-7-8 method",
+            "basis": "Integrative medicine and sleep routines",
+            "howItWorks": "The longer exhale and quiet pause between breaths slow the rhythm down. This method can help the body move from daytime alertness into a calmer pre-sleep state."
+          },
+          {
+            "title": "Free Slow Breathing - coherent breathing",
+            "basis": "Biofeedback and heart rate variability",
+            "howItWorks": "A slow rhythm of about six breaths per minute can help breathing, blood pressure oscillations, and heart rate variability become more synchronized. Regular practice may support nervous system balance."
+          }
+        ],
+        "disclaimerTitle": "Note",
+        "disclaimer": "These breathing exercises are intended for general relaxation and wellbeing. They do not replace medical or psychological advice, diagnosis, or treatment. If you have cardiovascular issues, asthma, COPD, lung disease, severe anxiety or panic symptoms, are pregnant, or feel unsure, consult a physician first. Stop immediately if you feel dizzy, short of breath, or unwell."
+      },
       "sections": [
         {
-          "title": "Long exhale",
-          "duration": "2-3 min",
-          "description": "A fast technique when the body feels tense and you want to settle again.",
+          "title": "Quick Calm",
+          "duration": "1-2 min",
+          "description": "Prolonged exhalation for moments when you want to move out of inner tension quickly.",
           "steps": [
             "Breathe in gently through the nose.",
-            "Exhale noticeably longer than you inhale.",
-            "Repeat the rhythm until the body feels softer."
+            "Exhale slowly for about six seconds.",
+            "Repeat the rhythm until your inner pace clearly slows."
           ],
           "music": "Music: very soft, slow, and without a strong melody."
         },
         {
-          "title": "4-6 breathing",
+          "title": "Deep Relaxation",
           "duration": "3-5 min",
-          "description": "A simple rhythm that gives the mind a focus and slows the nervous system down.",
+          "description": "Diaphragmatic breathing to release shallow chest breathing and guide the body into a calmer state.",
           "steps": [
-            "Count to four while inhaling.",
-            "Count to six while exhaling.",
-            "Stay relaxed without forcing the breath."
+            "Place one hand on the belly.",
+            "Inhale so the belly gently rises.",
+            "Let the exhale soften and flow out completely."
           ],
-          "music": "Music: steady, warm pad sound."
+          "music": "Music: warm, deep, and evenly flowing."
         },
         {
-          "title": "Box breathing",
+          "title": "Focus",
           "duration": "4 min",
-          "description": "A clear structure for moments when thoughts are moving quickly.",
+          "description": "Box breathing with a clear structure when you want to organize thoughts and become more focused.",
           "steps": [
             "Count to four and inhale.",
-            "Count to four and hold.",
+            "Count to four and hold the breath.",
             "Count to four and exhale, then count to four and hold."
           ],
           "music": "Music: calm and rhythmic, with gentle pauses."
         },
         {
-          "title": "Hand-on-heart breathing",
-          "duration": "3 min",
-          "description": "A soothing exercise that connects breathing with gentle body contact.",
+          "title": "Before Bed",
+          "duration": "4-6 min",
+          "description": "The 4-7-8 method as a quiet evening technique to prepare the body for sleep.",
           "steps": [
-            "Place one hand on the chest and one on the belly.",
-            "Breathe slowly toward the lower hand.",
-            "Let the shoulders drop with every exhale."
+            "Inhale for four seconds.",
+            "Hold the breath for seven seconds without forcing.",
+            "Exhale slowly for eight seconds."
           ],
-          "music": "Music: warm, close, and especially quiet."
+          "music": "Music: especially quiet, warm, and without sharp highs."
         },
         {
-          "title": "Humming exhale",
-          "duration": "2-4 min",
-          "description": "Soft humming extends the exhale and can noticeably reduce inner restlessness.",
+          "title": "Free Slow Breathing",
+          "duration": "5 min",
+          "description": "Coherent breathing in a calm 5:5 rhythm for more steadiness in the nervous system.",
           "steps": [
-            "Breathe in loosely through the nose.",
-            "Exhale and hum quietly.",
-            "Notice the vibration in the chest and repeat slowly."
+            "Inhale for five seconds.",
+            "Exhale for five seconds.",
+            "Stay close to about six breaths per minute."
           ],
-          "music": "Music: low, flowing background without sharp highs."
+          "music": "Music: low, flowing background with a stable pulse."
         }
       ]
     }

@@ -63,7 +63,6 @@ export default function NavigationFeedback() {
     <div className={styles.navigationFeedback} role="status" aria-live="polite" aria-label={t("loading")}>
       <div className={styles.navigationFeedbackPanel}>
         <div className={styles.navigationSpinner} aria-hidden="true" />
-        <span>{t("loading")}</span>
       </div>
     </div>
   );

@@ -1062,61 +1062,95 @@
       "musicNote": "Leichte Musik ist vorläufig generiert",
       "play": "Musik starten",
       "pause": "Musik stoppen",
+      "education": {
+        "summary": "Warum diese Atemtechniken wirken",
+        "title": "Kurz erklärt: Atmung, Nervensystem und Entspannung",
+        "intro": "Dieser Überblick fasst die wichtigsten Hintergründe der fünf Techniken zusammen. Er dient zur Orientierung, wenn du vor der Übung verstehen möchtest, warum ein bestimmter Atemrhythmus beruhigend, fokussierend oder schlaffördernd wirken kann.",
+        "items": [
+          {
+            "title": "Schnelle Beruhigung - verlängertes Ausatmen",
+            "basis": "Neurobiologie und Vagusnerv-Aktivierung",
+            "howItWorks": "Beim Ausatmen verlangsamt sich der Herzschlag tendenziell. Eine längere Ausatmung kann dem autonomen Nervensystem ein Sicherheitssignal geben und den Wechsel aus Anspannung in Ruhe unterstützen."
+          },
+          {
+            "title": "Tiefe Entspannung - Zwerchfellatmung",
+            "basis": "Klinische Psychologie und Verhaltenstherapie",
+            "howItWorks": "Stress führt häufig zu flacher Brustatmung. Wenn die Atmung tiefer in Bauch und Zwerchfell wandert, kann sich Muskelspannung reduzieren und der Parasympathikus stärker aktiviert werden."
+          },
+          {
+            "title": "Fokus - Box Breathing",
+            "basis": "Strukturierte Atemkontrolle in Leistungssituationen",
+            "howItWorks": "Der gleichmäßige Rhythmus aus Einatmen, Halten, Ausatmen und Halten bündelt Aufmerksamkeit. Das kontrollierte Atemhalten kann helfen, den Atem zu stabilisieren und mentale Klarheit aufzubauen."
+          },
+          {
+            "title": "Vor dem Schlafengehen - 4-7-8 Methode",
+            "basis": "Integrative Medizin und Einschlafroutine",
+            "howItWorks": "Das längere Ausatmen und die ruhige Pause zwischen den Atemzügen senken das Tempo. Die Methode kann helfen, vom aktiven Tagesmodus in eine ruhigere Vorbereitungsphase für Schlaf zu wechseln."
+          },
+          {
+            "title": "Freies langsames Atmen - kohärentes Atmen",
+            "basis": "Biofeedback und Herzratenvariabilität",
+            "howItWorks": "Ein langsamer Rhythmus von ungefähr sechs Atemzügen pro Minute kann Atmung, Blutdruckschwankungen und Herzratenvariabilität harmonisieren. Regelmäßiges Üben kann die Balance des Nervensystems unterstützen."
+          }
+        ],
+        "disclaimerTitle": "Hinweis",
+        "disclaimer": "Diese Atemübungen dienen allgemeiner Entspannung und Wohlbefinden. Sie ersetzen keine medizinische oder psychologische Beratung, Diagnose oder Behandlung. Bei Herz-Kreislauf-Erkrankungen, Asthma, COPD, Lungenerkrankungen, starken Angst- oder Panikzuständen, Schwangerschaft oder Unsicherheit bitte vorher ärztlich abklären. Beende die Übung sofort bei Schwindel, Atemnot oder Unwohlsein."
+      },
       "sections": [
         {
-          "title": "Lange Ausatmung",
-          "duration": "2-3 Min",
-          "description": "Eine schnelle Technik, wenn der Körper angespannt ist und du wieder ruhiger werden möchtest.",
+          "title": "Schnelle Beruhigung",
+          "duration": "1-2 Min",
+          "description": "Verlängertes Ausatmen für Momente, in denen du schnell aus innerer Anspannung herausfinden möchtest.",
           "steps": [
-            "Atme durch die Nase ruhig ein.",
-            "Atme deutlich länger aus als ein.",
-            "Wiederhole den Rhythmus, bis der Körper weicher wird."
+            "Atme ruhig durch die Nase ein.",
+            "Atme langsam für etwa sechs Sekunden aus.",
+            "Wiederhole den Rhythmus, bis sich dein Tempo spürbar senkt."
           ],
           "music": "Musik: sehr weich, langsam und ohne klare Melodie."
         },
         {
-          "title": "4-6 Atmung",
+          "title": "Tiefe Entspannung",
           "duration": "3-5 Min",
-          "description": "Ein einfacher Rhythmus, der den Fokus bindet und das Tempo im Nervensystem senkt.",
+          "description": "Zwerchfellatmung, um flache Brustatmung zu lösen und den Körper in einen ruhigeren Zustand zu begleiten.",
           "steps": [
-            "Zähle beim Einatmen bis vier.",
-            "Zähle beim Ausatmen bis sechs.",
-            "Bleibe entspannt, ohne den Atem zu pressen."
+            "Lege eine Hand auf den Bauch.",
+            "Atme so ein, dass sich die Bauchdecke sanft hebt.",
+            "Lasse die Ausatmung weich und vollständig ausfließen."
           ],
-          "music": "Musik: gleichmäßiger, warmer Pad-Klang."
+          "music": "Musik: warm, tief und gleichmäßig fließend."
         },
         {
-          "title": "Box Breathing",
+          "title": "Fokus",
           "duration": "4 Min",
-          "description": "Eine klare Struktur für Momente, in denen Gedanken schnell kreisen.",
+          "description": "Box Breathing mit klarer Struktur, wenn du Gedanken ordnen und konzentrierter werden möchtest.",
           "steps": [
             "Vier zählen und einatmen.",
-            "Vier zählen und halten.",
+            "Vier zählen und den Atem halten.",
             "Vier zählen und ausatmen, dann vier zählen und halten."
           ],
           "music": "Musik: ruhig und rhythmisch, mit sanften Pausen."
         },
         {
-          "title": "Hand-auf-Herz Atmung",
-          "duration": "3 Min",
-          "description": "Eine beruhigende Übung, die Atmung und Körperkontakt verbindet.",
+          "title": "Vor dem Schlafengehen",
+          "duration": "4-6 Min",
+          "description": "Die 4-7-8 Methode als ruhige Abendtechnik, um den Körper auf Schlaf vorzubereiten.",
           "steps": [
-            "Lege eine Hand auf den Brustkorb und eine auf den Bauch.",
-            "Atme langsam in Richtung der unteren Hand.",
-            "Lasse die Schultern mit jeder Ausatmung sinken."
+            "Atme vier Sekunden ein.",
+            "Halte den Atem sieben Sekunden, ohne Druck aufzubauen.",
+            "Atme acht Sekunden langsam aus."
           ],
-          "music": "Musik: warm, nah und besonders leise."
+          "music": "Musik: besonders leise, warm und ohne starke Höhen."
         },
         {
-          "title": "Summende Ausatmung",
-          "duration": "2-4 Min",
-          "description": "Das sanfte Summen verlängert die Ausatmung und kann innere Unruhe spürbar reduzieren.",
+          "title": "Freies langsames Atmen",
+          "duration": "5 Min",
+          "description": "Kohärentes Atmen in einem ruhigen 5:5 Rhythmus für mehr Gleichmäßigkeit im Nervensystem.",
           "steps": [
-            "Atme locker durch die Nase ein.",
-            "Atme aus und summe dabei leise.",
-            "Spüre die Vibration im Brustraum und wiederhole es langsam."
+            "Atme fünf Sekunden ein.",
+            "Atme fünf Sekunden aus.",
+            "Bleibe bei ungefähr sechs Atemzügen pro Minute."
           ],
-          "music": "Musik: tiefer, fließender Hintergrund ohne starke Höhen."
+          "music": "Musik: tiefer, fließender Hintergrund mit stabilem Puls."
         }
       ]
     }

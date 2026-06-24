@@ -12,6 +12,12 @@ interface BreathingTechnique {
   music: string;
 }
 
+interface BreathingEducationItem {
+  title: string;
+  basis: string;
+  howItWorks: string;
+}
+
 interface BreathingTechniquesProps {
   copy: {
     title: string;
@@ -19,6 +25,14 @@ interface BreathingTechniquesProps {
     musicNote: string;
     play: string;
     pause: string;
+    education: {
+      summary: string;
+      title: string;
+      intro: string;
+      items: BreathingEducationItem[];
+      disclaimerTitle: string;
+      disclaimer: string;
+    };
     sections: BreathingTechnique[];
   };
 }
@@ -85,6 +99,29 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
           <p>{copy.intro}</p>
         </div>
       </div>
+
+      <details className={styles.breathingInfo}>
+        <summary>{copy.education.summary}</summary>
+        <div className={styles.breathingInfoBody}>
+          <div className={styles.breathingInfoIntro}>
+            <h3>{copy.education.title}</h3>
+            <p>{copy.education.intro}</p>
+          </div>
+          <div className={styles.breathingInfoGrid}>
+            {copy.education.items.map((item) => (
+              <article key={item.title}>
+                <h4>{item.title}</h4>
+                <p><strong>{item.basis}</strong></p>
+                <p>{item.howItWorks}</p>
+              </article>
+            ))}
+          </div>
+          <div className={styles.breathingDisclaimer}>
+            <strong>{copy.education.disclaimerTitle}</strong>
+            <p>{copy.education.disclaimer}</p>
+          </div>
+        </div>
+      </details>
 
       <div className={styles.breathingGrid}>
         {copy.sections.map((section, index) => {
