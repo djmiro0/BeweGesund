@@ -4,16 +4,6 @@
   color: var(--page-ink);
 }
 
-.loadingScreen {
-  display: flex;
-  min-height: 100svh;
-  align-items: center;
-  justify-content: center;
-  background: var(--background);
-  color: var(--highlight);
-  font-weight: 950;
-}
-
 .publicSection {
   position: relative;
   overflow: hidden;

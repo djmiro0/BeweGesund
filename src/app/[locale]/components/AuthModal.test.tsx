@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
     callable: vi.fn(),
     getDoc: vi.fn(),
     httpsCallable: vi.fn(),
+    sendPasswordResetEmail: vi.fn(),
     signInWithEmailAndPassword: vi.fn(),
     signInWithPopup: vi.fn(),
     signOut: vi.fn(),
@@ -27,11 +28,19 @@ vi.mock("next-intl", () => ({
         hidePassword: "Hide password",
         submitSignIn: "Sign In",
         forgotPassword: "Forgot your password?",
+        resetTitle: "Reset password",
+        resetSupportText: "Enter the email address for your account. Password reset works for email-password accounts. If you created your account with Google, use Continue with Google instead.",
+        sendResetLink: "Send reset link",
+        backToSignIn: "Back to sign in",
+        resetEmailRequired: "Enter your email address first.",
+        resetEmailSent: "If this email uses password sign-in, reset instructions were sent. If you created the account with Google, use Continue with Google instead.",
         switchToRegister: "Create an account",
         close: "Close",
         errorPrefix: "Sign in failed:",
-        invalidCredential: "The email or password is incorrect.",
+        invalidCredential: "We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.",
         invalidEmail: "Please enter a valid email address.",
+        "validation.signInEmail": "Enter your email address.",
+        "validation.signInPassword": "Enter your password.",
         googleOnboardingTitle: "Complete your profile",
         googleOnboardingSupportText: "Add required profile details",
         completeProfile: "Complete profile",
@@ -90,7 +99,7 @@ vi.mock("firebase/auth", () => ({
     createUserWithEmailAndPassword: vi.fn(),
     deleteUser: vi.fn(() => Promise.resolve()),
   sendEmailVerification: vi.fn(),
-  sendPasswordResetEmail: vi.fn(),
+  sendPasswordResetEmail: mocks.sendPasswordResetEmail,
   signInWithEmailAndPassword: mocks.signInWithEmailAndPassword,
   signInWithPopup: mocks.signInWithPopup,
   signOut: mocks.signOut,
@@ -115,6 +124,7 @@ describe("AuthModal Google sign-in", () => {
     mocks.callable.mockReset();
     mocks.httpsCallable.mockReset();
     mocks.httpsCallable.mockReturnValue(mocks.callable);
+    mocks.sendPasswordResetEmail.mockReset();
     mocks.signInWithEmailAndPassword.mockReset();
     mocks.signInWithPopup.mockReset();
     mocks.signOut.mockReset();
@@ -137,7 +147,19 @@ describe("AuthModal Google sign-in", () => {
     expect(screen.queryByText(/reCAPTCHA/i)).not.toBeInTheDocument();
   });
 
-  it("shows a visible error when the sign-in email format is invalid", async () => {
+  it("shows sign-in requirements when submitted empty", async () => {
+    const user = userEvent.setup();
+
+    render(<AuthModal isOpen onClose={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "Sign In" }));
+
+    expect(screen.getByText("Complete these items to continue:")).toBeInTheDocument();
+    expect(screen.getByText("Enter your email address.")).toBeInTheDocument();
+    expect(screen.getByText("Enter your password.")).toBeInTheDocument();
+    expect(mocks.signInWithEmailAndPassword).not.toHaveBeenCalled();
+  });
+
+  it("shows a visible requirement when the sign-in email format is invalid", async () => {
     const user = userEvent.setup();
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
@@ -145,7 +167,8 @@ describe("AuthModal Google sign-in", () => {
     await user.type(screen.getByLabelText("Password"), "secret");
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(screen.getByText("Sign in failed: Please enter a valid email address.")).toBeInTheDocument();
+    expect(screen.getByText("Complete these items to continue:")).toBeInTheDocument();
+    expect(screen.getByText("Please enter a valid email address.")).toBeInTheDocument();
     expect(mocks.signInWithEmailAndPassword).not.toHaveBeenCalled();
   });
 
@@ -158,7 +181,54 @@ describe("AuthModal Google sign-in", () => {
     await user.type(screen.getByLabelText("Password"), "wrong-password");
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(await screen.findByText("Sign in failed: The email or password is incorrect.")).toBeInTheDocument();
+    expect(await screen.findByText("Sign in failed: We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.")).toBeInTheDocument();
+  });
+
+  it("shows account help when Firebase reports invalid login credentials", async () => {
+    const user = userEvent.setup();
+    mocks.signInWithEmailAndPassword.mockRejectedValue({
+      customData: {
+        _tokenResponse: {
+          error: {
+            message: "INVALID_LOGIN_CREDENTIALS",
+          },
+        },
+      },
+    });
+
+    render(<AuthModal isOpen onClose={vi.fn()} />);
+    await user.type(screen.getByLabelText("Email address"), "missing@example.com");
+    await user.type(screen.getByLabelText("Password"), "password");
+    await user.click(screen.getByRole("button", { name: "Sign In" }));
+
+    expect(await screen.findByText("Sign in failed: We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.")).toBeInTheDocument();
+  });
+
+  it("explains Google accounts in password reset feedback", async () => {
+    const user = userEvent.setup();
+    mocks.sendPasswordResetEmail.mockResolvedValue(undefined);
+
+    render(<AuthModal isOpen onClose={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "Forgot your password?" }));
+
+    expect(screen.getByText("Enter the email address for your account. Password reset works for email-password accounts. If you created your account with Google, use Continue with Google instead.")).toBeInTheDocument();
+
+    await user.type(screen.getByLabelText("Email address"), "google-member@example.com");
+    await user.click(screen.getByRole("button", { name: "Send reset link" }));
+
+    expect(mocks.sendPasswordResetEmail).toHaveBeenCalled();
+    expect(await screen.findByText("If this email uses password sign-in, reset instructions were sent. If you created the account with Google, use Continue with Google instead.")).toBeInTheDocument();
+  });
+
+  it("shows reset email feedback when password reset is submitted empty", async () => {
+    const user = userEvent.setup();
+
+    render(<AuthModal isOpen onClose={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "Forgot your password?" }));
+    await user.click(screen.getByRole("button", { name: "Send reset link" }));
+
+    expect(screen.getByText("Enter your email address first.")).toBeInTheDocument();
+    expect(mocks.sendPasswordResetEmail).not.toHaveBeenCalled();
   });
 
   it("toggles password visibility from the eye button", async () => {

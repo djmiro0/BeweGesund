@@ -155,6 +155,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     const [infoMessage, setInfoMessage] = useState("");
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+    const [hasAttemptedSignInSubmit, setHasAttemptedSignInSubmit] = useState(false);
     const [hasAttemptedProfileSubmit, setHasAttemptedProfileSubmit] = useState(false);
     const isRegister = view === "register";
     const isForgotPassword = view === "forgotPassword";
@@ -183,7 +184,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         hasAcceptedHealthConsent;
     const canSubmit = isProfileSetup
         ? !isSubmitting
-        : trimmedEmail.length > 0 && password.length > 0 && !isSubmitting;
+        : !isSubmitting;
     const registrationRequirements = [
         ...(firstName.trim().length === 0 ? [t("validation.firstName")] : []),
         ...(lastName.trim().length === 0 ? [t("validation.lastName")] : []),
@@ -211,7 +212,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     const shouldShowFormRequirements =
         !isSubmitting &&
         formRequirements.length > 0 &&
-        (isProfileSetup ? hasAttemptedProfileSubmit : trimmedEmail.length > 0 || password.length > 0);
+        (isProfileSetup ? hasAttemptedProfileSubmit : hasAttemptedSignInSubmit);
 
     useEffect(() => {
         if (
@@ -242,10 +243,15 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
             return t("emailInUse");
         }
 
+        if (messages.some((message) => message?.includes("INVALID_LOGIN_CREDENTIALS"))) {
+            return t("invalidCredential");
+        }
+
         switch (code) {
             case "auth/operation-not-allowed":
                 return t("providerDisabled");
             case "auth/invalid-credential":
+            case "auth/invalid-login-credentials":
             case "auth/user-not-found":
             case "auth/wrong-password":
                 return t("invalidCredential");
@@ -346,6 +352,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
         setInfoMessage("");
         setIsPasswordVisible(false);
         setIsConfirmPasswordVisible(false);
+        setHasAttemptedSignInSubmit(false);
         setHasAttemptedProfileSubmit(false);
     };
 
@@ -547,8 +554,9 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                 }
                 return;
             } else {
-                if (!trimmedEmail || !isValidEmailAddress(trimmedEmail)) {
-                    setErrorMessage(`${t("errorPrefix")} ${t("invalidEmail")}`);
+                setHasAttemptedSignInSubmit(true);
+
+                if (signInRequirements.length > 0) {
                     return;
                 }
 
@@ -658,7 +666,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                             </div>
                         ) : null}
                         <button
-                            disabled={!trimmedEmail || isSubmitting}
+                            disabled={isSubmitting}
                             className="flex w-full items-center justify-center gap-2 rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.18em] text-[var(--text-on-warm)] transition hover:bg-[var(--button-primary-bg)] hover:text-[var(--text-light)] disabled:cursor-not-allowed disabled:opacity-45"
                         >
                             {isSubmitting ? <LoaderCircle size={18} className="animate-spin" /> : null}

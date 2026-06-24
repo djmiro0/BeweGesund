@@ -4,13 +4,14 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Clock, PlayCircle, ShieldCheck, Sparkles } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getMeditationRelaxationItems, type MeditationRelaxationItem } from "@/lib/contentful";
+import BreathingTechniques from "./BreathingTechniques";
+import RelaxationMusicPlayer from "./RelaxationMusicPlayer";
 import styles from "../Relaxation.module.css";
 
 const relaxationSubcategoryKeys = [
   "guided-meditation",
   "relaxation-music",
   "breathing-against-stress",
-  "body-scan",
 ] as const;
 
 function getRelaxationVideos(items: MeditationRelaxationItem[], subtype: string) {
@@ -40,6 +41,42 @@ export default async function MeditationRelaxationSubtypePage({
   const categories = t.raw("categories") as Array<{ title: string; description: string }>;
   const category = categories[subtypeIndex];
   const videos = getRelaxationVideos(courses, subtype);
+  const musicPlayer = subtype === "relaxation-music"
+    ? t.raw("musicPlayer") as {
+        title: string;
+        play: string;
+        pause: string;
+        playAll: string;
+        stopAll: string;
+        generated: string;
+        session: string;
+        options: Array<{ minutes: number; title: string; description: string; benefits: string[]; bestFor: string }>;
+      }
+    : null;
+  const breathingTechniques = subtype === "breathing-against-stress"
+    ? t.raw("breathingTechniques") as {
+        title: string;
+        intro: string;
+        musicNote: string;
+        play: string;
+        pause: string;
+        education: {
+          summary: string;
+          title: string;
+          intro: string;
+          items: Array<{ title: string; basis: string; howItWorks: string }>;
+          disclaimerTitle: string;
+          disclaimer: string;
+        };
+        sections: Array<{
+          title: string;
+          duration: string;
+          description: string;
+          steps: string[];
+          music: string;
+        }>;
+      }
+    : null;
 
   return (
     <main className={styles.page}>
@@ -60,6 +97,14 @@ export default async function MeditationRelaxationSubtypePage({
           <span>{t("subtype.panelText")}</span>
         </aside>
       </section>
+
+      {musicPlayer ? (
+        <RelaxationMusicPlayer copy={musicPlayer} />
+      ) : null}
+
+      {breathingTechniques ? (
+        <BreathingTechniques copy={breathingTechniques} />
+      ) : null}
 
       <section className={styles.videoList} aria-label={category.title}>
         {videos.length ? (

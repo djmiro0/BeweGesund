@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "./components/AuthProvider";
 import Dashboard from "./components/Dashboard";
 import HeroSection from "./components/HeroSection";
+import LoadingScreen from "./components/LoadingScreen";
 import VideoSection from "./components/VideoSection";
 import BannerSection from "../components/BannerSection/BannerSection";
 import styles from "./page.module.css";
@@ -23,7 +24,7 @@ export default function HomePage() {
         ? getProfileFirstName(profile, user?.displayName) || "Member"
         : user?.displayName?.trim().split(/\s+/)[0] || user?.email?.split("@")[0] || "Member";
 
-    if (loading) return <div className={styles.loadingScreen}>{t("loading")}</div>;
+    if (loading) return <LoadingScreen text={t("loading")} />;
 
     return (
         <div className={styles.homePage}>

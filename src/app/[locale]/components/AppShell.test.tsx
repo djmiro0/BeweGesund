@@ -69,10 +69,6 @@ vi.mock("./PaymentRequired", () => ({
   default: () => <div data-testid="payment-required" />,
 }));
 
-vi.mock("./ProgressPhotoReminder", () => ({
-  default: () => <div data-testid="progress-photo-reminder" />,
-}));
-
 vi.mock("./PwaInstallPrompt", () => ({
   default: () => <div data-testid="pwa-install-prompt" />,
 }));

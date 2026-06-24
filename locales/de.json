@@ -179,7 +179,7 @@
         "readTime": "{count} Min. Lesezeit"
       },
       "meditation": {
-        "description": "Geführte Meditationen, Entspannungsmusik, Atemübungen und Body-Scan-Videos für innere Ruhe.",
+        "description": "Geführte Meditationen, Entspannungsmusik und Atemübungen für innere Ruhe.",
         "kicker": "Meditation & Entspannung",
         "empty": "In Meditation & Entspannung sind noch keine Videos veröffentlicht.",
         "latestTitle": "Neueste Meditation Videos",
@@ -286,11 +286,11 @@
     "submitRegister": "Konto Erstellen",
     "forgotPassword": "Passwort vergessen?",
     "resetTitle": "Passwort zurücksetzen",
-    "resetSupportText": "Gib die E-Mail-Adresse deines Kontos ein. Wir senden dir einen sicheren Link, über den du ein neues Passwort festlegen kannst.",
+    "resetSupportText": "Gib die E-Mail-Adresse deines Kontos ein. Das Zurücksetzen funktioniert für Konten mit E-Mail und Passwort. Wenn du dein Konto mit Google erstellt hast, nutze stattdessen Mit Google fortfahren.",
     "sendResetLink": "Reset-Link senden",
     "backToSignIn": "Zurück zur Anmeldung",
     "resetEmailRequired": "Gib zuerst deine E-Mail-Adresse ein.",
-    "resetEmailSent": "Falls für diese E-Mail ein Konto existiert, wurden Anweisungen zum Zurücksetzen gesendet.",
+    "resetEmailSent": "Falls diese E-Mail die Anmeldung mit Passwort nutzt, wurden Anweisungen zum Zurücksetzen gesendet. Wenn du das Konto mit Google erstellt hast, nutze stattdessen Mit Google fortfahren.",
     "verificationSent": "Konto erstellt. Bitte bestätige deine E-Mail-Adresse, bevor du dich anmeldest.",
     "verificationSendFailed": "Das Konto wurde erstellt, aber die Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuche es später erneut.",
     "emailNotVerified": "Bitte bestätige zuerst deine E-Mail-Adresse.",
@@ -299,7 +299,7 @@
     "close": "Schließen",
     "errorPrefix": "Anmeldung fehlgeschlagen:",
     "providerDisabled": "Die Kontoerstellung ist in Firebase derzeit deaktiviert. Bitte aktiviere Email/Passwort-Anmeldung in der Firebase-Konsole.",
-    "invalidCredential": "Die E-Mail-Adresse oder das Passwort ist nicht korrekt. Prüfe beide Felder oder nutze das Zurücksetzen des Passworts, falls dieses Konto per E-Mail angemeldet wird.",
+    "invalidCredential": "Wir konnten dich mit diesen Daten nicht anmelden. Prüfe E-Mail und Passwort, erstelle zuerst ein Konto oder nutze Mit Google fortfahren, wenn du dich mit Google registriert hast.",
     "emailInUse": "Für diese E-Mail-Adresse existiert bereits ein Konto.",
     "weakPassword": "Bitte wähle ein stärkeres Passwort.",
     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
@@ -940,7 +940,7 @@
   "relaxation": {
     "eyebrow": "Innere Ruhe",
     "title": "Meditation & Entspannung",
-    "intro": "Ein ruhiger Bereich für geführte Meditation, entspannende Musik, Atemübungen gegen Stress und Body-Scan-Routinen.",
+    "intro": "Ein ruhiger Bereich für geführte Meditation, entspannende Musik und Atemübungen gegen Stress.",
     "categoryAria": "Meditations- und Entspannungsbereiche",
     "categories": [
       {
@@ -954,10 +954,6 @@
       {
         "title": "Atmung gegen Stress",
         "description": "Einfache Atemsessions, die dich aus Anspannung zurück in einen ruhigeren Rhythmus führen."
-      },
-      {
-        "title": "Körper-Scan",
-        "description": "Sanfte Wahrnehmungsübungen, um Spannungen im Körper besser zu erkennen und loszulassen."
       }
     ],
     "music": {
@@ -973,7 +969,7 @@
     "videos": {
       "eyebrow": "Video-Bereich",
       "title": "Meditationsvideos",
-      "description": "Hier erscheinen deine geführten Meditations-, Atem- und Body-Scan-Videos aus Contentful, sobald sie mit der Kategorie meditation-entspannung veröffentlicht sind.",
+      "description": "Hier erscheinen deine geführten Meditations- und Atemvideos aus Contentful, sobald sie mit der Kategorie meditation-entspannung veröffentlicht sind.",
       "duration": "{count} Min",
       "empty": "Die ersten Meditationsvideos werden angezeigt, sobald sie in Contentful veröffentlicht sind."
     },
@@ -1009,6 +1005,8 @@
       "session": "{minutes} Minuten Session",
       "play": "Abspielen",
       "pause": "Pause",
+      "playAll": "Alles abspielen",
+      "stopAll": "Alles stoppen",
       "close": "Session schließen",
       "generated": "Temporärer Entspannungsklang, bis die finalen Audio-Dateien ergänzt werden.",
       "options": [
@@ -1051,10 +1049,108 @@
           "description": "Für Tage, an denen du bewusst tiefer in Ruhe gehen und Körper und Geist länger begleiten möchtest.",
           "benefits": [
             "mehr Raum für Entspannung und Erholung",
-            "gut kombinierbar mit Dehnen oder Body Scan",
+            "gut kombinierbar mit Dehnen oder ruhigem Atmen",
             "stärkt das Gefühl einer vollständigen Pause"
           ],
           "bestFor": "Ideal für Wochenenden, Abendroutine oder bewusste Selbstfürsorge."
+        }
+      ]
+    },
+    "breathingTechniques": {
+      "title": "5 Atemtechniken gegen Stress",
+      "intro": "Wähle eine Technik aus, starte die ruhige Hintergrundmusik und folge den Schritten in deinem Tempo. Jede Übung ist kurz genug für den Alltag und kann bei Bedarf verlängert werden.",
+      "musicNote": "Leichte Musik ist vorläufig generiert",
+      "play": "Musik starten",
+      "pause": "Musik stoppen",
+      "education": {
+        "summary": "Warum diese Atemtechniken wirken",
+        "title": "Kurz erklärt: Atmung, Nervensystem und Entspannung",
+        "intro": "Dieser Überblick fasst die wichtigsten Hintergründe der fünf Techniken zusammen. Er dient zur Orientierung, wenn du vor der Übung verstehen möchtest, warum ein bestimmter Atemrhythmus beruhigend, fokussierend oder schlaffördernd wirken kann.",
+        "items": [
+          {
+            "title": "Schnelle Beruhigung - verlängertes Ausatmen",
+            "basis": "Neurobiologie und Vagusnerv-Aktivierung",
+            "howItWorks": "Beim Ausatmen verlangsamt sich der Herzschlag tendenziell. Eine längere Ausatmung kann dem autonomen Nervensystem ein Sicherheitssignal geben und den Wechsel aus Anspannung in Ruhe unterstützen."
+          },
+          {
+            "title": "Tiefe Entspannung - Zwerchfellatmung",
+            "basis": "Klinische Psychologie und Verhaltenstherapie",
+            "howItWorks": "Stress führt häufig zu flacher Brustatmung. Wenn die Atmung tiefer in Bauch und Zwerchfell wandert, kann sich Muskelspannung reduzieren und der Parasympathikus stärker aktiviert werden."
+          },
+          {
+            "title": "Fokus - Box Breathing",
+            "basis": "Strukturierte Atemkontrolle in Leistungssituationen",
+            "howItWorks": "Der gleichmäßige Rhythmus aus Einatmen, Halten, Ausatmen und Halten bündelt Aufmerksamkeit. Das kontrollierte Atemhalten kann helfen, den Atem zu stabilisieren und mentale Klarheit aufzubauen."
+          },
+          {
+            "title": "Vor dem Schlafengehen - 4-7-8 Methode",
+            "basis": "Integrative Medizin und Einschlafroutine",
+            "howItWorks": "Das längere Ausatmen und die ruhige Pause zwischen den Atemzügen senken das Tempo. Die Methode kann helfen, vom aktiven Tagesmodus in eine ruhigere Vorbereitungsphase für Schlaf zu wechseln."
+          },
+          {
+            "title": "Freies langsames Atmen - kohärentes Atmen",
+            "basis": "Biofeedback und Herzratenvariabilität",
+            "howItWorks": "Ein langsamer Rhythmus von ungefähr sechs Atemzügen pro Minute kann Atmung, Blutdruckschwankungen und Herzratenvariabilität harmonisieren. Regelmäßiges Üben kann die Balance des Nervensystems unterstützen."
+          }
+        ],
+        "disclaimerTitle": "Hinweis",
+        "disclaimer": "Diese Atemübungen dienen allgemeiner Entspannung und Wohlbefinden. Sie ersetzen keine medizinische oder psychologische Beratung, Diagnose oder Behandlung. Bei Herz-Kreislauf-Erkrankungen, Asthma, COPD, Lungenerkrankungen, starken Angst- oder Panikzuständen, Schwangerschaft oder Unsicherheit bitte vorher ärztlich abklären. Beende die Übung sofort bei Schwindel, Atemnot oder Unwohlsein."
+      },
+      "sections": [
+        {
+          "title": "Schnelle Beruhigung",
+          "duration": "1-2 Min",
+          "description": "Verlängertes Ausatmen für Momente, in denen du schnell aus innerer Anspannung herausfinden möchtest.",
+          "steps": [
+            "Atme ruhig durch die Nase ein.",
+            "Atme langsam für etwa sechs Sekunden aus.",
+            "Wiederhole den Rhythmus, bis sich dein Tempo spürbar senkt."
+          ],
+          "music": "Musik: sehr weich, langsam und ohne klare Melodie."
+        },
+        {
+          "title": "Tiefe Entspannung",
+          "duration": "3-5 Min",
+          "description": "Zwerchfellatmung, um flache Brustatmung zu lösen und den Körper in einen ruhigeren Zustand zu begleiten.",
+          "steps": [
+            "Lege eine Hand auf den Bauch.",
+            "Atme so ein, dass sich die Bauchdecke sanft hebt.",
+            "Lasse die Ausatmung weich und vollständig ausfließen."
+          ],
+          "music": "Musik: warm, tief und gleichmäßig fließend."
+        },
+        {
+          "title": "Fokus",
+          "duration": "4 Min",
+          "description": "Box Breathing mit klarer Struktur, wenn du Gedanken ordnen und konzentrierter werden möchtest.",
+          "steps": [
+            "Vier zählen und einatmen.",
+            "Vier zählen und den Atem halten.",
+            "Vier zählen und ausatmen, dann vier zählen und halten."
+          ],
+          "music": "Musik: ruhig und rhythmisch, mit sanften Pausen."
+        },
+        {
+          "title": "Vor dem Schlafengehen",
+          "duration": "4-6 Min",
+          "description": "Die 4-7-8 Methode als ruhige Abendtechnik, um den Körper auf Schlaf vorzubereiten.",
+          "steps": [
+            "Atme vier Sekunden ein.",
+            "Halte den Atem sieben Sekunden, ohne Druck aufzubauen.",
+            "Atme acht Sekunden langsam aus."
+          ],
+          "music": "Musik: besonders leise, warm und ohne starke Höhen."
+        },
+        {
+          "title": "Freies langsames Atmen",
+          "duration": "5 Min",
+          "description": "Kohärentes Atmen in einem ruhigen 5:5 Rhythmus für mehr Gleichmäßigkeit im Nervensystem.",
+          "steps": [
+            "Atme fünf Sekunden ein.",
+            "Atme fünf Sekunden aus.",
+            "Bleibe bei ungefähr sechs Atemzügen pro Minute."
+          ],
+          "music": "Musik: tiefer, fließender Hintergrund mit stabilem Puls."
         }
       ]
     }
