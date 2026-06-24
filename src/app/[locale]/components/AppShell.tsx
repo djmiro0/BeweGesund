@@ -13,7 +13,6 @@ import LoadingScreen from "./LoadingScreen";
 import MobileTabBar from "./MobileTabBar";
 import NavigationFeedback from "./NavigationFeedback";
 import PaymentRequired from "./PaymentRequired";
-import ProgressPhotoReminder from "./ProgressPhotoReminder";
 import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
 import { useTheme } from "./ThemeProvider";
@@ -206,7 +205,6 @@ export function ShellFrame({
         requiresProfileSetup={requiresProfileSetup}
       />
       <NavigationFeedback />
-      <ProgressPhotoReminder />
       <main className={styles.main}>{children}</main>
       <MobileTabBar locale={locale} />
       <Footer />
