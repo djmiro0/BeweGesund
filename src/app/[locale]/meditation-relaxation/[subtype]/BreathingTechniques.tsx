@@ -83,6 +83,10 @@ const breathingPatterns = [
 
 type BreathPhase = (typeof breathingPatterns)[number][number];
 type SoftPad = ReturnType<typeof createSoftPad>;
+const MUSIC_TRACK_VOLUME = 0.34;
+const FALLBACK_MUSIC_VOLUME = 0.03;
+const BREATH_INHALE_VOLUME = 0.22;
+const BREATH_EXHALE_VOLUME = 0.34;
 
 function getBreathingVisualClass(index: number) {
   if (index === 0) return styles.breathingVisualForest;
@@ -120,6 +124,7 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
   const audioContext = new AudioContextConstructor();
   const trackSource = getMusicTrackSource(musicLabel);
   const trackAudio = trackSource ? new Audio(trackSource) : null;
+  let isDestroyed = false;
   const baseFrequency = [174, 196, 220, 246.94, 261.63][index] ?? 196;
   const gain = audioContext.createGain();
   const filter = audioContext.createBiquadFilter();
@@ -136,7 +141,7 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
   overtone.frequency.value = baseFrequency * (lowerMusicLabel.includes("piano") || lowerMusicLabel.includes("klavier") ? 2 : 1.5);
   filter.type = "lowpass";
   filter.frequency.value = lowerMusicLabel.includes("piano") || lowerMusicLabel.includes("klavier") ? 980 : 620;
-  gain.gain.value = trackAudio || !musicEnabled ? 0 : 0.03;
+  gain.gain.value = trackAudio || !musicEnabled ? 0 : FALLBACK_MUSIC_VOLUME;
 
   oscillator.connect(filter);
   overtone.connect(filter);
@@ -164,13 +169,15 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
 
   if (trackAudio) {
     trackAudio.loop = true;
-    trackAudio.volume = musicEnabled ? 0.72 : 0;
+    trackAudio.preload = "auto";
+    trackAudio.volume = musicEnabled ? MUSIC_TRACK_VOLUME : 0;
+    trackAudio.load();
     void trackAudio.play().catch(() => undefined);
   }
 
   return {
     playBreathCue: (phase: BreathPhase, secondsOverride?: number) => {
-      if (phase.key === "hold") return;
+      if (phase.key === "hold" || isDestroyed) return;
 
       const now = audioContext.currentTime;
       const seconds = Math.max(0.45, (secondsOverride ?? phase.seconds) - 0.12);
@@ -182,14 +189,18 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
       const source = audioContext.createBufferSource();
 
       for (let index = 0; index < bufferSize; index += 1) {
-        output[index] = (Math.random() * 2 - 1) * 0.42;
+        output[index] = (Math.random() * 2 - 1) * 0.68;
       }
 
+      void audioContext.resume().catch(() => undefined);
       breathFilter.type = phase.key === "inhale" ? "bandpass" : "lowpass";
       breathFilter.frequency.setValueAtTime(phase.key === "inhale" ? 960 : 520, now);
       breathFilter.Q.value = phase.key === "inhale" ? 0.8 : 0.55;
       breathGain.gain.setValueAtTime(0.0001, now);
-      breathGain.gain.linearRampToValueAtTime(phase.key === "inhale" ? 0.09 : 0.13, now + Math.min(1, seconds * 0.35));
+      breathGain.gain.linearRampToValueAtTime(
+        phase.key === "inhale" ? BREATH_INHALE_VOLUME : BREATH_EXHALE_VOLUME,
+        now + Math.min(1, seconds * 0.35),
+      );
       breathGain.gain.linearRampToValueAtTime(0.0001, now + seconds);
 
       source.buffer = noiseBuffer;
@@ -201,14 +212,37 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
     },
     setMusicEnabled: (enabled: boolean) => {
       if (trackAudio) {
-        trackAudio.volume = enabled ? 0.72 : 0;
+        trackAudio.volume = enabled ? MUSIC_TRACK_VOLUME : 0;
         if (enabled) void trackAudio.play().catch(() => undefined);
         return;
       }
 
-      gain.gain.setTargetAtTime(enabled ? 0.03 : 0, audioContext.currentTime, 0.08);
+      gain.gain.setTargetAtTime(enabled ? FALLBACK_MUSIC_VOLUME : 0, audioContext.currentTime, 0.08);
+    },
+    pause: () => {
+      if (trackAudio) {
+        trackAudio.pause();
+      } else {
+        gain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
+      }
+    },
+    resume: (enabled: boolean) => {
+      void audioContext.resume().catch(() => undefined);
+      if (trackAudio) {
+        trackAudio.volume = enabled ? MUSIC_TRACK_VOLUME : 0;
+        if (enabled) void trackAudio.play().catch(() => {
+          trackAudio.load();
+          window.setTimeout(() => {
+            if (!isDestroyed) void trackAudio.play().catch(() => undefined);
+          }, 80);
+        });
+        return;
+      }
+
+      gain.gain.setTargetAtTime(enabled ? FALLBACK_MUSIC_VOLUME : 0, audioContext.currentTime, 0.08);
     },
     stop: () => {
+      isDestroyed = true;
       if (trackAudio) {
         trackAudio.pause();
         trackAudio.currentTime = 0;
@@ -234,6 +268,10 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
   const stopMusic = () => {
     soundRef.current?.stop();
     soundRef.current = null;
+  };
+
+  const pauseSound = () => {
+    soundRef.current?.pause();
   };
 
   const close = () => {
@@ -262,12 +300,16 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
     if (activeIndex === null) return;
 
     if (isSessionRunning) {
-      stopMusic();
+      pauseSound();
       setIsSessionRunning(false);
       return;
     }
 
-    soundRef.current = createSoftPad(activeIndex, isMusicEnabled, activeSection?.music[selectedMusicIndex] ?? "");
+    if (soundRef.current) {
+      soundRef.current.resume(isMusicEnabled);
+    } else {
+      soundRef.current = createSoftPad(activeIndex, isMusicEnabled, activeSection?.music[selectedMusicIndex] ?? "");
+    }
     setIsSessionRunning(true);
   };
 
@@ -275,9 +317,9 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
     if (!activeSection || activeIndex === null) return;
 
     setSelectedMusicIndex(musicIndex);
+    stopMusic();
     if (!isSessionRunning) return;
 
-    stopMusic();
     soundRef.current = createSoftPad(activeIndex, isMusicEnabled, activeSection.music[musicIndex] ?? "");
   };
 
