@@ -52,10 +52,9 @@
 
 .hero h1,
 .subtypeHero h1 {
-  max-width: 18ch;
   margin: 0;
   color: var(--page-ink);
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: 2rem;
   font-weight: 950;
   line-height: 0.98;
   letter-spacing: 0;
