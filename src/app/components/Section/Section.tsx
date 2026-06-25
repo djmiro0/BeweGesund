@@ -1,7 +1,7 @@
 "use client";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import style from "./Section.module.css";
 
 interface SectionProps {
@@ -11,11 +11,7 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ id, reverse }) => {
   const t = useTranslations("sections");
-  const router = useRouter();
-
-  const handleJoinClick = () => {
-    router.push(`[locale]/calendar?course=${id}`);
-  };
+  const locale = useLocale();
 
   // Map section id to image file
   const imageMap: Record<string, string> = {
@@ -41,9 +37,9 @@ const Section: React.FC<SectionProps> = ({ id, reverse }) => {
         <div className={style.sectionText}>
           <h2>{t(`${id}.title`)}</h2>
           <p>{t(`${id}.text`)}</p>
-          <button className={style.joinBtn} onClick={handleJoinClick}>
+          <Link className={style.joinBtn} href={`/${locale}/calendar?course=${id}`}>
             {t("join")}
-          </button>
+          </Link>
         </div>
       </div>
     </section>

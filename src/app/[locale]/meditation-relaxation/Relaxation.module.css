@@ -54,7 +54,7 @@
 .subtypeHero h1 {
   margin: 0;
   color: var(--page-ink);
-  font-size: 2rem;
+  font-size: 1.4rem;
   font-weight: 950;
   line-height: 0.98;
   letter-spacing: 0;
@@ -220,20 +220,39 @@
 }
 
 .backLink {
+  position: sticky;
+  top: 5.25rem;
+  z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   width: fit-content;
-  margin-bottom: 1rem;
-  color: var(--page-muted);
-  font-size: 0.78rem;
-  font-weight: 850;
+  margin-bottom: 5px;
+  border: 1px solid var(--page-border);
+  border-radius: 10px;
+  background: var(--page-soft);
+  box-shadow: 0 0.6rem 1.4rem rgba(var(--shell-bg-rgb), 0.08);
+  color: var(--page-olive);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 950;
+  padding: 0.62rem 0.82rem;
   text-decoration: none;
+  text-transform: uppercase;
   transition: color 0.22s var(--transition);
 }
 
 .backLink:hover {
-  color: var(--page-olive);
+  color: var(--page-ink);
+}
+
+.selfMassageBackLink {
+  color: var(--page-accent);
+}
+
+.selfMassageBackLink:hover {
+  color: var(--page-accent);
 }
 
 .subtypePanel {
@@ -270,6 +289,7 @@
 }
 
 .musicPlayer,
+.musicPlaylist,
 .breathingSection {
   display: grid;
   gap: 1rem;
@@ -277,7 +297,8 @@
 }
 
 .sectionHeading {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   justify-content: space-between;
   gap: 1rem;
@@ -287,6 +308,10 @@
     linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9)),
     var(--page-soft);
   padding: 1rem;
+}
+
+.sectionHeading > div {
+  min-width: 0;
 }
 
 .sectionHeading h2 {
@@ -321,8 +346,10 @@
   font: inherit;
   font-size: 0.74rem;
   font-weight: 950;
+  line-height: 1;
   padding: 0.62rem 0.85rem;
   text-transform: uppercase;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     background 0.22s var(--transition),
@@ -342,6 +369,250 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+}
+
+.musicPlaylistLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.42fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.musicPlaylistExpanded {
+  animation: playlistExpand 0.34s var(--transition) both;
+}
+
+.musicGridHeader {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.musicVideoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.musicVideoTile {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9)),
+    var(--page-soft);
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  transition:
+    border-color 0.22s var(--transition),
+    box-shadow 0.22s var(--transition),
+    transform 0.22s var(--transition);
+}
+
+.musicVideoTile:hover {
+  border-color: rgba(var(--page-olive-rgb), 0.32);
+  box-shadow: 0 1rem 2rem rgba(var(--shell-bg-rgb), 0.12);
+  transform: translateY(-3px);
+}
+
+.musicVideoTilePoster {
+  position: relative;
+  display: grid;
+  aspect-ratio: 16 / 9;
+  min-height: 10rem;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 22% 16%, rgba(var(--page-olive-rgb), 0.22), transparent 8rem),
+    linear-gradient(135deg, rgba(var(--shell-bg-rgb), 0.9), rgba(var(--page-accent-rgb), 0.34));
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.musicVideoTilePoster img {
+  object-fit: cover;
+}
+
+.musicVideoTilePoster::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 48%, rgba(var(--shell-bg-rgb), 0.42));
+  content: "";
+}
+
+.musicVideoTileCopy {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.musicVideoTileCopy strong {
+  color: var(--page-ink);
+  font-size: 0.98rem;
+  line-height: 1.2;
+}
+
+.musicPlaylistMain {
+  display: grid;
+  min-width: 0;
+  gap: 0.75rem;
+}
+
+.musicPlaylistPlayer {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.16);
+  border-radius: 1rem;
+  background: rgba(var(--page-ink-rgb), 0.92);
+  box-shadow: 0 1rem 2.4rem rgba(var(--shell-bg-rgb), 0.12);
+}
+
+.musicPlaylistControls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.musicPlaylistControls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.65rem;
+  border: 1px solid rgba(var(--page-olive-rgb), 0.22);
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.72);
+  color: var(--page-olive);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 950;
+  line-height: 1;
+  padding: 0.62rem 0.75rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    background 0.22s var(--transition),
+    border-color 0.22s var(--transition),
+    color 0.22s var(--transition);
+}
+
+.musicPlaylistControls button:hover {
+  border-color: rgba(var(--page-olive-rgb), 0.42);
+  background: rgba(var(--page-olive-rgb), 0.14);
+  color: var(--page-ink);
+}
+
+.musicPlaylistControls .musicPlaylistPrimaryControl {
+  background: rgba(var(--page-olive-rgb), 0.12);
+}
+
+.musicPlaylistControls .musicPlaylistStopControl {
+  border-color: rgba(214, 62, 62, 0.36);
+  background: rgba(214, 62, 62, 0.14);
+  color: #d63e3e;
+}
+
+.musicPlaylistControls .musicPlaylistStopControl:hover {
+  border-color: rgba(214, 62, 62, 0.54);
+  background: rgba(214, 62, 62, 0.2);
+  color: #f06464;
+}
+
+.musicPlaylistQueue {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.musicQueueItem {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9)),
+    var(--page-soft);
+  color: inherit;
+  cursor: pointer;
+  padding: 0.65rem;
+  text-align: left;
+  transition:
+    border-color 0.22s var(--transition),
+    box-shadow 0.22s var(--transition),
+    transform 0.22s var(--transition);
+}
+
+.musicQueueItem:hover {
+  border-color: rgba(var(--page-olive-rgb), 0.32);
+  box-shadow: 0 0.75rem 1.5rem rgba(var(--shell-bg-rgb), 0.09);
+  transform: translateY(-2px);
+}
+
+.musicQueueItemActive {
+  border-color: rgba(214, 62, 62, 0.44);
+  box-shadow: 0 0.9rem 1.7rem rgba(var(--shell-bg-rgb), 0.1);
+}
+
+.musicQueuePoster {
+  position: relative;
+  display: grid;
+  width: 5rem;
+  aspect-ratio: 16 / 10;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(var(--page-olive-rgb), 0.22), transparent 5rem),
+    linear-gradient(135deg, rgba(var(--shell-bg-rgb), 0.9), rgba(var(--page-accent-rgb), 0.34));
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.musicQueuePoster img {
+  object-fit: cover;
+}
+
+.musicQueueCopy {
+  display: grid;
+  min-width: 0;
+  gap: 0.55rem;
+}
+
+.musicQueueCopy strong {
+  overflow-wrap: anywhere;
+  color: var(--page-ink);
+  font-size: 0.86rem;
+  line-height: 1.2;
+}
+
+.musicQueueAction {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: fit-content;
+  min-height: 2rem;
+  border: 1px solid rgba(var(--page-olive-rgb), 0.2);
+  border-radius: 999px;
+  background: rgba(var(--page-olive-rgb), 0.1);
+  color: var(--page-olive);
+  font-size: 0.68rem;
+  font-weight: 950;
+  padding: 0.42rem 0.58rem;
+  text-transform: uppercase;
+}
+
+.musicQueueActionPlaying {
+  border-color: rgba(var(--page-ink-rgb), 0.1);
+  background: rgba(var(--page-soft-rgb), 0.72);
+  color: rgba(var(--page-ink-rgb), 0.72);
 }
 
 .breathingLayout {
@@ -1073,6 +1344,190 @@
   font-size: 0.88rem;
 }
 
+.selfMassageArticleGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.selfMassageArticleCard {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  border: 1px solid var(--page-border-soft);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(135deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9)),
+    var(--page-soft);
+  box-shadow: 0 0.75rem 1.7rem rgba(var(--shell-bg-rgb), 0.07);
+  padding: 1rem;
+}
+
+.selfMassageImageLink {
+  position: relative;
+  display: block;
+  min-height: 15rem;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: rgba(var(--page-soft-alt-rgb), 0.88);
+}
+
+.selfMassageImage {
+  object-fit: cover;
+  transition: transform 0.5s var(--transition);
+}
+
+.selfMassageImageLink:hover .selfMassageImage {
+  transform: scale(1.04);
+}
+
+.selfMassageImageFallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, rgba(var(--page-olive-rgb), 0.18), transparent 56%),
+    rgba(var(--page-soft-alt-rgb), 0.94);
+  color: var(--page-olive);
+}
+
+.selfMassageArticleCopy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.selfMassageArticleCopy h2 {
+  margin: 0;
+  color: var(--page-ink);
+  font-size: 1.35rem;
+  font-weight: 950;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.selfMassageArticleCopy h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.selfMassageArticleCopy h2 a:hover {
+  color: var(--page-olive);
+}
+
+.selfMassageArticleCopy p {
+  flex: 1;
+  margin: 0.7rem 0 0;
+  color: var(--page-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.selfMassageMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 0.85rem;
+  margin-top: 1rem;
+  color: rgba(var(--page-ink-rgb), 0.62);
+  font-size: 0.76rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.selfMassageMeta span,
+.selfMassageReadLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.selfMassageMeta svg {
+  color: var(--page-olive);
+}
+
+.selfMassageReadLink {
+  width: fit-content;
+  margin-top: 1.15rem;
+  color: var(--page-olive);
+  font-size: 0.82rem;
+  font-weight: 950;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.selfMassageReadLink:hover {
+  color: var(--page-ink);
+}
+
+.selfMassageDetail {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.selfMassageDetailHeader {
+  border: 1px solid var(--page-border);
+  border-radius: 0.5rem;
+  background:
+    linear-gradient(135deg, rgba(var(--page-olive-rgb), 0.16), transparent 42%),
+    var(--page-soft);
+  padding: 1.5rem;
+}
+
+.selfMassageDetailHeader h1 {
+  max-width: 58rem;
+  margin: 0;
+  color: var(--page-ink);
+  font-size: 1.55rem;
+  font-weight: 950;
+  line-height: 0.98;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.selfMassageDetailHeader > p:last-of-type {
+  max-width: 44rem;
+  margin: 0.85rem 0 0;
+  color: var(--page-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.selfMassageDetailImageWrap {
+  position: relative;
+  display: block;
+  min-height: 20rem;
+  aspect-ratio: 16 / 9;
+  margin-top: 1rem;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: rgba(var(--page-soft-alt-rgb), 0.88);
+}
+
+.selfMassageArticleBody {
+  max-width: 920px;
+  margin: 2rem auto 0;
+  color: var(--page-ink);
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+
+.selfMassageArticleBody h2 {
+  margin: 0 0 0.9rem;
+  color: var(--page-ink);
+  font-size: 1.65rem;
+  font-weight: 950;
+  line-height: 1.14;
+  letter-spacing: 0;
+}
+
+.selfMassageArticleBody p {
+  margin: 0 0 1.35rem;
+  color: rgba(var(--page-ink-rgb), 0.84);
+}
+
 .detailVideoPanel {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -1109,7 +1564,7 @@
   max-width: 20ch;
   margin: 0;
   color: var(--page-ink);
-  font-size: clamp(1.7rem, 4vw, 2.35rem);
+  font-size: clamp(1.2rem, 2.8vw, 1.65rem);
   line-height: 1;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -1229,6 +1684,18 @@
   }
 }
 
+@keyframes playlistExpand {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 980px) {
   .hero,
   .subtypeHero {
@@ -1237,12 +1704,16 @@
 
   .categoryGrid,
   .videoList,
+  .selfMassageArticleGrid,
+  .musicVideoGrid,
   .musicTrackGrid,
+  .musicPlaylistLayout,
   .detailGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .categoryGrid,
+  .musicPlaylistLayout,
   .breathingInfo {
     grid-template-columns: 1fr;
   }
@@ -1259,6 +1730,18 @@
     min-height: 18rem;
   }
 
+  .selfMassageImageLink {
+    min-height: 14rem;
+  }
+
+  .selfMassageDetailHeader h1 {
+    font-size: 1.45rem;
+  }
+
+  .selfMassageDetailImageWrap {
+    min-height: 16rem;
+  }
+
   .detailMeta {
     position: static;
   }
@@ -1271,7 +1754,10 @@
 
   .categoryGrid,
   .videoList,
+  .selfMassageArticleGrid,
+  .musicVideoGrid,
   .musicTrackGrid,
+  .musicPlaylistLayout,
   .breathingInfo,
   .breathingPairList,
   .detailGrid {
@@ -1281,6 +1767,49 @@
   .sectionHeading,
   .breathingCardHead {
     align-items: stretch;
+  }
+
+  .sectionHeading {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionHeading .primaryAudioButton {
+    width: 100%;
+  }
+
+  .musicGridHeader .primaryAudioButton {
+    width: 100%;
+  }
+
+  .musicPlaylistControls {
+    grid-template-columns: 1fr;
+  }
+
+  .selfMassageArticleCard,
+  .selfMassageDetailHeader {
+    padding: 1rem;
+  }
+
+  .selfMassageArticleCopy h2 {
+    font-size: 1.35rem;
+  }
+
+  .selfMassageDetailHeader h1 {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .selfMassageMeta {
+    font-size: 0.7rem;
+  }
+
+  .selfMassageDetailImageWrap {
+    min-height: 13rem;
+  }
+
+  .selfMassageArticleBody {
+    margin-top: 1.5rem;
+    font-size: 1rem;
   }
 
   .categoryItem {
@@ -1298,6 +1827,10 @@
   .categoryItem,
   .visualRing,
   .visual svg {
+    animation: none;
+  }
+
+  .musicPlaylistExpanded {
     animation: none;
   }
 

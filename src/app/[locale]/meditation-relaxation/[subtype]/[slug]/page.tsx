@@ -1,8 +1,9 @@
-import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, PlayCircle, ShieldCheck, Sparkles, UserRound } from "lucide-react";
+import { ArrowLeft, Clock, HandHeart, PlayCircle, ShieldCheck, Sparkles, UserRound } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getMeditationRelaxationItem } from "@/lib/contentful";
+import BackButton from "../../../components/BackButton";
 import ProtectedMuxPlayer from "../../../courses/[slug]/ProtectedMuxPlayer";
 import styles from "../../Relaxation.module.css";
 
@@ -30,17 +31,88 @@ export default async function MeditationRelaxationDetailPage({
 
   if (!item || (item.subcategoryKey && item.subcategoryKey !== subtype)) notFound();
 
+  const isSelfMassage = subtype === "self-massage-stress-reduction";
   const instructionParagraphs = item.instructions
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
 
+  if (isSelfMassage) {
+    return (
+      <main className={styles.page}>
+        <BackButton
+          href={`/${locale}/meditation-relaxation/${subtype}`}
+          className={`${styles.backLink} ${styles.backLink}`}
+        >
+          <ArrowLeft size={17} />
+          {t("subtype.back")}
+        </BackButton>
+
+        <article className={styles.selfMassageDetail}>
+          <header className={styles.selfMassageDetailHeader}>
+            <p className={styles.eyebrow}>{t("title")}</p>
+            <h1>{item.title}</h1>
+            {item.description ? <p>{item.description}</p> : null}
+            <div className={styles.selfMassageMeta}>
+              {item.coach ? (
+                <span>
+                  <UserRound size={14} />
+                  {item.coach}
+                </span>
+              ) : null}
+              {item.durationMinutes ? (
+                <span>
+                  <Clock size={14} />
+                  {t("videos.duration", { count: item.durationMinutes })}
+                </span>
+              ) : null}
+              {item.level ? (
+                <span>
+                  <Sparkles size={14} />
+                  {item.level}
+                </span>
+              ) : null}
+              <span>
+                <ShieldCheck size={14} />
+                {packages(item.packageRequired)}
+              </span>
+            </div>
+          </header>
+
+          <div className={styles.selfMassageDetailImageWrap}>
+            {item.posterImage ? (
+              <Image
+                src={item.posterImage}
+                alt=""
+                fill
+                sizes="(min-width: 1024px) 1120px, 100vw"
+                className={styles.selfMassageImage}
+                priority
+              />
+            ) : (
+              <span className={styles.selfMassageImageFallback} aria-hidden="true">
+                <HandHeart size={38} />
+              </span>
+            )}
+          </div>
+
+          {instructionParagraphs.length ? (
+            <div className={styles.selfMassageArticleBody}>
+              <h2>{t("detail.instructionsTitle")}</h2>
+              {instructionParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </div>
+          ) : null}
+        </article>
+      </main>
+    );
+  }
+
   return (
     <main className={styles.page}>
-      <Link href={`/${locale}/meditation-relaxation/${subtype}`} className={styles.backLink}>
+      <BackButton href={`/${locale}/meditation-relaxation/${subtype}`} className={styles.backLink}>
         <ArrowLeft size={17} />
         {t("subtype.back")}
-      </Link>
+      </BackButton>
 
       <section className={styles.detailVideoPanel}>
         <ProtectedMuxPlayer

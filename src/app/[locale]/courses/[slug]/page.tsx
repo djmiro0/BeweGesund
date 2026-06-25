@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, Dumbbell, PlayCircle, ShieldCheck, UserRound } from "
 import { getTranslations } from "next-intl/server";
 import { memberCourses, type MemberCourseDefinition } from "@/data";
 import { getCourseDetail, getCourses, type CourseSummary } from "@/lib/contentful";
+import BackButton from "../../components/BackButton";
 import ProtectedMuxPlayer from "./ProtectedMuxPlayer";
 import styles from "./CourseDetail.module.css";
 import coursesStyles from "../Courses.module.css";
@@ -35,12 +36,25 @@ const translatedNoteKeys = new Set([
   "comingLater",
 ]);
 
+const newBadgeWindowMs = 3 * 24 * 60 * 60 * 1000;
+
 function canonicalCategory(slug: unknown) {
   const key = Array.isArray(slug) ? slug[0] : slug;
 
   if (typeof key !== "string") return "";
 
   return categoryAliases[key] ?? key;
+}
+
+function isNewlyPublished(publishedAt: string) {
+  if (!publishedAt) return false;
+
+  const publishedTime = new Date(publishedAt).getTime();
+  if (!Number.isFinite(publishedTime)) return false;
+
+  const ageMs = Date.now() - publishedTime;
+
+  return ageMs >= 0 && ageMs < newBadgeWindowMs;
 }
 
 function getSubtypeVideos(courses: CourseSummary[], subtype: MemberCourseDefinition, categorySlug: string) {
@@ -103,10 +117,10 @@ export default async function CourseDetailPage({
 
     return (
       <section className={coursesStyles.coursesSection}>
-        <Link href={`/${locale}/courses`} className={styles.backLink}>
+        <BackButton href={`/${locale}/courses`} className={styles.backLink}>
           <ArrowLeft size={17} />
           {t("back")}
-        </Link>
+        </BackButton>
 
         <header className={coursesStyles.hero}>
           <div className={coursesStyles.heroCopy}>
@@ -128,11 +142,12 @@ export default async function CourseDetailPage({
         <div className={coursesStyles.subtypeList}>
           {subtypeCards.map(({ subtype, videos, availableVideoCount, liveVideoCount, plannedTrainingCount }) => {
             const courseNote = getCourseNote(subtype);
+            const hasNewVideo = videos.some((video) => video.hasVideo && isNewlyPublished(video.publishedAt));
             const cardContent = (
               <>
                 {liveVideoCount ? (
                   <span className={coursesStyles.liveBadge}>{coursesT("courseTypes.meta.live")}</span>
-                ) : availableVideoCount ? (
+                ) : hasNewVideo ? (
                   <span className={coursesStyles.videoBadge}>{coursesT("courseTypes.meta.newThisWeek")}</span>
                 ) : null}
                 <div>
@@ -194,10 +209,10 @@ export default async function CourseDetailPage({
 
   return (
     <article className={styles.page}>
-      <Link href={`/${locale}/courses`} className={styles.backLink}>
+      <BackButton href={`/${locale}/courses`} className={styles.backLink}>
         <ArrowLeft size={17} />
         {t("back")}
-      </Link>
+      </BackButton>
 
       <section className={styles.videoPanel}>
         <ProtectedMuxPlayer

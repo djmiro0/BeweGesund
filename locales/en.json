@@ -418,15 +418,15 @@
       "lead": "A structured library of movement, rehabilitation, and education formats designed for everyday accessibility.",
       "categories": {
         "reha": {
-          "title": "REHA Courses",
+          "title": "REHA",
           "description": "Rehabilitation programs with a weekly video rhythm and guided progression."
         },
         "healthy-living": {
-          "title": "Lebe Gesund Courses",
+          "title": "Lebe Gesund",
           "description": "Accessible formats for mobility, gentle entry points, and regular everyday movement."
         },
         "overweight": {
-          "title": "Overweight Courses",
+          "title": "Overweight",
           "description": "Movement and nutrition formats focused on sustainable weight reduction."
         },
         "definition": {
@@ -984,6 +984,11 @@
       "emptyTitle": "No content published yet",
       "emptyText": "As soon as matching videos are published in Contentful, they will appear here."
     },
+    "selfMassage": {
+      "readArticle": "Read article",
+      "emptyTitle": "No content published yet",
+      "emptyText": "As soon as self-massage content is published in Contentful, it will appear here."
+    },
     "detail": {
       "instructionsTitle": "Before you start",
       "videoAvailable": "Video available"
@@ -1009,8 +1014,11 @@
       "session": "{minutes} minute session",
       "play": "Play",
       "pause": "Pause",
+      "playing": "Playing",
       "playAll": "Play all",
       "stopAll": "Stop all",
+      "previous": "Previous",
+      "next": "Next",
       "close": "Close session",
       "generated": "Temporary relaxation sound until the final audio files are added.",
       "options": [
@@ -1184,7 +1192,7 @@
         },
         {
           "title": "Before Bed",
-          "duration": "4 cycles, about 2 min",
+          "duration": "2-3 min",
           "description": "A calming breathing rhythm known as the 4-7-8 method. It acts like a natural calming signal for the nervous system and helps release the thoughts of the day before sleep.",
           "steps": [
             "Position: Lie in a comfortable sleeping position. Place the tip of the tongue on the roof of the mouth, just behind the upper front teeth, and keep it there during the exercise.",

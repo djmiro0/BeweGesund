@@ -5,11 +5,11 @@ import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc, writeBatch } from 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { ArrowLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { db, storage } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
+import BackButton from "../components/BackButton";
 import AppSettings from "./components/AppSettings";
 import AccountManagement from "./components/AccountManagement";
 import BodyProgressSettings from "./components/BodyProgressSettings";
@@ -295,14 +295,14 @@ export default function SettingsPage() {
   return (
     <section className={styles.settingsPage} data-testid="settings-page">
       <div className={styles.shell}>
-        <Link
+        <BackButton
           href={`/${locale}/profile`}
           className={styles.backLink}
           data-testid="settings-back-link"
         >
           <ArrowLeft size={18} aria-hidden="true" />
           <span>{t("actions.backToProfile")}</span>
-        </Link>
+        </BackButton>
         <header className={styles.header}>
           <div>
             <p className={styles.eyebrow}>{t("eyebrow")}</p>
