@@ -33,7 +33,7 @@
   border-radius: 999px;
   background:
     radial-gradient(circle, rgba(var(--page-warm-rgb), 0.18), transparent 68%),
-    url("/favicon.ico") center / 78% 78% no-repeat;
+    url("/icon-192.png") center / 78% 78% no-repeat;
   filter: drop-shadow(0 0 24px rgba(var(--page-warm-rgb), 0.42));
   animation: loadingPulse 1.25s var(--transition) infinite;
 }
