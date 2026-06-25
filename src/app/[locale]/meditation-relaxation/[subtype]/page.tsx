@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, PlayCircle, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Clock, HandHeart, PlayCircle, ShieldCheck, Sparkles, UserRound } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getMeditationRelaxationItems, type MeditationRelaxationItem } from "@/lib/contentful";
+import BackButton from "../../components/BackButton";
 import BreathingTechniques from "./BreathingTechniques";
+import RelaxationMusicPlaylist from "./RelaxationMusicPlaylist";
 import styles from "../Relaxation.module.css";
 
 const relaxationSubcategoryKeys = [
@@ -14,13 +16,21 @@ const relaxationSubcategoryKeys = [
   "self-massage-stress-reduction",
 ] as const;
 
-function getRelaxationVideos(items: MeditationRelaxationItem[], subtype: string) {
+function canShowRelaxationItem(item: MeditationRelaxationItem, subtype: string) {
+  const isFallbackSubtype = subtype === relaxationSubcategoryKeys[0];
+  const matchesSubtype = item.subcategoryKey === subtype || (isFallbackSubtype && !item.subcategoryKey);
+
+  return matchesSubtype && Boolean(item.muxPlaybackId);
+}
+
+function matchesRelaxationSubtype(item: MeditationRelaxationItem, subtype: string) {
   const isFallbackSubtype = subtype === relaxationSubcategoryKeys[0];
 
-  return items.filter((item) => (
-    item.muxPlaybackId
-    && (item.subcategoryKey === subtype || (isFallbackSubtype && !item.subcategoryKey))
-  ));
+  return item.subcategoryKey === subtype || (isFallbackSubtype && !item.subcategoryKey);
+}
+
+function getRelaxationVideos(items: MeditationRelaxationItem[], subtype: string) {
+  return items.filter((item) => canShowRelaxationItem(item, subtype));
 }
 
 export default async function MeditationRelaxationSubtypePage({
@@ -40,8 +50,25 @@ export default async function MeditationRelaxationSubtypePage({
   ]);
   const categories = t.raw("categories") as Array<{ title: string; description: string }>;
   const category = categories[subtypeIndex];
-  const videos = getRelaxationVideos(courses, subtype);
-  const hasStaticSubtypeContent = subtype === "relaxation-music" || subtype === "breathing-against-stress";
+  const isSelfMassage = subtype === "self-massage-stress-reduction";
+  const selfMassageArticles = isSelfMassage ? courses.filter((item) => matchesRelaxationSubtype(item, subtype)) : [];
+  const videos = isSelfMassage ? [] : getRelaxationVideos(courses, subtype);
+  const hasStaticSubtypeContent =
+    subtype === "relaxation-music"
+    || subtype === "breathing-against-stress"
+    || isSelfMassage;
+  const musicPlayerCopy = subtype === "relaxation-music"
+    ? t.raw("musicPlayer") as {
+        title: string;
+        play: string;
+        pause: string;
+        playing: string;
+        playAll: string;
+        stopAll: string;
+        previous: string;
+        next: string;
+      }
+    : null;
   const breathingTechniques = subtype === "breathing-against-stress"
     ? t.raw("breathingTechniques") as {
         title: string;
@@ -86,10 +113,13 @@ export default async function MeditationRelaxationSubtypePage({
 
   return (
     <main className={styles.page}>
-      <Link href={`/${locale}/meditation-relaxation`} className={styles.backLink}>
+      <BackButton
+        href={`/${locale}/meditation-relaxation`}
+        className={`${styles.backLink} ${isSelfMassage ? styles.backLink : ""}`}
+      >
         <ArrowLeft size={17} />
         {t("subtype.back")}
-      </Link>
+      </BackButton>
 
       <section className={styles.subtypeHero}>
         <div className={styles.heroCopy}>
@@ -111,7 +141,100 @@ export default async function MeditationRelaxationSubtypePage({
         <BreathingTechniques copy={breathingTechniques} />
       ) : null}
 
-      {videos.length || !hasStaticSubtypeContent ? (
+      {musicPlayerCopy && videos.length ? (
+        <RelaxationMusicPlaylist
+          videos={videos.map((video) => ({
+            ...video,
+            packageLabel: packages(video.packageRequired),
+            durationLabel: video.durationMinutes ? t("videos.duration", { count: video.durationMinutes }) : null,
+          }))}
+          locale={locale}
+          copy={musicPlayerCopy}
+          playerMessages={{
+            videoPending: t("player.videoPending"),
+            preparingVideo: t("player.preparingVideo"),
+            signInRequired: t("player.signInRequired"),
+            tokenError: t("player.tokenError"),
+            signingMissing: t("player.signingMissing"),
+            authError: t("player.authError"),
+            subscriptionRequired: t("player.subscriptionRequired"),
+            packageRequired: t("player.packageRequired"),
+            videoNotFound: t("player.videoNotFound"),
+            accessCheckFailed: t("player.accessCheckFailed"),
+            rateLimited: t("player.rateLimited"),
+          }}
+        />
+      ) : null}
+
+      {isSelfMassage ? (
+        <section className={styles.selfMassageArticleGrid} aria-label={category.title}>
+          {selfMassageArticles.length ? (
+            selfMassageArticles.map((article) => (
+              <article key={article.id} className={styles.selfMassageArticleCard}>
+                <Link
+                  href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}
+                  className={styles.selfMassageImageLink}
+                >
+                  {article.posterImage ? (
+                    <Image
+                      src={article.posterImage}
+                      alt=""
+                      fill
+                      sizes="(max-width: 720px) 100vw, 520px"
+                      className={styles.selfMassageImage}
+                    />
+                  ) : (
+                    <span className={styles.selfMassageImageFallback} aria-hidden="true">
+                      <HandHeart size={26} />
+                    </span>
+                  )}
+                </Link>
+
+                <div className={styles.selfMassageArticleCopy}>
+                  <h2>
+                    <Link href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}>
+                      {article.title}
+                    </Link>
+                  </h2>
+                  {article.description ? <p>{article.description}</p> : null}
+                  <div className={styles.selfMassageMeta}>
+                    {article.coach ? (
+                      <span>
+                        <UserRound size={14} />
+                        {article.coach}
+                      </span>
+                    ) : null}
+                    {article.durationMinutes ? (
+                      <span>
+                        <Clock size={14} />
+                        {t("videos.duration", { count: article.durationMinutes })}
+                      </span>
+                    ) : null}
+                    <span>
+                      <ShieldCheck size={14} />
+                      {packages(article.packageRequired)}
+                    </span>
+                  </div>
+                  <Link
+                    href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}
+                    className={styles.selfMassageReadLink}
+                  >
+                    {t("selfMassage.readArticle")}
+                    <ArrowUpRight size={17} />
+                  </Link>
+                </div>
+              </article>
+            ))
+          ) : (
+            <article className={styles.emptyVideoState}>
+              <strong>{t("selfMassage.emptyTitle")}</strong>
+              <p>{t("selfMassage.emptyText")}</p>
+            </article>
+          )}
+        </section>
+      ) : null}
+
+      {(!musicPlayerCopy && videos.length) || !hasStaticSubtypeContent ? (
         <section className={styles.videoList} aria-label={category.title}>
           {videos.length ? (
           videos.map((video) => (

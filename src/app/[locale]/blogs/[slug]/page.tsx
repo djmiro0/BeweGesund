@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Clock, ImageIcon } from "lucide-react";
 import { getBlogPost, getBlogPosts, type BlogPost } from "@/lib/contentful";
+import BackButton from "../../components/BackButton";
 import ArticleBody from "./ArticleBody";
 import BlogSelfCheck from "./BlogSelfCheck";
 import styles from "../Blogs.module.css";
@@ -51,10 +52,10 @@ export default async function BlogPostPage({
 
   return (
     <article className={styles.articlePage}>
-      <Link href={`/${locale}/blogs`} className={styles.backLink}>
+      <BackButton href={`/${locale}/blogs`} className={styles.backLink}>
         <ArrowLeft size={17} />
         {labels.back}
-      </Link>
+      </BackButton>
 
       <header className={styles.articleHeader}>
         <h1 className={styles.articleTitle}>{post.title}</h1>

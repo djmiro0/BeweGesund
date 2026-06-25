@@ -9,20 +9,32 @@
 }
 
 .backLink {
+  position: sticky;
+  top: 5.25rem;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   width: fit-content;
   max-width: 1180px;
-  margin: 1rem;
-  display: flex;
-  align-items: center;
-  color: var(--page-muted);
-  font-size: 0.78rem;
-  font-weight: 800;
+  margin-bottom: 5px;
+  border: 1px solid rgba(var(--page-accent-rgb), 0.28);
+  border-radius: 10px;
+  background: var(--page-soft);
+  box-shadow: 0 0.6rem 1.4rem rgba(var(--shell-bg-rgb), 0.08);
+  color: var(--page-accent);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 950;
+  padding: 0.62rem 0.82rem;
   text-decoration: none;
+  text-transform: uppercase;
   transition: color 0.22s var(--transition);
 }
 
 .backLink:hover {
-  color: var(--page-accent);
+  color: var(--page-ink);
 }
 
 .videoPanel {
@@ -99,7 +111,7 @@
 .title {
   max-width: 18ch;
   color: var(--page-ink);
-  font-size: 2.15rem;
+  font-size: 1.5rem;
   font-style: italic;
   font-weight: 900;
   line-height: 0.98;
@@ -194,7 +206,7 @@
   }
 
   .title {
-    font-size: 1.55rem;
+    font-size: 1.1rem;
   }
 
   .metaPanel {

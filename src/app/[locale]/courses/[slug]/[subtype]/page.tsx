@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, Dumbbell, PlayCircle, ShieldCheck } from "lucide-reac
 import { getTranslations } from "next-intl/server";
 import { memberCourses, type MemberCourseDefinition } from "@/data";
 import { getCourses, type CourseSummary } from "@/lib/contentful";
+import BackButton from "../../../components/BackButton";
 import detailStyles from "../CourseDetail.module.css";
 import coursesStyles from "../../Courses.module.css";
 
@@ -15,12 +16,25 @@ const categoryAliases: Record<string, string> = {
   definition: "intensive",
 };
 
+const newBadgeWindowMs = 3 * 24 * 60 * 60 * 1000;
+
 function canonicalCategory(slug: unknown) {
   const key = Array.isArray(slug) ? slug[0] : slug;
 
   if (typeof key !== "string") return "";
 
   return categoryAliases[key] ?? key;
+}
+
+function isNewlyPublished(publishedAt: string) {
+  if (!publishedAt) return false;
+
+  const publishedTime = new Date(publishedAt).getTime();
+  if (!Number.isFinite(publishedTime)) return false;
+
+  const ageMs = Date.now() - publishedTime;
+
+  return ageMs >= 0 && ageMs < newBadgeWindowMs;
 }
 
 function getSubtypeVideos(courses: CourseSummary[], subtype: MemberCourseDefinition, categorySlug: string) {
@@ -66,10 +80,10 @@ export default async function CourseSubtypePage({
 
   return (
     <section className={coursesStyles.coursesSection}>
-      <Link href={`/${locale}/courses/${categorySlug}`} className={detailStyles.backLink}>
+      <BackButton href={`/${locale}/courses/${categorySlug}`} className={detailStyles.backLink}>
         <ArrowLeft size={17} />
         {t("back")}
-      </Link>
+      </BackButton>
 
       <header className={coursesStyles.hero}>
         <div className={coursesStyles.heroCopy}>
@@ -97,9 +111,11 @@ export default async function CourseSubtypePage({
                 href={`/${locale}/courses/${video.slug}`}
                 className={`${coursesStyles.courseCard} ${coursesStyles.videoCourseCard}`}
               >
-                <span className={video.isLive ? coursesStyles.liveBadge : coursesStyles.videoBadge}>
-                  {video.isLive ? coursesT("courseTypes.meta.live") : coursesT("courseTypes.meta.newThisWeek")}
-                </span>
+                {video.isLive ? (
+                  <span className={coursesStyles.liveBadge}>{coursesT("courseTypes.meta.live")}</span>
+                ) : isNewlyPublished(video.publishedAt) ? (
+                  <span className={coursesStyles.videoBadge}>{coursesT("courseTypes.meta.newThisWeek")}</span>
+                ) : null}
                 <div className={coursesStyles.videoPoster}>
                   {video.posterImage ? (
                     <Image src={video.posterImage} alt="" fill sizes="(max-width: 720px) 100vw, 240px" />

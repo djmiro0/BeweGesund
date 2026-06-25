@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LockKeyhole, PlayCircle } from "lucide-react";
 import { useAuth } from "../../components/AuthProvider";
 import styles from "./CourseDetail.module.css";
@@ -12,6 +12,11 @@ interface ProtectedMuxPlayerProps {
   locale: string;
   poster?: string | null;
   title: string;
+  autoPlay?: boolean;
+  paused?: boolean;
+  onEnded?: () => void;
+  onPause?: () => void;
+  onPlay?: () => void;
   messages: {
     videoPending: string;
     preparingVideo: string;
@@ -45,11 +50,17 @@ export default function ProtectedMuxPlayer({
   locale,
   poster,
   title,
+  autoPlay = false,
+  paused = false,
+  onEnded,
+  onPause,
+  onPlay,
   messages,
 }: ProtectedMuxPlayerProps) {
   const { user, loading, appPreferences } = useAuth();
   const [playbackToken, setPlaybackToken] = useState("");
   const [error, setError] = useState("");
+  const playerRef = useRef<HTMLElement | null>(null);
   const fallbackStyle = poster
     ? {
         backgroundImage: `linear-gradient(135deg, rgba(11, 18, 32, 0.78), rgba(155, 43, 66, 0.68)), url(${poster})`,
@@ -74,6 +85,7 @@ export default function ProtectedMuxPlayer({
       if (!playbackId || !user) return;
 
       setError("");
+      setPlaybackToken("");
 
       try {
         const idToken = await user.getIdToken();
@@ -117,6 +129,35 @@ export default function ProtectedMuxPlayer({
     };
   }, [contentType, courseSlug, locale, messages, playbackId, user]);
 
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player) return;
+
+    if (onEnded) player.addEventListener("ended", onEnded);
+    if (onPause) player.addEventListener("pause", onPause);
+    if (onPlay) player.addEventListener("play", onPlay);
+
+    return () => {
+      if (onEnded) player.removeEventListener("ended", onEnded);
+      if (onPause) player.removeEventListener("pause", onPause);
+      if (onPlay) player.removeEventListener("play", onPlay);
+    };
+  }, [onEnded, onPause, onPlay, playbackId]);
+
+  useEffect(() => {
+    if (!autoPlay || !playbackToken) return;
+
+    const player = playerRef.current as (HTMLElement & { play?: () => Promise<void> }) | null;
+    void player?.play?.().catch(() => undefined);
+  }, [autoPlay, playbackId, playbackToken]);
+
+  useEffect(() => {
+    if (!paused) return;
+
+    const player = playerRef.current as (HTMLElement & { pause?: () => void }) | null;
+    player?.pause?.();
+  }, [paused, playbackId]);
+
   if (!playbackId) {
     return (
       <div className={styles.videoFallback} style={fallbackStyle}>
@@ -155,12 +196,13 @@ export default function ProtectedMuxPlayer({
 
   return (
     <mux-player
+      ref={playerRef}
       playback-id={playbackId}
       playback-token={playbackToken}
       poster={poster ?? undefined}
       metadata-video-title={title}
       stream-type="on-demand"
-      auto-play={appPreferences.videoAutoplay ? "muted" : undefined}
+      auto-play={autoPlay ? "true" : appPreferences.videoAutoplay ? "muted" : undefined}
       style={{ width: "100%", height: "100%" }}
     />
   );

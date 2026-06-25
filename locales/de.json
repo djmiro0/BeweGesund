@@ -418,15 +418,15 @@
       "lead": "Eine strukturierte Bibliothek aus Bewegung, Rehabilitation und Bildungsformaten für den alltagstauglichen Einstieg.",
       "categories": {
         "reha": {
-          "title": "REHA Kurse",
+          "title": "REHA",
           "description": "Rehabilitationsprogramme mit wöchentlichem Videorhythmus und klarer Progression."
         },
         "healthy-living": {
-          "title": "Lebe Gesund Kurse",
+          "title": "Lebe Gesund",
           "description": "Alltagstaugliche Formate für Mobilität, sanften Einstieg und regelmäßige Bewegung."
         },
         "overweight": {
-          "title": "Übergewichtskurse",
+          "title": "Übergewichts",
           "description": "Bewegungs- und Ernährungsformate mit Fokus auf nachhaltige Gewichtsreduktion."
         },
         "definition": {
@@ -984,6 +984,11 @@
       "emptyTitle": "Noch keine Inhalte veröffentlicht",
       "emptyText": "Sobald passende Videos in Contentful veröffentlicht sind, erscheinen sie hier."
     },
+    "selfMassage": {
+      "readArticle": "Beitrag lesen",
+      "emptyTitle": "Noch keine Inhalte veröffentlicht",
+      "emptyText": "Sobald Selbstmassage-Inhalte in Contentful veröffentlicht sind, erscheinen sie hier."
+    },
     "detail": {
       "instructionsTitle": "Bevor du beginnst",
       "videoAvailable": "Video verfügbar"
@@ -1009,8 +1014,11 @@
       "session": "{minutes} Minuten Session",
       "play": "Abspielen",
       "pause": "Pause",
+      "playing": "Läuft",
       "playAll": "Alles abspielen",
       "stopAll": "Alles stoppen",
+      "previous": "Zurück",
+      "next": "Weiter",
       "close": "Session schließen",
       "generated": "Temporärer Entspannungsklang, bis die finalen Audio-Dateien ergänzt werden.",
       "options": [
@@ -1184,7 +1192,7 @@
         },
         {
           "title": "Vor dem Schlafengehen",
-          "duration": "4 Zyklen, ca. 2 Min",
+          "duration": "ca. 2 Min",
           "description": "Ein beruhigender Atemrhythmus, bekannt als die 4-7-8 Methode, der wie ein natürliches Beruhigungsmittel für das Nervensystem wirkt. Er hilft dir, die Gedanken des Tages loszulassen und schneller einzuschlafen.",
           "steps": [
             "Position: Lege dich in eine bequeme Schlafposition ins Bett. Platziere die Zungenspitze an den Gaumen, direkt hinter die oberen Schneidezähne, und halte sie dort während der gesamten Übung.",

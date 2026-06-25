@@ -54,7 +54,7 @@
 
 .title {
   max-width: 20ch;
-  font-size: 2.7rem;
+  font-size: 1.9rem;
   line-height: 0.98;
   font-weight: 900;
   font-style: italic;
@@ -413,7 +413,7 @@ a.categoryBlock:hover {
   }
 
   .title {
-    font-size: 1.85rem;
+    font-size: 1.3rem;
   }
 
   .categoryGrid {
