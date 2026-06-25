@@ -38,10 +38,10 @@ export default function MobileTabBar({ locale }: MobileTabBarProps) {
     },
     {
       key: "relaxation",
-      href: `/${locale}/meditation-entspannung`,
+      href: `/${locale}/meditation-relaxation`,
       label: t("tabs.relaxation"),
       icon: Sparkles,
-      active: pathname.startsWith(`/${locale}/meditation-entspannung`),
+      active: pathname.startsWith(`/${locale}/meditation-relaxation`),
     },
     {
       key: "blogs",

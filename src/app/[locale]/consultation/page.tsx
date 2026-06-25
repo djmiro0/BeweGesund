@@ -7,5 +7,5 @@ export default async function ConsultationPage({
 }) {
   const { locale } = await params;
 
-  redirect(`/${locale}/kontakt`);
+  redirect(`/${locale}/contact`);
 }

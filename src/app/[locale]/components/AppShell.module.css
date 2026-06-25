@@ -33,12 +33,14 @@
 }
 
 .navigationSpinner {
-  width: 1.1rem;
-  height: 1.1rem;
-  border: 2px solid rgba(var(--page-ink-rgb), 0.16);
-  border-top-color: var(--page-accent);
+  width: 1.45rem;
+  height: 1.45rem;
   border-radius: 999px;
-  animation: loadingSpin 0.72s linear infinite;
+  background:
+    radial-gradient(circle, rgba(var(--page-olive-rgb), 0.14), transparent 70%),
+    url("/favicon.ico") center / 74% 74% no-repeat;
+  filter: drop-shadow(0 0 12px rgba(var(--page-olive-rgb), 0.34));
+  animation: loadingPulse 0.92s var(--transition) infinite;
 }
 
 .paymentGate {
@@ -166,6 +168,19 @@
 @keyframes loadingSpin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes loadingPulse {
+  0%,
+  100% {
+    transform: scale(0.9);
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
   }
 }
 

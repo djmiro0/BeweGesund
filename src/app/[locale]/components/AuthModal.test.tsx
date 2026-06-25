@@ -5,12 +5,16 @@ import AuthModal from "./AuthModal";
 
 const mocks = vi.hoisted(() => ({
     callable: vi.fn(),
+    createUserWithEmailAndPassword: vi.fn(),
     getDoc: vi.fn(),
     httpsCallable: vi.fn(),
     sendPasswordResetEmail: vi.fn(),
+    sendEmailVerification: vi.fn(),
     signInWithEmailAndPassword: vi.fn(),
     signInWithPopup: vi.fn(),
     signOut: vi.fn(),
+    updateProfile: vi.fn(),
+    setDoc: vi.fn(),
 }));
 
 vi.mock("next-intl", () => ({
@@ -24,6 +28,7 @@ vi.mock("next-intl", () => ({
         orUseEmail: "or use email",
         email: "Email address",
         password: "Password",
+        confirmPassword: "Confirm password",
         showPassword: "Show password",
         hidePassword: "Hide password",
         submitSignIn: "Sign In",
@@ -33,7 +38,8 @@ vi.mock("next-intl", () => ({
         sendResetLink: "Send reset link",
         backToSignIn: "Back to sign in",
         resetEmailRequired: "Enter your email address first.",
-        resetEmailSent: "If this email uses password sign-in, reset instructions were sent. If you created the account with Google, use Continue with Google instead.",
+        resetEmailSent: "If this email uses password sign-in, reset instructions were sent. Check your spam folder too. If you created the account with Google, use Continue with Google instead.",
+        verificationSent: "Account created. Check your inbox and spam folder, then verify the email address before signing in. If the link is not clickable, copy and paste it into your browser.",
         switchToRegister: "Create an account",
         close: "Close",
         errorPrefix: "Sign in failed:",
@@ -96,14 +102,14 @@ vi.mock("firebase/auth", () => ({
     GoogleAuthProvider: class {
         setCustomParameters() {}
     },
-    createUserWithEmailAndPassword: vi.fn(),
+    createUserWithEmailAndPassword: mocks.createUserWithEmailAndPassword,
     deleteUser: vi.fn(() => Promise.resolve()),
-  sendEmailVerification: vi.fn(),
+  sendEmailVerification: mocks.sendEmailVerification,
   sendPasswordResetEmail: mocks.sendPasswordResetEmail,
   signInWithEmailAndPassword: mocks.signInWithEmailAndPassword,
   signInWithPopup: mocks.signInWithPopup,
   signOut: mocks.signOut,
-  updateProfile: vi.fn(),
+  updateProfile: mocks.updateProfile,
 }));
 
 vi.mock("firebase/firestore", () => ({
@@ -111,7 +117,7 @@ vi.mock("firebase/firestore", () => ({
   doc: vi.fn(() => ({})),
   getDoc: mocks.getDoc,
   serverTimestamp: vi.fn(() => "timestamp"),
-  setDoc: vi.fn(),
+  setDoc: mocks.setDoc,
 }));
 
 vi.mock("firebase/functions", () => ({
@@ -122,12 +128,16 @@ describe("AuthModal Google sign-in", () => {
   beforeEach(() => {
     mocks.getDoc.mockReset();
     mocks.callable.mockReset();
+    mocks.createUserWithEmailAndPassword.mockReset();
     mocks.httpsCallable.mockReset();
     mocks.httpsCallable.mockReturnValue(mocks.callable);
     mocks.sendPasswordResetEmail.mockReset();
+    mocks.sendEmailVerification.mockReset();
     mocks.signInWithEmailAndPassword.mockReset();
     mocks.signInWithPopup.mockReset();
     mocks.signOut.mockReset();
+    mocks.updateProfile.mockReset();
+    mocks.setDoc.mockReset();
   });
 
   it("offers Google sign-in beside email sign-in", () => {
@@ -217,7 +227,7 @@ describe("AuthModal Google sign-in", () => {
     await user.click(screen.getByRole("button", { name: "Send reset link" }));
 
     expect(mocks.sendPasswordResetEmail).toHaveBeenCalled();
-    expect(await screen.findByText("If this email uses password sign-in, reset instructions were sent. If you created the account with Google, use Continue with Google instead.")).toBeInTheDocument();
+    expect(await screen.findByText("If this email uses password sign-in, reset instructions were sent. Check your spam folder too. If you created the account with Google, use Continue with Google instead.")).toBeInTheDocument();
   });
 
   it("shows reset email feedback when password reset is submitted empty", async () => {
@@ -258,6 +268,56 @@ describe("AuthModal Google sign-in", () => {
     expect(screen.getByText("Complete these items to continue:")).toBeInTheDocument();
     expect(screen.getByText("Enter your first name.")).toBeInTheDocument();
     expect(screen.getByText("Accept the terms of use.")).toBeInTheDocument();
+  });
+
+  it("signs out after email registration and asks for email verification before checkout", async () => {
+    const user = userEvent.setup();
+    mocks.createUserWithEmailAndPassword.mockResolvedValue({
+      user: {
+        uid: "email-user",
+        email: "new@example.com",
+        photoURL: null,
+        providerData: [{ providerId: "password" }],
+      },
+    });
+    mocks.updateProfile.mockResolvedValue(undefined);
+    mocks.setDoc.mockResolvedValue(undefined);
+    mocks.sendEmailVerification.mockResolvedValue(undefined);
+    mocks.signOut.mockResolvedValue(undefined);
+
+    render(<AuthModal isOpen onClose={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "Create an account" }));
+
+    await user.type(screen.getByPlaceholderText("First name"), "New");
+    await user.type(screen.getByPlaceholderText("Last name"), "Member");
+    await user.type(screen.getByPlaceholderText("Email address"), "new@example.com");
+    await user.type(screen.getByPlaceholderText("Password"), "secret123");
+    await user.type(screen.getByPlaceholderText("Confirm password"), "secret123");
+
+    const numberFields = screen.getAllByRole("spinbutton");
+    await user.type(numberFields[0], "35");
+    await user.type(numberFields[1], "170");
+    await user.type(numberFields[2], "70");
+
+    const selects = screen.getAllByRole("combobox");
+    await user.selectOptions(selects[0], "female");
+    await user.selectOptions(selects[2], "berlin");
+
+    const checkboxes = screen.getAllByRole("checkbox");
+    await user.click(checkboxes[0]);
+    await user.click(checkboxes[1]);
+
+    await user.click(screen.getByRole("button", { name: "submitRegister" }));
+
+    expect(mocks.sendEmailVerification).toHaveBeenCalledTimes(1);
+    expect(mocks.sendEmailVerification).toHaveBeenCalledWith(
+      expect.objectContaining({ uid: "email-user" }),
+      { url: "http://localhost:3000/en" },
+    );
+    expect(mocks.signOut).toHaveBeenCalledTimes(1);
+    expect(mocks.callable).not.toHaveBeenCalled();
+    expect(await screen.findByText("Account created. Check your inbox and spam folder, then verify the email address before signing in. If the link is not clickable, copy and paste it into your browser.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Member Sign In" })).toBeInTheDocument();
   });
 
   it("closes immediately for a returning Google user with a profile", async () => {

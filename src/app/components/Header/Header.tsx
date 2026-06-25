@@ -60,9 +60,9 @@ const Header: React.FC<HeaderProps> = ({
         },
         {
             key: "relaxation",
-            href: `/${locale}/meditation-entspannung`,
+            href: `/${locale}/meditation-relaxation`,
             label: t("nav.relaxation"),
-            active: pathname === `/${locale}/meditation-entspannung`,
+            active: pathname === `/${locale}/meditation-relaxation`,
         },
         {
             key: "blogs",
@@ -72,9 +72,9 @@ const Header: React.FC<HeaderProps> = ({
         },
         {
             key: user ? "contact" : "about",
-            href: user ? `/${locale}/kontakt` : `/${locale}/about`,
+            href: user ? `/${locale}/contact` : `/${locale}/about`,
             label: user ? t("nav.contact") : t("nav.about"),
-            active: user ? pathname === `/${locale}/kontakt` || pathname === `/${locale}/consultation` : pathname === `/${locale}/about`,
+            active: user ? pathname === `/${locale}/contact` || pathname === `/${locale}/consultation` : pathname === `/${locale}/about`,
         },
     ];
 
