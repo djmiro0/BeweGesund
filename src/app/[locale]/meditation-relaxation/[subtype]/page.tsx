@@ -5,13 +5,13 @@ import { ArrowLeft, Clock, PlayCircle, ShieldCheck, Sparkles } from "lucide-reac
 import { getTranslations } from "next-intl/server";
 import { getMeditationRelaxationItems, type MeditationRelaxationItem } from "@/lib/contentful";
 import BreathingTechniques from "./BreathingTechniques";
-import RelaxationMusicPlayer from "./RelaxationMusicPlayer";
 import styles from "../Relaxation.module.css";
 
 const relaxationSubcategoryKeys = [
   "guided-meditation",
   "relaxation-music",
   "breathing-against-stress",
+  "self-massage-stress-reduction",
 ] as const;
 
 function getRelaxationVideos(items: MeditationRelaxationItem[], subtype: string) {
@@ -41,18 +41,7 @@ export default async function MeditationRelaxationSubtypePage({
   const categories = t.raw("categories") as Array<{ title: string; description: string }>;
   const category = categories[subtypeIndex];
   const videos = getRelaxationVideos(courses, subtype);
-  const musicPlayer = subtype === "relaxation-music"
-    ? t.raw("musicPlayer") as {
-        title: string;
-        play: string;
-        pause: string;
-        playAll: string;
-        stopAll: string;
-        generated: string;
-        session: string;
-        options: Array<{ minutes: number; title: string; description: string; benefits: string[]; bestFor: string }>;
-      }
-    : null;
+  const hasStaticSubtypeContent = subtype === "relaxation-music" || subtype === "breathing-against-stress";
   const breathingTechniques = subtype === "breathing-against-stress"
     ? t.raw("breathingTechniques") as {
         title: string;
@@ -60,6 +49,20 @@ export default async function MeditationRelaxationSubtypePage({
         musicNote: string;
         play: string;
         pause: string;
+        open: string;
+        close: string;
+        inhale: string;
+        exhale: string;
+        hold: string;
+        rest: string;
+        rhythmLabel: string;
+        animationLabel: string;
+        musicLabel: string;
+        instructionLabel: string;
+        musicOnLabel: string;
+        musicOffLabel: string;
+        breathSoundOnLabel: string;
+        breathSoundOffLabel: string;
         education: {
           summary: string;
           title: string;
@@ -73,14 +76,17 @@ export default async function MeditationRelaxationSubtypePage({
           duration: string;
           description: string;
           steps: string[];
-          music: string;
+          rhythm: string[];
+          animation: string;
+          music: string[];
+          note?: string;
         }>;
       }
     : null;
 
   return (
     <main className={styles.page}>
-      <Link href={`/${locale}/meditation-entspannung`} className={styles.backLink}>
+      <Link href={`/${locale}/meditation-relaxation`} className={styles.backLink}>
         <ArrowLeft size={17} />
         {t("subtype.back")}
       </Link>
@@ -98,20 +104,17 @@ export default async function MeditationRelaxationSubtypePage({
         </aside>
       </section>
 
-      {musicPlayer ? (
-        <RelaxationMusicPlayer copy={musicPlayer} />
-      ) : null}
-
       {breathingTechniques ? (
         <BreathingTechniques copy={breathingTechniques} />
       ) : null}
 
-      <section className={styles.videoList} aria-label={category.title}>
-        {videos.length ? (
+      {videos.length || !hasStaticSubtypeContent ? (
+        <section className={styles.videoList} aria-label={category.title}>
+          {videos.length ? (
           videos.map((video) => (
             <Link
               key={video.id}
-              href={`/${locale}/meditation-entspannung/${subtype}/${video.slug}`}
+              href={`/${locale}/meditation-relaxation/${subtype}/${video.slug}`}
               className={styles.videoCourseCard}
             >
               <div className={styles.videoPoster}>
@@ -145,13 +148,14 @@ export default async function MeditationRelaxationSubtypePage({
               </div>
             </Link>
           ))
-        ) : (
-          <article className={styles.emptyVideoState}>
-            <strong>{t("subtype.emptyTitle")}</strong>
-            <p>{t("subtype.emptyText")}</p>
-          </article>
-        )}
-      </section>
+          ) : (
+            <article className={styles.emptyVideoState}>
+              <strong>{t("subtype.emptyTitle")}</strong>
+              <p>{t("subtype.emptyText")}</p>
+            </article>
+          )}
+        </section>
+      ) : null}
     </main>
   );
 }

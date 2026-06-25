@@ -290,10 +290,10 @@
     "sendResetLink": "Reset-Link senden",
     "backToSignIn": "Zurück zur Anmeldung",
     "resetEmailRequired": "Gib zuerst deine E-Mail-Adresse ein.",
-    "resetEmailSent": "Falls diese E-Mail die Anmeldung mit Passwort nutzt, wurden Anweisungen zum Zurücksetzen gesendet. Wenn du das Konto mit Google erstellt hast, nutze stattdessen Mit Google fortfahren.",
-    "verificationSent": "Konto erstellt. Bitte bestätige deine E-Mail-Adresse, bevor du dich anmeldest.",
+    "resetEmailSent": "Falls diese E-Mail die Anmeldung mit Passwort nutzt, wurden Anweisungen zum Zurücksetzen gesendet. Prüfe auch den Spam-Ordner. Wenn du das Konto mit Google erstellt hast, nutze stattdessen Mit Google fortfahren.",
+    "verificationSent": "Konto erstellt. Prüfe dein Postfach und den Spam-Ordner und bestätige die E-Mail-Adresse, bevor du dich anmeldest. Wenn der Link nicht anklickbar ist, kopiere ihn in deinen Browser.",
     "verificationSendFailed": "Das Konto wurde erstellt, aber die Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuche es später erneut.",
-    "emailNotVerified": "Bitte bestätige zuerst deine E-Mail-Adresse.",
+    "emailNotVerified": "Bitte bestätige zuerst deine E-Mail-Adresse. Prüfe dein Postfach und den Spam-Ordner; wenn der Link nicht anklickbar ist, kopiere ihn in deinen Browser.",
     "switchToRegister": "Neu hier? Konto erstellen",
     "switchToSignIn": "Bereits ein Konto? Anmelden",
     "close": "Schließen",
@@ -603,7 +603,7 @@
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",
-    "title": "Wissen zu Sport, Gesundheit und Ernährung.",
+    "title": "Wissen zu Schmerzlinderung, Gesundheit und Ernährung.",
     "intro": "Praktische Artikel zu Training, Regeneration, Ernährung und gesünderen Routinen.",
     "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
     "filterHint": "Nach Thema filtern",
@@ -954,6 +954,10 @@
       {
         "title": "Atmung gegen Stress",
         "description": "Einfache Atemsessions, die dich aus Anspannung zurück in einen ruhigeren Rhythmus führen."
+      },
+      {
+        "title": "Selbstmassage zur Stressreduktion",
+        "description": "Sanfte Selbstmassage-Impulse, um körperliche Spannung wahrzunehmen und Stress zu reduzieren."
       }
     ],
     "music": {
@@ -969,7 +973,7 @@
     "videos": {
       "eyebrow": "Video-Bereich",
       "title": "Meditationsvideos",
-      "description": "Hier erscheinen deine geführten Meditations- und Atemvideos aus Contentful, sobald sie mit der Kategorie meditation-entspannung veröffentlicht sind.",
+      "description": "Hier erscheinen deine geführten Meditations- und Atemvideos aus Contentful, sobald sie mit der Kategorie meditation-relaxation veröffentlicht sind.",
       "duration": "{count} Min",
       "empty": "Die ersten Meditationsvideos werden angezeigt, sobald sie in Contentful veröffentlicht sind."
     },
@@ -1062,6 +1066,20 @@
       "musicNote": "Leichte Musik ist vorläufig generiert",
       "play": "Musik starten",
       "pause": "Musik stoppen",
+      "open": "Übung öffnen",
+      "close": "Atemübung schließen",
+      "inhale": "Einatmen",
+      "exhale": "Ausatmen",
+      "hold": "Halten",
+      "rest": "Pause",
+      "rhythmLabel": "Rhythmus",
+      "animationLabel": "Animation",
+      "musicLabel": "Musik",
+      "instructionLabel": "Anleitung",
+      "musicOnLabel": "Musik eingeschaltet",
+      "musicOffLabel": "Musik ausgeschaltet",
+      "breathSoundOnLabel": "Atemgeräusch eingeschaltet",
+      "breathSoundOffLabel": "Atemgeräusch ausgeschaltet",
       "education": {
         "summary": "Warum diese Atemtechniken wirken",
         "title": "Kurz erklärt: Atmung, Nervensystem und Entspannung",
@@ -1099,58 +1117,116 @@
       "sections": [
         {
           "title": "Schnelle Beruhigung",
-          "duration": "1-2 Min",
-          "description": "Verlängertes Ausatmen für Momente, in denen du schnell aus innerer Anspannung herausfinden möchtest.",
+          "duration": "3 Min",
+          "description": "Wenn du dich gestresst oder unruhig fühlst. Eine kurze Übung, die durch ein verlängertes Ausatmen dem Gehirn das Signal zur Entspannung gibt und Körper und Geist schnell beruhigt.",
           "steps": [
-            "Atme ruhig durch die Nase ein.",
-            "Atme langsam für etwa sechs Sekunden aus.",
-            "Wiederhole den Rhythmus, bis sich dein Tempo spürbar senkt."
+            "Position: Setze dich bequem hin oder bleibe in deiner aktuellen Position. Die Übung kann auch im Stehen durchgeführt werden. Entspanne deine Schultern.",
+            "Einatmen: Atme fließend und tief durch die Nase für 4 Sekunden ein. Fülle deine Lungen ganz ohne Anstrengung.",
+            "Ausatmen: Atme langsam und vollständig durch den leicht geöffneten Mund oder die Nase für 6 Sekunden aus. Fokussiere dich auf das Gefühl der Entspannung in Schultern und Brust, während die Luft entweicht.",
+            "Wiederholung: Folge dem Rhythmus ohne Pausen zwischen Ein- und Ausatmen."
           ],
-          "music": "Musik: sehr weich, langsam und ohne klare Melodie."
+          "rhythm": [
+            "Einatmen: 4 Sekunden",
+            "Ausatmen: 6 Sekunden",
+            "Keine Atempause, kein Luftanhalten"
+          ],
+          "animation": "Ein leuchtender grüner Kreis, der sich beim Einatmen langsam ausdehnt und beim Ausatmen wieder zusammenzieht.",
+          "music": [
+            "Waldgeräusche",
+            "Vogelgezwitscher",
+            "Leichter Wind"
+          ]
         },
         {
           "title": "Tiefe Entspannung",
-          "duration": "3-5 Min",
-          "description": "Zwerchfellatmung, um flache Brustatmung zu lösen und den Körper in einen ruhigeren Zustand zu begleiten.",
+          "duration": "5 oder 10 Min",
+          "description": "Angeleitete Zwerchfellatmung (Bauchatmung) für die tägliche Entspannung und den Abbau von Spannungen. Der Fokus liegt auf der Atmung in den Bauch, was das parasympathische Nervensystem aktiviert und körperliche Anspannung reduziert.",
           "steps": [
-            "Lege eine Hand auf den Bauch.",
-            "Atme so ein, dass sich die Bauchdecke sanft hebt.",
-            "Lasse die Ausatmung weich und vollständig ausfließen."
+            "Position: Setze dich mit aufrechtem Rücken hin oder lege dich auf den Rücken. Lege eine Hand auf die Brust und die andere auf den Bauch, direkt unterhalb der Rippen.",
+            "Einatmen: Atme langsam für 5 Sekunden durch die Nase ein. Ziel ist, dass sich die Hand auf dem Bauch hebt, während die Hand auf der Brust fast bewegungslos bleibt.",
+            "Ausatmen: Atme entspannt für 5 Sekunden durch die Nase oder den Mund aus und lass den Bauch dabei ganz natürlich wieder absinken.",
+            "Fokus: Halte deine Aufmerksamkeit auf der gleichmäßigen, wellenartigen Bewegung deines Bauches."
           ],
-          "music": "Musik: warm, tief und gleichmäßig fließend."
+          "rhythm": [
+            "Einatmen: 5 Sekunden",
+            "Ausatmen: 5 Sekunden"
+          ],
+          "animation": "Ruhige Wellen, die dem Rhythmus der Atmung folgen: Sie steigen beim Einatmen an und senken oder ziehen sich beim Ausatmen zurück.",
+          "music": [
+            "Ozeanwellen",
+            "Regen",
+            "Klavier"
+          ]
         },
         {
           "title": "Fokus",
-          "duration": "4 Min",
-          "description": "Box Breathing mit klarer Struktur, wenn du Gedanken ordnen und konzentrierter werden möchtest.",
+          "duration": "3-5 Min",
+          "description": "Kontrollierte Atmung, die hilft, die Aufmerksamkeit zu bündeln, die Gedanken zu beruhigen und die Konzentration zu steigern. Diese Technik ist weltweit als Box Breathing (Quadratatmung) bekannt und wird von Profis genutzt, die unter hohem Druck arbeiten.",
           "steps": [
-            "Vier zählen und einatmen.",
-            "Vier zählen und den Atem halten.",
-            "Vier zählen und ausatmen, dann vier zählen und halten."
+            "Position: Setze dich aufrecht hin, die Füße flach auf dem Boden. Schließe die Augen, wenn es dir hilft, dich besser zu konzentrieren.",
+            "Einatmen: Atme durch die Nase ein und zähle dabei im Kopf bis 4.",
+            "Anhalten mit vollen Lungen: Halte den Atem für 4 Sekunden an und bleibe ruhig. Verenge nicht den Hals, pausiere einfach nur den Atemfluss.",
+            "Ausatmen: Lass die Luft langsam und gleichmäßig für 4 Sekunden durch die Nase oder den Mund ausströmen.",
+            "Anhalten mit leeren Lungen: Halte den Atem mit komplett leeren Lungen für weitere 4 Sekunden an, bevor der nächste Einatmenzyklus beginnt."
           ],
-          "music": "Musik: ruhig und rhythmisch, mit sanften Pausen."
+          "rhythm": [
+            "Einatmen: 4 Sekunden",
+            "Anhalten: 4 Sekunden",
+            "Ausatmen: 4 Sekunden",
+            "Anhalten: 4 Sekunden"
+          ],
+          "animation": "Ein leuchtendes Quadrat, dessen Seiten oder Ecken nacheinander aufleuchten, während die jeweilige 4-sekündige Phase läuft.",
+          "music": [
+            "Ambient-Klänge",
+            "Weißes Rauschen",
+            "Keine Musik optional"
+          ]
         },
         {
           "title": "Vor dem Schlafengehen",
-          "duration": "4-6 Min",
-          "description": "Die 4-7-8 Methode als ruhige Abendtechnik, um den Körper auf Schlaf vorzubereiten.",
+          "duration": "4 Zyklen, ca. 2 Min",
+          "description": "Ein beruhigender Atemrhythmus, bekannt als die 4-7-8 Methode, der wie ein natürliches Beruhigungsmittel für das Nervensystem wirkt. Er hilft dir, die Gedanken des Tages loszulassen und schneller einzuschlafen.",
           "steps": [
-            "Atme vier Sekunden ein.",
-            "Halte den Atem sieben Sekunden, ohne Druck aufzubauen.",
-            "Atme acht Sekunden langsam aus."
+            "Position: Lege dich in eine bequeme Schlafposition ins Bett. Platziere die Zungenspitze an den Gaumen, direkt hinter die oberen Schneidezähne, und halte sie dort während der gesamten Übung.",
+            "Einatmen: Schließe den Mund und atme geräuschlos für 4 Sekunden durch die Nase ein.",
+            "Anhalten: Halte den Atem an und zähle im Kopf bis 7.",
+            "Ausatmen: Atme vollständig für 8 Sekunden durch den Mund aus und mache dabei ein hörbares Zisch-Geräusch. Forme die Lippen leicht so, als ob du durch einen Strohhalm pustest.",
+            "Hinweis: Diese drei Schritte ergeben einen Zyklus. Mach zu Beginn genau 4 Zyklen hintereinander."
           ],
-          "music": "Musik: besonders leise, warm und ohne starke Höhen."
+          "rhythm": [
+            "Einatmen: 4 Sekunden",
+            "Anhalten: 7 Sekunden",
+            "Ausatmen: 8 Sekunden, durch den Mund mit Geräusch"
+          ],
+          "animation": "Mond und Sterne mit einer leuchtenden Kugel im Zentrum, die sich beim Einatmen langsam ausdehnt, beim Anhalten verweilt und sich beim langen Ausatmen langsam wieder zusammenzieht.",
+          "music": [
+            "Nächtliche Naturgeräusche",
+            "Grillenzirpen",
+            "Leise Ambient-Musik"
+          ],
+          "note": "Beginne mit 4 Zyklen. Die Übung kann mit der Zeit auf bis zu 5 Minuten verlängert werden. Aufgrund des langen Ausatmens kann zu Beginn ein leichtes Schwindelgefühl auftreten; beende die Übung, wenn es sich unangenehm anfühlt."
         },
         {
           "title": "Freies langsames Atmen",
-          "duration": "5 Min",
-          "description": "Kohärentes Atmen in einem ruhigen 5:5 Rhythmus für mehr Gleichmäßigkeit im Nervensystem.",
+          "duration": "10-20 Min",
+          "description": "Gleichmäßiges, rhythmisches Atmen untermalt von entspannender Musik. Dies ist die wissenschaftlich gut erforschte Resonanzatmung, die Herzfrequenz, Blutdruck und Atmung harmonisieren kann, um Stress langfristig zu reduzieren.",
           "steps": [
-            "Atme fünf Sekunden ein.",
-            "Atme fünf Sekunden aus.",
-            "Bleibe bei ungefähr sechs Atemzügen pro Minute."
+            "Position: Begib dich in eine möglichst bequeme Position, sitzend oder liegend. Lass deine Arme entspannt neben dem Körper oder im Schoß ruhen.",
+            "Ein- und Ausatmen: Atme ausschließlich durch die Nase. Das Einatmen dauert 5 Sekunden und das Ausatmen dauert 5 Sekunden.",
+            "Fluss: Die Atmung soll natürlich, fließend und ohne Anstrengung erfolgen. Der Übergang zwischen Ein- und Ausatmen sollte weich sein, so als ob eine Bewegung in die nächste übergeht.",
+            "Anpassung: Wenn 5 Sekunden zu lang sind, atme in einem Rhythmus, der sich gut anfühlt, zum Beispiel 4,5 Sekunden, solange Ein- und Ausatmen gleich lang sind."
           ],
-          "music": "Musik: tiefer, fließender Hintergrund mit stabilem Puls."
+          "rhythm": [
+            "Einatmen: 5 Sekunden",
+            "Ausatmen: 5 Sekunden",
+            "Ergibt ca. 6 Atemzüge pro Minute"
+          ],
+          "animation": "Eine leuchtende blaue Kugel oder ein Kreis, der sich rhythmisch ausdehnt und zusammenzieht, mit einem sanften, fließenden Pulseffekt ohne abrupte Pausen.",
+          "music": [
+            "Ambient-Musik",
+            "Naturklänge",
+            "Instrumentale Meditationsmusik"
+          ]
         }
       ]
     }

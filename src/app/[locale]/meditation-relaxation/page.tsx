@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { ArrowRight, Music2, Sparkles, Waves, Wind } from "lucide-react";
+import { ArrowRight, HandHeart, Music2, Sparkles, Waves, Wind } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import styles from "./Relaxation.module.css";
 
-const categoryIcons = [Sparkles, Music2, Wind] as const;
+const categoryIcons = [Sparkles, Music2, Wind, HandHeart] as const;
 const relaxationSubcategoryKeys = [
   "guided-meditation",
   "relaxation-music",
   "breathing-against-stress",
+  "self-massage-stress-reduction",
 ] as const;
 
 export default async function MeditationRelaxationPage({
@@ -41,7 +42,7 @@ export default async function MeditationRelaxationPage({
           return (
             <Link
               key={category.title}
-              href={`/${locale}/meditation-entspannung/${subcategoryKey}`}
+              href={`/${locale}/meditation-relaxation/${subcategoryKey}`}
               className={styles.categoryItem}
             >
               <div className={styles.categoryHead}>

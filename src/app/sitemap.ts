@@ -6,24 +6,24 @@ const publicRoutes = [
   "",
   "/about",
   "/courses",
-  "/meditation-entspannung",
+  "/meditation-relaxation",
   "/blogs",
-  "/kontakt",
-  "/impressum",
-  "/datenschutz",
-  "/nutzungsbedingungen",
+  "/contact",
+  "/imprint",
+  "/privacy",
+  "/terms",
 ] as const;
 
 const routePriority: Record<(typeof publicRoutes)[number], number> = {
   "": 1,
   "/about": 0.7,
   "/courses": 0.9,
-  "/meditation-entspannung": 0.8,
+  "/meditation-relaxation": 0.8,
   "/blogs": 0.8,
-  "/kontakt": 0.7,
-  "/impressum": 0.3,
-  "/datenschutz": 0.3,
-  "/nutzungsbedingungen": 0.3,
+  "/contact": 0.7,
+  "/imprint": 0.3,
+  "/privacy": 0.3,
+  "/terms": 0.3,
 };
 
 const routeChangeFrequency: Record<
@@ -33,12 +33,12 @@ const routeChangeFrequency: Record<
   "": "weekly",
   "/about": "monthly",
   "/courses": "weekly",
-  "/meditation-entspannung": "monthly",
+  "/meditation-relaxation": "monthly",
   "/blogs": "weekly",
-  "/kontakt": "monthly",
-  "/impressum": "yearly",
-  "/datenschutz": "yearly",
-  "/nutzungsbedingungen": "yearly",
+  "/contact": "monthly",
+  "/imprint": "yearly",
+  "/privacy": "yearly",
+  "/terms": "yearly",
 };
 
 function getBaseUrl() {

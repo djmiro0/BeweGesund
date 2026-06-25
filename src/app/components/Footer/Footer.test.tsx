@@ -58,7 +58,7 @@ describe("Footer", () => {
     expect(screen.getByTestId("site-footer")).toBeInTheDocument();
     expect(screen.getByTestId("footer-brand-link")).toHaveAttribute("href", "/en");
     expect(screen.getByTestId("footer-brand-icon")).toHaveAttribute("src", "/logo.png");
-    expect(screen.getByTestId("footer-contact-cta")).toHaveAttribute("href", "/en/kontakt");
+    expect(screen.getByTestId("footer-contact-cta")).toHaveAttribute("href", "/en/contact");
     expect(screen.getByTestId("footer-contact-cta")).toHaveTextContent("Open Contact");
   });
 

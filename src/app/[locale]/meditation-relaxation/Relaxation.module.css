@@ -108,7 +108,7 @@
 
 .categoryGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -144,6 +144,10 @@
 
 .categoryItem:nth-child(3) {
   animation-delay: 0.12s;
+}
+
+.categoryItem:nth-child(4) {
+  animation-delay: 0.18s;
 }
 
 .categoryItem::after {
@@ -335,77 +339,47 @@
   color: var(--page-ink);
 }
 
-.musicTrackGrid,
-.breathingGrid {
+.musicTrackGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.breathingLayout {
+  display: grid;
+  gap: 1rem;
+}
+
+.breathingPairList {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
 .breathingInfo {
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.72fr);
+  gap: 1rem;
+  align-items: start;
   border: 1px solid var(--page-border);
   border-radius: 1rem;
   background:
     linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9)),
     var(--page-soft);
-}
-
-.breathingInfo summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  color: var(--page-ink);
-  cursor: pointer;
-  font-size: 0.82rem;
-  font-weight: 950;
-  line-height: 1.2;
-  list-style: none;
   padding: 1rem;
-  text-transform: uppercase;
 }
 
-.breathingInfo summary::-webkit-details-marker {
-  display: none;
-}
-
-.breathingInfo summary::after {
-  content: "+";
-  display: grid;
-  width: 1.9rem;
-  height: 1.9rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid rgba(var(--page-ink-rgb), 0.1);
-  border-radius: 999px;
-  color: var(--page-olive);
-}
-
-.breathingInfo[open] summary::after {
-  content: "-";
-}
-
-.breathingInfoBody {
-  display: grid;
-  gap: 1rem;
-  border-top: 1px solid var(--page-border-soft);
-  padding: 0 1rem 1rem;
-}
-
-.breathingInfoIntro h3,
-.breathingInfoGrid h4 {
+.breathingInfoIntro h3 {
   margin: 0;
   color: var(--page-ink);
   line-height: 1.16;
 }
 
 .breathingInfoIntro h3 {
-  font-size: 1.08rem;
+  font-size: 1.2rem;
 }
 
 .breathingInfoIntro p,
-.breathingInfoGrid p,
 .breathingDisclaimer p {
   margin: 0.45rem 0 0;
   color: var(--page-muted);
@@ -413,13 +387,6 @@
   line-height: 1.58;
 }
 
-.breathingInfoGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.breathingInfoGrid article,
 .breathingDisclaimer {
   border: 1px solid var(--page-border-soft);
   border-radius: 0.85rem;
@@ -427,11 +394,6 @@
   padding: 0.85rem;
 }
 
-.breathingInfoGrid h4 {
-  font-size: 0.9rem;
-}
-
-.breathingInfoGrid strong,
 .breathingDisclaimer strong {
   color: var(--page-ink);
 }
@@ -453,6 +415,10 @@
     var(--page-soft);
   box-shadow: 0 0.75rem 1.7rem rgba(var(--shell-bg-rgb), 0.07);
   padding: 1rem;
+}
+
+.breathingPairList .breathingCard {
+  gap: 0.7rem;
 }
 
 .musicTrackActive,
@@ -532,6 +498,428 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+}
+
+.breathingCardActions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.breathingCard button.breathingInfoButton {
+  width: 2.45rem;
+  min-width: 2.45rem;
+  padding: 0;
+}
+
+.breathingInfoPopupBackdrop {
+  position: fixed;
+  z-index: 88;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--shell-bg-rgb), 0.42);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+}
+
+.breathingInfoPopup {
+  position: relative;
+  width: min(100%, 36rem);
+  border: 1px solid var(--page-border);
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.95)),
+    var(--page-soft);
+  box-shadow: 0 1.6rem 4rem rgba(var(--shell-bg-rgb), 0.28);
+  color: var(--page-ink);
+  padding: 1.1rem;
+}
+
+.breathingInfoPopupClose {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.12);
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.74);
+  color: var(--page-muted);
+  cursor: pointer;
+}
+
+.breathingInfoPopup h3 {
+  margin: 0;
+  max-width: calc(100% - 2.8rem);
+  color: var(--page-ink);
+  font-size: 1.25rem;
+  line-height: 1.14;
+}
+
+.breathingInfoPopup p {
+  margin: 0.7rem 0 0;
+  color: var(--page-muted);
+  line-height: 1.62;
+}
+
+.breathingInfoPopup strong {
+  color: var(--page-ink);
+}
+
+.breathingSessionOverlay {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.72fr) minmax(18rem, 1fr) minmax(16rem, 0.78fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: center;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(var(--page-olive-rgb), 0.24), transparent 22rem),
+    linear-gradient(135deg, rgba(var(--shell-bg-rgb), 0.94), rgba(var(--page-ink-rgb), 0.88));
+  color: #fff;
+  padding: clamp(1rem, 5vw, 4rem);
+}
+
+.breathingSessionClose {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+}
+
+.breathingSessionCopy h3 {
+  max-width: 12ch;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.1rem, 6vw, 4.8rem);
+  line-height: 0.92;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.breathingSessionCopy p:last-child,
+.breathingSessionDetails,
+.breathingSessionDetails p {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.breathingSessionCopy p:last-child {
+  max-width: 32rem;
+  margin: 1rem 0 0;
+  font-size: clamp(0.98rem, 2vw, 1.15rem);
+  line-height: 1.6;
+}
+
+.breathingOrbPanel {
+  display: grid;
+  gap: 1.15rem;
+  justify-items: center;
+}
+
+.breathingOrbWrap {
+  display: grid;
+  min-height: min(58vh, 34rem);
+  place-items: center;
+}
+
+.breathingOrb {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  width: clamp(13rem, 34vw, 25rem);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.38) 42%, rgba(var(--page-olive-rgb), 0.4) 72%),
+    rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 0 0 1.2rem rgba(255, 255, 255, 0.06),
+    0 2rem 7rem rgba(0, 0, 0, 0.28);
+  color: var(--page-ink);
+  text-align: center;
+  transform: scale(var(--breath-scale, 1));
+  transition: transform var(--breath-duration, 1s) ease-in-out;
+  animation-play-state: var(--breath-play-state, running);
+}
+
+.breathingOrb::before,
+.breathingOrb::after {
+  position: absolute;
+  inset: 14%;
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+.breathingVisualForest {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(221, 255, 205, 0.96), rgba(96, 191, 101, 0.56) 48%, rgba(30, 117, 70, 0.38) 72%),
+    rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 0 0 1.2rem rgba(96, 191, 101, 0.12),
+    0 2rem 7rem rgba(13, 87, 50, 0.34);
+}
+
+.breathingVisualWave {
+  background:
+    linear-gradient(180deg, rgba(220, 247, 255, 0.96), rgba(79, 166, 210, 0.44)),
+    rgba(255, 255, 255, 0.16);
+  color: #0c3446;
+}
+
+.breathingVisualWave::before {
+  inset: auto -12% 18%;
+  height: 36%;
+  border-radius: 50% 50% 0 0;
+  background: rgba(35, 118, 170, 0.34);
+  transform: translateY(calc((1.2 - var(--breath-scale, 1)) * 2rem));
+  transition: transform var(--breath-duration, 1s) ease-in-out;
+  animation-play-state: var(--breath-play-state, running);
+}
+
+.breathingVisualBox {
+  border-radius: 1.2rem;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(172, 190, 255, 0.5)),
+    rgba(255, 255, 255, 0.16);
+}
+
+.breathingVisualBox::before {
+  inset: 11%;
+  border: 0.35rem solid rgba(78, 105, 220, 0.44);
+  border-radius: 0.9rem;
+  box-shadow: 0 0 2.4rem rgba(78, 105, 220, 0.38);
+}
+
+.breathingVisualBox::after {
+  inset: auto auto 11% 11%;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: #4e69dc;
+  box-shadow: 0 0 1.6rem rgba(78, 105, 220, 0.8);
+  animation: boxBreathMarker 16s linear infinite;
+  animation-play-state: var(--breath-play-state, running);
+}
+
+.breathingVisualNight {
+  background:
+    radial-gradient(circle at 38% 32%, rgba(255, 244, 183, 0.96), rgba(255, 244, 183, 0.72) 12%, transparent 13%),
+    radial-gradient(circle at 66% 34%, rgba(255, 255, 255, 0.86), transparent 2.5%),
+    radial-gradient(circle at 72% 58%, rgba(255, 255, 255, 0.72), transparent 2%),
+    linear-gradient(180deg, rgba(40, 46, 104, 0.92), rgba(15, 19, 48, 0.9));
+  color: #fff;
+}
+
+.breathingVisualNight strong {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.breathingVisualCoherent {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(226, 245, 255, 0.96), rgba(62, 151, 224, 0.52) 50%, rgba(23, 91, 167, 0.44) 74%),
+    rgba(255, 255, 255, 0.16);
+  color: #082d56;
+  box-shadow:
+    0 0 0 1.2rem rgba(62, 151, 224, 0.12),
+    0 2rem 7rem rgba(23, 91, 167, 0.34);
+}
+
+.breathingOrb span,
+.breathingOrb strong {
+  grid-area: 1 / 1;
+}
+
+.breathingOrb span {
+  align-self: center;
+  font-size: clamp(1.05rem, 3vw, 2rem);
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.breathingOrb strong {
+  align-self: end;
+  margin-bottom: 22%;
+  color: rgba(var(--page-ink-rgb), 0.58);
+  font-size: clamp(0.85rem, 2vw, 1.2rem);
+}
+
+.breathingSessionDetails {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+}
+
+.breathingSessionDetails ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.65;
+}
+
+.breathingSessionMetaGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.breathingSessionMetaGrid section {
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 0.75rem;
+}
+
+.breathingSessionDetails h4,
+.breathingSessionMetaGrid h4 {
+  margin: 0;
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.breathingSessionMetaGrid ul {
+  margin: 0.45rem 0 0;
+  padding-left: 1.1rem;
+  line-height: 1.55;
+}
+
+.breathingSessionMetaGrid p {
+  margin: 0.45rem 0 0;
+  line-height: 1.55;
+}
+
+.breathingSessionDetails li {
+  margin: 0.35rem 0;
+}
+
+.breathingSessionToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: fit-content;
+  min-height: 2.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 950;
+  padding: 0.62rem 0.9rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.breathingSessionToggle.musicStopButton {
+  border-color: rgba(var(--page-accent-rgb), 0.48);
+  background: rgba(var(--page-accent-rgb), 0.2);
+  color: var(--page-soft);
+}
+
+.breathingSessionToggle.musicPlayButton {
+  border-color: rgba(var(--page-olive-rgb), 0.48);
+  background: rgba(var(--page-olive-rgb), 0.22);
+  color: var(--page-soft);
+}
+
+.breathingAudioToggles {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.breathingIconToggle {
+  position: relative;
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background 0.2s var(--transition),
+    border-color 0.2s var(--transition),
+    color 0.2s var(--transition),
+    opacity 0.2s var(--transition);
+}
+
+.breathingIconToggleActive {
+  border-color: rgba(var(--page-olive-rgb), 0.44);
+  background: rgba(var(--page-olive-rgb), 0.16);
+  color: var(--page-soft);
+}
+
+.breathingIconToggleMuted {
+  border-color: rgba(var(--page-accent-rgb), 0.38);
+  background: rgba(var(--page-accent-rgb), 0.14);
+  color: var(--page-soft);
+  opacity: 0.86;
+}
+
+.breathingWindToggle.breathingIconToggleMuted::after {
+  position: absolute;
+  width: 1.6rem;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  content: "";
+  transform: rotate(-38deg);
+}
+
+.breathingMusicChoices {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+  max-width: min(100%, 30rem);
+}
+
+.breathingMusicChoices button {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 0.48rem 0.68rem;
+  text-transform: uppercase;
+  transition:
+    background 0.2s var(--transition),
+    border-color 0.2s var(--transition),
+    color 0.2s var(--transition);
+}
+
+.breathingMusicChoices .breathingMusicChoiceActive {
+  border-color: rgba(var(--page-olive-rgb), 0.46);
+  background: rgba(var(--page-olive-rgb), 0.18);
+  color: var(--page-soft);
 }
 
 .videoCourseCard {
@@ -794,6 +1182,28 @@
   }
 }
 
+@keyframes boxBreathMarker {
+  0%,
+  24.9% {
+    transform: translate(0, 0);
+  }
+
+  25%,
+  49.9% {
+    transform: translate(calc(clamp(13rem, 34vw, 25rem) * 0.58), 0);
+  }
+
+  50%,
+  74.9% {
+    transform: translate(calc(clamp(13rem, 34vw, 25rem) * 0.58), calc(clamp(13rem, 34vw, 25rem) * -0.58));
+  }
+
+  75%,
+  100% {
+    transform: translate(0, calc(clamp(13rem, 34vw, 25rem) * -0.58));
+  }
+}
+
 @media (max-width: 980px) {
   .hero,
   .subtypeHero {
@@ -803,10 +1213,26 @@
   .categoryGrid,
   .videoList,
   .musicTrackGrid,
-  .breathingInfoGrid,
-  .breathingGrid,
   .detailGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .categoryGrid,
+  .breathingInfo {
+    grid-template-columns: 1fr;
+  }
+
+  .breathingPairList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .breathingSessionOverlay {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .breathingOrbWrap {
+    min-height: 22rem;
   }
 
   .detailMeta {
@@ -822,8 +1248,8 @@
   .categoryGrid,
   .videoList,
   .musicTrackGrid,
-  .breathingInfoGrid,
-  .breathingGrid,
+  .breathingInfo,
+  .breathingPairList,
   .detailGrid {
     grid-template-columns: 1fr;
   }
@@ -831,7 +1257,6 @@
   .sectionHeading,
   .breathingCardHead {
     align-items: stretch;
-    flex-direction: column;
   }
 
   .categoryItem {
@@ -850,5 +1275,9 @@
   .visualRing,
   .visual svg {
     animation: none;
+  }
+
+  .breathingOrb {
+    transition: none;
   }
 }

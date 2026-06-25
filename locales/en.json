@@ -290,10 +290,10 @@
     "sendResetLink": "Send reset link",
     "backToSignIn": "Back to sign in",
     "resetEmailRequired": "Enter your email address first.",
-    "resetEmailSent": "If this email uses password sign-in, reset instructions were sent. If you created the account with Google, use Continue with Google instead.",
-    "verificationSent": "Account created. Check your email and verify the address before signing in.",
+    "resetEmailSent": "If this email uses password sign-in, reset instructions were sent. Check your spam folder too. If you created the account with Google, use Continue with Google instead.",
+    "verificationSent": "Account created. Check your inbox and spam folder, then verify the email address before signing in. If the link is not clickable, copy and paste it into your browser.",
     "verificationSendFailed": "The account was created, but the verification email could not be sent. Please try again later.",
-    "emailNotVerified": "Verify your email address before signing in.",
+    "emailNotVerified": "Verify your email address before signing in. Check your inbox and spam folder; if the link is not clickable, copy and paste it into your browser.",
     "switchToRegister": "New here? Create an account",
     "switchToSignIn": "Already have an account? Sign in",
     "close": "Close",
@@ -603,7 +603,7 @@
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",
-    "title": "Sport, health, and nutrition.",
+    "title": "Pain Relief, health, and nutrition.",
     "intro": "Practical articles for training, recovery, nutrition, and healthier routines.",
     "articleCount": "{count, plural, one {# article} other {# articles}}",
     "filterHint": "Filter by topic",
@@ -954,6 +954,10 @@
       {
         "title": "Breathing Against Stress",
         "description": "Simple breathing sessions that guide you from tension into a calmer rhythm."
+      },
+      {
+        "title": "Self-Massage for Stress Reduction",
+        "description": "Gentle self-massage prompts to notice physical tension and reduce stress."
       }
     ],
     "music": {
@@ -969,7 +973,7 @@
     "videos": {
       "eyebrow": "Video area",
       "title": "Meditation videos",
-      "description": "Your guided meditation and breathing videos from Contentful appear here as soon as they are published with the meditation-entspannung category.",
+      "description": "Your guided meditation and breathing videos from Contentful appear here as soon as they are published with the meditation-relaxation category.",
       "duration": "{count} min",
       "empty": "The first meditation videos will appear here once they are published in Contentful."
     },
@@ -1062,6 +1066,20 @@
       "musicNote": "Soft music is generated for now",
       "play": "Start music",
       "pause": "Stop music",
+      "open": "Open exercise",
+      "close": "Close breathing exercise",
+      "inhale": "Inhale",
+      "exhale": "Exhale",
+      "hold": "Hold",
+      "rest": "Pause",
+      "rhythmLabel": "Rhythm",
+      "animationLabel": "Animation",
+      "musicLabel": "Music",
+      "instructionLabel": "Instructions",
+      "musicOnLabel": "Music on",
+      "musicOffLabel": "Music off",
+      "breathSoundOnLabel": "Breathing sound on",
+      "breathSoundOffLabel": "Breathing sound off",
       "education": {
         "summary": "Why these breathing techniques can help",
         "title": "Quick guide: breathing, nervous system, and relaxation",
@@ -1099,58 +1117,116 @@
       "sections": [
         {
           "title": "Quick Calm",
-          "duration": "1-2 min",
-          "description": "Prolonged exhalation for moments when you want to move out of inner tension quickly.",
+          "duration": "3 min",
+          "description": "For moments when you feel stressed or restless. This short exercise uses a longer exhale to signal relaxation to the brain and calm body and mind quickly.",
           "steps": [
-            "Breathe in gently through the nose.",
-            "Exhale slowly for about six seconds.",
-            "Repeat the rhythm until your inner pace clearly slows."
+            "Position: Sit comfortably or stay in your current position. This can also be done standing. Relax your shoulders.",
+            "Inhale: Breathe in smoothly and deeply through the nose for 4 seconds. Fill the lungs without strain.",
+            "Exhale: Breathe out slowly and completely through the slightly open mouth or nose for 6 seconds. Focus on the feeling of release in the shoulders and chest.",
+            "Repeat: Follow the rhythm without pauses between inhaling and exhaling."
           ],
-          "music": "Music: very soft, slow, and without a strong melody."
+          "rhythm": [
+            "Inhale: 4 seconds",
+            "Exhale: 6 seconds",
+            "No breath hold"
+          ],
+          "animation": "A glowing green circle slowly expands on the inhale and contracts on the exhale.",
+          "music": [
+            "Forest sounds",
+            "Birdsong",
+            "Light wind"
+          ]
         },
         {
           "title": "Deep Relaxation",
-          "duration": "3-5 min",
-          "description": "Diaphragmatic breathing to release shallow chest breathing and guide the body into a calmer state.",
+          "duration": "5 or 10 min",
+          "description": "Guided diaphragmatic breathing for daily relaxation and releasing tension. The focus is breathing into the belly, which can activate the parasympathetic nervous system and reduce physical tension.",
           "steps": [
-            "Place one hand on the belly.",
-            "Inhale so the belly gently rises.",
-            "Let the exhale soften and flow out completely."
+            "Position: Sit with an upright back or lie on your back. Place one hand on the chest and one on the belly, just below the ribs.",
+            "Inhale: Breathe in slowly through the nose for 5 seconds. Aim for the hand on the belly to rise while the hand on the chest stays almost still.",
+            "Exhale: Breathe out gently through the nose or mouth for 5 seconds and let the belly naturally sink back down.",
+            "Focus: Keep your attention on the smooth, wave-like movement of the belly."
           ],
-          "music": "Music: warm, deep, and evenly flowing."
+          "rhythm": [
+            "Inhale: 5 seconds",
+            "Exhale: 5 seconds"
+          ],
+          "animation": "Calm waves follow the breathing rhythm: rising on the inhale and lowering or receding on the exhale.",
+          "music": [
+            "Ocean waves",
+            "Rain",
+            "Piano"
+          ]
         },
         {
           "title": "Focus",
-          "duration": "4 min",
-          "description": "Box breathing with a clear structure when you want to organize thoughts and become more focused.",
+          "duration": "3-5 min",
+          "description": "Controlled breathing that helps gather attention, calm thoughts, and increase concentration. This technique is known worldwide as box breathing and is used by professionals working under pressure.",
           "steps": [
-            "Count to four and inhale.",
-            "Count to four and hold the breath.",
-            "Count to four and exhale, then count to four and hold."
+            "Position: Sit upright with both feet flat on the floor. Close your eyes if it helps you focus.",
+            "Inhale: Breathe in through the nose and count to 4 in your mind.",
+            "Hold with full lungs: Hold the breath for 4 seconds and stay calm. Do not tighten the throat; simply pause the airflow.",
+            "Exhale: Let the air flow out slowly and evenly through the nose or mouth for 4 seconds.",
+            "Hold with empty lungs: Hold the breath with empty lungs for another 4 seconds before the next inhale begins."
           ],
-          "music": "Music: calm and rhythmic, with gentle pauses."
+          "rhythm": [
+            "Inhale: 4 seconds",
+            "Hold: 4 seconds",
+            "Exhale: 4 seconds",
+            "Hold: 4 seconds"
+          ],
+          "animation": "A glowing square whose sides or corners light up one after another during each 4-second phase.",
+          "music": [
+            "Ambient sounds",
+            "White noise",
+            "No music optional"
+          ]
         },
         {
           "title": "Before Bed",
-          "duration": "4-6 min",
-          "description": "The 4-7-8 method as a quiet evening technique to prepare the body for sleep.",
+          "duration": "4 cycles, about 2 min",
+          "description": "A calming breathing rhythm known as the 4-7-8 method. It acts like a natural calming signal for the nervous system and helps release the thoughts of the day before sleep.",
           "steps": [
-            "Inhale for four seconds.",
-            "Hold the breath for seven seconds without forcing.",
-            "Exhale slowly for eight seconds."
+            "Position: Lie in a comfortable sleeping position. Place the tip of the tongue on the roof of the mouth, just behind the upper front teeth, and keep it there during the exercise.",
+            "Inhale: Close the mouth and breathe in silently through the nose for 4 seconds.",
+            "Hold: Hold the breath and count to 7 in your mind.",
+            "Exhale: Breathe out completely through the mouth for 8 seconds with an audible whoosh sound, shaping the lips as if blowing through a straw.",
+            "Note: These three steps make one cycle. Start with exactly 4 cycles in a row."
           ],
-          "music": "Music: especially quiet, warm, and without sharp highs."
+          "rhythm": [
+            "Inhale: 4 seconds",
+            "Hold: 7 seconds",
+            "Exhale: 8 seconds, through the mouth with sound"
+          ],
+          "animation": "Moon and stars with a glowing orb in the center that expands on the inhale, stays during the hold, and slowly contracts during the long exhale.",
+          "music": [
+            "Night nature sounds",
+            "Crickets",
+            "Quiet ambient music"
+          ],
+          "note": "Begin with 4 cycles. Over time, this can be extended to up to 5 minutes. Because of the long exhale, mild dizziness can occur at first; stop if it feels uncomfortable."
         },
         {
           "title": "Free Slow Breathing",
-          "duration": "5 min",
-          "description": "Coherent breathing in a calm 5:5 rhythm for more steadiness in the nervous system.",
+          "duration": "10-20 min",
+          "description": "Even, rhythmic breathing supported by relaxing music. This resonance breathing technique can help harmonize heart rate, blood pressure, and breathing to reduce stress over time.",
           "steps": [
-            "Inhale for five seconds.",
-            "Exhale for five seconds.",
-            "Stay close to about six breaths per minute."
+            "Position: Find the most comfortable position possible, sitting or lying down. Let the arms rest beside the body or in the lap.",
+            "Inhale and exhale: Breathe only through the nose. The inhale lasts 5 seconds and the exhale lasts 5 seconds.",
+            "Flow: Let the breathing feel natural, flowing, and effortless. The transition between inhale and exhale should be soft, like one movement turning into the next.",
+            "Adaptation: If 5 seconds feels too long, use a rhythm that feels good, for example 4.5 seconds, as long as inhale and exhale are equal."
           ],
-          "music": "Music: low, flowing background with a stable pulse."
+          "rhythm": [
+            "Inhale: 5 seconds",
+            "Exhale: 5 seconds",
+            "About 6 breaths per minute"
+          ],
+          "animation": "A glowing blue orb or circle expands and contracts rhythmically with a soft, flowing pulse effect and no abrupt pauses.",
+          "music": [
+            "Ambient music",
+            "Nature sounds",
+            "Instrumental meditation music"
+          ]
         }
       ]
     }

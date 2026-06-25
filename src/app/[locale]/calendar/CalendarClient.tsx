@@ -51,7 +51,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
   const packageT = useTranslations("packages");
   const locale = useLocale();
   const { user, memberPackage, openAuth } = useAuth();
-  const [selectedDate, setSelectedDate] = useState(days[0]?.date ?? toDateKey(new Date()));
+  const [selectedDate, setSelectedDate] = useState(() => toDateKey(new Date()));
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [joiningEventId, setJoiningEventId] = useState("");
   const [joinError, setJoinError] = useState("");

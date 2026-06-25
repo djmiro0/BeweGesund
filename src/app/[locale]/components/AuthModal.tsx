@@ -130,6 +130,20 @@ function isValidEmailAddress(value: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+function getSiteOrigin() {
+    const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+    if (configuredSiteUrl) {
+        try {
+            return new URL(configuredSiteUrl).origin;
+        } catch {
+            // Fall back to the active browser origin when local env config is incomplete.
+        }
+    }
+
+    return window.location.origin;
+}
+
 export default function AuthModal({ isOpen, onClose, requiresProfileSetup = false }: AuthModalProps) {
     const t = useTranslations("auth");
     const packageT = useTranslations("packages");
@@ -357,7 +371,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
     };
 
     const getAuthActionSettings = () => ({
-        url: `${window.location.origin}/${locale}`,
+        url: `${getSiteOrigin()}/${locale}`,
     });
 
     const openCheckoutForSelectedPackage = async () => {
@@ -526,6 +540,12 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
 
                 try {
                     await sendEmailVerification(credential.user, getAuthActionSettings());
+                    await signOut(auth).catch(() => undefined);
+                    setPassword("");
+                    setConfirmPassword("");
+                    setView("signIn");
+                    setInfoMessage(t("verificationSent"));
+                    return;
                 } catch (verificationError) {
                     console.error("Firebase verification email failed", {
                         code: getFirebaseErrorCode(verificationError),
@@ -538,21 +558,6 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     setErrorMessage(t("verificationSendFailed"));
                     return;
                 }
-
-                try {
-                    await openCheckoutForSelectedPackage();
-                } catch (checkoutError) {
-                    console.error("Stripe checkout could not be opened after registration", {
-                        code: getFirebaseErrorCode(checkoutError),
-                        error: checkoutError,
-                    });
-                    await deleteIncompleteAccount(credential.user);
-                    setPassword("");
-                    setConfirmPassword("");
-                    setView("signIn");
-                    setErrorMessage(`${t("errorPrefix")} ${getFriendlyErrorMessage(checkoutError)}`);
-                }
-                return;
             } else {
                 setHasAttemptedSignInSubmit(true);
 

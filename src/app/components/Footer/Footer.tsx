@@ -22,15 +22,15 @@ const Footer: React.FC = () => {
     { href: `/${locale}/about`, label: t("links.about") },
     { href: `/${locale}/courses`, label: t("links.courses") },
     { href: `/${locale}/calendar`, label: t("links.calendar") },
-    { href: `/${locale}/meditation-entspannung`, label: t("links.relaxation") },
+    { href: `/${locale}/meditation-relaxation`, label: t("links.relaxation") },
     { href: `/${locale}/blogs`, label: t("links.blogs") },
-    { href: `/${locale}/kontakt`, label: t("links.contact") },
+    { href: `/${locale}/contact`, label: t("links.contact") },
   ];
 
   const legalLinks = [
-    { href: `/${locale}/impressum`, label: t("links.impressum"), icon: FileText },
-    { href: `/${locale}/datenschutz`, label: t("links.privacy"), icon: ShieldCheck },
-    { href: `/${locale}/nutzungsbedingungen`, label: t("links.terms"), icon: FileText },
+    { href: `/${locale}/imprint`, label: t("links.impressum"), icon: FileText },
+    { href: `/${locale}/privacy`, label: t("links.privacy"), icon: ShieldCheck },
+    { href: `/${locale}/terms`, label: t("links.terms"), icon: FileText },
   ];
 
   const contactItems = [
@@ -57,7 +57,7 @@ const Footer: React.FC = () => {
 
             <p className={style.brandText}>{t("tagline")}</p>
 
-            <Link href={`/${locale}/kontakt`} className={style.contactButton} data-testid="footer-contact-cta">
+            <Link href={`/${locale}/contact`} className={style.contactButton} data-testid="footer-contact-cta">
               {t("contactCardButton")}
               <ArrowUpRight size={17} />
             </Link>

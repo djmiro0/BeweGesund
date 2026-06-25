@@ -174,7 +174,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     const activeDashboardItems = activeTab === "meditation-relaxation" ? activeMeditations : activeCourses;
     const recentWorkouts = workouts.slice(0, 8);
     const getMeditationHref = (item: DashboardMeditation) =>
-        `/${locale}/meditation-entspannung/${item.subcategoryKey || "guided-meditation"}/${item.slug}`;
+        `/${locale}/meditation-relaxation/${item.subcategoryKey || "guided-meditation"}/${item.slug}`;
 
     const scrollTabs = (direction: "left" | "right") => {
         const tabsElement = tabsRef.current;
@@ -614,7 +614,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                         >
                             <div className={`${styles.listHeader} ${styles.newsListHeader}`}>
                                 <span>{t("meditation.latestTitle")}</span>
-                                <Link href={`/${locale}/meditation-entspannung`} className={styles.viewAllLink}>
+                                <Link href={`/${locale}/meditation-relaxation`} className={styles.viewAllLink}>
                                     {t("news.viewAll")}
                                     <ArrowUpRight size={14} />
                                 </Link>

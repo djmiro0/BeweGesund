@@ -10,6 +10,7 @@ const relaxationSubcategoryKeys = new Set([
   "guided-meditation",
   "relaxation-music",
   "breathing-against-stress",
+  "self-massage-stress-reduction",
 ]);
 
 export default async function MeditationRelaxationDetailPage({
@@ -36,7 +37,7 @@ export default async function MeditationRelaxationDetailPage({
 
   return (
     <main className={styles.page}>
-      <Link href={`/${locale}/meditation-entspannung/${subtype}`} className={styles.backLink}>
+      <Link href={`/${locale}/meditation-relaxation/${subtype}`} className={styles.backLink}>
         <ArrowLeft size={17} />
         {t("subtype.back")}
       </Link>

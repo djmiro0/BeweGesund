@@ -67,7 +67,7 @@ describe("Contentful course normalization", () => {
           fields: {
             title: "Guided meditation",
             slug: "guided-meditation",
-            categoryKey: "meditation-entspannung",
+            categoryKey: "meditation-relaxation",
             muxPlaybackId: "playback-1",
             packageRequired: "plus",
           },

@@ -17,11 +17,17 @@ export default function NavigationFeedback() {
   const isNavigating = pendingPath !== null && pendingPath !== pathname;
 
   useEffect(() => {
-    if (timeoutRef.current) {
-      window.clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-  }, [pathname]);
+    const handlePopState = () => setPendingPath(null);
+    const handlePageShow = () => setPendingPath(null);
+
+    window.addEventListener("popstate", handlePopState);
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
+  }, []);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
