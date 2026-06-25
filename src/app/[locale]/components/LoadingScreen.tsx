@@ -8,11 +8,7 @@ interface LoadingScreenProps {
 export default function LoadingScreen({ label = "BeweGesund", text }: LoadingScreenProps) {
   return (
     <main className={styles.loadingScreen} aria-busy="true" aria-live="polite">
-      <div className={styles.loadingMark} aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
+      <div className={styles.loadingMark} aria-hidden="true" />
       <p className={styles.loadingKicker}>{label}</p>
       {text ? <p className={styles.loadingText}>{text}</p> : null}
     </main>

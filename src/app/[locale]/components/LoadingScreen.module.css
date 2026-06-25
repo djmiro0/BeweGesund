@@ -30,32 +30,11 @@
   width: 5.3rem;
   aspect-ratio: 1;
   place-items: center;
-}
-
-.loadingMark span {
-  position: absolute;
-  border-radius: 50%;
-}
-
-.loadingMark span:nth-child(1) {
-  inset: 0;
-  border: 1px solid rgba(var(--media-text-rgb), 0.18);
-  border-top-color: var(--page-warm);
-  animation: loadingSpin 1.15s linear infinite;
-}
-
-.loadingMark span:nth-child(2) {
-  inset: 0.85rem;
-  border: 1px solid rgba(var(--media-text-rgb), 0.14);
-  border-right-color: var(--page-accent);
-  animation: loadingSpin 1.8s linear infinite reverse;
-}
-
-.loadingMark span:nth-child(3) {
-  width: 1.05rem;
-  height: 1.05rem;
-  background: var(--page-warm);
-  box-shadow: 0 0 34px rgba(var(--page-warm-rgb), 0.78);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(var(--page-warm-rgb), 0.18), transparent 68%),
+    url("/favicon.ico") center / 72% 72% no-repeat;
+  filter: drop-shadow(0 0 24px rgba(var(--page-warm-rgb), 0.42));
   animation: loadingPulse 1.25s var(--transition) infinite;
 }
 
@@ -104,7 +83,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .loadingScreen::before,
-  .loadingMark span {
+  .loadingMark {
     animation: none;
   }
 }

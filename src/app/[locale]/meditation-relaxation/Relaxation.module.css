@@ -577,13 +577,15 @@
   display: grid;
   grid-template-columns: minmax(15rem, 0.72fr) minmax(18rem, 1fr) minmax(16rem, 0.78fr);
   gap: clamp(1rem, 3vw, 2rem);
-  align-items: center;
+  align-items: start;
+  min-height: 100dvh;
   overflow: auto;
+  overscroll-behavior: contain;
   background:
     radial-gradient(circle at 50% 42%, rgba(var(--page-olive-rgb), 0.24), transparent 22rem),
     linear-gradient(135deg, rgba(var(--shell-bg-rgb), 0.94), rgba(var(--page-ink-rgb), 0.88));
   color: #fff;
-  padding: clamp(1rem, 5vw, 4rem);
+  padding: clamp(1rem, 4vw, 3rem);
 }
 
 .breathingSessionClose {
@@ -602,11 +604,11 @@
 }
 
 .breathingSessionCopy h3 {
-  max-width: 12ch;
+  max-width: 11ch;
   margin: 0;
   color: #fff;
-  font-size: clamp(2.1rem, 6vw, 4.8rem);
-  line-height: 0.92;
+  font-size: clamp(1.85rem, 4.8vw, 3.7rem);
+  line-height: 0.96;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -620,27 +622,32 @@
 .breathingSessionCopy p:last-child {
   max-width: 32rem;
   margin: 1rem 0 0;
-  font-size: clamp(0.98rem, 2vw, 1.15rem);
+  font-size: clamp(0.94rem, 1.5vw, 1.05rem);
   line-height: 1.6;
 }
 
 .breathingOrbPanel {
   display: grid;
+  align-self: center;
   gap: 1.15rem;
   justify-items: center;
 }
 
 .breathingOrbWrap {
   display: grid;
-  min-height: min(58vh, 34rem);
+  min-height: min(48vh, 29rem);
   place-items: center;
 }
 
 .breathingOrb {
+  --breath-scale: 1;
+  --breath-duration: 1s;
+  --breath-play-state: running;
+
   position: relative;
   overflow: hidden;
   display: grid;
-  width: clamp(13rem, 34vw, 25rem);
+  width: clamp(11rem, 27vw, 19.5rem);
   aspect-ratio: 1;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.32);
@@ -1190,17 +1197,17 @@
 
   25%,
   49.9% {
-    transform: translate(calc(clamp(13rem, 34vw, 25rem) * 0.58), 0);
+    transform: translate(calc(clamp(11rem, 27vw, 19.5rem) * 0.58), 0);
   }
 
   50%,
   74.9% {
-    transform: translate(calc(clamp(13rem, 34vw, 25rem) * 0.58), calc(clamp(13rem, 34vw, 25rem) * -0.58));
+    transform: translate(calc(clamp(11rem, 27vw, 19.5rem) * 0.58), calc(clamp(11rem, 27vw, 19.5rem) * -0.58));
   }
 
   75%,
   100% {
-    transform: translate(0, calc(clamp(13rem, 34vw, 25rem) * -0.58));
+    transform: translate(0, calc(clamp(11rem, 27vw, 19.5rem) * -0.58));
   }
 }
 
@@ -1228,11 +1235,10 @@
 
   .breathingSessionOverlay {
     grid-template-columns: 1fr;
-    align-items: start;
   }
 
   .breathingOrbWrap {
-    min-height: 22rem;
+    min-height: 18rem;
   }
 
   .detailMeta {

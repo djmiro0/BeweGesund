@@ -104,10 +104,22 @@ function createNoiseBuffer(audioContext: AudioContext, seconds = 2) {
   return buffer;
 }
 
+function getMusicTrackSource(musicLabel: string) {
+  const label = musicLabel.toLowerCase();
+
+  if (/rainforest|regenwald|forest|wald/.test(label)) return "/music/rainforest.mp3";
+  if (/ocean|ozean|wave|welle/.test(label)) return "/music/ocean-wave-ambient.mp3";
+  if (/piano|klavier/.test(label)) return "/music/piano-meditation.mp3";
+
+  return null;
+}
+
 function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
   const AudioContextConstructor = window.AudioContext
     || (window as Window & typeof globalThis & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
   const audioContext = new AudioContextConstructor();
+  const trackSource = getMusicTrackSource(musicLabel);
+  const trackAudio = trackSource ? new Audio(trackSource) : null;
   const baseFrequency = [174, 196, 220, 246.94, 261.63][index] ?? 196;
   const gain = audioContext.createGain();
   const filter = audioContext.createBiquadFilter();
@@ -124,7 +136,7 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
   overtone.frequency.value = baseFrequency * (lowerMusicLabel.includes("piano") || lowerMusicLabel.includes("klavier") ? 2 : 1.5);
   filter.type = "lowpass";
   filter.frequency.value = lowerMusicLabel.includes("piano") || lowerMusicLabel.includes("klavier") ? 980 : 620;
-  gain.gain.value = musicEnabled ? 0.03 : 0;
+  gain.gain.value = trackAudio || !musicEnabled ? 0 : 0.03;
 
   oscillator.connect(filter);
   overtone.connect(filter);
@@ -149,6 +161,12 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
   oscillator.start();
   overtone.start();
   noiseSource?.start();
+
+  if (trackAudio) {
+    trackAudio.loop = true;
+    trackAudio.volume = musicEnabled ? 0.72 : 0;
+    void trackAudio.play().catch(() => undefined);
+  }
 
   return {
     playBreathCue: (phase: BreathPhase, secondsOverride?: number) => {
@@ -182,9 +200,19 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
       source.stop(now + seconds);
     },
     setMusicEnabled: (enabled: boolean) => {
+      if (trackAudio) {
+        trackAudio.volume = enabled ? 0.72 : 0;
+        if (enabled) void trackAudio.play().catch(() => undefined);
+        return;
+      }
+
       gain.gain.setTargetAtTime(enabled ? 0.03 : 0, audioContext.currentTime, 0.08);
     },
     stop: () => {
+      if (trackAudio) {
+        trackAudio.pause();
+        trackAudio.currentTime = 0;
+      }
       gain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
       window.setTimeout(() => audioContext.close().catch(() => undefined), 220);
     },
@@ -266,6 +294,20 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
   useEffect(() => () => {
     soundRef.current?.stop();
   }, []);
+
+  useEffect(() => {
+    if (activeIndex === null) return undefined;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [activeIndex]);
 
   useEffect(() => {
     if (activeIndex === null || !isSessionRunning) return undefined;
@@ -476,7 +518,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
             </div>
             <h4>{copy.instructionLabel}</h4>
             <ol>
-              {activeSection.steps.map((step) => <li key={step}>{step}</li>)}
+              {activeSection.steps.map((step, stepIndex) => <li key={`${step}-${stepIndex}`}>{step}</li>)}
             </ol>
             {activeSection.note ? <p className={styles.musicCue}>{activeSection.note}</p> : null}
           </div>
