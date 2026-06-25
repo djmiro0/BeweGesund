@@ -402,13 +402,9 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
       <div className={styles.breathingLayout} aria-labelledby="breathing-education-title">
         <aside className={styles.breathingInfo}>
           <div className={styles.breathingInfoIntro}>
-            <p className={styles.eyebrow}>{copy.education.summary}</p>
+            <h4 className={styles.breathingInfoIntroEyebrow}>{copy.education.summary}</h4>
             <h3 id="breathing-education-title">{copy.education.title}</h3>
             <p>{copy.education.intro}</p>
-          </div>
-          <div className={styles.breathingDisclaimer}>
-            <strong>{copy.education.disclaimerTitle}</strong>
-            <p>{copy.education.disclaimer}</p>
           </div>
         </aside>
 
@@ -458,7 +454,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
             <button type="button" className={styles.breathingInfoPopupClose} onClick={() => setInfoIndex(null)} aria-label={copy.close}>
               <X size={18} />
             </button>
-            <p className={styles.eyebrow}>{copy.education.summary}</p>
+            <h4 className={styles.popUpEyebrow}>{copy.education.summary}</h4>
             <h3 id="breathing-info-popup-title">{copy.education.items[infoIndex].title}</h3>
             <p><strong>{copy.education.items[infoIndex].basis}</strong></p>
             <p>{copy.education.items[infoIndex].howItWorks}</p>
@@ -566,6 +562,10 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
           </div>
         </div>
       ) : null}
+      <div className={styles.breathingDisclaimer}>
+        <strong>{copy.education.disclaimerTitle}</strong>
+        <p>{copy.education.disclaimer}</p>
+      </div>
     </section>
   );
 }
