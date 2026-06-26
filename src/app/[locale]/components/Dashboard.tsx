@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, BookOpen, ChevronLeft, ChevronRight, Clock3, Play, Sparkles } from "lucide-react";
+import { ArrowUpRight, BookOpen, ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { memberCourseCategories } from "@/data";
 import type { BlogPost, CourseSummary, MeditationRelaxationItem } from "@/lib/contentful";
@@ -56,9 +56,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     const { profile } = useAuth();
     const [activeTab, setActiveTab] = useState("for-you");
     const tabsRef = useRef<HTMLElement>(null);
-    const videosRef = useRef<HTMLDivElement>(null);
     const [tabEdges, setTabEdges] = useState({ left: false, right: false });
-    const [videoEdges, setVideoEdges] = useState({ left: false, right: false });
     const [workouts, setWorkouts] = useState<DashboardWorkout[]>([]);
     const [recentPosts, setRecentPosts] = useState<DashboardPost[]>([]);
     const [meditationItems, setMeditationItems] = useState<DashboardMeditation[]>([]);
@@ -189,19 +187,6 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
         });
     };
 
-    const scrollVideos = (direction: "left" | "right") => {
-        const videosElement = videosRef.current;
-
-        if (!videosElement) {
-            return;
-        }
-
-        videosElement.scrollBy({
-            left: direction === "left" ? -videosElement.clientWidth * 0.82 : videosElement.clientWidth * 0.82,
-            behavior: "smooth",
-        });
-    };
-
     useEffect(() => {
         const tabsElement = tabsRef.current;
 
@@ -229,36 +214,6 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
             resizeObserver.disconnect();
         };
     }, [tabs.length]);
-
-    useEffect(() => {
-        const videosElement = videosRef.current;
-
-        if (!videosElement) {
-            return;
-        }
-
-        videosElement.scrollLeft = 0;
-
-        const updateEdges = () => {
-            const maxScroll = videosElement.scrollWidth - videosElement.clientWidth;
-
-            setVideoEdges({
-                left: videosElement.scrollLeft > 4,
-                right: videosElement.scrollLeft < maxScroll - 4,
-            });
-        };
-
-        updateEdges();
-        videosElement.addEventListener("scroll", updateEdges, { passive: true });
-
-        const resizeObserver = new ResizeObserver(updateEdges);
-        resizeObserver.observe(videosElement);
-
-        return () => {
-            videosElement.removeEventListener("scroll", updateEdges);
-            resizeObserver.disconnect();
-        };
-    }, [recentWorkouts.length]);
 
     return (
         <section className={styles.dashboardSection}>
@@ -440,113 +395,77 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
 
                     {recentWorkouts.length ? (
                         <motion.section
-                            className={styles.workoutPanel}
+                            className={styles.newsPanel}
                             initial="hidden"
                             animate="visible"
                             variants={fadeUp}
                         >
                             <div className={`${styles.listHeader} ${styles.workoutListHeader}`}>
                                 <span>{t("workouts.newWorkouts")}</span>
-                                <small>{t("workouts.recentDescription")}</small>
+                                <Link href={`/${locale}/courses`} className={styles.viewAllLink}>
+                                    {t("news.viewAll")}
+                                    <ArrowUpRight size={14} />
+                                </Link>
                             </div>
 
-                            <div
-                                className={`${styles.workoutCarousel} ${
-                                    videoEdges.left ? styles.workoutCarouselHasLeft : ""
-                                } ${videoEdges.right ? styles.workoutCarouselHasRight : ""}`}
-                            >
-                                {videoEdges.left ? (
-                                    <button
-                                        type="button"
-                                        className={`${styles.tabScrollButton} ${styles.videoScrollButtonLeft}`}
-                                        onClick={() => scrollVideos("left")}
-                                        aria-label="Show previous workout videos"
-                                        data-testid="dashboard-workout-videos-scroll-left"
+                            <div className={styles.newsGrid}>
+                                {recentWorkouts.map((course) => (
+                                    <motion.article
+                                        key={course.id}
+                                        className={`${styles.newsCard} ${styles.workoutNewsCard}`}
+                                        variants={fadeUp}
+                                        whileHover={{ y: -3 }}
+                                        data-testid={`dashboard-workout-list-item-${course.id}`}
                                     >
-                                        <ChevronLeft size={16} />
-                                    </button>
-                                ) : null}
-                                <div ref={videosRef} className={styles.workoutGrid}>
-                                    {recentWorkouts.map((course) => (
-                                        <motion.article
-                                            key={course.id}
-                                            className={styles.workoutCard}
-                                            variants={fadeUp}
-                                            whileHover={{ y: -3 }}
-                                            data-testid={`dashboard-workout-list-item-${course.id}`}
-                                        >
-                                            <div className={styles.workoutThumb}>
-                                                {course.posterImage ? (
-                                                    <Image
-                                                        src={course.posterImage}
-                                                        alt=""
-                                                        fill
-                                                        loading="eager"
-                                                        sizes="7rem"
-                                                        className={styles.workoutImage}
-                                                    />
-                                                ) : (
-                                                    <span className={styles.workoutThumbFallback}>
-                                                        <Play size={20} />
-                                                    </span>
-                                                )}
-                                                <span className={styles.thumbPlay}>
-                                                    <Play size={13} fill="currentColor" />
-                                                </span>
-                                                {liveCourseIdSet.has(course.id) ? (
-                                                    <span className={styles.liveBadge}>{t("workouts.live")}</span>
+                                        <Link href={`/${locale}/courses/${course.slug}`} className={styles.newsImage}>
+                                            {course.posterImage ? (
+                                                <Image
+                                                    src={course.posterImage}
+                                                    alt=""
+                                                    fill
+                                                    loading="eager"
+                                                    sizes="(min-width: 1180px) 18rem, (min-width: 720px) 33vw, 88vw"
+                                                />
+                                            ) : (
+                                                <Play size={24} />
+                                            )}
+                                            <span className={styles.thumbPlay}>
+                                                <Play size={13} fill="currentColor" />
+                                            </span>
+                                            {liveCourseIdSet.has(course.id) ? (
+                                                <span className={styles.liveBadge}>{t("workouts.live")}</span>
+                                            ) : null}
+                                        </Link>
+                                        <div className={styles.newsBody}>
+                                            <p className={styles.newsMeta}>
+                                                {course.publishedAt
+                                                    ? dateFormatter.format(new Date(course.publishedAt))
+                                                    : packageT(course.packageRequired)}
+                                                {course.durationMinutes ? (
+                                                    <span>{course.durationMinutes} Min</span>
+                                                ) : course.publishedAt ? (
+                                                    <span>{packageT(course.packageRequired)}</span>
                                                 ) : null}
-                                            </div>
-                                            <div className={styles.workoutBody}>
-                                                <h3>{course.title}</h3>
-                                                <div className={styles.metaRow}>
-                                                    {course.durationMinutes ? (
-                                                        <span>
-                                                            <Clock3 size={13} />
-                                                            {course.durationMinutes} Min
-                                                        </span>
-                                                    ) : null}
-                                                    <span>
-                                                        <Sparkles size={13} />
-                                                        {packageT(course.packageRequired)}
-                                                    </span>
-                                                    {course.publishedAt ? (
-                                                        <span>
-                                                            {dateFormatter.format(new Date(course.publishedAt))}
-                                                        </span>
-                                                    ) : null}
-                                                </div>
-                                                {course.description || course.coach ? (
-                                                    <p className={styles.workoutNote}>
-                                                        {course.description}
-                                                        {course.description && course.coach ? " · " : ""}
-                                                        {course.coach
-                                                            ? coursesT("courseTypes.meta.coach", { name: course.coach })
-                                                            : null}
-                                                    </p>
-                                                ) : null}
-                                            </div>
-                                            <Link
-                                                href={`/${locale}/courses/${course.slug}`}
-                                                className={styles.openButton}
-                                            >
+                                            </p>
+                                            <h3>
+                                                <Link href={`/${locale}/courses/${course.slug}`}>{course.title}</Link>
+                                            </h3>
+                                            {course.description || course.coach ? (
+                                                <p className={styles.newsExcerpt}>
+                                                    {course.description}
+                                                    {course.description && course.coach ? " · " : ""}
+                                                    {course.coach
+                                                        ? coursesT("courseTypes.meta.coach", { name: course.coach })
+                                                        : null}
+                                                </p>
+                                            ) : null}
+                                            <Link href={`/${locale}/courses/${course.slug}`} className={styles.newsReadLink}>
                                                 {t("workouts.openSession")}
                                                 <ArrowUpRight size={14} />
                                             </Link>
-                                        </motion.article>
-                                    ))}
-                                </div>
-                                {videoEdges.right ? (
-                                    <button
-                                        type="button"
-                                        className={`${styles.tabScrollButton} ${styles.videoScrollButtonRight}`}
-                                        onClick={() => scrollVideos("right")}
-                                        aria-label="Show more workout videos"
-                                        data-testid="dashboard-workout-videos-scroll-right"
-                                    >
-                                        <ChevronRight size={16} />
-                                    </button>
-                                ) : null}
+                                        </div>
+                                    </motion.article>
+                                ))}
                             </div>
                         </motion.section>
                     ) : null}

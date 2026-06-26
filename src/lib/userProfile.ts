@@ -32,6 +32,7 @@ export interface UserProfileData {
   startedCourseIds: string[];
   completedCourseIds: string[];
   recommendedCourseIds: string[];
+  anamnesis: Record<string, unknown> | null;
   anamnesisStatusKey: AnamnesisStatus;
   xp: number;
   points: number;
@@ -63,6 +64,7 @@ export const emptyUserProfile: UserProfileData = {
   startedCourseIds: [],
   completedCourseIds: [],
   recommendedCourseIds: [],
+  anamnesis: null,
   anamnesisStatusKey: "pending",
   xp: 0,
   points: 0,
@@ -136,6 +138,9 @@ export function normalizeUserProfile(data: Record<string, unknown> | undefined):
     startedCourseIds: stringArray(data.startedCourseIds),
     completedCourseIds: stringArray(data.completedCourseIds),
     recommendedCourseIds: stringArray(data.recommendedCourseIds),
+    anamnesis: data.anamnesis && typeof data.anamnesis === "object" && !Array.isArray(data.anamnesis)
+      ? data.anamnesis as Record<string, unknown>
+      : null,
     anamnesisStatusKey:
       anamnesisStatusKey === "completed" || anamnesisStatusKey === "review-required"
         ? anamnesisStatusKey

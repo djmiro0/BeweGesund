@@ -408,6 +408,10 @@ a.categoryBlock:hover {
     padding: 5.9rem 0.75rem 3rem;
   }
 
+  .mobileHiddenHeader {
+    display: none;
+  }
+
   .heroCopy {
     padding: 1rem;
   }

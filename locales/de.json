@@ -199,6 +199,7 @@
     "continueWithGoogle": "Mit Google fortfahren",
     "orUseEmail": "oder mit E-Mail",
     "completeProfile": "Profil abschließen",
+    "continueToAnamnesis": "Weiter zur Anamnese",
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
     "firstName": "Vorname",
@@ -266,8 +267,75 @@
       "standing": "Überwiegend stehend",
       "physical": "Körperliche Arbeit"
     },
-    "consentText": "Ich akzeptiere die Nutzungsbedingungen und verstehe, dass das Programm edukativ und trainingsorientiert ist.",
-    "healthConsentText": "Ich willige ausdrücklich in die Verarbeitung von Alter, Geschlecht, Körpergröße und Gewicht zur BMI-Berechnung und Trainingspersonalisierung ein. Ich kann diese Einwilligung jederzeit widerrufen und mein Konto löschen.",
+    "consentText": "*Ich akzeptiere die Nutzungsbedingungen und verstehe, dass das Programm edukativ und trainingsorientiert ist.",
+    "healthConsentText": "*Ich willige ausdrücklich in die Verarbeitung von Alter, Geschlecht, Körpergröße und Gewicht zur BMI-Berechnung und Trainingspersonalisierung ein. Ich kann diese Einwilligung jederzeit widerrufen und mein Konto löschen.",
+    "anamnesis": {
+      "title": "Anamnese",
+      "supportText": "Beantworte diese Fragen, bevor du Zugriff auf die Trainingsbereiche erhältst. Später nutzen wir diese Angaben für passende Empfehlungen.",
+      "submit": "Anamnese abschließen",
+      "backToAccount": "Zurück zu Kontoangaben",
+      "goalsLabel": "Was ist dein Hauptziel?",
+      "complaintsLabel": "Hast du aktuell akute oder chronische körperliche Beschwerden?",
+      "fitnessLevelLabel": "Wie würdest du dein aktuelles Fitness-Level beschreiben?",
+      "movementRestrictionsLabel": "Gibt es Faktoren, die deine Bewegung einschränken?",
+      "stressLevelLabel": "Wie hoch ist dein tägliches Stresslevel gefühlt?",
+      "sleepDisturbanceLabel": "Leidest du unter Schlafstörungen oder innerer Unruhe?",
+      "contraindicationsLabel": "Liegen bei dir schwere gesundheitliche Probleme oder ärztliche Einschränkungen vor?",
+      "goals": {
+        "pain-rehab": "Schmerzlinderung & Rehabilitation",
+        "weight-loss": "Gewichtsreduktion",
+        "muscle-fitness": "Muskelaufbau & Allgemeine Fitness",
+        "stress-balance": "Stressabbau & Mentale Balance"
+      },
+      "complaints": {
+        "back": "Ja, im Rücken",
+        "knee": "Ja, im Knie",
+        "rehasport-prescription": "Ja, ich habe eine ärztliche Verordnung für Rehasport",
+        "whole-body": "Ja, ich habe Schmerzen/Verspannungen im gesamten Körper",
+        "pain-free": "Nein, ich bin schmerzfrei."
+      },
+      "fitnessLevels": {
+        "beginner": "Anfänger",
+        "intermediate": "Mittleres Niveau",
+        "advanced": "Fortgeschritten"
+      },
+      "movementRestrictions": {
+        "obesity": "Ich habe starkes Übergewicht / Adipositas",
+        "pregnant-postpartum": "Ich bin schwanger / frisch gebackene Mutter",
+        "none": "Keine Einschränkungen."
+      },
+      "stressLevels": {
+        "very-high": "Sehr hoch / Ich fühle mich oft ausgebrannt",
+        "moderate": "Moderat",
+        "low": "Niedrig"
+      },
+      "sleepDisturbances": {
+        "often": "Ja, sehr oft",
+        "sometimes": "Gelegentlich",
+        "no": "Nein"
+      },
+      "contraindications": {
+        "acute-disc-herniation": "Akuter Bandscheibenvorfall",
+        "acute-neurological-symptoms": "Akute neurologische Ausfälle",
+        "recent-surgery-wounds": "Kürzlich durchgeführte Operationen oder nicht vollständig verheilte Wunden",
+        "fresh-injuries": "Frische Verletzungen",
+        "severe-heart-disease": "Schwere Herzerkrankungen, Herzrhythmusstörungen oder unkontrollierter Bluthochdruck",
+        "cardiovascular-medication": "Regelmäßige Einnahme von Herz-Kreislauf-Medikamenten",
+        "unclear-dizziness-fainting": "Unklarer Schwindel oder Ohnmachtsanfälle bei körperlicher Belastung",
+        "severe-lung-disease": "Schwere Lungenerkrankungen oder Atemnot bei geringer Belastung",
+        "inflammation-fever-infection": "Entzündungen, Fieber oder akute Infektionen im Körper",
+        "advanced-osteoporosis-rheumatic-flare": "Fortgeschrittene Osteoporose oder rheumatische Erkrankungen in einem akuten Schub",
+        "artificial-joint-load-ban": "Künstliche Gelenke mit akutem Belastungsverbot",
+        "risk-pregnancy-sport-ban": "Risikoschwangerschaft oder bestehendes ärztliches Sportverbot",
+        "none": "Keine dieser schweren Einschränkungen liegt vor."
+      },
+      "warningTitle": "Wichtiger Gesundheitshinweis",
+      "warningIntro": "Aufgrund deiner Angaben können wir dir aktuell keinen automatisierten Trainingsplan empfehlen. Deine Gesundheit steht an erster Stelle.",
+      "warningDoctor": "Ärztliche Abklärung: Halte zuerst Rücksprache mit deinem behandelnden Arzt oder Physiotherapeuten.",
+      "warningConsultation": "Persönliche Beratung: Nutze nicht die automatischen Kurse, sondern vereinbare einen Beratungstermin direkt bei uns.",
+      "warningQuote": "Ein falsches Training bei akuten Beschwerden kann Verletzungen verschlimmern. Lass uns gemeinsam den sicheren Weg gehen!",
+      "legalText": "* Ich bestätige, dass ich alle Fragen wahrheitsgemäß beantwortet habe. Mir ist bewusst, dass dieses digitale System keine medizinische Diagnose oder persönliche ärztliche Beratung ersetzt. Die Teilnahme am Training erfolgt auf eigene Verantwortung."
+    },
     "terms": {
       "link": "Nutzungsbedingungen ansehen",
       "title": "Nutzungsbedingungen",
@@ -296,6 +364,8 @@
     "emailNotVerified": "Bitte bestätige zuerst deine E-Mail-Adresse. Prüfe dein Postfach und den Spam-Ordner; wenn der Link nicht anklickbar ist, kopiere ihn in deinen Browser.",
     "switchToRegister": "Neu hier? Konto erstellen",
     "switchToSignIn": "Bereits ein Konto? Anmelden",
+    "changeEmail": "E-Mail ändern",
+    "signInWithThisEmail": "Mit dieser E-Mail anmelden",
     "close": "Schließen",
     "errorPrefix": "Anmeldung fehlgeschlagen:",
     "providerDisabled": "Die Kontoerstellung ist in Firebase derzeit deaktiviert. Bitte aktiviere Email/Passwort-Anmeldung in der Firebase-Konsole.",
@@ -332,7 +402,15 @@
       "weight": "Gib ein Gewicht zwischen 25 und 300 kg ein.",
       "region": "Wähle dein Bundesland aus.",
       "consent": "Akzeptiere die Nutzungsbedingungen.",
-      "healthConsent": "Bestätige die Verarbeitung der Gesundheitsdaten."
+      "healthConsent": "Bestätige die Verarbeitung der Gesundheitsdaten.",
+      "anamnesisGoals": "Wähle mindestens ein Hauptziel aus.",
+      "anamnesisComplaints": "Wähle mindestens eine Beschwerde-Angabe aus.",
+      "fitnessLevel": "Wähle dein aktuelles Fitness-Level aus.",
+      "movementRestrictions": "Wähle mindestens eine Bewegungseinschränkung aus.",
+      "stressLevel": "Wähle dein tägliches Stresslevel aus.",
+      "sleepDisturbance": "Wähle eine Angabe zu Schlaf oder innerer Unruhe aus.",
+      "contraindications": "Wähle eine Angabe zu gesundheitlichen Einschränkungen aus.",
+      "anamnesisLegal": "Bestätige den rechtlichen Zusatz zur Anamnese."
     }
   },
   "authAction": {
@@ -1072,7 +1150,7 @@
       "title": "5 Atemtechniken gegen Stress",
       "intro": "Wähle eine Technik aus, starte die ruhige Hintergrundmusik und folge den Schritten in deinem Tempo. Jede Übung ist kurz genug für den Alltag und kann bei Bedarf verlängert werden.",
       "musicNote": "Leichte Musik ist vorläufig generiert",
-      "play": "Musik starten",
+      "play": "START",
       "pause": "Musik stoppen",
       "open": "Übung öffnen",
       "close": "Atemübung schließen",

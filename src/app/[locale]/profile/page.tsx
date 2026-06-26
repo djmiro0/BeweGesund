@@ -2,10 +2,10 @@
 
 import { signOut } from "firebase/auth";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   Activity,
   Award,
-  BookOpen,
   ChevronDown,
   Crown,
   Dumbbell,
@@ -19,17 +19,14 @@ import {
   Trophy,
   UserRound,
   Wind,
-  X,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { auth } from "../../../../firebase.config";
-import { activeScheduleDays, memberCourses } from "@/data";
 import { emptyUserProfile, getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import BillingActions from "./BillingActions";
-import BreathingSession from "./BreathingSession";
 import ProfileSettingsAccess from "./ProfileSettingsAccess";
 import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import WearableIntegration from "./WearableIntegration";
@@ -40,11 +37,8 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
-const getCourseMeta = (courseId: string) => memberCourses.find((course) => course.id === courseId);
+type ProfileSection = "membership" | "health" | "body" | "badges";
 
-type ProfileSection = "body" | "training" | "calm" | "badges";
-
-const isKnownCourse = (courseId: string) => memberCourses.some((course) => course.id === courseId);
 const translatedGoalKeys = ["backPain"];
 const recommendedBmiMax = 24.9;
 const recommendedBmiMin = 18.5;
@@ -52,13 +46,11 @@ const recommendedBmiMin = 18.5;
 export default function ProfilePage() {
   const t = useTranslations("profile");
   const authT = useTranslations("auth");
-  const courseT = useTranslations("courseCatalog");
   const packageT = useTranslations("packages");
   const locale = useLocale();
   const { user, profile: firebaseProfile, openAuth } = useAuth();
   const profile = firebaseProfile ?? emptyUserProfile;
-  const [isTrainingOpen, setIsTrainingOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<ProfileSection | null>("body");
+  const [openSection, setOpenSection] = useState<ProfileSection | null>(null);
 
   if (!user) {
     return (
@@ -164,18 +156,6 @@ export default function ProfilePage() {
       icon: Crown,
     },
   ];
-  const livePremiumItems = activeScheduleDays.flatMap((day) => day.entries.map((entry) => ({
-    id: `${day.id}-${entry.id}`,
-    titleKey: entry.titleKey,
-    formatKey: entry.formatKey,
-    packageRequired: entry.packageRequired,
-  })));
-  const calmItems = [
-    { label: t("calm.meditation"), icon: Sparkles },
-    { label: t("calm.breathTraining"), icon: Wind },
-    { label: t("calm.breathSimulation"), icon: Activity },
-    { label: t("calm.journal"), icon: BookOpen },
-  ];
   const currentBadgePoints = 420;
   const nextBadgePoints = 600;
   const badgeProgress = Math.round((currentBadgePoints / nextBadgePoints) * 100);
@@ -192,23 +172,6 @@ export default function ProfilePage() {
     { name: "Noah Wagner", region: "Hamburg", points: 420 },
     { name: "Emma Becker", region: "Sachsen", points: 310 },
   ].sort((a, b) => b.points - a.points);
-
-  const renderCourse = (courseId: string, badge: string) => {
-    const course = getCourseMeta(courseId);
-
-    return (
-      <article key={courseId} className={styles.courseItem}>
-        <div>
-          <h3 className={styles.courseName}>{isKnownCourse(courseId) ? courseT(courseId) : courseId}</h3>
-          <p className={styles.courseMeta}>
-            {course?.durationMinutes ? t("courseMeta.duration", { count: course.durationMinutes }) : t("courseMeta.flexible")}
-            {course?.packageRequired ? ` / ${packageT(course.packageRequired)}` : ""}
-          </p>
-        </div>
-        <span className={styles.courseBadge}>{badge}</span>
-      </article>
-    );
-  };
 
   return (
     <motion.section
@@ -239,41 +202,62 @@ export default function ProfilePage() {
             openLabel={t("settings.open")}
           />
         </motion.header>
-
-        <motion.section className={styles.packagePanel} variants={fadeUp}>
-          <div>
-            <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
-            <h2>{t("packageSelector.title")}</h2>
-            <p>{t("packageSelector.description")}</p>
+        <motion.details
+          className={`${styles.mobileCard} ${styles.packageCard}`}
+          variants={fadeUp}
+          open={openSection === "membership"}
+          onToggle={(event) => handleSectionToggle("membership", event.currentTarget.open)}
+        >
+          <summary className={styles.cardSummary}>
+            <span>{t("packageSelector.title")}</span>
+            <Crown size={30} />
+            <ChevronDown className={styles.chevron} size={19} />
+          </summary>
+          <div className={styles.expandedBlock}>
+            <div className={styles.sectionIntro}>
+              <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
+              <h2>{t("packageSelector.title")}</h2>
+              <p>{t("packageSelector.description")}</p>
+            </div>
+            <BillingActions
+              locale={locale}
+              memberPackage={profile.memberPackage}
+              subscriptionStatus={profile.subscriptionStatus}
+              basicName={packageT("basic")}
+              plusName={packageT("plus")}
+              basicPrice={t("packageSelector.basicPrice")}
+              plusPrice={t("packageSelector.plusPrice")}
+              basicCheckoutLabel={t("packageSelector.subscribeBasic")}
+              plusCheckoutLabel={t("packageSelector.subscribePlus")}
+              upgradeLabel={t("packageSelector.upgrade")}
+              downgradeLabel={t("packageSelector.downgrade")}
+              manageLabel={t("packageSelector.manage")}
+              processingLabel={t("packageSelector.processing")}
+              errorLabel={t("packageSelector.billingError")}
+              currentLabel={t("packageSelector.currentPackage")}
+              inactiveLabel={t("packageSelector.inactive")}
+              activeLabel={t("packageSelector.active")}
+              selectedLabel={t("packageSelector.selected")}
+              statusLabel={t("packageSelector.status")}
+            />
+            <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
           </div>
-          <BillingActions
-            locale={locale}
-            memberPackage={profile.memberPackage}
-            subscriptionStatus={profile.subscriptionStatus}
-            basicName={packageT("basic")}
-            plusName={packageT("plus")}
-            basicPrice={t("packageSelector.basicPrice")}
-            plusPrice={t("packageSelector.plusPrice")}
-            basicCheckoutLabel={t("packageSelector.subscribeBasic")}
-            plusCheckoutLabel={t("packageSelector.subscribePlus")}
-            upgradeLabel={t("packageSelector.upgrade")}
-            downgradeLabel={t("packageSelector.downgrade")}
-            manageLabel={t("packageSelector.manage")}
-            processingLabel={t("packageSelector.processing")}
-            errorLabel={t("packageSelector.billingError")}
-            currentLabel={t("packageSelector.currentPackage")}
-            inactiveLabel={t("packageSelector.inactive")}
-            activeLabel={t("packageSelector.active")}
-            selectedLabel={t("packageSelector.selected")}
-            statusLabel={t("packageSelector.status")}
-          />
-          <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
-        </motion.section>
-
-        <motion.section variants={fadeUp}>
-          <WearableIntegration locale={locale} />
-        </motion.section>
-
+        </motion.details>
+        <motion.details
+          className={`${styles.mobileCard} ${styles.healthCard}`}
+          variants={fadeUp}
+          open={openSection === "health"}
+          onToggle={(event) => handleSectionToggle("health", event.currentTarget.open)}
+        >
+          <summary className={styles.cardSummary}>
+            <span>{t("wearables.title")}</span>
+            <HeartPulse size={30} />
+            <ChevronDown className={styles.chevron} size={19} />
+          </summary>
+          <div className={styles.expandedBlock}>
+            <WearableIntegration locale={locale} />
+          </div>
+        </motion.details>
         <motion.details
           className={`${styles.mobileCard} ${styles.bodyCard}`}
           variants={fadeUp}
@@ -315,57 +299,25 @@ export default function ProfilePage() {
         </motion.details>
 
         <div className={styles.twoColumnRow}>
-          <motion.details
-            className={`${styles.mobileCard} ${styles.trainingCard}`}
+          <motion.div
+            className={`${styles.mobileCard} ${styles.trainingCard} ${styles.linkCard}`}
             variants={fadeUp}
-            open={openSection === "training"}
-            onToggle={(event) => handleSectionToggle("training", event.currentTarget.open)}
           >
-            <summary className={styles.cardSummary}>
+            <Link href={`/${locale}/courses`} className={styles.cardSummary}>
               <span>{t("cards.training.title")}</span>
               <Dumbbell size={30} />
-              <ChevronDown className={styles.chevron} size={19} />
-            </summary>
-            <div className={styles.compactMedia}>
-              <PersonStanding size={52} />
-              <div>
-                <h3>{t("cards.training.summaryTitle")}</h3>
-                <p>{t("cards.training.summaryText")}</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              className={styles.moreButton}
-              onClick={() => setIsTrainingOpen(true)}
-            >
-              {t("actions.seeMore")}
-            </button>
-          </motion.details>
+            </Link>
+          </motion.div>
 
-          <motion.details
-            className={`${styles.mobileCard} ${styles.calmCard}`}
+          <motion.div
+            className={`${styles.mobileCard} ${styles.calmCard} ${styles.linkCard}`}
             variants={fadeUp}
-            open={openSection === "calm"}
-            onToggle={(event) => handleSectionToggle("calm", event.currentTarget.open)}
           >
-            <summary className={styles.cardSummary}>
+            <Link href={`/${locale}/meditation-relaxation`} className={styles.cardSummary}>
               <span>{t("cards.calm.title")}</span>
               <Wind size={30} />
-              <ChevronDown className={styles.chevron} size={19} />
-            </summary>
-            <div className={styles.calmList}>
-              {calmItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div key={item.label} className={styles.calmItem}>
-                    <Icon size={22} />
-                    <span>{item.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <BreathingSession locale={locale} triggerLabel={t("cards.calm.breathe")} />
-          </motion.details>
+            </Link>
+          </motion.div>
         </div>
 
         <motion.details
@@ -444,55 +396,6 @@ export default function ProfilePage() {
           </button>
         </motion.section>
       </div>
-
-      {isTrainingOpen ? (
-        <div className={styles.modalOverlay}>
-          <div className={styles.trainingModal} role="dialog" aria-modal="true" aria-labelledby="training-modal-title">
-            <button
-              type="button"
-              className={styles.modalClose}
-              aria-label={t("actions.closeTraining")}
-              onClick={() => setIsTrainingOpen(false)}
-            >
-              <X size={18} />
-            </button>
-            <div className={styles.trainingModalHeader}>
-              <Dumbbell size={28} />
-              <div>
-                <p className={styles.panelEyebrow}>{t("cards.training.title")}</p>
-                <h2 id="training-modal-title">{t("cards.training.modalTitle")}</h2>
-                <p>{t("cards.training.modalDescription")}</p>
-              </div>
-            </div>
-
-            <div className={styles.trainingModalContent}>
-              <section className={styles.trainingModalSection}>
-                <h3>{t("cards.training.allCourses")}</h3>
-                <div className={styles.modalCourseGrid}>
-                  {memberCourses.map((course) => renderCourse(course.id, packageT(course.packageRequired)))}
-                </div>
-              </section>
-
-              <section className={styles.trainingModalSection}>
-                <h3>{t("cards.training.premiumTitle")}</h3>
-                <div className={styles.modalCourseGrid}>
-                  {livePremiumItems.map((item) => (
-                    <article key={item.id} className={styles.courseItem}>
-                      <div>
-                        <h3 className={styles.courseName}>{courseT(item.titleKey)}</h3>
-                        <p className={styles.courseMeta}>
-                          {t(`liveFormats.${item.formatKey}`)} / {packageT(item.packageRequired)}
-                        </p>
-                      </div>
-                      <span className={`${styles.courseBadge} ${styles.premiumBadge}`}>{t("badges.premium")}</span>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            </div>
-          </div>
-        </div>
-      ) : null}
 
     </motion.section>
   );

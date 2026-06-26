@@ -199,6 +199,7 @@
     "continueWithGoogle": "Continue with Google",
     "orUseEmail": "or use email",
     "completeProfile": "Complete profile",
+    "continueToAnamnesis": "Continue to anamnesis",
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
     "firstName": "First name",
@@ -266,8 +267,75 @@
       "standing": "Mostly standing",
       "physical": "Physical work"
     },
-    "consentText": "I accept the terms of use and understand that the program is educational and training-oriented.",
-    "healthConsentText": "I explicitly consent to the processing of my age, gender, height, and weight to calculate BMI and personalize training. I can withdraw this consent and delete my account at any time.",
+    "consentText": "*I accept the terms of use and understand that the program is educational and training-oriented.",
+    "healthConsentText": "*I explicitly consent to the processing of my age, gender, height, and weight to calculate BMI and personalize training. I can withdraw this consent and delete my account at any time.",
+    "anamnesis": {
+      "title": "Anamnesis",
+      "supportText": "Answer these questions before accessing the training areas. Later we will use this information for suitable recommendations.",
+      "submit": "Complete anamnesis",
+      "backToAccount": "Back to account details",
+      "goalsLabel": "What is your main goal?",
+      "complaintsLabel": "Do you currently have acute or chronic physical complaints?",
+      "fitnessLevelLabel": "How would you describe your current fitness level?",
+      "movementRestrictionsLabel": "Are there factors that restrict your movement?",
+      "stressLevelLabel": "How high does your daily stress level feel?",
+      "sleepDisturbanceLabel": "Do you suffer from sleep problems or inner restlessness?",
+      "contraindicationsLabel": "Do you have serious health problems or medical restrictions?",
+      "goals": {
+        "pain-rehab": "Pain relief & rehabilitation",
+        "weight-loss": "Weight loss",
+        "muscle-fitness": "Muscle building & general fitness",
+        "stress-balance": "Stress relief & mental balance"
+      },
+      "complaints": {
+        "back": "Yes, in my back",
+        "knee": "Yes, in my knee",
+        "rehasport-prescription": "Yes, I have a medical prescription for rehab sport",
+        "whole-body": "Yes, I have pain/tension throughout my body",
+        "pain-free": "No, I am pain-free."
+      },
+      "fitnessLevels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "movementRestrictions": {
+        "obesity": "I have severe overweight / obesity",
+        "pregnant-postpartum": "I am pregnant / recently became a mother",
+        "none": "No restrictions."
+      },
+      "stressLevels": {
+        "very-high": "Very high / I often feel burned out",
+        "moderate": "Moderate",
+        "low": "Low"
+      },
+      "sleepDisturbances": {
+        "often": "Yes, very often",
+        "sometimes": "Occasionally",
+        "no": "No"
+      },
+      "contraindications": {
+        "acute-disc-herniation": "Acute herniated disc",
+        "acute-neurological-symptoms": "Acute neurological symptoms",
+        "recent-surgery-wounds": "Recent surgery or wounds that have not fully healed",
+        "fresh-injuries": "Fresh injuries",
+        "severe-heart-disease": "Severe heart disease, arrhythmia, or uncontrolled high blood pressure",
+        "cardiovascular-medication": "Regular cardiovascular medication",
+        "unclear-dizziness-fainting": "Unclear dizziness or fainting during physical exertion",
+        "severe-lung-disease": "Severe lung disease or shortness of breath with low exertion",
+        "inflammation-fever-infection": "Inflammation, fever, or acute infection in the body",
+        "advanced-osteoporosis-rheumatic-flare": "Advanced osteoporosis or rheumatic disease in an acute flare",
+        "artificial-joint-load-ban": "Artificial joints with an acute load ban",
+        "risk-pregnancy-sport-ban": "High-risk pregnancy or existing medical sports ban",
+        "none": "None of these serious restrictions apply."
+      },
+      "warningTitle": "Important health notice",
+      "warningIntro": "Based on your answers, we cannot currently recommend an automated training plan. Your health comes first.",
+      "warningDoctor": "Medical clarification: Please first consult your doctor or physiotherapist.",
+      "warningConsultation": "Personal consultation: Do not use automatic courses; book a consultation with us so we can review your situation individually.",
+      "warningQuote": "Incorrect training with acute complaints can worsen injuries. Let us choose the safe path together!",
+      "legalText": "* I confirm that I have answered all questions truthfully. I understand that this digital system does not replace a medical diagnosis or personal medical advice. Participation in training is at my own responsibility."
+    },
     "terms": {
       "link": "View terms of use",
       "title": "Terms of Use",
@@ -296,6 +364,8 @@
     "emailNotVerified": "Verify your email address before signing in. Check your inbox and spam folder; if the link is not clickable, copy and paste it into your browser.",
     "switchToRegister": "New here? Create an account",
     "switchToSignIn": "Already have an account? Sign in",
+    "changeEmail": "Change email",
+    "signInWithThisEmail": "Sign in with this email",
     "close": "Close",
     "errorPrefix": "Sign in failed:",
     "providerDisabled": "Account creation is currently disabled in Firebase. Please enable Email/Password sign-in in the Firebase console.",
@@ -332,7 +402,15 @@
       "weight": "Enter a weight between 25 and 300 kg.",
       "region": "Select your federal state.",
       "consent": "Accept the terms of use.",
-      "healthConsent": "Accept health data processing."
+      "healthConsent": "Accept health data processing.",
+      "anamnesisGoals": "Select at least one main goal.",
+      "anamnesisComplaints": "Select at least one complaint answer.",
+      "fitnessLevel": "Select your current fitness level.",
+      "movementRestrictions": "Select at least one movement restriction answer.",
+      "stressLevel": "Select your daily stress level.",
+      "sleepDisturbance": "Select a sleep or restlessness answer.",
+      "contraindications": "Select a health restriction answer.",
+      "anamnesisLegal": "Confirm the legal anamnesis note."
     }
   },
   "authAction": {
@@ -1072,7 +1150,7 @@
       "title": "5 breathing techniques against stress",
       "intro": "Choose one technique, start the calm background music, and follow the steps at your own pace. Each exercise is short enough for everyday use and can be extended when needed.",
       "musicNote": "Soft music is generated for now",
-      "play": "Start music",
+      "play": "START",
       "pause": "Stop music",
       "open": "Open exercise",
       "close": "Close breathing exercise",

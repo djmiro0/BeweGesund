@@ -720,6 +720,10 @@
     padding: 5rem 0.85rem 1.5rem;
   }
 
+  .blogsPage > .hero {
+    display: none;
+  }
+
   .articleImageWrap {
    max-width: 100%;
   }
