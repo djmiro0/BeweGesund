@@ -121,21 +121,23 @@ export default async function MeditationRelaxationSubtypePage({
         {t("subtype.back")}
       </BackButton>
 
-      <section className={styles.subtypeHero}>
-        <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>{t("title")}</p>
-          <h1>{category.title}</h1>
-          <p>{category.description}</p>
-        </div>
-          {videos.length ? (
-              <aside className={styles.subtypePanel}>
-                  <Sparkles size={20} />
-                  <strong>{t("subtype.videoCount", { count: videos.length })}</strong>
-                  <span>{t("subtype.panelText")}</span>
-              </aside>
-           ): null}
+      {!breathingTechniques ? (
+        <section className={styles.subtypeHero}>
+          <div className={styles.heroCopy}>
+            <p className={styles.eyebrow}>{t("title")}</p>
+            <h1>{category.title}</h1>
+            <p>{category.description}</p>
+          </div>
+            {videos.length ? (
+                <aside className={styles.subtypePanel}>
+                    <Sparkles size={20} />
+                    <strong>{t("subtype.videoCount", { count: videos.length })}</strong>
+                    <span>{t("subtype.panelText")}</span>
+                </aside>
+             ): null}
 
-      </section>
+        </section>
+      ) : null}
 
       {breathingTechniques ? (
         <BreathingTechniques copy={breathingTechniques} />

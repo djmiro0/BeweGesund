@@ -285,7 +285,6 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
 
   const open = (index: number) => {
     stopMusic();
-    soundRef.current = createSoftPad(index, true, copy.sections[index]?.music[0] ?? "");
     setActiveIndex(index);
     setPhaseIndex(0);
     setIsMusicEnabled(true);
@@ -293,7 +292,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
     setSelectedMusicIndex(0);
     remainingSecondsRef.current = breathingPatterns[index]?.[0]?.seconds ?? 0;
     setRemainingSeconds(remainingSecondsRef.current);
-    setIsSessionRunning(true);
+    setIsSessionRunning(false);
   };
 
   const toggleSession = () => {
@@ -303,6 +302,12 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
       pauseSound();
       setIsSessionRunning(false);
       return;
+    }
+
+    const isStartingFresh = !soundRef.current;
+    if (isStartingFresh) {
+      remainingSecondsRef.current = activePhase.seconds;
+      setRemainingSeconds(activePhase.seconds);
     }
 
     if (soundRef.current) {
@@ -399,15 +404,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
 
   return (
     <section className={styles.breathingSection} aria-label={copy.title}>
-      <div className={styles.breathingLayout} aria-labelledby="breathing-education-title">
-        <aside className={styles.breathingInfo}>
-          <div className={styles.breathingInfoIntro}>
-            <h4 className={styles.breathingInfoIntroEyebrow}>{copy.education.summary}</h4>
-            <h3 id="breathing-education-title">{copy.education.title}</h3>
-            <p>{copy.education.intro}</p>
-          </div>
-        </aside>
-
+      <div className={styles.breathingLayout}>
         <div className={styles.breathingPairList}>
           {copy.sections.map((section, index) => {
             const isActive = activeIndex === index;
@@ -479,7 +476,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
               <div
                 className={`${styles.breathingOrb} ${getBreathingVisualClass(activeVisualIndex)}`}
                 style={{
-                  "--breath-scale": activePhase.scale,
+                  "--breath-scale": isSessionRunning ? activePhase.scale : 1,
                   "--breath-duration": `${activePhase.seconds}s`,
                   "--breath-play-state": isSessionRunning ? "running" : "paused",
                 } as CSSProperties}
@@ -541,16 +538,6 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
                 <h4>{copy.rhythmLabel}</h4>
                 <ul>
                   {activeSection.rhythm.map((item, itemIndex) => <li key={`${item}-${itemIndex}`}>{item}</li>)}
-                </ul>
-              </section>
-              <section>
-                <h4>{copy.animationLabel}</h4>
-                <p>{activeSection.animation}</p>
-              </section>
-              <section>
-                <h4>{copy.musicLabel}</h4>
-                <ul>
-                  {activeSection.music.map((item, itemIndex) => <li key={`${item}-${itemIndex}`}>{item}</li>)}
                 </ul>
               </section>
             </div>

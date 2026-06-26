@@ -511,32 +511,19 @@
 }
 
 .workoutListHeader {
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.34rem;
-  text-align: center;
-}
-
-.workoutListHeader small {
-  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
 }
 
 .newsListHeader {
-  position: relative;
-  min-height: 1.4rem;
-  justify-content: center;
-  padding: 0 5.2rem;
-  text-align: center;
-}
-
-.newsListHeader .viewAllLink {
-  position: absolute;
-  top: 0;
-  right: 0;
+  justify-content: space-between;
+  text-align: left;
 }
 
 .listHeader span {
   color: var(--app-text);
+  min-width: 0;
   font-size: 0.82rem;
   font-weight: 950;
   text-transform: uppercase;
@@ -553,6 +540,7 @@
 .newsReadLink {
   display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
   gap: 0.25rem;
   color: var(--page-accent);
   font-size: 0.65rem;
@@ -741,6 +729,11 @@
   background: var(--app-card);
 }
 
+.workoutNewsCard .thumbPlay {
+  right: 0.65rem;
+  bottom: 0.65rem;
+}
+
 .newsImage {
   position: relative;
   display: grid;
@@ -878,7 +871,7 @@
   }
 
   .appHeader {
-    padding: 0.85rem;
+    display: none;
   }
 
   .statusStrip {
@@ -916,9 +909,19 @@
     display: none;
   }
 
-  .newsListHeader {
-    padding-right: 4.7rem;
-    padding-left: 4.7rem;
+  .newsListHeader,
+  .workoutListHeader {
+    gap: 0.75rem;
+  }
+
+  .newsListHeader span,
+  .workoutListHeader span {
+    min-width: 0;
+  }
+
+  .newsListHeader .viewAllLink,
+  .workoutListHeader .viewAllLink {
+    flex: 0 0 auto;
   }
 
   .newsGrid {

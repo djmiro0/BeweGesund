@@ -31,6 +31,37 @@ service cloud.firestore {
             && request.resource.data.weightKg <= 300));
     }
 
+    function hasValidAnamnesis() {
+      return request.resource.data.keys().hasAny(["anamnesis"])
+        && request.resource.data.anamnesis is map
+        && request.resource.data.anamnesis.keys().hasOnly([
+          "age",
+          "goals",
+          "complaints",
+          "fitnessLevel",
+          "movementRestrictions",
+          "stressLevel",
+          "sleepDisturbance",
+          "contraindications",
+          "legalConfirmed",
+          "completedAt"
+        ])
+        && isValidAge(request.resource.data.anamnesis.age)
+        && request.resource.data.anamnesis.goals is list
+        && request.resource.data.anamnesis.goals.size() > 0
+        && request.resource.data.anamnesis.complaints is list
+        && request.resource.data.anamnesis.complaints.size() > 0
+        && request.resource.data.anamnesis.fitnessLevel is string
+        && request.resource.data.anamnesis.movementRestrictions is list
+        && request.resource.data.anamnesis.movementRestrictions.size() > 0
+        && request.resource.data.anamnesis.stressLevel is string
+        && request.resource.data.anamnesis.sleepDisturbance is string
+        && request.resource.data.anamnesis.contraindications is list
+        && request.resource.data.anamnesis.contraindications.size() > 0
+        && request.resource.data.anamnesis.legalConfirmed == true
+        && request.resource.data.anamnesis.completedAt is timestamp;
+    }
+
     function isValidRegion(value) {
       return value in [
         "baden-wuerttemberg",
@@ -68,6 +99,8 @@ service cloud.firestore {
         && request.resource.data.startedCourseIds == resource.data.startedCourseIds
         && request.resource.data.completedCourseIds == resource.data.completedCourseIds
         && request.resource.data.recommendedCourseIds == resource.data.recommendedCourseIds
+        && request.resource.data.anamnesis == resource.data.anamnesis
+        && request.resource.data.anamnesisStatusKey == resource.data.anamnesisStatusKey
         && request.resource.data.consentAcceptedAt == resource.data.consentAcceptedAt
         && request.resource.data.keys().hasAny(["healthConsentAcceptedAt"])
           == resource.data.keys().hasAny(["healthConsentAcceptedAt"])
@@ -109,6 +142,7 @@ service cloud.firestore {
         "startedCourseIds",
         "completedCourseIds",
         "recommendedCourseIds",
+        "anamnesis",
         "anamnesisStatusKey",
         "consentAcceptedAt",
         "healthConsentAcceptedAt",
@@ -141,7 +175,8 @@ service cloud.firestore {
         && request.resource.data.startedCourseIds == []
         && request.resource.data.completedCourseIds == []
         && request.resource.data.recommendedCourseIds == []
-        && request.resource.data.anamnesisStatusKey == "pending"
+        && hasValidAnamnesis()
+        && request.resource.data.anamnesisStatusKey in ["completed", "review-required"]
         && request.resource.data.consentAcceptedAt is timestamp
         && request.resource.data.healthConsentAcceptedAt is timestamp
         && request.resource.data.createdAt is timestamp

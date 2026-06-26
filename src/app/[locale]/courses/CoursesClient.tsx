@@ -128,7 +128,12 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
 
   return (
     <section className={styles.coursesSection}>
-      <motion.header className={styles.hero} initial="hidden" animate="visible" variants={stagger}>
+      <motion.header
+        className={`${styles.hero} ${styles.mobileHiddenHeader}`}
+        initial="hidden"
+        animate="visible"
+        variants={stagger}
+      >
         <motion.div className={styles.heroCopy} variants={fadeUp}>
           <div className={styles.heroStatus}>
             {user ? <ShieldCheck size={15} /> : <Dumbbell size={15} />}
