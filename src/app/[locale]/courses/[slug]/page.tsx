@@ -131,12 +131,6 @@ export default async function CourseDetailPage({
             <h1 className={coursesStyles.title}>{coursesT(`courseTypes.categories.${categorySlug}.title`)}</h1>
             <p className={coursesStyles.intro}>{coursesT(`courseTypes.categories.${categorySlug}.description`)}</p>
           </div>
-
-          <aside className={coursesStyles.unlockPanel}>
-            <p className={coursesStyles.unlockLabel}>{coursesT("weeklyUnlock.label")}</p>
-            <strong>{coursesT("courseTypes.meta.videoCount", { count: availableVideoCount })}</strong>
-            <p>{coursesT("courseTypes.meta.subtypeCount", { count: subtypeCards.length })}</p>
-          </aside>
         </header>
 
         <div className={coursesStyles.subtypeList}>

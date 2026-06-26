@@ -128,14 +128,6 @@ export default async function MeditationRelaxationSubtypePage({
             <h1>{category.title}</h1>
             <p>{category.description}</p>
           </div>
-            {videos.length ? (
-                <aside className={styles.subtypePanel}>
-                    <Sparkles size={20} />
-                    <strong>{t("subtype.videoCount", { count: videos.length })}</strong>
-                    <span>{t("subtype.panelText")}</span>
-                </aside>
-             ): null}
-
         </section>
       ) : null}
 

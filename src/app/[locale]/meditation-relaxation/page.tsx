@@ -55,7 +55,6 @@ export default async function MeditationRelaxationPage({
               </div>
               <div>
                 <h2>{category.title}</h2>
-                <p>{category.description}</p>
               </div>
             </Link>
           );

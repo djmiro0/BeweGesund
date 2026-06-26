@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
-import { Info, Pause, Play, Volume2, VolumeX, Waves, Wind, X } from "lucide-react";
+import { Info, Play, Volume2, VolumeX, Waves, Wind, X } from "lucide-react";
 import styles from "../Relaxation.module.css";
 
 interface BreathingTechnique {
@@ -123,8 +123,9 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
     || (window as Window & typeof globalThis & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
   const audioContext = new AudioContextConstructor();
   const trackSource = getMusicTrackSource(musicLabel);
-  const trackAudio = trackSource ? new Audio(trackSource) : null;
+  let trackAudio = trackSource ? new Audio(new URL(trackSource, window.location.origin).toString()) : null;
   let isDestroyed = false;
+  let currentMusicEnabled = musicEnabled;
   const baseFrequency = [174, 196, 220, 246.94, 261.63][index] ?? 196;
   const gain = audioContext.createGain();
   const filter = audioContext.createBiquadFilter();
@@ -142,6 +143,32 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
   filter.type = "lowpass";
   filter.frequency.value = lowerMusicLabel.includes("piano") || lowerMusicLabel.includes("klavier") ? 980 : 620;
   gain.gain.value = trackAudio || !musicEnabled ? 0 : FALLBACK_MUSIC_VOLUME;
+
+  const setFallbackMusicGain = (enabled: boolean) => {
+    gain.gain.setTargetAtTime(enabled ? FALLBACK_MUSIC_VOLUME : 0, audioContext.currentTime, 0.08);
+  };
+
+  const useFallbackMusic = (enabled: boolean) => {
+    if (isDestroyed) return;
+    trackAudio?.pause();
+    trackAudio = null;
+    setFallbackMusicGain(enabled);
+  };
+
+  const playTrackAudio = (enabled: boolean) => {
+    if (!trackAudio) {
+      setFallbackMusicGain(enabled);
+      return;
+    }
+
+    trackAudio.volume = enabled ? MUSIC_TRACK_VOLUME : 0;
+    if (!enabled) {
+      trackAudio.pause();
+      return;
+    }
+
+    void trackAudio.play().catch(() => useFallbackMusic(currentMusicEnabled));
+  };
 
   oscillator.connect(filter);
   overtone.connect(filter);
@@ -171,8 +198,9 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
     trackAudio.loop = true;
     trackAudio.preload = "auto";
     trackAudio.volume = musicEnabled ? MUSIC_TRACK_VOLUME : 0;
+    trackAudio.addEventListener("error", () => useFallbackMusic(currentMusicEnabled), { once: true });
     trackAudio.load();
-    void trackAudio.play().catch(() => undefined);
+    playTrackAudio(musicEnabled);
   }
 
   return {
@@ -211,35 +239,20 @@ function createSoftPad(index: number, musicEnabled = true, musicLabel = "") {
       source.stop(now + seconds);
     },
     setMusicEnabled: (enabled: boolean) => {
-      if (trackAudio) {
-        trackAudio.volume = enabled ? MUSIC_TRACK_VOLUME : 0;
-        if (enabled) void trackAudio.play().catch(() => undefined);
-        return;
-      }
-
-      gain.gain.setTargetAtTime(enabled ? FALLBACK_MUSIC_VOLUME : 0, audioContext.currentTime, 0.08);
+      currentMusicEnabled = enabled;
+      playTrackAudio(enabled);
     },
     pause: () => {
       if (trackAudio) {
         trackAudio.pause();
       } else {
-        gain.gain.setTargetAtTime(0, audioContext.currentTime, 0.08);
+        setFallbackMusicGain(false);
       }
     },
     resume: (enabled: boolean) => {
+      currentMusicEnabled = enabled;
       void audioContext.resume().catch(() => undefined);
-      if (trackAudio) {
-        trackAudio.volume = enabled ? MUSIC_TRACK_VOLUME : 0;
-        if (enabled) void trackAudio.play().catch(() => {
-          trackAudio.load();
-          window.setTimeout(() => {
-            if (!isDestroyed) void trackAudio.play().catch(() => undefined);
-          }, 80);
-        });
-        return;
-      }
-
-      gain.gain.setTargetAtTime(enabled ? FALLBACK_MUSIC_VOLUME : 0, audioContext.currentTime, 0.08);
+      playTrackAudio(enabled);
     },
     stop: () => {
       isDestroyed = true;
@@ -473,26 +486,27 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
 
           <div className={styles.breathingOrbPanel}>
             <div className={styles.breathingOrbWrap} aria-live="polite">
-              <div
+              <button
+                type="button"
                 className={`${styles.breathingOrb} ${getBreathingVisualClass(activeVisualIndex)}`}
+                onClick={toggleSession}
+                aria-label={isSessionRunning ? copy.pause : copy.play}
                 style={{
                   "--breath-scale": isSessionRunning ? activePhase.scale : 1,
                   "--breath-duration": `${activePhase.seconds}s`,
                   "--breath-play-state": isSessionRunning ? "running" : "paused",
                 } as CSSProperties}
               >
-                <span>{phaseLabel}</span>
+                {isSessionRunning ? (
+                  <span>{phaseLabel}</span>
+                ) : (
+                  <span className={styles.breathingOrbActionIcon}>
+                    <Play size={38} />
+                  </span>
+                )}
                 <strong>{remainingSeconds || activePhase.seconds}s</strong>
-              </div>
+              </button>
             </div>
-            <button
-              type="button"
-              className={`${styles.breathingSessionToggle} ${isSessionRunning ? styles.musicStopButton : styles.musicPlayButton}`}
-              onClick={toggleSession}
-            >
-              {isSessionRunning ? <Pause size={15} /> : <Play size={15} />}
-              {isSessionRunning ? copy.pause : copy.play}
-            </button>
             <div className={styles.breathingAudioToggles} aria-label={copy.musicLabel}>
               <button
                 type="button"

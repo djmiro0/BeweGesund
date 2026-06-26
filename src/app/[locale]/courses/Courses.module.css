@@ -152,17 +152,10 @@ a.categoryBlock:hover {
 
 .categoryTitle {
   color: var(--page-ink);
-  font-size: 1rem;
+  font-size: 1.1rem;
   line-height: 1.1;
   font-weight: 900;
   text-transform: uppercase;
-}
-
-.categoryDescription {
-  margin-top: 0.32rem;
-  color: var(--page-muted);
-  font-size: 0.76rem;
-  line-height: 1.42;
 }
 
 .rehaNote {
@@ -421,7 +414,8 @@ a.categoryBlock:hover {
   }
 
   .categoryGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
   }
 
   .subtypeList {
@@ -429,7 +423,39 @@ a.categoryBlock:hover {
   }
 
   .categoryBlock {
-    min-height: auto;
+    min-width: 0;
+    min-height: 250px;
+    padding: 0.72rem;
+  }
+
+  .categoryHead {
+    gap: 0.55rem;
+  }
+
+  .categoryIcon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.62rem;
+  }
+
+  .categoryTitle {
+    font-size: 0.7rem;
+    line-height: 1.05;
+  }
+
+  .categoryDescription {
+    font-size: 0.7rem;
+  }
+
+  .subtypePills {
+    gap: 0.28rem;
+  }
+
+  .subtypePills span {
+    max-width: 100%;
+    padding: 0.3rem 0.42rem;
+    font-size: clamp(0.48rem, 2.7vw, 0.55rem);
+    overflow-wrap: anywhere;
   }
 
   .videoCourseCard {
