@@ -113,6 +113,7 @@
 }
 
 .categoryItem {
+  --category-image: url("https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=70");
   position: relative;
   overflow: hidden;
   display: flex;
@@ -123,8 +124,9 @@
   border: 1px solid var(--page-border);
   border-radius: 1rem;
   background:
-    radial-gradient(circle at 100% 0%, rgba(var(--page-olive-rgb), 0.14), transparent 9rem),
-    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.9)),
+    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.42), rgba(var(--page-soft-alt-rgb), 0.66)),
+    radial-gradient(circle at 100% 0%, rgba(var(--page-olive-rgb), 0.16), transparent 9rem),
+    var(--category-image) center / cover,
     var(--page-soft);
   box-shadow: 0 0.75rem 1.7rem rgba(var(--shell-bg-rgb), 0.07);
   color: inherit;
@@ -138,15 +140,29 @@
 }
 
 .categoryItem:nth-child(2) {
+  --category-image: url("https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=900&q=70");
+
   animation-delay: 0.06s;
 }
 
 .categoryItem:nth-child(3) {
+  --category-image: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=70");
+
   animation-delay: 0.12s;
 }
 
 .categoryItem:nth-child(4) {
+  --category-image: url("https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=900&q=70");
+
   animation-delay: 0.18s;
+}
+
+.categoryItem::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.08), rgba(var(--shell-bg-rgb), 0.18));
+  content: "";
+  pointer-events: none;
 }
 
 .categoryItem::after {
@@ -166,6 +182,8 @@
 }
 
 .categoryHead {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -205,11 +223,13 @@
 }
 
 .categoryItem h2 {
+  position: relative;
+  z-index: 1;
   margin: 0;
   color: var(--page-ink);
-  font-size: 1rem;
+  font-size: clamp(1.12rem, 1.6vw, 1.3rem);
   font-weight: 950;
-  line-height: 1.15;
+  line-height: 1.08;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -949,10 +969,25 @@
     0 0 0 1.2rem rgba(255, 255, 255, 0.06),
     0 2rem 7rem rgba(0, 0, 0, 0.28);
   color: var(--page-ink);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
   text-align: center;
   transform: scale(var(--breath-scale, 1));
-  transition: transform var(--breath-duration, 1s) ease-in-out;
+  transition:
+    border-color 0.22s var(--transition),
+    box-shadow 0.22s var(--transition),
+    transform var(--breath-duration, 1s) ease-in-out;
   animation-play-state: var(--breath-play-state, running);
+}
+
+.breathingOrb:hover,
+.breathingOrb:focus-visible {
+  border-color: rgba(var(--page-olive-rgb), 0.7);
+  box-shadow:
+    0 0 0 1.2rem rgba(var(--page-olive-rgb), 0.14),
+    0 2rem 7rem rgba(0, 0, 0, 0.3);
+  outline: none;
 }
 
 .breathingOrb::before,
@@ -1041,6 +1076,8 @@
 .breathingOrb span,
 .breathingOrb strong {
   grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
 }
 
 .breathingOrb span {
@@ -1048,6 +1085,18 @@
   font-size: clamp(1.05rem, 3vw, 2rem);
   font-weight: 950;
   text-transform: uppercase;
+}
+
+.breathingOrbActionIcon {
+  display: grid;
+  place-items: center;
+}
+
+.breathingOrbActionIcon svg {
+  width: clamp(2.1rem, 5vw, 3.15rem);
+  height: clamp(2.1rem, 5vw, 3.15rem);
+  filter: drop-shadow(0 0.35rem 1.15rem rgba(255, 255, 255, 0.34));
+  stroke-width: 2.35;
 }
 
 .breathingOrb strong {
@@ -1109,37 +1158,6 @@
   margin: 0.35rem 0;
 }
 
-.breathingSessionToggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  width: fit-content;
-  min-height: 2.55rem;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font: inherit;
-  font-size: 0.74rem;
-  font-weight: 950;
-  padding: 0.62rem 0.9rem;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.breathingSessionToggle.musicStopButton {
-  border-color: rgba(var(--page-accent-rgb), 0.48);
-  background: rgba(var(--page-accent-rgb), 0.2);
-  color: var(--page-soft);
-}
-
-.breathingSessionToggle.musicPlayButton {
-  border-color: rgba(var(--page-olive-rgb), 0.48);
-  background: rgba(var(--page-olive-rgb), 0.22);
-  color: var(--page-soft);
-}
-
 .breathingAudioToggles {
   display: inline-flex;
   align-items: center;
@@ -1166,8 +1184,8 @@
 }
 
 .breathingIconToggleActive {
-  border-color: rgba(var(--page-olive-rgb), 0.44);
-  background: rgba(var(--page-olive-rgb), 0.16);
+  border-color: rgba(145, 204, 55, 0.72);
+  background: rgba(145, 204, 55, 0.28);
   color: var(--page-soft);
 }
 
@@ -1214,8 +1232,8 @@
 }
 
 .breathingMusicChoices .breathingMusicChoiceActive {
-  border-color: rgba(var(--page-olive-rgb), 0.46);
-  background: rgba(var(--page-olive-rgb), 0.18);
+  border-color: rgba(145, 204, 55, 0.72);
+  background: rgba(145, 204, 55, 0.28);
   color: var(--page-soft);
 }
 
@@ -1713,7 +1731,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .categoryGrid,
   .musicPlaylistLayout,
   .breathingInfo {
     grid-template-columns: 1fr;
@@ -1757,7 +1774,6 @@
     display: none;
   }
 
-  .categoryGrid,
   .videoList,
   .selfMassageArticleGrid,
   .musicVideoGrid,
@@ -1818,7 +1834,29 @@
   }
 
   .categoryItem {
-    min-height: 12rem;
+    min-height: 10.5rem;
+    padding: 0.72rem;
+  }
+
+  .categoryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .categoryIcon {
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 0.65rem;
+  }
+
+  .categoryAction {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .categoryItem h2 {
+    font-size: clamp(0.8rem, 4.1vw, 1rem);
+    line-height: 1.05;
   }
 
   .visual {
