@@ -143,7 +143,7 @@
 
 .tabsShell {
   position: relative;
-  margin: 0 -0.75rem;
+  margin: 0;
 }
 
 .tabsShell::before,
@@ -169,11 +169,6 @@
   background: linear-gradient(270deg, var(--page-cream-1), transparent);
 }
 
-.tabsShellHasLeft::before,
-.tabsShellHasRight::after {
-  opacity: 1;
-}
-
 .tabScrollButton {
   position: absolute;
   top: 50%;
@@ -196,7 +191,7 @@
 }
 
 .tabScrollButton:hover {
-  background: rgba(var(--page-accent-rgb), 0.14);
+  background: var(--secondary);
   transform: translateY(-52%) scale(1.04);
 }
 
@@ -231,9 +226,7 @@
 .tabs {
   display: flex;
   justify-content: space-between;
-  gap: 0.45rem;
   overflow-x: auto;
-  padding: 0 0.75rem 0.2rem;
   scroll-padding: 0.75rem;
   scrollbar-width: none;
 }
@@ -243,7 +236,7 @@
 }
 
 .tabButton {
-  flex: 0 0 auto;
+  text-transform: uppercase;
   border: 1px solid transparent;
   border-radius: 999px;
   background: transparent;

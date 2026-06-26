@@ -202,47 +202,47 @@ export default function ProfilePage() {
             openLabel={t("settings.open")}
           />
         </motion.header>
+
         <motion.details
-          className={`${styles.mobileCard} ${styles.packageCard}`}
-          variants={fadeUp}
-          open={openSection === "membership"}
-          onToggle={(event) => handleSectionToggle("membership", event.currentTarget.open)}
+            className={`${styles.mobileCard} ${styles.bodyCard}`}
+            variants={fadeUp}
+            open={openSection === "body"}
+            onToggle={(event) => handleSectionToggle("body", event.currentTarget.open)}
         >
           <summary className={styles.cardSummary}>
-            <span>{t("packageSelector.title")}</span>
-            <Crown size={30} />
-            <ChevronDown className={styles.chevron} size={19} />
+            <span>{t("cards.body.title")}</span>
+            <Scale size={34} />
+            <ChevronDown className={styles.chevron} size={20} />
           </summary>
+          <div className={styles.bodyPreview}>
+            {bodyDetails.slice(0, 4).map((item) => {
+              const Icon = item.icon;
+              return (
+                  <div key={item.label} className={styles.iconLine}>
+                    <Icon size={26} />
+                    <p>
+                      <span>{item.label}</span>
+                      {item.value}
+                    </p>
+                  </div>
+              );
+            })}
+          </div>
           <div className={styles.expandedBlock}>
-            <div className={styles.sectionIntro}>
-              <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
-              <h2>{t("packageSelector.title")}</h2>
-              <p>{t("packageSelector.description")}</p>
-            </div>
-            <BillingActions
-              locale={locale}
-              memberPackage={profile.memberPackage}
-              subscriptionStatus={profile.subscriptionStatus}
-              basicName={packageT("basic")}
-              plusName={packageT("plus")}
-              basicPrice={t("packageSelector.basicPrice")}
-              plusPrice={t("packageSelector.plusPrice")}
-              basicCheckoutLabel={t("packageSelector.subscribeBasic")}
-              plusCheckoutLabel={t("packageSelector.subscribePlus")}
-              upgradeLabel={t("packageSelector.upgrade")}
-              downgradeLabel={t("packageSelector.downgrade")}
-              manageLabel={t("packageSelector.manage")}
-              processingLabel={t("packageSelector.processing")}
-              errorLabel={t("packageSelector.billingError")}
-              currentLabel={t("packageSelector.currentPackage")}
-              inactiveLabel={t("packageSelector.inactive")}
-              activeLabel={t("packageSelector.active")}
-              selectedLabel={t("packageSelector.selected")}
-              statusLabel={t("packageSelector.status")}
-            />
-            <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
+            {bodyDetails.slice(4).map((item) => {
+              const Icon = item.icon;
+              return (
+                  <div key={item.label} className={styles.detailRow}>
+                    <Icon size={20} />
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+              );
+            })}
+            <p className={styles.note}>{t("cards.body.note")}</p>
           </div>
         </motion.details>
+
         <motion.details
           className={`${styles.mobileCard} ${styles.healthCard}`}
           variants={fadeUp}
@@ -259,42 +259,44 @@ export default function ProfilePage() {
           </div>
         </motion.details>
         <motion.details
-          className={`${styles.mobileCard} ${styles.bodyCard}`}
-          variants={fadeUp}
-          open={openSection === "body"}
-          onToggle={(event) => handleSectionToggle("body", event.currentTarget.open)}
+            className={`${styles.mobileCard} ${styles.packageCard}`}
+            variants={fadeUp}
+            open={openSection === "membership"}
+            onToggle={(event) => handleSectionToggle("membership", event.currentTarget.open)}
         >
           <summary className={styles.cardSummary}>
-            <span>{t("cards.body.title")}</span>
-            <Scale size={34} />
-            <ChevronDown className={styles.chevron} size={20} />
+            <span>{t("packageSelector.title")}</span>
+            <Crown size={30} />
+            <ChevronDown className={styles.chevron} size={19} />
           </summary>
-          <div className={styles.bodyPreview}>
-            {bodyDetails.slice(0, 4).map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className={styles.iconLine}>
-                  <Icon size={26} />
-                  <p>
-                    <span>{item.label}</span>
-                    {item.value}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
           <div className={styles.expandedBlock}>
-            {bodyDetails.slice(4).map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className={styles.detailRow}>
-                  <Icon size={20} />
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </div>
-              );
-            })}
-            <p className={styles.note}>{t("cards.body.note")}</p>
+            <div className={styles.sectionIntro}>
+              <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
+              <h2>{t("packageSelector.title")}</h2>
+              <p>{t("packageSelector.description")}</p>
+            </div>
+            <BillingActions
+                locale={locale}
+                memberPackage={profile.memberPackage}
+                subscriptionStatus={profile.subscriptionStatus}
+                basicName={packageT("basic")}
+                plusName={packageT("plus")}
+                basicPrice={t("packageSelector.basicPrice")}
+                plusPrice={t("packageSelector.plusPrice")}
+                basicCheckoutLabel={t("packageSelector.subscribeBasic")}
+                plusCheckoutLabel={t("packageSelector.subscribePlus")}
+                upgradeLabel={t("packageSelector.upgrade")}
+                downgradeLabel={t("packageSelector.downgrade")}
+                manageLabel={t("packageSelector.manage")}
+                processingLabel={t("packageSelector.processing")}
+                errorLabel={t("packageSelector.billingError")}
+                currentLabel={t("packageSelector.currentPackage")}
+                inactiveLabel={t("packageSelector.inactive")}
+                activeLabel={t("packageSelector.active")}
+                selectedLabel={t("packageSelector.selected")}
+                statusLabel={t("packageSelector.status")}
+            />
+            <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
           </div>
         </motion.details>
 
