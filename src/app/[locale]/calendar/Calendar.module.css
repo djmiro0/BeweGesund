@@ -1,33 +1,45 @@
 .calendarContainer {
   --calendar-bg:
-    radial-gradient(circle at 12% 0%, rgba(var(--shell-surface-rgb), 0.12), transparent 18rem),
-    radial-gradient(circle at 92% 4%, rgba(var(--page-olive-rgb), 0.1), transparent 18rem),
-    linear-gradient(180deg, var(--page-cream-1), var(--page-cream-2));
-  --calendar-surface: rgba(var(--page-soft-rgb), 0.82);
-  --calendar-surface-strong: rgba(var(--page-soft-rgb), 0.96);
-  --calendar-card: rgba(var(--page-soft-rgb), 0.72);
-  --calendar-border: var(--page-border);
-  --calendar-text: var(--page-ink);
-  --calendar-muted: var(--page-muted);
-  --calendar-shadow: var(--page-shadow);
-  min-height: 78vh;
-  padding: 7rem clamp(1rem, 3vw, 2rem) 4rem;
+    radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.22), transparent 21rem),
+    radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.22), transparent 24rem),
+    linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
+  --calendar-surface: rgba(255, 255, 255, 0.055);
+  --calendar-surface-strong: rgba(255, 255, 255, 0.07);
+  --calendar-card: rgba(255, 255, 255, 0.045);
+  --calendar-border: rgba(255, 255, 255, 0.13);
+  --calendar-text: #f8fafc;
+  --calendar-muted: rgba(255, 255, 255, 0.68);
+  --calendar-shadow: rgba(0, 0, 0, 0.2);
+  --ui-bg: #020913;
+  --ui-bg-alt: rgba(255, 255, 255, 0.06);
+  --ui-surface: rgba(255, 255, 255, 0.07);
+  --ui-border: rgba(255, 255, 255, 0.13);
+  --ui-text: #ffffff;
+  --ui-muted: rgba(255, 255, 255, 0.68);
+  --ui-dim: rgba(255, 255, 255, 0.52);
+  --ui-accent: var(--page-accent);
+  --ui-accent-soft: rgba(var(--page-accent-rgb), 0.13);
+  --ui-olive: #b5d83d;
+  --ui-warm: var(--page-warm);
+  --ui-warm-soft: rgba(var(--page-warm-rgb), 0.12);
+  min-height: 100svh;
+  padding: 5.65rem clamp(1.1rem, 3vw, 1.75rem) 7.25rem;
   color: var(--calendar-text);
   background: var(--calendar-bg);
 }
 
 :global(:root[data-theme="dark"]) .calendarContainer {
   --calendar-bg:
-    radial-gradient(circle at 12% 0%, rgba(var(--shell-surface-rgb), 0.38), transparent 18rem),
-    radial-gradient(circle at 92% 4%, rgba(var(--page-olive-rgb), 0.1), transparent 18rem),
-    linear-gradient(180deg, var(--shell-bg-alt), var(--shell-bg));
-  --calendar-surface: rgba(var(--shell-surface-rgb), 0.72);
-  --calendar-surface-strong: rgba(var(--shell-surface-rgb), 0.9);
-  --calendar-card: rgba(var(--shell-bg-alt-rgb), 0.72);
-  --calendar-border: var(--shell-border);
-  --calendar-text: var(--shell-text);
-  --calendar-muted: var(--shell-text-muted);
-  --calendar-shadow: var(--shadow-color);
+    radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.22), transparent 21rem),
+    radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.22), transparent 24rem),
+    linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
+  --calendar-surface: rgba(255, 255, 255, 0.055);
+  --calendar-surface-strong: rgba(255, 255, 255, 0.07);
+  --calendar-card: rgba(255, 255, 255, 0.045);
+  --calendar-border: rgba(255, 255, 255, 0.13);
+  --calendar-text: #f8fafc;
+  --calendar-muted: rgba(255, 255, 255, 0.68);
+  --calendar-shadow: rgba(0, 0, 0, 0.2);
 }
 
 .headerBlock,
@@ -42,15 +54,16 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 2rem;
-  margin-bottom: 2rem;
+  width: min(90rem, 100%);
+  margin-bottom: 1.45rem;
 }
 
 .eyebrow,
 .panelLabel,
 .planLabel {
   margin: 0;
-  color: var(--ui-accent);
-  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.62rem;
   font-weight: 900;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -58,26 +71,31 @@
 
 .title {
   margin: 0;
-  color: var(--ui-text);
-  font-size: 2.5rem;
-  font-style: italic;
+  color: #ffffff;
+  font-size: clamp(1.95rem, 4.4vw, 2.55rem);
+  font-style: normal;
   font-weight: 950;
-  line-height: 0.92;
+  line-height: 0.95;
+  letter-spacing: 0;
+  text-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.32);
   text-transform: uppercase;
 }
 
 .subtitle {
   max-width: 620px;
-  margin: 0.9rem 0 0;
-  color: var(--ui-muted);
-  font-size: 0.98rem;
-  line-height: 1.65;
+  margin: 0.7rem 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: clamp(0.98rem, 1.45vw, 1.16rem);
+  line-height: 1.35;
 }
 
 .planCard {
   width: min(270px, 100%);
-  border-left: 3px solid var(--ui-olive);
-  padding: 0.25rem 0 0.25rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(18px);
 }
 
 .planLabel {
@@ -87,16 +105,16 @@
 .planValue {
   display: block;
   margin-top: 0.45rem;
-  color: var(--ui-olive);
-  font-size: 1.15rem;
-  font-style: italic;
+  color: #ffffff;
+  font-size: 1rem;
+  font-style: normal;
   font-weight: 950;
   text-transform: uppercase;
 }
 
 .planHint {
   margin: 0.4rem 0 0;
-  color: var(--ui-muted);
+  color: rgba(255, 255, 255, 0.68);
   font-size: 0.78rem;
   line-height: 1.5;
 }
@@ -110,7 +128,7 @@
   border: 1px solid var(--calendar-border);
   border-radius: 1.2rem;
   background: var(--calendar-surface);
-  box-shadow: 0 14px 34px var(--calendar-shadow);
+  box-shadow: 0 0.9rem 2rem var(--calendar-shadow);
   padding: 0.55rem;
   backdrop-filter: blur(18px);
 }
@@ -377,7 +395,7 @@
   border: 1px solid var(--calendar-border);
   border-radius: 1.2rem;
   background: var(--calendar-surface-strong);
-  box-shadow: 0 14px 34px var(--calendar-shadow);
+  box-shadow: 0 0.9rem 2rem var(--calendar-shadow);
   padding: 1rem;
   backdrop-filter: blur(18px);
 }
@@ -674,11 +692,11 @@
 
 @media (max-width: 768px) {
   .calendarContainer {
-    padding: 6.25rem 0.75rem 2rem;
+    padding: 6.65rem 0.95rem 7.8rem;
   }
 
   .title {
-    font-size: clamp(2.15rem, 10vw, 3.2rem);
+    font-size: clamp(1.75rem, 8.6vw, 2.2rem);
   }
 
   .subtitle {

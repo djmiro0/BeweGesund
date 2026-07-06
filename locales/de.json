@@ -482,8 +482,8 @@
     }
   },
   "courses": {
-    "title": "Programme und Leistungen",
-    "intro": "Ein vollständiges Angebot aus geführter Bewegung, Live-Sessions, Bildung, individueller Begleitung und langfristigem Training.",
+    "title": "Kurse",
+    "intro": "Finde das passende Training für deine Ziele.",
     "overview": {
       "items": [
         {
@@ -506,15 +506,15 @@
       "categories": {
         "reha": {
           "title": "REHA",
-          "description": "Rehabilitationsprogramme mit wöchentlichem Videorhythmus und klarer Progression."
+          "description": "Gezielte Programme zur Regeneration und Schmerzlinderung."
         },
         "healthy-living": {
           "title": "Lebe Gesund",
-          "description": "Alltagstaugliche Formate für Mobilität, sanften Einstieg und regelmäßige Bewegung."
+          "description": "Mehr Energie, bessere Gewohnheiten und ein gesunder Alltag."
         },
         "overweight": {
           "title": "Übergewichts",
-          "description": "Bewegungs- und Ernährungsformate mit Fokus auf nachhaltige Gewichtsreduktion."
+          "description": "Nachhaltige Strategien für gesundes Abnehmen."
         },
         "definition": {
           "title": "Intensive",
@@ -522,15 +522,15 @@
         },
         "intensive": {
           "title": "Intensive",
-          "description": "Gezielte Kraft-, Definitions- und intensivere Trainingsformate."
+          "description": "Für alle, die mehr wollen - Kraft, Ausdauer und Fokus."
         },
         "pre-post-birth": {
           "title": "Pre & Postgeburt",
-          "description": "Begleitende Formate rund um Beckenboden, Geburtsvorbereitung und Training mit dem Baby."
+          "description": "Sichere und effektive Workouts für Schwangerschaft und danach."
         },
         "corporate-fitness": {
           "title": "Firmenfitness",
-          "description": "Kurze, wiederholbare Bewegungseinheiten für aktive Arbeitspausen im Berufsalltag."
+          "description": "Gesunde Teams, mehr Energie und weniger Ausfallzeiten."
         },
         "live-courses": {
           "title": "Live Kurse",
@@ -690,8 +690,8 @@
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",
-    "title": "Wissen zu Schmerzlinderung, Gesundheit und Ernährung.",
-    "intro": "Praktische Artikel zu Training, Regeneration, Ernährung und gesünderen Routinen.",
+    "title": "Blogs",
+    "intro": "",
     "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
     "filterHint": "Nach Thema filtern",
     "filterAria": "Blog-Tags",

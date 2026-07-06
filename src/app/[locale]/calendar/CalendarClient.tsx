@@ -132,7 +132,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
   if (!user) {
     return (
       <div className={styles.calendarContainer}>
-        <h2 className={styles.title}>{t("title")}</h2>
+        <h1 className={styles.title}>{t("title")}</h1>
         <p className={styles.subtitle}>{t("subtitle")}</p>
         <MemberAccessCallout onSignIn={openAuth} />
       </div>
@@ -156,7 +156,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
       <motion.div className={styles.headerBlock} variants={fadeUp}>
         <div>
           <p className={styles.eyebrow}>{t("eyebrow")}</p>
-          <h2 className={styles.title}>{t("title")}</h2>
+          <h1 className={styles.title}>{t("title")}</h1>
           <p className={styles.subtitle}>{t("subtitle")}</p>
         </div>
         <div className={styles.planCard}>

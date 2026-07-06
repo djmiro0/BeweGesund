@@ -28,3 +28,32 @@ export interface QuizAttemptPayload {
   durationMs?: number;
   completedAt?: string;
 }
+
+export interface QuizOptionPayload {
+  id?: string;
+  label?: string;
+}
+
+export interface QuizQuestionPayload {
+  id?: string;
+  prompt?: string;
+  options?: QuizOptionPayload[];
+  correctOptionId?: string;
+}
+
+export interface SaveQuizPayload {
+  quizId?: string;
+  title?: string;
+  description?: string;
+  locale?: "de" | "en";
+  status?: "draft" | "published";
+  availableFrom?: string;
+  availableUntil?: string;
+  monthlyPeriod?: string;
+  timeLimitSeconds?: number;
+  allowRetake?: boolean;
+  pointsPerCorrect?: number;
+  speedBonusMax?: number;
+  xpReward?: number;
+  questions?: QuizQuestionPayload[];
+}

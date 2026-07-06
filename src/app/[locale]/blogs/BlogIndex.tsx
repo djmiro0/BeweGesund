@@ -22,6 +22,7 @@ const fadeUp = {
 
 export default function BlogIndex({ locale, posts }: BlogIndexProps) {
   const t = useTranslations("blogs");
+  const intro = t("intro");
   const [activeTag, setActiveTag] = useState<"all" | BlogTag>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
@@ -54,9 +55,7 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>{t("eyebrow")}</p>
           <h1 className={styles.title}>{t("title")}</h1>
-          <p className={styles.intro}>
-            {t("intro")}
-          </p>
+          {intro ? <p className={styles.intro}>{intro}</p> : null}
         </div>
         <div className={styles.heroMeta} aria-label="Blog overview">
           <span>

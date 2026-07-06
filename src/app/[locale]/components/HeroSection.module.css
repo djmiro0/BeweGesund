@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 7rem clamp(1.25rem, 5.5vw, 6.5rem) 4rem;
+  padding: 5.75rem clamp(1.25rem, 5.5vw, 6.5rem) 4rem;
   color: var(--page-ink);
   background: var(--page-cream-1);
 }
@@ -180,11 +180,17 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .content {
+    margin-left: clamp(4.5rem, 9vw, 8rem);
+  }
+}
+
 @media (max-width: 900px) {
   .hero {
     min-height: 100svh;
     align-items: flex-end;
-    padding: 7rem 1.25rem 3rem;
+    padding: 6.25rem 1.25rem 3rem;
     color: var(--media-text);
     background: var(--shell-bg);
   }

@@ -16,6 +16,9 @@ const categorySlugs = new Set([
   "intensive",
   "pre-post-birth",
   "corporate-fitness",
+  "live-courses",
+  "live-seminars",
+  "nutrition-seminars",
 ]);
 
 const categoryAliases: Record<string, string> = {
@@ -105,13 +108,63 @@ export default async function CourseDetailPage({
         plannedTrainingCount,
       };
     });
-    if (!subtypeCards.length) notFound();
 
     const getCourseNote = (course: MemberCourseDefinition) => {
       if (!course.noteKey) return "";
       if (translatedNoteKeys.has(course.noteKey)) return coursesT(`courseTypes.notes.${course.noteKey}`);
       return course.noteKey;
     };
+
+    const categoryItems = courses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+
+    if (!subtypeCards.length && !categoryItems.length) notFound();
+
+    if (!subtypeCards.length) {
+      return (
+        <section className={coursesStyles.coursesSection}>
+          <BackButton href={`/${locale}/courses`} className={styles.backLink}>
+            <ArrowLeft size={17} />
+            {t("back")}
+          </BackButton>
+
+          <header className={coursesStyles.hero}>
+            <div className={coursesStyles.heroCopy}>
+              <div className={coursesStyles.heroStatus}>
+                <Dumbbell size={15} />
+                {coursesT("courseTypes.meta.live")}
+              </div>
+              <h1 className={coursesStyles.title}>{coursesT(`courseTypes.categories.${categorySlug}.title`)}</h1>
+              <p className={coursesStyles.intro}>{coursesT(`courseTypes.categories.${categorySlug}.description`)}</p>
+            </div>
+          </header>
+
+          <div className={coursesStyles.subtypeList}>
+            {categoryItems.map((course) => (
+              <Link key={course.id} href={`/${locale}/courses/${course.slug}`} className={coursesStyles.courseCard}>
+                {course.isLive ? (
+                  <span className={coursesStyles.liveBadge}>{coursesT("courseTypes.meta.live")}</span>
+                ) : null}
+                <div>
+                  <h2 className={coursesStyles.courseTitle}>{course.title}</h2>
+                  {course.description ? (
+                    <p className={coursesStyles.courseDescription}>{course.description}</p>
+                  ) : null}
+                </div>
+                <div className={coursesStyles.courseMeta}>
+                  {course.durationMinutes ? (
+                    <span>{coursesT("courseTypes.meta.duration", { count: course.durationMinutes })}</span>
+                  ) : null}
+                  {course.coach ? (
+                    <span>{coursesT("courseTypes.meta.coach", { name: course.coach })}</span>
+                  ) : null}
+                  <span>{packages(course.packageRequired)}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      );
+    }
 
     return (
       <section className={coursesStyles.coursesSection}>

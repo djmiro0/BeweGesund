@@ -16,6 +16,7 @@ import {
   userRef,
 } from "./firestore";
 import {
+  adminSetupCode,
   appBaseUrl,
   functionsBaseUrl,
   googleHealthClientId,
@@ -32,6 +33,7 @@ import type {
   QuizAnswerPayload,
   QuizAttemptPayload,
   RewardClaimPayload,
+  SaveQuizPayload,
   StripeCheckoutPayload,
 } from "./types";
 
@@ -176,6 +178,118 @@ function normalizeQuizAnswers(answers: QuizAnswerPayload[] | undefined) {
       ? Math.max(0, Math.round(answer.answeredAtMs))
       : null,
   }));
+}
+
+async function requireAdmin(uid: string) {
+  const snapshot = await userRef(uid).get();
+  const roles = snapshot.get("roles");
+
+  if (!Array.isArray(roles) || !roles.includes("admin")) {
+    throw new HttpsError("permission-denied", "Admin access is required.");
+  }
+}
+
+async function hasAnyAdmin() {
+  const snapshot = await db
+    .collection("users")
+    .where("roles", "array-contains", "admin")
+    .limit(1)
+    .get();
+
+  return !snapshot.empty;
+}
+
+function normalizeRoles(value: unknown) {
+  const roles = Array.isArray(value) ? value.filter((role): role is string => typeof role === "string") : [];
+
+  return Array.from(new Set([...roles, "member", "admin"]));
+}
+
+function optionalDate(value: unknown, fieldName: string) {
+  if (value === undefined || value === null || value === "") return null;
+  if (typeof value !== "string") {
+    throw new HttpsError("invalid-argument", `${fieldName} must be an ISO date string.`);
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    throw new HttpsError("invalid-argument", `${fieldName} is invalid.`);
+  }
+
+  return date;
+}
+
+function normalizeSaveQuizPayload(payload: SaveQuizPayload) {
+  const quizId = requireStringId(payload.quizId, "quizId");
+  const title = requireStringId(payload.title, "title");
+  const locale = payload.locale === "en" ? "en" : "de";
+  const status = payload.status === "published" ? "published" : "draft";
+  const questions = Array.isArray(payload.questions) ? payload.questions : [];
+
+  if (questions.length === 0 || questions.length > 80) {
+    throw new HttpsError("invalid-argument", "At least one question is required.");
+  }
+
+  const answerMap: Record<string, string> = {};
+  const normalizedQuestions = questions.map((question, questionIndex) => {
+    const questionId = requireStringId(question.id || `q${questionIndex + 1}`, "questionId");
+    const prompt = requireStringId(question.prompt, "prompt");
+    const options = Array.isArray(question.options) ? question.options : [];
+
+    if (options.length < 2 || options.length > 8) {
+      throw new HttpsError("invalid-argument", "Each question needs 2 to 8 answers.");
+    }
+
+    const normalizedOptions = options.map((option, optionIndex) => ({
+      id: requireStringId(option.id || `a${optionIndex + 1}`, "optionId"),
+      label: requireStringId(option.label, "optionLabel"),
+    }));
+    const optionIds = new Set(normalizedOptions.map((option) => option.id));
+    const correctOptionId = requireStringId(question.correctOptionId, "correctOptionId");
+
+    if (!optionIds.has(correctOptionId)) {
+      throw new HttpsError("invalid-argument", "Correct answer must match one of the options.");
+    }
+
+    answerMap[questionId] = correctOptionId;
+
+    return {
+      id: questionId,
+      prompt,
+      options: normalizedOptions,
+    };
+  });
+
+  const availableFrom = optionalDate(payload.availableFrom, "availableFrom");
+  const availableUntil = optionalDate(payload.availableUntil, "availableUntil");
+
+  if (availableFrom && availableUntil && availableUntil.getTime() <= availableFrom.getTime()) {
+    throw new HttpsError("invalid-argument", "availableUntil must be after availableFrom.");
+  }
+
+  return {
+    quizId,
+    publicQuiz: {
+      title,
+      description: typeof payload.description === "string" ? payload.description.trim() : "",
+      locale,
+      status,
+      availableFrom,
+      availableUntil,
+      monthlyPeriod: typeof payload.monthlyPeriod === "string" ? payload.monthlyPeriod.trim() : currentMonthPeriod(),
+      timeLimitSeconds: Number.isFinite(payload.timeLimitSeconds) ? Math.max(1, Math.round(payload.timeLimitSeconds ?? 180)) : 180,
+      allowRetake: payload.allowRetake === true,
+      pointsPerCorrect: Number.isFinite(payload.pointsPerCorrect) ? Math.max(1, Math.round(payload.pointsPerCorrect ?? 100)) : 100,
+      speedBonusMax: Number.isFinite(payload.speedBonusMax) ? Math.max(0, Math.round(payload.speedBonusMax ?? 50)) : 50,
+      xpReward: Number.isFinite(payload.xpReward) ? Math.max(0, Math.round(payload.xpReward ?? 10)) : 10,
+      questions: normalizedQuestions,
+      updatedAt: serverTimestamp(),
+    },
+    answerKey: {
+      answers: answerMap,
+      updatedAt: serverTimestamp(),
+    },
+  };
 }
 
 function getQuizAvailability(quiz: QuizDocument, now: Date) {
@@ -462,6 +576,55 @@ export const completeWorkout = onCall(appCheckCallableOptions, async (request) =
   return applyCompletion(uid, "workout", request.data as CompletionPayload);
 });
 
+export const claimFirstAdmin = onCall(
+  {
+    ...appCheckCallableOptions,
+    secrets: [adminSetupCode],
+  },
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const setupCode = typeof request.data?.setupCode === "string" ? request.data.setupCode.trim() : "";
+
+    if (!setupCode || setupCode !== adminSetupCode.value()) {
+      throw new HttpsError("permission-denied", "The admin setup code is invalid.");
+    }
+
+    if (await hasAnyAdmin()) {
+      throw new HttpsError("failed-precondition", "An admin already exists.");
+    }
+
+    const ref = userRef(uid);
+    const snapshot = await ref.get();
+
+    if (!snapshot.exists) {
+      throw new HttpsError("failed-precondition", "User profile does not exist.");
+    }
+
+    await ref.set({
+      roles: normalizeRoles(snapshot.get("roles")),
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    logger.info("First admin claimed", { uid });
+    return { ok: true };
+  },
+);
+
+export const saveQuiz = onCall(appCheckCallableOptions, async (request) => {
+  const uid = requireAuth(request.auth);
+  await requireAdmin(uid);
+
+  const { quizId, publicQuiz, answerKey } = normalizeSaveQuizPayload(request.data as SaveQuizPayload);
+
+  await Promise.all([
+    db.collection(QUIZZES_COLLECTION).doc(quizId).set(publicQuiz, { merge: true }),
+    db.collection(QUIZ_ANSWER_KEYS_COLLECTION).doc(quizId).set(answerKey, { merge: true }),
+  ]);
+
+  logger.info("Quiz saved", { quizId, uid, status: publicQuiz.status });
+  return { ok: true, quizId };
+});
+
 export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   const payload = request.data as QuizAttemptPayload;
@@ -513,6 +676,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
         correctCount?: number;
         totalQuestions?: number;
         speedBonus?: number;
+        answers?: unknown;
       };
 
       return {
@@ -522,6 +686,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
         correctCount: previousAttempt.correctCount ?? 0,
         totalQuestions: previousAttempt.totalQuestions ?? 0,
         speedBonus: previousAttempt.speedBonus ?? 0,
+        answers: Array.isArray(previousAttempt.answers) ? previousAttempt.answers : [],
         xpGain: 0,
         pointsGain: 0,
       };
@@ -556,6 +721,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
       return {
         questionId,
         optionId: submitted?.optionId ?? null,
+        correctOptionId,
         correct: isCorrect,
         answeredAtMs: submitted?.answeredAtMs ?? null,
       };
@@ -619,6 +785,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
       correctCount,
       totalQuestions,
       speedBonus,
+      answers: scoredAnswers,
       xpGain,
       pointsGain: score,
       period,

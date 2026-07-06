@@ -2,7 +2,7 @@
 
 import { collection, getDocs } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { CheckCircle2, Loader2, Lock, Send } from "lucide-react";
+import { CheckCircle2, Info, Loader2, Lock, Send, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { db, functions } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
@@ -39,13 +39,26 @@ interface QuizResult {
   totalQuestions?: number;
   speedBonus?: number;
   pointsGain?: number;
+  answers?: Array<{
+    questionId: string;
+    optionId: string | null;
+    correctOptionId: string;
+    correct: boolean;
+  }>;
 }
 
 const copy = {
   de: {
     title: "Aktiver Quiz",
+    infoLabel: "Beispiel anzeigen",
+    close: "Schließen",
+    sampleTitle: "Beispiel-Frage",
+    sampleQuestion: "Welche Kombination zählt künftig am stärksten für die Quiz-Rangliste?",
+    sampleOptions: ["Nur die Anzahl gelesener Artikel", "Richtige Antworten plus Geschwindigkeit", "Nur Trainingsminuten"],
+    sampleNote: "Die echte Quiz-Logik mit Timer, Auswertung und Anti-Cheat läuft über die geschützte Cloud Function.",
     loading: "Quiz wird geladen...",
     empty: "Noch kein veröffentlichter Firestore-Quiz verfügbar. Lege ein Dokument in quizzes an, dann erscheint er hier automatisch.",
+    loadError: "Der Quiz konnte nicht geladen werden.",
     signIn: "Einloggen zum Absenden",
     submit: "Antworten absenden",
     submitted: "Ergebnis gespeichert",
@@ -53,12 +66,23 @@ const copy = {
     score: "{score} Punkte",
     correct: "{correct}/{total} richtig",
     speedBonus: "+{bonus} Speed-Bonus",
-    error: "Der Quiz konnte nicht gespeichert werden.",
+    yourAnswer: "Deine Antwort",
+    correctAnswer: "Richtige Antwort",
+    correctBadge: "Richtig",
+    wrongBadge: "Falsch",
+    submitError: "Der Quiz konnte nicht gespeichert werden.",
   },
   en: {
     title: "Active quiz",
+    infoLabel: "Show example",
+    close: "Close",
+    sampleTitle: "Example question",
+    sampleQuestion: "Which combination will matter most for the quiz leaderboard?",
+    sampleOptions: ["Only the number of read articles", "Correct answers plus speed", "Only training minutes"],
+    sampleNote: "The real quiz logic with timer, scoring, and anti-cheat runs through the protected Cloud Function.",
     loading: "Loading quiz...",
     empty: "No published Firestore quiz is available yet. Add a document in quizzes and it will appear here automatically.",
+    loadError: "The quiz could not be loaded.",
     signIn: "Sign in to submit",
     submit: "Submit answers",
     submitted: "Result saved",
@@ -66,7 +90,11 @@ const copy = {
     score: "{score} points",
     correct: "{correct}/{total} correct",
     speedBonus: "+{bonus} speed bonus",
-    error: "The quiz could not be saved.",
+    yourAnswer: "Your answer",
+    correctAnswer: "Correct answer",
+    correctBadge: "Correct",
+    wrongBadge: "Wrong",
+    submitError: "The quiz could not be saved.",
   },
 } as const;
 
@@ -144,8 +172,10 @@ export default function QuizClient({ locale }: { locale: string }) {
   const [answeredAtMs, setAnsweredAtMs] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [isExampleOpen, setIsExampleOpen] = useState(false);
   const [result, setResult] = useState<QuizResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -164,7 +194,7 @@ export default function QuizClient({ locale }: { locale: string }) {
         startedAtRef.current = Date.now();
       })
       .catch(() => {
-        if (!cancelled) setError(labels.error);
+        if (!cancelled) setLoadError(labels.loadError);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -173,7 +203,7 @@ export default function QuizClient({ locale }: { locale: string }) {
     return () => {
       cancelled = true;
     };
-  }, [labels.error, locale]);
+  }, [labels.loadError, locale]);
 
   const activeQuiz = quizzes[0] ?? null;
   const allAnswered = useMemo(() => (
@@ -195,7 +225,7 @@ export default function QuizClient({ locale }: { locale: string }) {
     }
 
     setSubmitting(true);
-    setError(null);
+    setSubmitError(null);
 
     try {
       const submitQuizAttempt = httpsCallable<
@@ -220,11 +250,15 @@ export default function QuizClient({ locale }: { locale: string }) {
 
       setResult(response.data);
     } catch {
-      setError(labels.error);
+      setSubmitError(labels.submitError);
     } finally {
       setSubmitting(false);
     }
   };
+
+  const getOptionLabel = (question: PublicQuizQuestion, optionId: string | null | undefined) => (
+    question.options.find((option) => option.id === optionId)?.label ?? "-"
+  );
 
   return (
     <section className={styles.liveQuizPanel} aria-live="polite">
@@ -233,11 +267,21 @@ export default function QuizClient({ locale }: { locale: string }) {
           <p className={styles.eyebrow}>Firestore</p>
           <h2>{labels.title}</h2>
         </div>
-        {loading ? <Loader2 className={styles.spinIcon} size={24} /> : <Lock size={24} />}
+        <div className={styles.quizHeaderActions}>
+          <button
+            type="button"
+            className={styles.quizInfoButton}
+            onClick={() => setIsExampleOpen(true)}
+            aria-label={labels.infoLabel}
+          >
+            <Info size={18} />
+          </button>
+          {loading ? <Loader2 className={styles.spinIcon} size={24} /> : <Lock size={24} />}
+        </div>
       </div>
 
       {loading ? <p className={styles.quizState}>{labels.loading}</p> : null}
-      {!loading && !activeQuiz ? <p className={styles.quizState}>{error ?? labels.empty}</p> : null}
+      {!loading && !activeQuiz ? <p className={styles.quizState}>{loadError ?? labels.empty}</p> : null}
 
       {activeQuiz ? (
         <div className={styles.liveQuizBody}>
@@ -268,18 +312,42 @@ export default function QuizClient({ locale }: { locale: string }) {
           </div>
 
           {result ? (
-            <div className={styles.quizResult}>
-              <CheckCircle2 size={18} />
-              <strong>{result.alreadySubmitted ? labels.alreadySubmitted : labels.submitted}</strong>
-              <span>{formatTemplate(labels.score, { score: result.score ?? 0 })}</span>
-              <span>
-                {formatTemplate(labels.correct, {
-                  correct: result.correctCount ?? 0,
-                  total: result.totalQuestions ?? activeQuiz.questions.length,
+            <>
+              <div className={styles.quizResult}>
+                <CheckCircle2 size={18} />
+                <strong>{result.alreadySubmitted ? labels.alreadySubmitted : labels.submitted}</strong>
+                <span>{formatTemplate(labels.score, { score: result.score ?? 0 })}</span>
+                <span>
+                  {formatTemplate(labels.correct, {
+                    correct: result.correctCount ?? 0,
+                    total: result.totalQuestions ?? activeQuiz.questions.length,
+                  })}
+                </span>
+                <span>{formatTemplate(labels.speedBonus, { bonus: result.speedBonus ?? 0 })}</span>
+              </div>
+              <div className={styles.answerReviewList}>
+                {activeQuiz.questions.map((question) => {
+                  const answer = result.answers?.find((item) => item.questionId === question.id);
+
+                  return (
+                    <article key={question.id} className={styles.answerReviewCard}>
+                      <div className={styles.answerReviewHeader}>
+                        <h4>{question.prompt}</h4>
+                        <span className={answer?.correct ? styles.answerCorrectBadge : styles.answerWrongBadge}>
+                          {answer?.correct ? labels.correctBadge : labels.wrongBadge}
+                        </span>
+                      </div>
+                      <p>
+                        <strong>{labels.yourAnswer}:</strong> {getOptionLabel(question, answer?.optionId)}
+                      </p>
+                      <p>
+                        <strong>{labels.correctAnswer}:</strong> {getOptionLabel(question, answer?.correctOptionId)}
+                      </p>
+                    </article>
+                  );
                 })}
-              </span>
-              <span>{formatTemplate(labels.speedBonus, { bonus: result.speedBonus ?? 0 })}</span>
-            </div>
+              </div>
+            </>
           ) : (
             <button
               type="button"
@@ -292,7 +360,47 @@ export default function QuizClient({ locale }: { locale: string }) {
             </button>
           )}
 
-          {error ? <p className={styles.quizError}>{error}</p> : null}
+          {submitError ? <p className={styles.quizError}>{submitError}</p> : null}
+        </div>
+      ) : null}
+
+      {isExampleOpen ? (
+        <div className={styles.exampleOverlay} role="presentation" onClick={() => setIsExampleOpen(false)}>
+          <section
+            className={styles.exampleDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="quiz-example-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className={styles.exampleDialogHeader}>
+              <div>
+                <p className={styles.eyebrow}>{labels.sampleTitle}</p>
+                <h2 id="quiz-example-title">{labels.sampleQuestion}</h2>
+              </div>
+              <button
+                type="button"
+                className={styles.exampleCloseButton}
+                onClick={() => setIsExampleOpen(false)}
+                aria-label={labels.close}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <div className={styles.optionList}>
+              {labels.sampleOptions.map((option, index) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={index === 1 ? styles.optionActive : styles.option}
+                  disabled
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+            <p className={styles.previewNote}>{labels.sampleNote}</p>
+          </section>
         </div>
       ) : null}
     </section>

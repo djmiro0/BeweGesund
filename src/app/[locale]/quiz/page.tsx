@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BookOpen, Brain, Clock3, Crown, Timer, Trophy } from "lucide-react";
+import { ArrowRight, BookOpen, Brain, Crown, Timer, Trophy } from "lucide-react";
 import QuizClient from "./QuizClient";
 import styles from "./Quiz.module.css";
 
@@ -11,7 +11,6 @@ const copy = {
     intro:
       "Hier entsteht der spielerische Wissensbereich: Punkte kommen nicht nur aus Videos, sondern auch aus gelesenen Artikeln, Gesundheitswissen und zeitlich begrenzten Quiz-Runden.",
     primaryCta: "Artikel lesen",
-    secondaryCta: "Preview ansehen",
     liveTitle: "Monatlicher 24h Quiz",
     liveText:
       "Einmal im Monat öffnet eine Challenge für 24 Stunden. Die Rangliste bewertet richtige Antworten und Antwortgeschwindigkeit.",
@@ -26,10 +25,6 @@ const copy = {
     player: "Profil",
     score: "Punkte",
     champion: "Monats-Champion",
-    sampleTitle: "Preview-Frage",
-    sampleQuestion: "Welche Kombination zählt künftig am stärksten für die Quiz-Rangliste?",
-    sampleOptions: ["Nur die Anzahl gelesener Artikel", "Richtige Antworten plus Geschwindigkeit", "Nur Trainingsminuten"],
-    sampleNote: "Die echte Quiz-Logik mit Timer, Auswertung und Anti-Cheat kommt als Backend-Schritt danach.",
     stats: ["24h verfügbar", "Speed + Accuracy", "Top 3 mit Krone"],
   },
   en: {
@@ -39,7 +34,6 @@ const copy = {
     intro:
       "This is the playful knowledge area: points will come from videos, read articles, wellness knowledge, and time-boxed quiz rounds.",
     primaryCta: "Read articles",
-    secondaryCta: "View preview",
     liveTitle: "Monthly 24h quiz",
     liveText:
       "Once a month a challenge opens for 24 hours. The leaderboard rewards correct answers and response speed.",
@@ -54,10 +48,6 @@ const copy = {
     player: "Profile",
     score: "Points",
     champion: "Champion of the month",
-    sampleTitle: "Preview question",
-    sampleQuestion: "Which combination will matter most for the quiz leaderboard?",
-    sampleOptions: ["Only the number of read articles", "Correct answers plus speed", "Only training minutes"],
-    sampleNote: "The real quiz logic with timer, scoring, and anti-cheat comes next as a backend step.",
     stats: ["24h window", "Speed + accuracy", "Top 3 crowned"],
   },
 } as const;
@@ -89,9 +79,6 @@ export default async function QuizPage({
             <Link href={`/${locale}/blogs`} className={styles.primaryLink}>
               {labels.primaryCta}
               <ArrowRight size={16} />
-            </Link>
-            <Link href={`/${locale}/quiz#quiz-preview`} className={styles.secondaryLink}>
-              {labels.secondaryCta}
             </Link>
           </div>
         </div>
@@ -156,28 +143,6 @@ export default async function QuizPage({
           ))}
         </article>
 
-        <article id="quiz-preview" className={styles.previewPanel}>
-          <div className={styles.sectionHeader}>
-            <div>
-              <p className={styles.eyebrow}>{labels.sampleTitle}</p>
-              <h2>{labels.sampleQuestion}</h2>
-            </div>
-            <Clock3 size={28} />
-          </div>
-          <div className={styles.optionList}>
-            {labels.sampleOptions.map((option, index) => (
-              <button
-                key={option}
-                type="button"
-                className={index === 1 ? styles.optionActive : styles.option}
-                disabled
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-          <p className={styles.previewNote}>{labels.sampleNote}</p>
-        </article>
       </section>
     </main>
   );

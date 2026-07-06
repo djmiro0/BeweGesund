@@ -6,8 +6,8 @@
   --shell-text: var(--page-ink);
   --shell-text-rgb: var(--page-ink-rgb);
   --shell-border: rgba(var(--page-ink-rgb), 0.1);
-  --header-control-bg: rgba(var(--page-soft-alt-rgb), 0.92);
-  --header-control-bg-hover: rgba(var(--page-soft-rgb), 1);
+  --header-control-bg: rgba(124, 203, 211, 0.08);
+  --header-control-bg-hover: rgba(124, 203, 211, 0.14);
   --header-control-border: rgba(var(--page-ink-rgb), 0.12);
 
   position: fixed;
@@ -42,7 +42,7 @@
 
 .brandLogo {
   display: block;
-  width: 2.75rem;
+  width: 2.875rem;
   height: auto;
   aspect-ratio: 1;
   border-radius: 999px;
@@ -51,7 +51,7 @@
 .desktopNav {
   display: none;
   align-items: center;
-  gap: clamp(0.45rem, 1.3vw, 1.1rem);
+  gap: clamp(1.75rem, 2.8vw, 2.25rem);
   padding: 0 0.5rem;
 }
 
@@ -59,19 +59,30 @@
   position: relative;
   overflow: hidden;
   border-radius: 999px;
-  color: rgba(var(--shell-text-rgb), 0.66);
+  color: var(--shell-text);
   font-size: 0.75rem;
-  font-weight: 550;
+  font-weight: 500;
   letter-spacing: 0.06em;
   padding: 0.55rem 0.25rem;
   text-transform: uppercase;
-  transition: color 0.3s var(--transition);
+  opacity: 0.82;
+  transition:
+    color 0.18s ease,
+    opacity 0.18s ease;
 }
 
 .navLink:hover,
 .navLinkActive {
+  opacity: 1;
+}
+
+.navLink:hover {
+  color: var(--page-olive);
+}
+
+.navLinkActive {
   color: var(--shell-text);
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .navUnderline {
@@ -79,16 +90,24 @@
   right: 0.25rem;
   bottom: 0.3rem;
   left: 0.25rem;
-  height: 2px;
+  height: 1.5px;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--page-accent), var(--page-warm), var(--page-olive));
-  transform: scaleX(0);
+  background: var(--page-olive);
+  transform: scaleX(0.85);
   transform-origin: left;
-  transition: transform 0.3s var(--transition);
+  opacity: 0;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
-.navLink:hover .navUnderline,
 .navUnderlineActive {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.navLink:hover .navUnderline {
+  opacity: 1;
   transform: scaleX(1);
 }
 
@@ -155,7 +174,15 @@
 .languageSelectWrap svg {
   position: absolute;
   right: 0.45rem;
+  opacity: 0;
   pointer-events: none;
+  transform: translateY(-1px);
+  transition: opacity 0.2s var(--transition);
+}
+
+.languageSelectWrap:hover svg,
+.languageSelectWrap:focus-within svg {
+  opacity: 1;
 }
 
 .themeSwitch {
@@ -283,8 +310,8 @@
   --shell-text: var(--page-ink);
   --shell-text-rgb: var(--page-ink-rgb);
   --shell-border: rgba(var(--page-ink-rgb), 0.1);
-  --header-control-bg: rgba(var(--page-soft-alt-rgb), 0.92);
-  --header-control-bg-hover: rgba(var(--page-soft-rgb), 1);
+  --header-control-bg: rgba(124, 203, 211, 0.08);
+  --header-control-bg-hover: rgba(124, 203, 211, 0.14);
   --header-control-border: rgba(var(--page-ink-rgb), 0.12);
 
   position: fixed;
@@ -323,14 +350,15 @@
 }
 
 .mobileNavLink {
-  border: 1px solid var(--header-control-border);
-  border-radius: 1rem;
-  background: var(--header-control-bg);
+  border: 0;
+  border-bottom: 1px solid rgba(var(--shell-text-rgb), 0.12);
+  border-radius: 0;
+  background: transparent;
   color: rgba(var(--shell-text-rgb), 0.76);
   font-size: 0.875rem;
-  font-weight: 950;
+  font-weight: 700;
   letter-spacing: 0.1em;
-  padding: 0.75rem 1rem;
+  padding: 0.7rem 0.15rem;
   text-transform: uppercase;
   transform: translateY(-0.45rem);
   opacity: 0;
@@ -366,8 +394,8 @@
 }
 
 .mobileNavLinkActive {
-  border-color: rgba(var(--page-accent-rgb), 0.32);
-  background: rgba(var(--page-accent-rgb), 0.14);
+  border-bottom-color: var(--page-olive);
+  background: rgba(var(--page-soft-alt-rgb), 0.36);
   color: var(--shell-text);
 }
 
@@ -455,7 +483,7 @@
   }
 
   .brandLogo {
-    width: 4rem;
+    width: 4.9rem;
   }
 
   .actions {
@@ -475,7 +503,7 @@
   }
 
   .profileLink {
-    padding-right: 0.75rem;
+    padding-right: 0.5rem;
   }
 
   .profileAvatar {
@@ -501,7 +529,7 @@
 
 @media (min-width: 1024px) {
   .brandLogo {
-    width: 4.35rem;
+    width: 5.35rem;
   }
 
   .desktopNav {
@@ -521,14 +549,14 @@
 
 @media (min-width: 1280px) {
   .desktopNav {
-    gap: 0.5rem;
+    gap: 2.25rem;
     padding: 0.5rem 0.75rem;
   }
 
   .navLink {
     font-size: 0.875rem;
-    padding-right: 1rem;
-    padding-left: 1rem;
+    padding-right: 0;
+    padding-left: 0;
   }
 
   .profileName {
