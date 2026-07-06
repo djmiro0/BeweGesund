@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, BookOpen, ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
+import { ArrowUpRight, BookOpen, Brain, ChevronLeft, ChevronRight, Crown, Play, Sparkles, Timer } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { memberCourseCategories } from "@/data";
 import type { BlogPost, CourseSummary, MeditationRelaxationItem } from "@/lib/contentful";
@@ -246,6 +246,30 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 </motion.header>
 
                 <div className={styles.contentColumn}>
+                    <motion.section className={styles.quizChallengePanel} variants={fadeUp}>
+                        <div className={styles.quizChallengeIcon} aria-hidden="true">
+                            <Brain size={26} />
+                        </div>
+                        <div className={styles.quizChallengeCopy}>
+                            <p className={styles.panelEyebrow}>{t("quiz.eyebrow")}</p>
+                            <h2>{t("quiz.title")}</h2>
+                            <div className={styles.quizChallengeMeta} aria-label={t("quiz.metaLabel")}>
+                                <span>
+                                    <Timer size={14} />
+                                    {t("quiz.timeboxed")}
+                                </span>
+                                <span>
+                                    <Crown size={14} />
+                                    {t("quiz.champions")}
+                                </span>
+                            </div>
+                        </div>
+                        <Link href={`/${locale}/quiz`} className={styles.quizChallengeLink}>
+                            {t("quiz.cta")}
+                            <ArrowUpRight size={15} />
+                        </Link>
+                    </motion.section>
+
                     <motion.div
                         className={`${styles.tabsShell} ${tabEdges.left ? styles.tabsShellHasLeft : ""} ${
                             tabEdges.right ? styles.tabsShellHasRight : ""

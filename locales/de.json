@@ -7,7 +7,7 @@
       "courses": "Kurse",
       "settings": "Einstellungen",
       "calendar": "Live-Kalender",
-      "relaxation": "Meditation & Entspannung",
+      "relaxation": "Meditation",
       "blogs": "Blogs",
       "consultation": "Beratung",
       "about": "Über Uns",
@@ -177,6 +177,15 @@
         "viewAll": "Alle ansehen",
         "read": "Artikel lesen",
         "readTime": "{count} Min. Lesezeit"
+      },
+      "quiz": {
+        "eyebrow": "Challenge Arena",
+        "title": "Fitness-Quiz und Monats-Champions",
+        "description": "Sammle künftig Punkte durch Videos, gelesene Artikel und schnelle, richtige Antworten in zeitlich begrenzten Quiz-Runden.",
+        "metaLabel": "Quiz-Belohnungen",
+        "timeboxed": "24h Monats-Quiz",
+        "champions": "Top 3 mit Krone",
+        "cta": "Quiz öffnen"
       },
       "meditation": {
         "description": "Geführte Meditationen, Entspannungsmusik und Atemübungen für innere Ruhe.",
@@ -891,6 +900,7 @@
       "rank": "Rang",
       "competitor": "Teilnehmer",
       "points": "Punkte",
+      "champion": "Šampion meseca",
       "you": "Du · aktuelle Woche",
       "placeholder": "Vorschaudaten. Echte Punkte werden in der Gamification-Phase mit Trainings, Videos und Blogaktivitäten verbunden."
     },
@@ -1400,6 +1410,11 @@
     "eyebrow": "Kontoeinstellungen",
     "title": "Einstellungen",
     "description": "Verwalte Profil, Training, Ernährung, Datenschutz und App-Einstellungen. Gespeicherte Werte werden mit deinem Firebase-Konto synchronisiert.",
+    "navigation": {
+      "label": "Einstellungsbereiche",
+      "currentSection": "Aktueller Bereich",
+      "profileFallback": "Dein Profil"
+    },
     "installApp": {
       "title": "Bewegesund installieren",
       "description": "Füge die App deinem Startbildschirm hinzu.",
@@ -1454,6 +1469,10 @@
       "app": {
         "title": "App-Einstellungen",
         "description": "Sprache, Darstellung, Einheiten und Videowiedergabe."
+      },
+      "account": {
+        "title": "Konto",
+        "description": "Passwortänderung und Kontolöschung."
       }
     },
     "fields": {
@@ -1534,8 +1553,8 @@
     },
     "actions": {
       "backToProfile": "Zurück zum Profil",
-      "reset": "Abbrechen / Zurücksetzen",
-      "save": "Einstellungen speichern",
+      "reset": "Abbrechen",
+      "save": "Speichern",
       "saving": "Wird gespeichert...",
       "changePassword": "Passwort ändern"
     },

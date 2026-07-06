@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Clock, ImageIcon } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Brain, Clock, ImageIcon, Timer, Trophy } from "lucide-react";
 import { getBlogPost, getBlogPosts, type BlogPost } from "@/lib/contentful";
 import BackButton from "../../components/BackButton";
 import ArticleBody from "./ArticleBody";
@@ -40,6 +40,12 @@ export default async function BlogPostPage({
         recommendedEyebrow: "Empfohlener nächster Artikel",
         recommendedTitle: "Passend dazu weiterlesen",
         recommendedRead: "Artikel öffnen",
+        quizEyebrow: "Wissen sammeln",
+        quizTitle: "Bereit für den Fitness-Quiz?",
+        quizDescription: "Aus Artikeln und allgemeinem Gesundheitswissen entstehen künftig Fragen für Punkte, Rangliste und den Monats-Champion.",
+        quizTime: "Schnelligkeit + Genauigkeit",
+        quizMonthly: "24h Monats-Challenge",
+        quizCta: "Quiz ansehen",
       }
     : {
         back: "Back to blogs",
@@ -47,6 +53,12 @@ export default async function BlogPostPage({
         recommendedEyebrow: "Recommended next article",
         recommendedTitle: "Keep reading on this topic",
         recommendedRead: "Open article",
+        quizEyebrow: "Build knowledge",
+        quizTitle: "Ready for the fitness quiz?",
+        quizDescription: "Articles and general wellness knowledge will feed future questions for points, rankings, and the monthly champion status.",
+        quizTime: "Speed + accuracy",
+        quizMonthly: "24h monthly challenge",
+        quizCta: "View quiz",
       };
   const recommendedPost = getRecommendedPost(post, posts);
 
@@ -92,6 +104,31 @@ export default async function BlogPostPage({
       <ArticleBody body={post.body} />
 
       {post.tags.includes("selfcheck") ? <BlogSelfCheck locale={locale} /> : null}
+
+      <aside className={styles.quizCta} aria-labelledby="blog-quiz-title">
+        <div className={styles.quizCtaMark} aria-hidden="true">
+          <Brain size={28} />
+        </div>
+        <div className={styles.quizCtaCopy}>
+          <p className={styles.recommendedEyebrow}>{labels.quizEyebrow}</p>
+          <h2 id="blog-quiz-title">{labels.quizTitle}</h2>
+          <p>{labels.quizDescription}</p>
+          <div className={styles.quizCtaMeta}>
+            <span>
+              <Trophy size={14} />
+              {labels.quizTime}
+            </span>
+            <span>
+              <Timer size={14} />
+              {labels.quizMonthly}
+            </span>
+          </div>
+        </div>
+        <Link href={`/${locale}/quiz?source=blog&slug=${post.slug}`} className={styles.readLink}>
+          {labels.quizCta}
+          <ArrowUpRight size={17} />
+        </Link>
+      </aside>
 
       {recommendedPost ? (
         <aside className={styles.recommendedPost} aria-labelledby="recommended-blog-title">

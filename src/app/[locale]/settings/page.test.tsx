@@ -55,6 +55,16 @@ vi.mock("next-intl", () => ({
     "fields.username": "Username",
     "fields.email": "Email",
     "sections.profile.changePhoto": "Change photo",
+    "sections.profile.title": "Profile",
+    "sections.body.title": "Body & Progress",
+    "sections.progressPhotos.title": "Before & After",
+    "sections.workout.title": "Workout Preferences",
+    "sections.nutrition.title": "Nutrition",
+    "sections.gamification.title": "Progress",
+    "sections.notifications.title": "Notifications",
+    "sections.privacy.title": "Privacy & Account",
+    "sections.app.title": "App Settings",
+    "sections.account.title": "Account",
     "actions.backToProfile": "Back to profile",
     "actions.reset": "Cancel / Reset",
     "actions.save": "Save settings",
@@ -161,8 +171,9 @@ describe("SettingsPage", () => {
     expect(await screen.findByDisplayValue("Firebase Profile Name")).toBeInTheDocument();
     expect(screen.getByDisplayValue("real@example.com")).toBeInTheDocument();
     expect(screen.getByDisplayValue("180")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Profile/ })).toHaveAttribute("aria-current", "page");
+    await userEvent.click(screen.getByRole("button", { name: /^Progress\b/ }));
     expect(screen.getByTestId("settings-badges-placeholder")).toHaveTextContent("first-workout");
-    expect(screen.getByTestId("settings-account-management")).toBeInTheDocument();
   });
 
   it("saves profile and preference changes to Firebase", async () => {
@@ -172,6 +183,7 @@ describe("SettingsPage", () => {
     const fullName = await screen.findByLabelText("Full name");
     await user.clear(fullName);
     await user.type(fullName, "Alex Settings");
+    await user.click(screen.getByRole("button", { name: /Notifications/ }));
     await user.click(screen.getByTestId("settings-toggle-waterReminders"));
     await user.click(screen.getByTestId("settings-save-button"));
 
@@ -232,6 +244,7 @@ describe("SettingsPage", () => {
     render(<SettingsPage />);
 
     const file = new File(["before"], "before.jpg", { type: "image/jpeg" });
+    await user.click(await screen.findByRole("button", { name: /Before & After/ }));
     await user.upload(await screen.findByLabelText("sections.progressPhotos.beforeAction"), file);
 
     await waitFor(() => expect(firebaseMocks.uploadBytes).toHaveBeenCalledWith(
@@ -255,6 +268,7 @@ describe("SettingsPage", () => {
     const user = userEvent.setup();
     render(<SettingsPage />);
 
+    await user.click(await screen.findByRole("button", { name: /^Account\b/ }));
     await user.click(await screen.findByRole("button", { name: "open" }));
 
     expect(screen.getByRole("dialog", { name: "confirmTitle" })).toBeInTheDocument();

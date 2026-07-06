@@ -2,7 +2,7 @@
 
 import { httpsCallable } from "firebase/functions";
 import { Activity, Footprints, HeartPulse, LoaderCircle, Moon, PlugZap, Unplug } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { functions } from "../../../../firebase.config";
 import styles from "./Profile.module.css";
@@ -37,8 +37,9 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [error, setError] = useState("");
+  const syncInFlightRef = useRef(false);
 
-  const loadStatus = async () => {
+  const loadStatus = useCallback(async () => {
     setError("");
 
     try {
@@ -50,11 +51,12 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t]);
 
-  const syncSummary = async () => {
-    if (isSyncing) return;
+  const syncSummary = useCallback(async () => {
+    if (syncInFlightRef.current) return;
 
+    syncInFlightRef.current = true;
     setIsSyncing(true);
     setError("");
 
@@ -66,19 +68,20 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     } catch {
       setError(t("syncError"));
     } finally {
+      syncInFlightRef.current = false;
       setIsSyncing(false);
     }
-  };
+  }, [t]);
 
   useEffect(() => {
     void loadStatus();
-  }, []);
+  }, [loadStatus]);
 
   useEffect(() => {
     if (isConnected && !summary) {
       void syncSummary();
     }
-  }, [isConnected, summary]);
+  }, [isConnected, summary, syncSummary]);
 
   const connectWearable = async () => {
     if (isSyncing) return;

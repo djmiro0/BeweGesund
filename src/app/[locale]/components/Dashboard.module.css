@@ -273,6 +273,82 @@
   padding: 0.78rem 0.88rem;
 }
 
+.quizChallengePanel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: center;
+  border: 1px solid rgba(var(--page-olive-rgb), 0.24);
+  border-radius: 0.82rem;
+  background:
+    radial-gradient(circle at 8% 20%, rgba(var(--page-olive-rgb), 0.12), transparent 10rem),
+    linear-gradient(135deg, var(--app-surface-strong), var(--app-surface));
+  box-shadow: 0 10px 22px var(--app-shadow);
+  padding: 0.58rem 0.66rem;
+}
+
+.quizChallengeIcon {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border: 1px solid rgba(var(--page-olive-rgb), 0.25);
+  border-radius: 0.7rem;
+  background: rgba(var(--page-olive-rgb), 0.12);
+  color: var(--page-olive);
+}
+
+.quizChallengeCopy {
+  min-width: 0;
+}
+
+.quizChallengeCopy h2 {
+  margin: 0;
+  color: var(--app-text);
+  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  font-weight: 950;
+  line-height: 1.08;
+}
+
+.quizChallengeMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.quizChallengeMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  border-radius: 999px;
+  background: rgba(var(--page-olive-rgb), 0.12);
+  color: var(--app-text);
+  font-size: 0.58rem;
+  font-weight: 900;
+  padding: 0.28rem 0.42rem;
+}
+
+.quizChallengeLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.36rem;
+  border-radius: 999px;
+  background: var(--page-olive);
+  color: var(--page-soft);
+  font-size: 0.64rem;
+  font-weight: 950;
+  padding: 0.52rem 0.68rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.quizChallengeLink:hover {
+  background: var(--page-accent);
+}
+
 .categoryIntro h2 {
   max-width: 56rem;
   margin: 0;
@@ -896,6 +972,14 @@
   .categoryIntro {
     flex-direction: column;
     gap: 0.45rem;
+  }
+
+  .quizChallengePanel {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .quizChallengeMeta {
+    display: none;
   }
 
   .featureSkeletonSecondary {

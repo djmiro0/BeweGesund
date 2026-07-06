@@ -59,7 +59,7 @@
 .title {
   margin: 0;
   color: var(--ui-text);
-  font-size: clamp(2.5rem, 5vw, 4.6rem);
+  font-size: 2.5rem;
   font-style: italic;
   font-weight: 950;
   line-height: 0.92;

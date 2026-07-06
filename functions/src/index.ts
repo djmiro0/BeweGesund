@@ -24,6 +24,10 @@ import type {
 } from "./types";
 
 const REGION = "europe-west3";
+const appCheckCallableOptions = {
+  region: REGION,
+  enforceAppCheck: true,
+} as const;
 type StripeClient = InstanceType<typeof Stripe>;
 type StripeSubscription = Awaited<ReturnType<StripeClient["subscriptions"]["retrieve"]>>;
 type StripeEvent = ReturnType<StripeClient["webhooks"]["constructEvent"]>;
@@ -314,7 +318,7 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
 
 export const deleteUserAccount = onCall(
   {
-    region: REGION,
+    ...appCheckCallableOptions,
     secrets: [stripeSecretKey],
   },
   async (request) => {
@@ -357,17 +361,17 @@ export const deleteUserAccount = onCall(
   },
 );
 
-export const completeLesson = onCall({ region: REGION }, async (request) => {
+export const completeLesson = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   return applyCompletion(uid, "lesson", request.data as CompletionPayload);
 });
 
-export const completeWorkout = onCall({ region: REGION }, async (request) => {
+export const completeWorkout = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   return applyCompletion(uid, "workout", request.data as CompletionPayload);
 });
 
-export const updateStreak = onCall({ region: REGION }, async (request) => {
+export const updateStreak = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   const ref = userRef(uid);
   const snapshot = await ref.get();
@@ -453,7 +457,7 @@ export const updateMonthlyLeaderboard = onSchedule(
   },
 );
 
-export const claimReward = onCall({ region: REGION }, async (request) => {
+export const claimReward = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   const { rewardId } = request.data as RewardClaimPayload;
 
@@ -513,7 +517,7 @@ export const claimReward = onCall({ region: REGION }, async (request) => {
 
 export const createStripeCheckoutSession = onCall(
   {
-    region: REGION,
+    ...appCheckCallableOptions,
     secrets: [stripeSecretKey],
   },
   async (request) => {
@@ -583,7 +587,7 @@ export const createStripeCheckoutSession = onCall(
 
 export const confirmStripeCheckoutSession = onCall(
   {
-    region: REGION,
+    ...appCheckCallableOptions,
     secrets: [stripeSecretKey],
   },
   async (request) => {
@@ -622,7 +626,7 @@ export const confirmStripeCheckoutSession = onCall(
 
 export const createStripeCustomerPortalSession = onCall(
   {
-    region: REGION,
+    ...appCheckCallableOptions,
     secrets: [stripeSecretKey],
   },
   async (request) => {
@@ -645,7 +649,7 @@ export const createStripeCustomerPortalSession = onCall(
 );
 
 export const createGoogleHealthAuthorizationUrl = onCall(
-  { region: REGION },
+  appCheckCallableOptions,
   async (request) => {
     const uid = requireAuth(request.auth);
     const locale = request.data?.locale === "en" ? "en" : "de";
@@ -921,7 +925,7 @@ export const googleHealthOAuthCallback = onRequest(
 );
 
 export const syncGoogleHealthDailySummary = onCall(
-  { region: REGION, secrets: [googleHealthClientSecret] },
+  { ...appCheckCallableOptions, secrets: [googleHealthClientSecret] },
   async (request) => {
     const uid = requireAuth(request.auth);
     const date = typeof request.data?.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(request.data.date)
@@ -934,7 +938,7 @@ export const syncGoogleHealthDailySummary = onCall(
 );
 
 export const getGoogleHealthConnectionStatus = onCall(
-  { region: REGION },
+  appCheckCallableOptions,
   async (request) => {
     const uid = requireAuth(request.auth);
     const snapshot = await userRef(uid).collection("wearables").doc(GOOGLE_HEALTH_PROVIDER).get();
@@ -952,7 +956,7 @@ export const getGoogleHealthConnectionStatus = onCall(
 );
 
 export const disconnectGoogleHealth = onCall(
-  { region: REGION },
+  appCheckCallableOptions,
   async (request) => {
     const uid = requireAuth(request.auth);
     await userRef(uid).collection("wearables").doc(GOOGLE_HEALTH_PROVIDER).delete();

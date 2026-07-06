@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Clock, HandHeart, PlayCircle, ShieldCheck, Sparkles, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Clock, HandHeart, PlayCircle, ShieldCheck, UserRound } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getMeditationRelaxationItems, type MeditationRelaxationItem } from "@/lib/contentful";
 import BackButton from "../../components/BackButton";

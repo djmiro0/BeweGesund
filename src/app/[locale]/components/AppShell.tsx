@@ -17,6 +17,7 @@ import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
 import { useTheme } from "./ThemeProvider";
 import { getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
+import { isComingSoonEnabled } from "@/lib/launchFlags";
 import styles from "./AppShell.module.css";
 
 const paidAccessRoutes = ["courses", "calendar", "settings", "consultation"];
@@ -127,7 +128,9 @@ export function ShellFrame({
     return <LoadingScreen />;
   }
 
-  if (!user && !isAuthActionRoute) {
+  const showComingSoon = isComingSoonEnabled();
+
+  if (!user && !isAuthActionRoute && showComingSoon) {
     return (
       <>
         <PwaInstallPrompt />
@@ -135,7 +138,7 @@ export function ShellFrame({
           locale={locale}
           user={null}
           openAuth={openAuth}
-          launchMode
+          launchMode={showComingSoon}
         />
         <ComingSoon openAuth={openAuth} />
         <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />

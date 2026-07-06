@@ -1,4 +1,14 @@
 .footer {
+  --shell-bg: var(--chrome-cream);
+  --shell-bg-rgb: var(--chrome-cream-rgb);
+  --shell-bg-alt: var(--chrome-cream);
+  --shell-bg-alt-rgb: var(--chrome-cream-rgb);
+  --shell-text: var(--page-ink);
+  --shell-text-rgb: var(--page-ink-rgb);
+  --shell-text-muted: rgba(var(--page-ink-rgb), 0.72);
+  --shell-text-dim: rgba(var(--page-ink-rgb), 0.46);
+  --shell-border: rgba(var(--page-ink-rgb), 0.1);
+
   position: relative;
   overflow: hidden;
   background:
@@ -81,7 +91,7 @@
   border-radius: 999px;
   padding: 0.85rem 1.15rem;
   background: var(--page-warm);
-  color: var(--shell-bg);
+  color: var(--page-ink);
   font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.12em;
