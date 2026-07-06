@@ -26,6 +26,8 @@
   --page-cream-1-rgb: 255, 255, 255;
   --page-cream-2: #ffffff;
   --page-cream-2-rgb: 255, 255, 255;
+  --chrome-cream: #f7f2ea;
+  --chrome-cream-rgb: 247, 242, 234;
 
   --page-base: var(--primary);
   --page-base-rgb: var(--primary-rgb);
@@ -147,6 +149,8 @@
   --page-cream-1-rgb: 13, 23, 40;
   --page-cream-2: #08111f;
   --page-cream-2-rgb: 8, 17, 31;
+  --chrome-cream: #0d1728;
+  --chrome-cream-rgb: 13, 23, 40;
   --page-muted: rgba(var(--page-ink-rgb), 0.72);
   --page-border: rgba(var(--page-ink-rgb), 0.14);
   --page-border-soft: rgba(var(--page-ink-rgb), 0.08);

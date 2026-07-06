@@ -141,9 +141,6 @@ const Header: React.FC<HeaderProps> = ({
                                 <span
                                     className={`${styles.navUnderline} ${item.active ? styles.navUnderlineActive : ""}`}
                                 />
-                                <span
-                                    className={`${styles.navGlow} ${item.active ? styles.navGlowActive : ""}`}
-                                />
                                 <span className={styles.navLabel}>{item.label}</span>
                             </Link>
                         ))}
@@ -169,21 +166,11 @@ const Header: React.FC<HeaderProps> = ({
                         type="button"
                         onClick={toggleTheme}
                         data-testid="theme-toggle"
-                        role="switch"
-                        aria-checked={theme === "dark"}
                         aria-label={theme === "light" ? t("themeDark") : t("themeLight")}
                         title={theme === "light" ? t("themeDark") : t("themeLight")}
                         className={`${styles.themeSwitch} ${theme === "dark" ? styles.themeSwitchDark : ""}`}
                     >
-                        <span className={styles.themeSwitchThumb} aria-hidden="true" />
-                        <span className={`${styles.themeSwitchOption} ${theme === "light" ? styles.themeSwitchOptionActive : ""}`}>
-                            <Sun size={13} />
-                            <span>{t("lightMode")}</span>
-                        </span>
-                        <span className={`${styles.themeSwitchOption} ${theme === "dark" ? styles.themeSwitchOptionActive : ""}`}>
-                            <Moon size={13} />
-                            <span>{t("darkMode")}</span>
-                        </span>
+                        {theme === "light" ? <Sun size={15} aria-hidden="true" /> : <Moon size={15} aria-hidden="true" />}
                     </button>
 
                     {user ? profileLink : (

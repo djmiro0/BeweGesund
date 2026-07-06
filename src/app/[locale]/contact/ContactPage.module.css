@@ -1,9 +1,6 @@
 .page {
   height: 100%;
   padding: 7rem 1.25rem 4rem;
-  background:
-    radial-gradient(circle at 12% 8%, rgba(var(--page-accent-rgb), 0.15), transparent 24rem),
-    linear-gradient(180deg, var(--ui-bg), var(--ui-bg-alt));
   color: var(--ui-text);
 }
 
@@ -29,7 +26,7 @@
 
 .hero h1 {
   margin: 0 0 1rem;
-  font-size: clamp(2.5rem, 7vw, 5.2rem);
+  font-size: 2rem;
   line-height: 0.92;
   text-transform: uppercase;
 }

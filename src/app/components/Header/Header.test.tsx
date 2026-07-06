@@ -112,16 +112,15 @@ describe("Header", () => {
     expect(push).toHaveBeenCalledWith("/de");
   });
 
-  it("uses a switch control for light and dark mode", async () => {
+  it("uses a compact icon control for light and dark mode", async () => {
     const user = userEvent.setup();
     render(<Header locale="en" />);
 
-    const themeSwitch = screen.getByTestId("theme-toggle");
+    const themeButton = screen.getByTestId("theme-toggle");
 
-    expect(themeSwitch).toHaveAttribute("role", "switch");
-    expect(themeSwitch).toHaveAttribute("aria-checked", "false");
+    expect(themeButton).toHaveAccessibleName("Switch to dark mode");
 
-    await user.click(themeSwitch);
+    await user.click(themeButton);
 
     expect(toggleTheme).toHaveBeenCalledTimes(1);
   });

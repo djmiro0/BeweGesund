@@ -3,10 +3,22 @@
 import { updateProfile } from "firebase/auth";
 import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc, writeBatch } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { ArrowLeft } from "lucide-react";
+import {
+  Activity,
+  ArrowLeft,
+  Bell,
+  Camera,
+  Dumbbell,
+  ShieldCheck,
+  SlidersHorizontal,
+  Trophy,
+  UserRound,
+  UserX,
+  Utensils,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { type ComponentType, type ReactNode, useEffect, useState } from "react";
 import { db, storage } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
 import BackButton from "../components/BackButton";
@@ -34,6 +46,26 @@ function cloneSettings(settings: UserSettings): UserSettings {
   return structuredClone(settings);
 }
 
+type SettingsSectionId =
+  | "profile"
+  | "body"
+  | "progressPhotos"
+  | "workout"
+  | "nutrition"
+  | "gamification"
+  | "notifications"
+  | "privacy"
+  | "app"
+  | "account";
+
+interface SettingsNavItem {
+  id: SettingsSectionId;
+  title: string;
+  description: string;
+  icon: ComponentType<{ size?: number; "aria-hidden"?: boolean }>;
+  content: ReactNode;
+}
+
 export default function SettingsPage() {
   const locale = useLocale();
   const t = useTranslations("settings");
@@ -52,6 +84,7 @@ export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [uploadingProgressPhoto, setUploadingProgressPhoto] = useState<"before" | "after" | null>(null);
+  const [activeSection, setActiveSection] = useState<SettingsSectionId>("profile");
 
   useEffect(() => {
     if (!userId) {
@@ -292,6 +325,105 @@ export default function SettingsPage() {
     setIsDirty(false);
   };
 
+  const settingsSections: SettingsNavItem[] = [
+    {
+      id: "profile",
+      title: t("sections.profile.title"),
+      description: t("sections.profile.description"),
+      icon: UserRound,
+      content: (
+        <ProfileSettings
+          data={draftSettings.profile}
+          onChange={(value) => updateSection("profile", value)}
+          onPhotoSelect={(file) => void handlePhotoSelect(file)}
+          isUploadingPhoto={isUploadingPhoto}
+          unitSystem={draftSettings.app.units}
+        />
+      ),
+    },
+    {
+      id: "body",
+      title: t("sections.body.title"),
+      description: t("sections.body.description"),
+      icon: Activity,
+      content: (
+        <BodyProgressSettings
+          data={draftSettings.bodyProgress}
+          unitSystem={draftSettings.app.units}
+          onChange={(value) => updateSection("bodyProgress", value)}
+        />
+      ),
+    },
+    ...(user
+      ? [{
+          id: "progressPhotos" as const,
+          title: t("sections.progressPhotos.title"),
+          description: t("sections.progressPhotos.description"),
+          icon: Camera,
+          content: (
+            <ProgressPhotoSettings
+              userId={user.uid}
+              data={draftSettings.progressPhotos}
+              uploadingSlot={uploadingProgressPhoto}
+              onChange={(value) => updateSection("progressPhotos", value)}
+              onPhotoSelect={(slot, file) => void handleProgressPhotoSelect(slot, file)}
+            />
+          ),
+        }]
+      : []),
+    {
+      id: "workout",
+      title: t("sections.workout.title"),
+      description: t("sections.workout.description"),
+      icon: Dumbbell,
+      content: <WorkoutPreferences data={draftSettings.workoutPreferences} onChange={(value) => updateSection("workoutPreferences", value)} />,
+    },
+    {
+      id: "nutrition",
+      title: t("sections.nutrition.title"),
+      description: t("sections.nutrition.description"),
+      icon: Utensils,
+      content: <NutritionSettings data={draftSettings.nutrition} onChange={(value) => updateSection("nutrition", value)} />,
+    },
+    {
+      id: "gamification",
+      title: t("sections.gamification.title"),
+      description: t("sections.gamification.description"),
+      icon: Trophy,
+      content: <GamificationSummary data={draftSettings.gamification} />,
+    },
+    {
+      id: "notifications",
+      title: t("sections.notifications.title"),
+      description: t("sections.notifications.description"),
+      icon: Bell,
+      content: <NotificationSettings data={draftSettings.notifications} onChange={(value) => updateSection("notifications", value)} />,
+    },
+    {
+      id: "privacy",
+      title: t("sections.privacy.title"),
+      description: t("sections.privacy.description"),
+      icon: ShieldCheck,
+      content: <PrivacySettings data={draftSettings.privacy} onChange={(value) => updateSection("privacy", value)} />,
+    },
+    {
+      id: "app",
+      title: t("sections.app.title"),
+      description: t("sections.app.description"),
+      icon: SlidersHorizontal,
+      content: <AppSettings data={draftSettings.app} onChange={(value) => updateSection("app", value)} />,
+    },
+    {
+      id: "account",
+      title: t("sections.account.title"),
+      description: t("sections.account.description"),
+      icon: UserX,
+      content: <AccountManagement />,
+    },
+  ];
+  const activeSettingsSection = settingsSections.find((section) => section.id === activeSection) ?? settingsSections[0];
+  const showSaveActions = activeSettingsSection.id !== "account";
+
   return (
     <section className={styles.settingsPage} data-testid="settings-page">
       <div className={styles.shell}>
@@ -305,71 +437,88 @@ export default function SettingsPage() {
         </BackButton>
         <header className={styles.header}>
           <div>
-            <p className={styles.eyebrow}>{t("eyebrow")}</p>
+            <p className={styles.eyebrow}>{t("navigation.profileFallback")}</p>
             <h1>{t("title")}</h1>
-            <p>{t("description")}</p>
           </div>
         </header>
 
-        <div className={styles.layout}>
-          <ProfileSettings
-            data={draftSettings.profile}
-            onChange={(value) => updateSection("profile", value)}
-            onPhotoSelect={(file) => void handlePhotoSelect(file)}
-            isUploadingPhoto={isUploadingPhoto}
-            unitSystem={draftSettings.app.units}
-          />
-          <BodyProgressSettings
-            data={draftSettings.bodyProgress}
-            unitSystem={draftSettings.app.units}
-            onChange={(value) => updateSection("bodyProgress", value)}
-          />
-          {user ? (
-            <ProgressPhotoSettings
-              userId={user.uid}
-              data={draftSettings.progressPhotos}
-              uploadingSlot={uploadingProgressPhoto}
-              onChange={(value) => updateSection("progressPhotos", value)}
-              onPhotoSelect={(slot, file) => void handleProgressPhotoSelect(slot, file)}
-            />
-          ) : null}
-          <WorkoutPreferences data={draftSettings.workoutPreferences} onChange={(value) => updateSection("workoutPreferences", value)} />
-          <NutritionSettings data={draftSettings.nutrition} onChange={(value) => updateSection("nutrition", value)} />
-          <GamificationSummary data={draftSettings.gamification} />
-          <NotificationSettings data={draftSettings.notifications} onChange={(value) => updateSection("notifications", value)} />
-          <PrivacySettings data={draftSettings.privacy} onChange={(value) => updateSection("privacy", value)} />
-          <AppSettings data={draftSettings.app} onChange={(value) => updateSection("app", value)} />
-        </div>
+        <div className={styles.settingsWorkspace}>
+          <aside className={styles.settingsSidebar} aria-label={t("navigation.label")}>
+            <div className={styles.sidebarProfile}>
+              <div
+                className={styles.sidebarAvatar}
+                style={draftSettings.profile.profileImageUrl ? { backgroundImage: `url("${draftSettings.profile.profileImageUrl}")` } : undefined}
+                aria-hidden="true"
+              >
+                {draftSettings.profile.profileImageUrl ? null : draftSettings.profile.fullName.charAt(0)}
+              </div>
+              <div>
+                <strong>{draftSettings.profile.fullName || t("navigation.profileFallback")}</strong>
+                <span>{draftSettings.profile.email}</span>
+              </div>
+            </div>
+            <nav className={styles.settingsNav}>
+              {settingsSections.map((section) => {
+                const Icon = section.icon;
+                const isActive = activeSettingsSection.id === section.id;
 
-        <div className={styles.actionBar}>
-          {successMessage ? (
-            <p className={styles.successMessage} role="status" data-testid="settings-success-message">
-              {successMessage}
-            </p>
-          ) : errorMessage ? (
-            <p className={styles.errorMessage} role="alert">
-              {errorMessage}
-            </p>
-          ) : (
-            <span />
-          )}
-          <div className={styles.actionButtons}>
-            <button type="button" className={styles.resetButton} onClick={handleReset} disabled={isSaving}>
-              {t("actions.reset")}
-            </button>
-            <button
-              type="button"
-              className={styles.saveButton}
-              onClick={() => void handleSave()}
-              disabled={!isDirty || isSaving}
-              data-testid="settings-save-button"
-            >
-              {isSaving ? t("actions.saving") : t("actions.save")}
-            </button>
+                return (
+                  <button
+                    key={section.id}
+                    type="button"
+                    className={`${styles.settingsNavButton} ${isActive ? styles.settingsNavButtonActive : ""}`}
+                    aria-label={section.title}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => setActiveSection(section.id)}
+                  >
+                    <Icon size={18} aria-hidden />
+                    <span>
+                      <strong>{section.title}</strong>
+                      <small>{section.description}</small>
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+          </aside>
+
+          <div className={styles.settingsDetail}>
+            <div className={styles.activeSectionIntro}>
+              <p>{t("navigation.currentSection")}</p>
+              <h2>{activeSettingsSection.title}</h2>
+            </div>
+            {activeSettingsSection.content}
+            {showSaveActions ? (
+              <div className={styles.actionBar}>
+                {successMessage ? (
+                  <p className={styles.successMessage} role="status" data-testid="settings-success-message">
+                    {successMessage}
+                  </p>
+                ) : errorMessage ? (
+                  <p className={styles.errorMessage} role="alert">
+                    {errorMessage}
+                  </p>
+                ) : (
+                  <span />
+                )}
+                <div className={styles.actionButtons}>
+                  <button type="button" className={styles.resetButton} onClick={handleReset} disabled={isSaving}>
+                    {t("actions.reset")}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.saveButton}
+                    onClick={() => void handleSave()}
+                    disabled={!isDirty || isSaving}
+                    data-testid="settings-save-button"
+                  >
+                    {isSaving ? t("actions.saving") : t("actions.save")}
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
-
-        <AccountManagement />
       </div>
     </section>
   );

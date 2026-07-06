@@ -3,8 +3,9 @@
 The application uses Stripe Checkout for the Basic and Plus subscriptions and Stripe
 Customer Portal for payment-method updates and cancellation. Firestore access
 is updated only from verified Stripe webhooks. Checkout and Customer Portal
-callable functions require a signed-in Firebase user, but they intentionally do
-not enforce Firebase App Check so billing does not depend on reCAPTCHA.
+callable functions require a signed-in Firebase user and enforce Firebase App
+Check. Configure the web app's reCAPTCHA v3 App Check provider before enabling
+live billing.
 
 ## Test-mode setup
 
@@ -57,6 +58,9 @@ not enforce Firebase App Check so billing does not depend on reCAPTCHA.
 
 8. Enable Stripe Customer Portal in test mode. Allow payment-method updates,
    subscription cancellation, and switching between the Basic and Plus prices.
+9. Register the deployed web app domain in Firebase App Check and set
+   `NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED=true` plus
+   `NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY` in the deployment provider.
 
 ## Test account
 

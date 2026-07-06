@@ -5,13 +5,13 @@ import { ThemeProvider, useTheme } from "./ThemeProvider";
 
 const mocks = vi.hoisted(() => ({
   pathname: "/de",
-    auth: {
-      user: null as null | {
-        uid: string;
-        displayName: string;
-        photoURL: null;
-        providerData: Array<{ providerId: string }>;
-      },
+  auth: {
+    user: null as null | {
+      uid: string;
+      displayName: string;
+      photoURL: null;
+      providerData: Array<{ providerId: string }>;
+    },
     profile: null as null | {
       email?: string;
       firstName?: string;
@@ -79,23 +79,24 @@ vi.mock("@/app/components/Footer/Footer", () => ({
 
 describe("ShellFrame launch routing", () => {
   beforeEach(() => {
-  mocks.pathname = "/de";
-  mocks.auth.user = null;
-  mocks.auth.profile = null;
-  mocks.auth.appPreferences = { theme: "system" };
-  mocks.auth.loading = false;
-  window.localStorage.clear();
-  document.documentElement.removeAttribute("data-theme");
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: vi.fn().mockImplementation((query: string) => ({
-      matches: false,
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    })),
+    mocks.pathname = "/de";
+    mocks.auth.user = null;
+    mocks.auth.profile = null;
+    mocks.auth.appPreferences = { theme: "system" };
+    mocks.auth.loading = false;
+    vi.unstubAllEnvs();
+    window.localStorage.clear();
+    document.documentElement.removeAttribute("data-theme");
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    });
   });
-});
 
   it.each(["/de", "/de/blogs", "/de/courses", "/de/about"])(
     "keeps unauthenticated route %s behind the launch screen",
@@ -116,6 +117,21 @@ describe("ShellFrame launch routing", () => {
 
   it("keeps authentication action links reachable", () => {
     mocks.pathname = "/de/auth/action";
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByTestId("page-content")).toBeInTheDocument();
+    expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
+    expect(screen.getByTestId("header")).toHaveAttribute("data-launch-mode", "false");
+  });
+
+  it("renders public routes when the coming soon flag is disabled", () => {
+    vi.stubEnv("NEXT_PUBLIC_COMING_SOON_ENABLED", "false");
+    mocks.pathname = "/de/about";
 
     render(
       <ShellFrame locale="de">

@@ -372,7 +372,10 @@ export default function ProfilePage() {
                   {index + 1}
                 </span>
                 <span className={styles.competitor}>
-                  <strong>{entry.name}</strong>
+                  <strong>
+                    {entry.name}
+                    {index < 3 ? <Crown size={14} aria-label={t("leaderboard.champion")} /> : null}
+                  </strong>
                   <small>{entry.isCurrentUser ? t("leaderboard.you") : entry.region}</small>
                 </span>
                 <strong className={styles.points}>{integerFormatter.format(entry.points)}</strong>

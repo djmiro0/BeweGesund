@@ -1,7 +1,7 @@
 .profileSection {
   min-height: 100svh;
   padding: 5.6rem 0.85rem 2rem;
-  background:var(--primary-rgb);
+  background: var(--page-base);
   color: var(--page-ink);
 }
 
@@ -1183,12 +1183,11 @@
   min-width: 0;
 }
 
-.competitor strong,
-.competitor small {
-  display: block;
-}
-
 .competitor strong {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.35rem;
   overflow: hidden;
   color: var(--leaderboard-text);
   font-size: 0.9rem;
@@ -1196,7 +1195,13 @@
   white-space: nowrap;
 }
 
+.competitor strong svg {
+  flex: 0 0 auto;
+  color: var(--leaderboard-highlight);
+}
+
 .competitor small {
+  display: block;
   margin-top: 0.15rem;
   color: var(--leaderboard-dim);
   font-size: 0.68rem;

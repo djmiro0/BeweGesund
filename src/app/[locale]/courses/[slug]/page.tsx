@@ -105,8 +105,6 @@ export default async function CourseDetailPage({
         plannedTrainingCount,
       };
     });
-    const availableVideoCount = subtypeCards.reduce((total, card) => total + card.availableVideoCount, 0);
-
     if (!subtypeCards.length) notFound();
 
     const getCourseNote = (course: MemberCourseDefinition) => {

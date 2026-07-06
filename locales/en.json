@@ -7,7 +7,7 @@
       "courses": "Courses",
       "settings": "Settings",
       "calendar": "Live Calendar",
-      "relaxation": "Meditation & Relaxation",
+      "relaxation": "Meditation",
       "blogs": "Blogs",
       "consultation": "Consultation",
       "about": "About",
@@ -177,6 +177,15 @@
         "viewAll": "View all",
         "read": "Read article",
         "readTime": "{count} min read"
+      },
+      "quiz": {
+        "eyebrow": "Challenge arena",
+        "title": "Fitness quiz and monthly champions",
+        "description": "Soon you can collect points from videos, read articles, and fast correct answers in time-limited quiz rounds.",
+        "metaLabel": "Quiz rewards",
+        "timeboxed": "24h monthly quiz",
+        "champions": "Top 3 crowned",
+        "cta": "Open quiz"
       },
       "meditation": {
         "description": "Guided meditations, relaxation music, and breathing sessions for inner calm.",
@@ -891,6 +900,7 @@
       "rank": "Rank",
       "competitor": "Competitor",
       "points": "Points",
+      "champion": "Champion of the month",
       "you": "You · current week",
       "placeholder": "Preview data. Real points will be connected to workouts, videos, and blog activity in the gamification phase."
     },
@@ -1400,6 +1410,11 @@
     "eyebrow": "Account settings",
     "title": "Settings",
     "description": "Manage your profile, training, nutrition, privacy, and app preferences. Saved values are synchronized with your Firebase account.",
+    "navigation": {
+      "label": "Settings sections",
+      "currentSection": "Current section",
+      "profileFallback": "Your profile"
+    },
     "installApp": {
       "title": "Install Bewegesund",
       "description": "Add the app to your home screen.",
@@ -1454,6 +1469,10 @@
       "app": {
         "title": "App Settings",
         "description": "Language, appearance, units, and video playback."
+      },
+      "account": {
+        "title": "Account",
+        "description": "Password changes and account deletion."
       }
     },
     "fields": {
@@ -1534,8 +1553,8 @@
     },
     "actions": {
       "backToProfile": "Back to profile",
-      "reset": "Cancel / Reset",
-      "save": "Save settings",
+      "reset": "Cancel",
+      "save": "Save",
       "saving": "Saving...",
       "changePassword": "Change password"
     },

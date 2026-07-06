@@ -9,13 +9,16 @@
 - Complete a Stripe test subscription and Customer Portal cancellation.
 - Verify `/api/health` returns HTTP 200 after deployment.
 - Smoke-test registration, email verification, password reset, settings save, video playback, contact delivery, and account deletion.
+- Optional real-service E2E: run `RUN_REAL_SERVICE_E2E=true npm run test:e2e` with the `REAL_E2E_*` variables below to hit Stripe, Mux, and Google Health test/staging services.
 
 ## Required production configuration
 
 - Contentful delivery configuration
 - Firebase project ID and Firebase App Check reCAPTCHA v3 site key
+- `NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED=true` and `NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY`
 - Mux signing credentials and a mandatory admin upload token
 - `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_COMING_SOON_ENABLED=false` when public pages should be visible
 - Resend API key, verified contact sender, recipient address, and optional HTTPS consultation booking URL
 - All `LEGAL_*` provider variables from `.env.example`
 - Stripe Basic and Plus Price IDs, secret key, webhook signing secret, and Customer Portal configuration
@@ -37,8 +40,27 @@ easier to audit.
 Consultation bookings default to `https://cal.eu/bewegesund`. Set
 `CONSULTATION_BOOKING_URL` only when the booking destination should be changed.
 
+For real-service E2E, use a disposable Firebase test user and test-mode
+Stripe credentials only:
+
+```env
+RUN_REAL_SERVICE_E2E=true
+REAL_E2E_FUNCTIONS_BASE_URL=https://europe-west3-<project-id>.cloudfunctions.net
+REAL_E2E_FIREBASE_ID_TOKEN=<disposable-test-user-id-token>
+REAL_E2E_APP_CHECK_TOKEN=<app-check-token-for-the-disposable-test-app>
+REAL_E2E_MUX_PLAYBACK_ID=<signed-playback-id>
+REAL_E2E_COURSE_SLUG=<contentful-course-slug>
+REAL_E2E_MUX_CONTENT_TYPE=course
+REAL_E2E_LOCALE=de
+REAL_E2E_MEMBER_PACKAGE=basic
+```
+
+The Stripe smoke test creates a Checkout Session but does not complete payment.
+Use only Stripe test mode for this check.
+
 Follow `docs/stripe-billing.md` in Stripe test mode before adding any live
-Stripe credentials.
+Stripe credentials. App Check is enforced for billing, account deletion, Google
+Health, completion, streak, and reward callable functions.
 
 Enable Firebase App Check enforcement for Firestore after the web app is registered and verified.
 
