@@ -133,6 +133,7 @@
 }
 
 .featureCard,
+.liveQuizPanel,
 .leaderboardPanel,
 .previewPanel {
   border: 1px solid var(--ui-border);
@@ -162,6 +163,145 @@
   margin: 0.55rem 0 0;
   color: var(--ui-muted);
   line-height: 1.55;
+}
+
+.liveQuizPanel {
+  margin-top: 0.85rem;
+  padding: 1rem;
+}
+
+.spinIcon {
+  animation: spin 0.8s linear infinite;
+}
+
+.quizState,
+.quizError {
+  margin: 0.75rem 0 0;
+  color: var(--ui-muted);
+  line-height: 1.55;
+}
+
+.quizError {
+  color: var(--page-accent);
+  font-weight: 850;
+}
+
+.liveQuizBody {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+.liveQuizBody h3 {
+  margin: 0;
+  color: var(--ui-text);
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.liveQuizBody > div:first-child p {
+  margin: 0.35rem 0 0;
+  color: var(--ui-muted);
+  line-height: 1.55;
+}
+
+.liveQuestionList {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.liveQuestion {
+  min-width: 0;
+  border: 1px solid var(--ui-border);
+  border-radius: 0.72rem;
+  background: var(--ui-surface);
+  padding: 0.85rem;
+}
+
+.liveQuestion legend {
+  color: var(--ui-text);
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1.35;
+  padding: 0 0.2rem;
+}
+
+.liveOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.7rem;
+}
+
+.liveOption,
+.liveOptionActive,
+.submitQuizButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  padding: 0.58rem 0.76rem;
+}
+
+.liveOption,
+.liveOptionActive {
+  border: 1px solid var(--ui-border);
+  background: var(--ui-bg-alt);
+  color: var(--ui-text);
+  cursor: pointer;
+}
+
+.liveOptionActive {
+  border-color: rgba(var(--page-olive-rgb), 0.42);
+  background: rgba(var(--page-olive-rgb), 0.14);
+}
+
+.submitQuizButton {
+  width: fit-content;
+  border: 0;
+  background: var(--page-olive);
+  color: var(--page-soft);
+  cursor: pointer;
+}
+
+.submitQuizButton:disabled,
+.liveOption:disabled,
+.liveOptionActive:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.quizResult {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  border: 1px solid rgba(var(--page-olive-rgb), 0.24);
+  border-radius: 0.72rem;
+  background: rgba(var(--page-olive-rgb), 0.1);
+  color: var(--ui-text);
+  padding: 0.75rem;
+}
+
+.quizResult svg {
+  color: var(--page-olive);
+}
+
+.quizResult strong {
+  margin-right: 0.3rem;
+}
+
+.quizResult span {
+  border-radius: 999px;
+  background: var(--ui-bg-alt);
+  color: var(--ui-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 0.38rem 0.55rem;
 }
 
 .challengeGrid {
@@ -374,5 +514,23 @@
     margin: 0;
     font-size: 0.78rem;
     line-height: 1.35;
+  }
+
+  .liveQuizPanel {
+    padding: 0.8rem;
+  }
+
+  .liveOptions {
+    display: grid;
+  }
+
+  .submitQuizButton {
+    width: 100%;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

@@ -541,7 +541,7 @@
           "description": "Geplante edukative Live-Sessions mit fachlicher Begleitung."
         },
         "nutrition-seminars": {
-          "title": "Ernährungsseminare",
+          "title": "Ernährung",
           "description": "Ernährungsbildung und praktisches Gesundheitswissen."
         },
         "paragraph-20": {
@@ -900,7 +900,7 @@
       "rank": "Rang",
       "competitor": "Teilnehmer",
       "points": "Punkte",
-      "champion": "Šampion meseca",
+      "champion": "Monats-Champion",
       "you": "Du · aktuelle Woche",
       "placeholder": "Vorschaudaten. Echte Punkte werden in der Gamification-Phase mit Trainings, Videos und Blogaktivitäten verbunden."
     },

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, BookOpen, Brain, Clock3, Crown, Timer, Trophy } from "lucide-react";
+import QuizClient from "./QuizClient";
 import styles from "./Quiz.module.css";
 
 const copy = {
@@ -17,14 +18,14 @@ const copy = {
     blogTitle: "Blog-Wissen wird spielbar",
     blogText:
       "Nach Artikeln führen kurze Fragen zurück in die Challenge. So wird Lesen zu echtem Fortschritt.",
-    championsTitle: "Šampion meseca",
+    championsTitle: "Monats-Champion",
     championsText:
       "Die besten drei Profile erhalten monatlich eine sichtbare Krone neben dem Namen.",
     leaderboardTitle: "Monatsrangliste Preview",
     rank: "Rang",
     player: "Profil",
     score: "Punkte",
-    champion: "Šampion meseca",
+    champion: "Monats-Champion",
     sampleTitle: "Preview-Frage",
     sampleQuestion: "Welche Kombination zählt künftig am stärksten für die Quiz-Rangliste?",
     sampleOptions: ["Nur die Anzahl gelesener Artikel", "Richtige Antworten plus Geschwindigkeit", "Nur Trainingsminuten"],
@@ -121,6 +122,8 @@ export default async function QuizPage({
           <p>{labels.championsText}</p>
         </article>
       </section>
+
+      <QuizClient locale={locale} />
 
       <section className={styles.challengeGrid}>
         <article className={styles.leaderboardPanel}>

@@ -4,7 +4,17 @@ import { logger } from "firebase-functions";
 import { getAuth } from "firebase-admin/auth";
 import { randomBytes } from "crypto";
 import Stripe from "stripe";
-import { increment, LEADERBOARDS_COLLECTION, REWARDS_COLLECTION, serverTimestamp, userRef, db } from "./firestore";
+import {
+  db,
+  increment,
+  LEADERBOARDS_COLLECTION,
+  QUIZ_ANSWER_KEYS_COLLECTION,
+  QUIZ_LEADERBOARDS_COLLECTION,
+  QUIZZES_COLLECTION,
+  REWARDS_COLLECTION,
+  serverTimestamp,
+  userRef,
+} from "./firestore";
 import {
   appBaseUrl,
   functionsBaseUrl,
@@ -19,6 +29,8 @@ import type {
   CompletionPayload,
   MemberPackage,
   PremiumStatus,
+  QuizAnswerPayload,
+  QuizAttemptPayload,
   RewardClaimPayload,
   StripeCheckoutPayload,
 } from "./types";
@@ -49,6 +61,27 @@ interface GoogleHealthIdentityResponse {
 
 interface GoogleHealthRollupResponse {
   rollupDataPoints?: Array<Record<string, unknown>>;
+}
+
+interface QuizQuestion {
+  id: string;
+  prompt?: string;
+  options?: Array<{ id: string; label?: string }>;
+}
+
+interface QuizDocument {
+  title?: string;
+  locale?: "de" | "en";
+  status?: "draft" | "published" | "archived";
+  availableFrom?: { toDate?: () => Date } | string | Date;
+  availableUntil?: { toDate?: () => Date } | string | Date;
+  questions?: QuizQuestion[];
+  timeLimitSeconds?: number;
+  monthlyPeriod?: string;
+  allowRetake?: boolean;
+  pointsPerCorrect?: number;
+  speedBonusMax?: number;
+  xpReward?: number;
 }
 
 const GOOGLE_HEALTH_PROVIDER = "googleHealth";
@@ -97,6 +130,64 @@ function requireAuth(auth: { uid: string } | null | undefined) {
   }
 
   return auth.uid;
+}
+
+function toDate(value: QuizDocument["availableFrom"]) {
+  if (!value) return null;
+  if (value instanceof Date) return value;
+  if (typeof value === "string") {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  }
+
+  const timestampDate = value.toDate?.();
+  return timestampDate instanceof Date ? timestampDate : null;
+}
+
+function currentMonthPeriod(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(date);
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+
+  return `${year}-${month}`;
+}
+
+function requireStringId(value: unknown, fieldName: string) {
+  if (typeof value !== "string" || !value.trim() || value.length > 160) {
+    throw new HttpsError("invalid-argument", `${fieldName} is required.`);
+  }
+
+  return value.trim();
+}
+
+function normalizeQuizAnswers(answers: QuizAnswerPayload[] | undefined) {
+  if (!Array.isArray(answers) || answers.length === 0 || answers.length > 80) {
+    throw new HttpsError("invalid-argument", "answers are required.");
+  }
+
+  return answers.map((answer) => ({
+    questionId: requireStringId(answer.questionId, "questionId"),
+    optionId: requireStringId(answer.optionId, "optionId"),
+    answeredAtMs: typeof answer.answeredAtMs === "number" && Number.isFinite(answer.answeredAtMs)
+      ? Math.max(0, Math.round(answer.answeredAtMs))
+      : null,
+  }));
+}
+
+function getQuizAvailability(quiz: QuizDocument, now: Date) {
+  const availableFrom = toDate(quiz.availableFrom);
+  const availableUntil = toDate(quiz.availableUntil);
+
+  return {
+    availableFrom,
+    availableUntil,
+    isOpen: (!availableFrom || availableFrom.getTime() <= now.getTime())
+      && (!availableUntil || availableUntil.getTime() >= now.getTime()),
+  };
 }
 
 function requireRecentSignIn(authTime: unknown) {
@@ -369,6 +460,170 @@ export const completeLesson = onCall(appCheckCallableOptions, async (request) =>
 export const completeWorkout = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   return applyCompletion(uid, "workout", request.data as CompletionPayload);
+});
+
+export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request) => {
+  const uid = requireAuth(request.auth);
+  const payload = request.data as QuizAttemptPayload;
+  const quizId = requireStringId(payload.quizId, "quizId");
+  const answers = normalizeQuizAnswers(payload.answers);
+  const completedAt = payload.completedAt ? new Date(payload.completedAt) : new Date();
+
+  if (Number.isNaN(completedAt.getTime()) || completedAt.getTime() > Date.now() + 60_000) {
+    throw new HttpsError("invalid-argument", "completedAt is invalid.");
+  }
+
+  const durationMs = typeof payload.durationMs === "number" && Number.isFinite(payload.durationMs)
+    ? Math.max(0, Math.round(payload.durationMs))
+    : null;
+  const quizRef = db.collection(QUIZZES_COLLECTION).doc(quizId);
+  const answerKeyRef = db.collection(QUIZ_ANSWER_KEYS_COLLECTION).doc(quizId);
+  const profileRef = userRef(uid);
+  const attemptRef = profileRef.collection("quizAttempts").doc(quizId);
+
+  return db.runTransaction(async (transaction) => {
+    const [profileSnapshot, attemptSnapshot, quizSnapshot, answerKeySnapshot] = await Promise.all([
+      transaction.get(profileRef),
+      transaction.get(attemptRef),
+      transaction.get(quizRef),
+      transaction.get(answerKeyRef),
+    ]);
+
+    if (!profileSnapshot.exists) {
+      throw new HttpsError("failed-precondition", "User profile does not exist.");
+    }
+
+    if (!quizSnapshot.exists) {
+      throw new HttpsError("not-found", "Quiz does not exist.");
+    }
+
+    const quiz = quizSnapshot.data() as QuizDocument;
+    if (quiz.status !== "published") {
+      throw new HttpsError("failed-precondition", "Quiz is not published.");
+    }
+
+    const availability = getQuizAvailability(quiz, completedAt);
+    if (!availability.isOpen) {
+      throw new HttpsError("failed-precondition", "Quiz is not currently available.");
+    }
+
+    if (attemptSnapshot.exists && !quiz.allowRetake) {
+      const previousAttempt = attemptSnapshot.data() as {
+        score?: number;
+        correctCount?: number;
+        totalQuestions?: number;
+        speedBonus?: number;
+      };
+
+      return {
+        ok: true,
+        alreadySubmitted: true,
+        score: previousAttempt.score ?? 0,
+        correctCount: previousAttempt.correctCount ?? 0,
+        totalQuestions: previousAttempt.totalQuestions ?? 0,
+        speedBonus: previousAttempt.speedBonus ?? 0,
+        xpGain: 0,
+        pointsGain: 0,
+      };
+    }
+
+    const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
+    if (questions.length === 0) {
+      throw new HttpsError("failed-precondition", "Quiz does not have questions.");
+    }
+
+    const answerKey = answerKeySnapshot.data() as { answers?: Record<string, unknown> } | undefined;
+    if (!answerKey?.answers || typeof answerKey.answers !== "object") {
+      throw new HttpsError("failed-precondition", "Quiz answer key is missing.");
+    }
+
+    const questionIds = new Set(questions.map((question) => question.id));
+    const submittedByQuestion = new Map(answers.map((answer) => [answer.questionId, answer]));
+    const correctAnswers = Object.entries(answerKey.answers).filter(([questionId, optionId]) => (
+      questionIds.has(questionId) && typeof optionId === "string"
+    ));
+
+    if (correctAnswers.length === 0) {
+      throw new HttpsError("failed-precondition", "Quiz answer key is empty.");
+    }
+
+    let correctCount = 0;
+    const scoredAnswers = correctAnswers.map(([questionId, correctOptionId]) => {
+      const submitted = submittedByQuestion.get(questionId);
+      const isCorrect = submitted?.optionId === correctOptionId;
+      if (isCorrect) correctCount += 1;
+
+      return {
+        questionId,
+        optionId: submitted?.optionId ?? null,
+        correct: isCorrect,
+        answeredAtMs: submitted?.answeredAtMs ?? null,
+      };
+    });
+
+    const totalQuestions = correctAnswers.length;
+    const pointsPerCorrect = Number.isFinite(quiz.pointsPerCorrect) ? Math.max(1, quiz.pointsPerCorrect ?? 100) : 100;
+    const speedBonusMax = Number.isFinite(quiz.speedBonusMax) ? Math.max(0, quiz.speedBonusMax ?? 50) : 50;
+    const timeLimitMs = Number.isFinite(quiz.timeLimitSeconds) && quiz.timeLimitSeconds
+      ? Math.max(1, quiz.timeLimitSeconds) * 1000
+      : null;
+    const speedRatio = durationMs !== null && timeLimitMs
+      ? Math.max(0, 1 - Math.min(durationMs, timeLimitMs) / timeLimitMs)
+      : 0;
+    const speedBonus = correctCount > 0 ? Math.round(speedBonusMax * speedRatio) : 0;
+    const score = correctCount * pointsPerCorrect + speedBonus;
+    const xpGain = Number.isFinite(quiz.xpReward) ? Math.max(0, quiz.xpReward ?? 10) : 10;
+    const period = quiz.monthlyPeriod || currentMonthPeriod(completedAt);
+    const leaderboardEntryRef = db
+      .collection(QUIZ_LEADERBOARDS_COLLECTION)
+      .doc(period)
+      .collection("entries")
+      .doc(uid);
+
+    transaction.set(attemptRef, {
+      quizId,
+      userId: uid,
+      score,
+      correctCount,
+      totalQuestions,
+      speedBonus,
+      durationMs,
+      answers: scoredAnswers,
+      completedAt,
+      createdAt: serverTimestamp(),
+    });
+
+    transaction.set(leaderboardEntryRef, {
+      quizId,
+      userId: uid,
+      score,
+      correctCount,
+      totalQuestions,
+      durationMs,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    transaction.update(profileRef, {
+      xp: increment(xpGain),
+      points: increment(score),
+      weeklyScore: increment(score),
+      monthlyScore: increment(score),
+      lastQuizCompletedAt: completedAt,
+      updatedAt: serverTimestamp(),
+    });
+
+    return {
+      ok: true,
+      alreadySubmitted: false,
+      score,
+      correctCount,
+      totalQuestions,
+      speedBonus,
+      xpGain,
+      pointsGain: score,
+      period,
+    };
+  });
 });
 
 export const updateStreak = onCall(appCheckCallableOptions, async (request) => {
