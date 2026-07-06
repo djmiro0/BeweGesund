@@ -4,15 +4,37 @@
 }
 
 .blogsPage {
-  color: #f8fafc;
+  --blogs-bg:
+    radial-gradient(circle at 14% 10%, rgba(var(--page-accent-rgb), 0.14), transparent 21rem),
+    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.12), transparent 24rem),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 46%, var(--page-cream-1) 100%);
+  --blogs-panel: rgba(var(--page-soft-rgb), 0.72);
+  --blogs-panel-strong: rgba(var(--page-soft-rgb), 0.9);
+  --blogs-border: var(--page-border);
+  --blogs-text: var(--page-ink);
+  --blogs-muted: var(--page-muted);
+  --blogs-dim: rgba(var(--page-ink-rgb), 0.58);
+  --blogs-shadow: rgba(var(--shell-bg-rgb), 0.1);
+  color: var(--blogs-text);
   max-width: none;
   min-height: 100svh;
   margin: 0;
   padding: 5.65rem clamp(1.1rem, 3vw, 1.75rem) 7.25rem;
-  background:
+  background: var(--blogs-bg);
+}
+
+:global(:root[data-theme="dark"]) .blogsPage {
+  --blogs-bg:
     radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.2), transparent 21rem),
     radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.2), transparent 24rem),
     linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
+  --blogs-panel: rgba(255, 255, 255, 0.055);
+  --blogs-panel-strong: rgba(255, 255, 255, 0.07);
+  --blogs-border: rgba(255, 255, 255, 0.13);
+  --blogs-text: #f8fafc;
+  --blogs-muted: rgba(255, 255, 255, 0.68);
+  --blogs-dim: rgba(255, 255, 255, 0.52);
+  --blogs-shadow: rgba(0, 0, 0, 0.2);
 }
 
 .hero {
@@ -34,7 +56,7 @@
 
 .eyebrow {
   margin: 0 0 0.55rem;
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--blogs-dim);
   font-size: 0.62rem;
   font-weight: 950;
   letter-spacing: 0.18em;
@@ -44,7 +66,7 @@
 .title {
   margin: 0;
   max-width: 54rem;
-  color: #ffffff;
+  color: var(--blogs-text);
   font-size: clamp(1.95rem, 4.4vw, 2.55rem);
   font-weight: 950;
   line-height: 0.95;
@@ -56,7 +78,7 @@
 .intro {
   max-width: 40rem;
   margin: 0.7rem 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--blogs-muted);
   font-size: clamp(0.98rem, 1.45vw, 1.16rem);
   line-height: 1.35;
 }
@@ -64,10 +86,10 @@
 .heroMeta {
   display: grid;
   gap: 0.55rem;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--blogs-border);
   border-radius: 0.9rem;
-  background: rgba(255, 255, 255, 0.045);
-  color: rgba(255, 255, 255, 0.68);
+  background: var(--blogs-panel);
+  color: var(--blogs-muted);
   font-size: 0.74rem;
   font-weight: 850;
   padding: 0.9rem 1rem;
@@ -87,7 +109,7 @@
 .filterPanel {
   display: grid;
   gap: 0.75rem;
-  width: min(72rem, 100%);
+  width: min(90rem, 100%);
   margin: 0 auto;
   padding: 0 0 1rem;
 }
@@ -97,10 +119,10 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 0.65rem;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid var(--blogs-border);
   border-radius: 0.72rem;
-  background: rgba(255, 255, 255, 0.055);
-  color: rgba(255, 255, 255, 0.68);
+  background: var(--blogs-panel);
+  color: var(--blogs-muted);
   padding: 0.8rem 0.95rem;
 }
 
@@ -109,10 +131,10 @@
   width: 1.9rem;
   height: 1.9rem;
   place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid var(--blogs-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.055);
-  color: rgba(255, 255, 255, 0.68);
+  background: var(--blogs-panel);
+  color: var(--blogs-muted);
   cursor: pointer;
 }
 
@@ -131,7 +153,7 @@
   min-width: 0;
   border: 0;
   background: transparent;
-  color: #ffffff;
+  color: var(--blogs-text);
   font: inherit;
   font-size: 0.95rem;
   outline: 0;
@@ -165,8 +187,8 @@
   flex: 0 0 auto;
   border-radius: 999px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  color: rgba(255, 255, 255, 0.68);
+  border: 1px solid var(--blogs-border);
+  color: var(--blogs-muted);
   font-size: 0.58rem;
   font-weight: 950;
   letter-spacing: 0.08em;
@@ -182,13 +204,13 @@
 .filterButtonActive {
   border-color: rgba(181, 216, 61, 0.32);
   background: rgba(181, 216, 61, 0.12);
-  color: #ffffff;
+  color: var(--blogs-text);
 }
 
 .postGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: min(72rem, 100%);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(90rem, 100%);
   margin: 0 auto;
   gap: 0.95rem;
   align-items: stretch;
@@ -197,12 +219,12 @@
 .postCard {
   display: grid;
   grid-template-rows: auto 1fr;
-  gap: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  gap: 0.78rem;
+  border: 1px solid var(--blogs-border);
   border-radius: 1.08rem;
-  background: rgba(255, 255, 255, 0.055);
-  box-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.2);
-  padding: 1rem;
+  background: var(--blogs-panel);
+  box-shadow: 0 0.9rem 2rem var(--blogs-shadow);
+  padding: 0.75rem;
 }
 
 .postImageLink,
@@ -216,7 +238,7 @@
 }
 
 .postImageLink {
-  min-height: 15rem;
+  min-height: 8.8rem;
   aspect-ratio: 16 / 10;
 }
 
@@ -269,8 +291,13 @@
 .excerpt,
 .articleExcerpt {
   margin: 0.7rem 0 0;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--blogs-muted);
   line-height: 1.7;
+}
+
+.postCard .excerpt {
+  font-size: 0.78rem;
+  line-height: 1.45;
 }
 
 .postCard .excerpt {
@@ -281,9 +308,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem 1rem;
-  margin-top: 1rem;
-  color: rgba(255, 255, 255, 0.52);
-  font-size: 0.78rem;
+  margin-top: 0.72rem;
+  color: var(--blogs-dim);
+  font-size: 0.62rem;
   font-weight: 850;
   text-transform: uppercase;
 }
@@ -292,9 +319,9 @@
 .backLink {
   width: fit-content;
   color: #b5d83d;
-  font-size: 0.84rem;
+  font-size: 0.68rem;
   font-weight: 950;
-  margin-top: 1.2rem;
+  margin-top: 0.82rem;
   text-decoration: none;
   text-transform: uppercase;
 }
@@ -319,8 +346,8 @@
 }
 
 .postTitle {
-  color: #ffffff;
-  font-size: 1.35rem;
+  color: var(--blogs-text);
+  font-size: clamp(0.9rem, 1vw, 1.05rem);
   line-height: 1.08;
 }
 
@@ -771,6 +798,10 @@
     flex-wrap: wrap;
   }
 
+  .postGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .postImageLink {
     min-height: 14rem;
   }
@@ -813,7 +844,7 @@
 
   .blogsPage > .hero {
     display: grid;
-    margin-bottom: 1.65rem;
+    margin-bottom: 1.45rem;
     padding: 0;
   }
 

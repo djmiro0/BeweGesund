@@ -1,11 +1,33 @@
 .page {
+  --contact-bg:
+    radial-gradient(circle at 14% 10%, rgba(var(--page-accent-rgb), 0.14), transparent 21rem),
+    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.12), transparent 24rem),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 46%, var(--page-cream-1) 100%);
+  --contact-panel: rgba(var(--page-soft-rgb), 0.72);
+  --contact-field: rgba(var(--page-soft-rgb), 0.62);
+  --contact-border: var(--page-border);
+  --contact-text: var(--page-ink);
+  --contact-muted: var(--page-muted);
+  --contact-dim: rgba(var(--page-ink-rgb), 0.58);
+  --contact-shadow: rgba(var(--shell-bg-rgb), 0.1);
   min-height: 100svh;
   padding: 5.65rem clamp(1.1rem, 3vw, 1.75rem) 7.25rem;
-  color: #f8fafc;
-  background:
+  color: var(--contact-text);
+  background: var(--contact-bg);
+}
+
+:global(:root[data-theme="dark"]) .page {
+  --contact-bg:
     radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.2), transparent 21rem),
     radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.2), transparent 24rem),
     linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
+  --contact-panel: rgba(255, 255, 255, 0.055);
+  --contact-field: rgba(255, 255, 255, 0.045);
+  --contact-border: rgba(255, 255, 255, 0.13);
+  --contact-text: #f8fafc;
+  --contact-muted: rgba(255, 255, 255, 0.68);
+  --contact-dim: rgba(255, 255, 255, 0.52);
+  --contact-shadow: rgba(0, 0, 0, 0.2);
 }
 
 .shell {
@@ -21,7 +43,7 @@
 .hero p,
 .bookingCard > p {
   margin: 0 0 0.55rem;
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--contact-dim);
   font-size: 0.62rem;
   font-weight: 950;
   letter-spacing: 0.18em;
@@ -30,8 +52,9 @@
 
 .hero h1 {
   margin: 0;
-  color: #ffffff;
+  color: var(--contact-text);
   font-size: clamp(1.95rem, 4.4vw, 2.55rem);
+  font-weight: 950;
   line-height: 0.95;
   letter-spacing: 0;
   text-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.32);
@@ -41,7 +64,7 @@
 .hero span {
   display: block;
   margin-top: 0.7rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--contact-muted);
   font-size: clamp(0.98rem, 1.45vw, 1.16rem);
   line-height: 1.35;
 }
@@ -56,9 +79,9 @@
 .form,
 .bookingCard,
 .infoList article {
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  background: rgba(255, 255, 255, 0.055);
-  box-shadow: 0 0.9rem 2rem rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--contact-border);
+  background: var(--contact-panel);
+  box-shadow: 0 0.9rem 2rem var(--contact-shadow);
   backdrop-filter: blur(18px);
 }
 
@@ -84,14 +107,14 @@
 .bookingCard span,
 .infoList p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--contact-muted);
   line-height: 1.5;
 }
 
 .formHeader h2,
 .bookingCard h2,
 .infoList h3 {
-  color: #ffffff;
+  color: var(--contact-text);
 }
 
 .bookingCard span {
@@ -108,7 +131,7 @@
 .form label {
   display: grid;
   gap: 0.45rem;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--contact-text);
   font-size: 0.84rem;
   font-weight: 800;
 }
@@ -117,10 +140,10 @@
 .form select,
 .form textarea {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  border: 1px solid var(--contact-border);
   border-radius: 0.72rem;
-  background: rgba(255, 255, 255, 0.045);
-  color: #ffffff;
+  background: var(--contact-field);
+  color: var(--contact-text);
   padding: 0.78rem 0.85rem;
   font: inherit;
 }
@@ -143,8 +166,8 @@
   margin-top: 1.25rem;
   border: 0;
   border-radius: 999px;
-  background: #ffffff;
-  color: #020913;
+  background: var(--contact-text);
+  color: var(--page-cream-2);
   padding: 0.8rem 1.15rem;
   font-weight: 900;
   text-decoration: none;
@@ -191,7 +214,7 @@
 .bookingCard small {
   display: block;
   margin-top: 1rem;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--contact-muted);
 }
 
 .success {

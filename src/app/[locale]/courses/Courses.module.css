@@ -379,13 +379,35 @@ a.categoryBlock:hover {
 }
 
 .overviewSection {
+  --overview-bg:
+    radial-gradient(circle at 14% 10%, rgba(var(--page-warm-rgb), 0.2), transparent 21rem),
+    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.13), transparent 24rem),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
+  --overview-text: var(--page-ink);
+  --overview-muted: var(--page-muted);
+  --overview-panel: rgba(var(--page-soft-rgb), 0.72);
+  --overview-panel-border: var(--page-border);
+  --overview-panel-shadow: rgba(var(--shell-bg-rgb), 0.1);
+  --overview-panel-accent: var(--page-accent);
+  --overview-panel-label: var(--page-warm);
   min-height: 100svh;
   padding: 5.65rem clamp(1.1rem, 3vw, 1.75rem) 7.25rem;
-  background:
+  background: var(--overview-bg);
+  color: var(--overview-text);
+}
+
+:global(:root[data-theme="dark"]) .overviewSection {
+  --overview-bg:
     radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.26), transparent 21rem),
     radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.24), transparent 24rem),
     linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
-  color: #f8fafc;
+  --overview-text: #f8fafc;
+  --overview-muted: rgba(255, 255, 255, 0.72);
+  --overview-panel: rgba(255, 255, 255, 0.045);
+  --overview-panel-border: rgba(255, 255, 255, 0.09);
+  --overview-panel-shadow: rgba(0, 0, 0, 0.2);
+  --overview-panel-accent: #8eeaff;
+  --overview-panel-label: #8eeaff;
 }
 
 .overviewSection .overviewHero {
@@ -404,11 +426,25 @@ a.categoryBlock:hover {
   padding: 0;
 }
 
+.overviewSection .eyebrow {
+  margin: 0 0 0.55rem;
+  color: rgba(var(--page-ink-rgb), 0.58);
+  font-size: 0.62rem;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+:global(:root[data-theme="dark"]) .overviewSection .eyebrow {
+  color: rgba(255, 255, 255, 0.52);
+}
+
 .overviewSection .title {
   max-width: none;
-  color: #ffffff;
+  color: var(--overview-text);
   font-size: clamp(1.95rem, 4.4vw, 2.55rem);
   font-style: normal;
+  font-weight: 950;
   letter-spacing: 0;
   line-height: 0.95;
   text-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.32);
@@ -417,7 +453,7 @@ a.categoryBlock:hover {
 .overviewSection .intro {
   max-width: 34rem;
   margin-top: 0.7rem;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--overview-muted);
   font-size: clamp(0.98rem, 1.45vw, 1.16rem);
   line-height: 1.35;
 }
@@ -425,9 +461,28 @@ a.categoryBlock:hover {
 .overviewAccess {
   max-width: 20rem;
   padding: 0.9rem 1rem;
-  border-color: rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.045);
+  border-color: var(--overview-panel-border);
+  background:
+    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.08), transparent 62%),
+    var(--overview-panel);
+  box-shadow: 0 0.9rem 2rem var(--overview-panel-shadow);
   backdrop-filter: blur(18px);
+}
+
+.overviewAccess .heroStatus {
+  color: var(--overview-panel-accent);
+}
+
+.overviewAccess .unlockLabel {
+  color: var(--overview-panel-label);
+}
+
+.overviewAccess strong {
+  color: var(--overview-text);
+}
+
+.overviewAccess p:last-child {
+  color: var(--overview-muted);
 }
 
 .overviewSection .categoryGrid {
@@ -743,7 +798,7 @@ a.categoryBlock:hover {
 
   .overviewSection .overviewHero {
     display: block;
-    margin-bottom: 1.65rem;
+    margin-bottom: 1.45rem;
   }
 
   .overviewSection .title {

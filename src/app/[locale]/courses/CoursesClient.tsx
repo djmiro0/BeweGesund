@@ -203,6 +203,7 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
         variants={stagger}
       >
         <motion.div className={styles.heroCopy} variants={fadeUp}>
+          <p className={styles.eyebrow}>{t("eyebrow")}</p>
           <h1 className={styles.title}>{t("title")}</h1>
           <p className={styles.intro}>{t("intro")}</p>
         </motion.div>

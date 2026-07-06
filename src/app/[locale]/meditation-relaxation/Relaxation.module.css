@@ -1,14 +1,32 @@
 .page {
+  --relax-bg:
+    radial-gradient(circle at 14% 10%, rgba(var(--page-accent-rgb), 0.14), transparent 21rem),
+    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.12), transparent 24rem),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 46%, var(--page-cream-1) 100%);
+  --relax-panel: rgba(var(--page-soft-rgb), 0.72);
+  --relax-border: var(--page-border);
+  --relax-text: var(--page-ink);
+  --relax-muted: var(--page-muted);
+  --relax-dim: rgba(var(--page-ink-rgb), 0.58);
   width: 100%;
   max-width: none;
   min-height: 100svh;
   margin: 0;
   padding: 5.65rem clamp(1.1rem, 3vw, 1.75rem) 7.25rem;
-  color: #f8fafc;
-  background:
+  color: var(--relax-text);
+  background: var(--relax-bg);
+}
+
+:global(:root[data-theme="dark"]) .page {
+  --relax-bg:
     radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.2), transparent 21rem),
     radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.2), transparent 24rem),
     linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
+  --relax-panel: rgba(255, 255, 255, 0.045);
+  --relax-border: rgba(255, 255, 255, 0.09);
+  --relax-text: #f8fafc;
+  --relax-muted: rgba(255, 255, 255, 0.72);
+  --relax-dim: rgba(255, 255, 255, 0.52);
 }
 
 .hero,
@@ -41,7 +59,7 @@
 
 .eyebrow {
   margin: 0 0 0.55rem;
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--relax-dim);
   font-size: 0.62rem;
   font-weight: 950;
   letter-spacing: 0.18em;
@@ -51,7 +69,7 @@
 .hero h1,
 .subtypeHero h1 {
   margin: 0;
-  color: #ffffff;
+  color: var(--relax-text);
   font-size: clamp(1.95rem, 4.4vw, 2.55rem);
   font-weight: 950;
   line-height: 0.95;
@@ -61,7 +79,11 @@
 }
 
 .hero p,
-.subtypeHero p,
+.subtypeHero p {
+  color: var(--relax-muted);
+  line-height: 1.35;
+}
+
 .categoryItem p {
   color: rgba(255, 255, 255, 0.72);
   line-height: 1.35;
@@ -79,11 +101,11 @@
   min-height: 9rem;
   place-items: center;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--relax-border);
   border-radius: 0.9rem;
   background:
     radial-gradient(circle at 50% 48%, rgba(181, 216, 61, 0.16), transparent 34%),
-    rgba(255, 255, 255, 0.045);
+    var(--relax-panel);
   color: #b5d83d;
   backdrop-filter: blur(18px);
 }
@@ -1782,7 +1804,7 @@
 
   .page > .hero {
     display: grid;
-    margin-bottom: 1.65rem;
+    margin-bottom: 1.45rem;
   }
 
   .hero h1,

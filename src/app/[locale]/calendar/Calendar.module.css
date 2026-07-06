@@ -1,22 +1,22 @@
 .calendarContainer {
   --calendar-bg:
-    radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.22), transparent 21rem),
-    radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.22), transparent 24rem),
-    linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
-  --calendar-surface: rgba(255, 255, 255, 0.055);
-  --calendar-surface-strong: rgba(255, 255, 255, 0.07);
-  --calendar-card: rgba(255, 255, 255, 0.045);
-  --calendar-border: rgba(255, 255, 255, 0.13);
-  --calendar-text: #f8fafc;
-  --calendar-muted: rgba(255, 255, 255, 0.68);
-  --calendar-shadow: rgba(0, 0, 0, 0.2);
-  --ui-bg: #020913;
-  --ui-bg-alt: rgba(255, 255, 255, 0.06);
-  --ui-surface: rgba(255, 255, 255, 0.07);
-  --ui-border: rgba(255, 255, 255, 0.13);
-  --ui-text: #ffffff;
-  --ui-muted: rgba(255, 255, 255, 0.68);
-  --ui-dim: rgba(255, 255, 255, 0.52);
+    radial-gradient(circle at 14% 10%, rgba(var(--page-accent-rgb), 0.14), transparent 21rem),
+    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.12), transparent 24rem),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 46%, var(--page-cream-1) 100%);
+  --calendar-surface: rgba(var(--page-soft-rgb), 0.72);
+  --calendar-surface-strong: rgba(var(--page-soft-rgb), 0.9);
+  --calendar-card: rgba(var(--page-soft-rgb), 0.66);
+  --calendar-border: var(--page-border);
+  --calendar-text: var(--page-ink);
+  --calendar-muted: var(--page-muted);
+  --calendar-shadow: rgba(var(--shell-bg-rgb), 0.1);
+  --ui-bg: var(--page-cream-2);
+  --ui-bg-alt: rgba(var(--page-soft-rgb), 0.72);
+  --ui-surface: rgba(var(--page-soft-rgb), 0.82);
+  --ui-border: var(--page-border);
+  --ui-text: var(--page-ink);
+  --ui-muted: var(--page-muted);
+  --ui-dim: rgba(var(--page-ink-rgb), 0.58);
   --ui-accent: var(--page-accent);
   --ui-accent-soft: rgba(var(--page-accent-rgb), 0.13);
   --ui-olive: #b5d83d;
@@ -40,6 +40,13 @@
   --calendar-text: #f8fafc;
   --calendar-muted: rgba(255, 255, 255, 0.68);
   --calendar-shadow: rgba(0, 0, 0, 0.2);
+  --ui-bg: #020913;
+  --ui-bg-alt: rgba(255, 255, 255, 0.06);
+  --ui-surface: rgba(255, 255, 255, 0.07);
+  --ui-border: rgba(255, 255, 255, 0.13);
+  --ui-text: #ffffff;
+  --ui-muted: rgba(255, 255, 255, 0.68);
+  --ui-dim: rgba(255, 255, 255, 0.52);
 }
 
 .headerBlock,
@@ -62,16 +69,16 @@
 .panelLabel,
 .planLabel {
   margin: 0;
-  color: rgba(255, 255, 255, 0.52);
+  color: var(--ui-dim);
   font-size: 0.62rem;
-  font-weight: 900;
+  font-weight: 950;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .title {
   margin: 0;
-  color: #ffffff;
+  color: var(--calendar-text);
   font-size: clamp(1.95rem, 4.4vw, 2.55rem);
   font-style: normal;
   font-weight: 950;
@@ -84,17 +91,17 @@
 .subtitle {
   max-width: 620px;
   margin: 0.7rem 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--calendar-muted);
   font-size: clamp(0.98rem, 1.45vw, 1.16rem);
   line-height: 1.35;
 }
 
 .planCard {
   width: min(270px, 100%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--calendar-border);
   border-radius: 0.9rem;
   padding: 0.9rem 1rem;
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--calendar-card);
   backdrop-filter: blur(18px);
 }
 
@@ -105,7 +112,7 @@
 .planValue {
   display: block;
   margin-top: 0.45rem;
-  color: #ffffff;
+  color: var(--calendar-text);
   font-size: 1rem;
   font-style: normal;
   font-weight: 950;
@@ -114,7 +121,7 @@
 
 .planHint {
   margin: 0.4rem 0 0;
-  color: rgba(255, 255, 255, 0.68);
+  color: var(--calendar-muted);
   font-size: 0.78rem;
   line-height: 1.5;
 }

@@ -482,6 +482,7 @@
     }
   },
   "courses": {
+    "eyebrow": "Training library",
     "title": "Courses",
     "intro": "Find the right training for your goals.",
     "overview": {
@@ -691,7 +692,7 @@
   "blogs": {
     "eyebrow": "Bewegesund Journal",
     "title": "Blogs",
-    "intro": "",
+    "intro": "Short reads for training, health, and nutrition.",
     "articleCount": "{count, plural, one {# article} other {# articles}}",
     "filterHint": "Filter by topic",
     "filterAria": "Blog tags",
