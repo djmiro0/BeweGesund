@@ -12,7 +12,7 @@ Public quiz documents live in `quizzes/{quizId}`. These documents are readable b
   "status": "published",
   "availableFrom": "2026-07-01T00:00:00.000Z",
   "availableUntil": "2026-07-02T00:00:00.000Z",
-  "timeLimitSeconds": 180,
+  "timeLimitSeconds": 10,
   "monthlyPeriod": "2026-07",
   "allowRetake": false,
   "pointsPerCorrect": 100,
@@ -44,14 +44,14 @@ Private answer keys live in `quizAnswerKeys/{quizId}`. Firestore rules do not ex
 
 ## Submit flow
 
-The app reads published `quizzes` documents and sends selected answers to the callable function `submitQuizAttempt`.
+The app reads published `quizzes` documents, opens a deterministic daily set of up to 5 questions, and sends selected answers to the callable function `submitQuizAttempt`.
 
 The function:
 
 - requires Firebase Auth and App Check
 - validates that the quiz is published and currently available
-- compares answers against `quizAnswerKeys/{quizId}`
-- stores the result in `users/{uid}/quizAttempts/{quizId}`
+- compares the daily answers against `quizAnswerKeys/{quizId}`
+- stores the result in `users/{uid}/quizAttempts/{quizId}_{YYYY-MM-DD}`
 - updates `quizLeaderboards/{monthlyPeriod}/entries/{uid}`
 - increments user `xp`, `points`, `weeklyScore`, and `monthlyScore`
 

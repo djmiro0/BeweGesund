@@ -7,6 +7,7 @@ import { getMeditationRelaxationItems, type MeditationRelaxationItem } from "@/l
 import BackButton from "../../components/BackButton";
 import BreathingTechniques from "./BreathingTechniques";
 import RelaxationMusicPlaylist from "./RelaxationMusicPlaylist";
+import blogStyles from "../../blogs/Blogs.module.css";
 import styles from "../Relaxation.module.css";
 
 const relaxationSubcategoryKeys = [
@@ -112,21 +113,21 @@ export default async function MeditationRelaxationSubtypePage({
     : null;
 
   return (
-    <main className={styles.page}>
+    <main className={isSelfMassage ? blogStyles.blogsPage : styles.page}>
       <BackButton
         href={`/${locale}/meditation-relaxation`}
-        className={`${styles.backLink} ${isSelfMassage ? styles.selfMassageBackLink : ""}`}
+        className={isSelfMassage ? blogStyles.backLink : styles.backLink}
       >
         <ArrowLeft size={17} />
         {t("subtype.back")}
       </BackButton>
 
       {!breathingTechniques ? (
-        <section className={styles.subtypeHero}>
-          <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>{t("title")}</p>
-            <h1>{category.title}</h1>
-            <p>{category.description}</p>
+        <section className={isSelfMassage ? blogStyles.hero : styles.subtypeHero}>
+          <div className={isSelfMassage ? blogStyles.heroCopy : styles.heroCopy}>
+            <p className={isSelfMassage ? blogStyles.eyebrow : styles.eyebrow}>{t("title")}</p>
+            <h1 className={isSelfMassage ? blogStyles.title : undefined}>{category.title}</h1>
+            <p className={isSelfMassage ? blogStyles.intro : undefined}>{category.description}</p>
           </div>
         </section>
       ) : null}
@@ -161,37 +162,37 @@ export default async function MeditationRelaxationSubtypePage({
       ) : null}
 
       {isSelfMassage ? (
-        <section className={styles.selfMassageArticleGrid} aria-label={category.title}>
+        <section className={blogStyles.postGrid} aria-label={category.title}>
           {selfMassageArticles.length ? (
             selfMassageArticles.map((article) => (
-              <article key={article.id} className={styles.selfMassageArticleCard}>
+              <article key={article.id} className={blogStyles.postCard}>
                 <Link
                   href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}
-                  className={styles.selfMassageImageLink}
+                  className={blogStyles.postImageLink}
                 >
                   {article.posterImage ? (
                     <Image
                       src={article.posterImage}
                       alt=""
                       fill
-                      sizes="(max-width: 720px) 100vw, 520px"
-                      className={styles.selfMassageImage}
+                      sizes="(min-width: 1120px) 508px, (min-width: 981px) calc((100vw - 4.2rem) / 2), calc(100vw - 3.7rem)"
+                      className={blogStyles.postImage}
                     />
                   ) : (
-                    <span className={styles.selfMassageImageFallback} aria-hidden="true">
+                    <span className={blogStyles.imageFallback} aria-hidden="true">
                       <HandHeart size={26} />
                     </span>
                   )}
                 </Link>
 
-                <div className={styles.selfMassageArticleCopy}>
-                  <h2>
+                <div className={blogStyles.postCopy}>
+                  <h2 className={blogStyles.postTitle}>
                     <Link href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}>
                       {article.title}
                     </Link>
                   </h2>
-                  {article.description ? <p>{article.description}</p> : null}
-                  <div className={styles.selfMassageMeta}>
+                  {article.description ? <p className={blogStyles.excerpt}>{article.description}</p> : null}
+                  <div className={blogStyles.postMeta}>
                     {article.coach ? (
                       <span>
                         <UserRound size={14} />
@@ -211,7 +212,7 @@ export default async function MeditationRelaxationSubtypePage({
                   </div>
                   <Link
                     href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}
-                    className={styles.selfMassageReadLink}
+                    className={blogStyles.readLink}
                   >
                     {t("selfMassage.readArticle")}
                     <ArrowUpRight size={17} />
@@ -220,10 +221,9 @@ export default async function MeditationRelaxationSubtypePage({
               </article>
             ))
           ) : (
-            <article className={styles.emptyVideoState}>
-              <strong>{t("selfMassage.emptyTitle")}</strong>
+            <div className={blogStyles.emptyState}>
               <p>{t("selfMassage.emptyText")}</p>
-            </article>
+            </div>
           )}
         </section>
       ) : null}

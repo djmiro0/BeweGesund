@@ -18,7 +18,7 @@ export interface StripeCheckoutPayload {
 
 export interface QuizAnswerPayload {
   questionId?: string;
-  optionId?: string;
+  optionId?: string | null;
   answeredAtMs?: number;
 }
 
@@ -27,6 +27,13 @@ export interface QuizAttemptPayload {
   answers?: QuizAnswerPayload[];
   durationMs?: number;
   completedAt?: string;
+}
+
+export interface CheckQuizAnswerPayload {
+  quizId?: string;
+  questionId?: string;
+  optionId?: string;
+  answeredAt?: string;
 }
 
 export interface QuizOptionPayload {

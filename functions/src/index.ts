@@ -28,6 +28,7 @@ import {
 } from "./config";
 import type {
   CompletionPayload,
+  CheckQuizAnswerPayload,
   MemberPackage,
   PremiumStatus,
   QuizAnswerPayload,
@@ -42,6 +43,11 @@ const appCheckCallableOptions = {
   region: REGION,
   enforceAppCheck: true,
 } as const;
+const authenticatedCallableOptions = {
+  region: REGION,
+  cors: true,
+} as const;
+const DAILY_QUIZ_QUESTION_COUNT = 5;
 type StripeClient = InstanceType<typeof Stripe>;
 type StripeSubscription = Awaited<ReturnType<StripeClient["subscriptions"]["retrieve"]>>;
 type StripeEvent = ReturnType<StripeClient["webhooks"]["constructEvent"]>;
@@ -112,18 +118,39 @@ function getCivilDateParts(date: string) {
   return { year, month, day };
 }
 
-function todayIsoDate(locale = "de-DE") {
+function berlinIsoDate(date = new Date(), locale = "de-DE") {
   const parts = new Intl.DateTimeFormat(locale, {
     timeZone: "Europe/Berlin",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).formatToParts(new Date());
+  }).formatToParts(date);
   const year = parts.find((part) => part.type === "year")?.value;
   const month = parts.find((part) => part.type === "month")?.value;
   const day = parts.find((part) => part.type === "day")?.value;
 
   return `${year}-${month}-${day}`;
+}
+
+function todayIsoDate(locale = "de-DE") {
+  return berlinIsoDate(new Date(), locale);
+}
+
+function stableHash(value: string) {
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = Math.imul(31, hash) + value.charCodeAt(index);
+    hash |= 0;
+  }
+
+  return hash >>> 0;
+}
+
+function dailyQuizQuestions(questions: QuizQuestion[], dateKey: string) {
+  return [...questions]
+    .sort((left, right) => stableHash(`${dateKey}:${left.id}`) - stableHash(`${dateKey}:${right.id}`))
+    .slice(0, DAILY_QUIZ_QUESTION_COUNT);
 }
 
 function requireAuth(auth: { uid: string } | null | undefined) {
@@ -173,7 +200,9 @@ function normalizeQuizAnswers(answers: QuizAnswerPayload[] | undefined) {
 
   return answers.map((answer) => ({
     questionId: requireStringId(answer.questionId, "questionId"),
-    optionId: requireStringId(answer.optionId, "optionId"),
+    optionId: typeof answer.optionId === "string" && answer.optionId.trim()
+      ? requireStringId(answer.optionId, "optionId")
+      : null,
     answeredAtMs: typeof answer.answeredAtMs === "number" && Number.isFinite(answer.answeredAtMs)
       ? Math.max(0, Math.round(answer.answeredAtMs))
       : null,
@@ -277,7 +306,7 @@ function normalizeSaveQuizPayload(payload: SaveQuizPayload) {
       availableFrom,
       availableUntil,
       monthlyPeriod: typeof payload.monthlyPeriod === "string" ? payload.monthlyPeriod.trim() : currentMonthPeriod(),
-      timeLimitSeconds: Number.isFinite(payload.timeLimitSeconds) ? Math.max(1, Math.round(payload.timeLimitSeconds ?? 180)) : 180,
+      timeLimitSeconds: Number.isFinite(payload.timeLimitSeconds) ? Math.max(1, Math.round(payload.timeLimitSeconds ?? 10)) : 10,
       allowRetake: payload.allowRetake === true,
       pointsPerCorrect: Number.isFinite(payload.pointsPerCorrect) ? Math.max(1, Math.round(payload.pointsPerCorrect ?? 100)) : 100,
       speedBonusMax: Number.isFinite(payload.speedBonusMax) ? Math.max(0, Math.round(payload.speedBonusMax ?? 50)) : 50,
@@ -625,6 +654,62 @@ export const saveQuiz = onCall(appCheckCallableOptions, async (request) => {
   return { ok: true, quizId };
 });
 
+export const checkQuizAnswer = onCall(authenticatedCallableOptions, async (request) => {
+  requireAuth(request.auth);
+
+  const payload = request.data as CheckQuizAnswerPayload;
+  const quizId = requireStringId(payload.quizId, "quizId");
+  const questionId = requireStringId(payload.questionId, "questionId");
+  const optionId = requireStringId(payload.optionId, "optionId");
+  const answeredAt = payload.answeredAt ? new Date(payload.answeredAt) : new Date();
+
+  if (Number.isNaN(answeredAt.getTime()) || answeredAt.getTime() > Date.now() + 60_000) {
+    throw new HttpsError("invalid-argument", "answeredAt is invalid.");
+  }
+
+  const [quizSnapshot, answerKeySnapshot] = await Promise.all([
+    db.collection(QUIZZES_COLLECTION).doc(quizId).get(),
+    db.collection(QUIZ_ANSWER_KEYS_COLLECTION).doc(quizId).get(),
+  ]);
+
+  if (!quizSnapshot.exists) {
+    throw new HttpsError("not-found", "Quiz does not exist.");
+  }
+
+  const quiz = quizSnapshot.data() as QuizDocument;
+  if (quiz.status !== "published") {
+    throw new HttpsError("failed-precondition", "Quiz is not published.");
+  }
+
+  const availability = getQuizAvailability(quiz, answeredAt);
+  if (!availability.isOpen) {
+    throw new HttpsError("failed-precondition", "Quiz is not currently available.");
+  }
+
+  const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
+  const quizDay = berlinIsoDate(answeredAt);
+  const dailyQuestionIds = new Set(dailyQuizQuestions(questions, quizDay).map((question) => question.id));
+
+  if (!dailyQuestionIds.has(questionId)) {
+    throw new HttpsError("invalid-argument", "Question is not part of today's quiz.");
+  }
+
+  const answerKey = answerKeySnapshot.data() as { answers?: Record<string, unknown> } | undefined;
+  const correctOptionId = answerKey?.answers?.[questionId];
+
+  if (typeof correctOptionId !== "string") {
+    throw new HttpsError("failed-precondition", "Quiz answer key is incomplete.");
+  }
+
+  return {
+    ok: true,
+    questionId,
+    optionId,
+    correctOptionId,
+    correct: optionId === correctOptionId,
+  };
+});
+
 export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   const payload = request.data as QuizAttemptPayload;
@@ -642,7 +727,8 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
   const quizRef = db.collection(QUIZZES_COLLECTION).doc(quizId);
   const answerKeyRef = db.collection(QUIZ_ANSWER_KEYS_COLLECTION).doc(quizId);
   const profileRef = userRef(uid);
-  const attemptRef = profileRef.collection("quizAttempts").doc(quizId);
+  const quizDay = berlinIsoDate(completedAt);
+  const attemptRef = profileRef.collection("quizAttempts").doc(`${quizId}_${quizDay}`);
 
   return db.runTransaction(async (transaction) => {
     const [profileSnapshot, attemptSnapshot, quizSnapshot, answerKeySnapshot] = await Promise.all([
@@ -702,14 +788,15 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
       throw new HttpsError("failed-precondition", "Quiz answer key is missing.");
     }
 
-    const questionIds = new Set(questions.map((question) => question.id));
+    const dailyQuestions = dailyQuizQuestions(questions, quizDay);
+    const questionIds = new Set(dailyQuestions.map((question) => question.id));
     const submittedByQuestion = new Map(answers.map((answer) => [answer.questionId, answer]));
     const correctAnswers = Object.entries(answerKey.answers).filter(([questionId, optionId]) => (
       questionIds.has(questionId) && typeof optionId === "string"
     ));
 
-    if (correctAnswers.length === 0) {
-      throw new HttpsError("failed-precondition", "Quiz answer key is empty.");
+    if (correctAnswers.length !== dailyQuestions.length) {
+      throw new HttpsError("failed-precondition", "Daily quiz answer key is incomplete.");
     }
 
     let correctCount = 0;
@@ -731,7 +818,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
     const pointsPerCorrect = Number.isFinite(quiz.pointsPerCorrect) ? Math.max(1, quiz.pointsPerCorrect ?? 100) : 100;
     const speedBonusMax = Number.isFinite(quiz.speedBonusMax) ? Math.max(0, quiz.speedBonusMax ?? 50) : 50;
     const timeLimitMs = Number.isFinite(quiz.timeLimitSeconds) && quiz.timeLimitSeconds
-      ? Math.max(1, quiz.timeLimitSeconds) * 1000
+      ? Math.max(1, quiz.timeLimitSeconds) * totalQuestions * 1000
       : null;
     const speedRatio = durationMs !== null && timeLimitMs
       ? Math.max(0, 1 - Math.min(durationMs, timeLimitMs) / timeLimitMs)
@@ -748,6 +835,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
 
     transaction.set(attemptRef, {
       quizId,
+      quizDay,
       userId: uid,
       score,
       correctCount,
@@ -762,9 +850,9 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
     transaction.set(leaderboardEntryRef, {
       quizId,
       userId: uid,
-      score,
-      correctCount,
-      totalQuestions,
+      score: increment(score),
+      correctCount: increment(correctCount),
+      totalQuestions: increment(totalQuestions),
       durationMs,
       updatedAt: serverTimestamp(),
     }, { merge: true });

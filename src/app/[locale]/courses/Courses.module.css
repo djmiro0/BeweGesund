@@ -207,7 +207,7 @@ a.categoryBlock:hover {
   max-width: 1180px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -342,21 +342,29 @@ a.categoryBlock:hover {
 .courseMeta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.32rem;
+  gap: 0.32rem 0.72rem;
 }
 
 .courseMeta span {
   display: inline-flex;
   align-items: center;
   gap: 0.22rem;
-  border-radius: 999px;
-  border: 1px solid rgba(var(--page-ink-rgb), 0.1);
-  padding: 0.28rem 0.44rem;
+  border: 0;
+  padding: 0;
   color: rgba(var(--page-ink-rgb), 0.72);
   font-size: 0.56rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.courseMeta span:not(:last-child)::after {
+  width: 0.24rem;
+  height: 0.24rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background: rgba(var(--page-ink-rgb), 0.24);
+  content: "";
 }
 
 .emptyCategory {
@@ -671,10 +679,6 @@ a.categoryBlock:hover {
   }
 
   .categoryGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .subtypeList {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

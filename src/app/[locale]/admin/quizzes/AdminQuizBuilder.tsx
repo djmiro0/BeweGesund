@@ -132,7 +132,7 @@ export default function AdminQuizBuilder({ locale }: { locale: string }) {
   const [availableFrom, setAvailableFrom] = useState("");
   const [availableUntil, setAvailableUntil] = useState("");
   const [monthlyPeriod, setMonthlyPeriod] = useState(currentMonth());
-  const [timeLimitSeconds, setTimeLimitSeconds] = useState(180);
+  const [timeLimitSeconds, setTimeLimitSeconds] = useState(10);
   const [pointsPerCorrect, setPointsPerCorrect] = useState(100);
   const [speedBonusMax, setSpeedBonusMax] = useState(50);
   const [xpReward, setXpReward] = useState(10);
