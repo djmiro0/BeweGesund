@@ -7,7 +7,7 @@
       "courses": "Courses",
       "settings": "Settings",
       "calendar": "Live Calendar",
-      "relaxation": "Meditation",
+      "relaxation": "Relaxation",
       "blogs": "Blogs",
       "consultation": "Consultation",
       "about": "About",
@@ -153,6 +153,12 @@
         "joinFromCalendar": "Join from calendar",
         "explorePrograms": "View program"
       },
+      "profile": {
+        "role": "Bewegesund member",
+        "packageLabel": "Membership package",
+        "open": "Open profile",
+        "avatarAlt": "{name}'s profile photo"
+      },
       "workouts": {
         "title": "Dashboard",
         "subtitle": "Choose a focus area and continue with the sessions that match your current plan.",
@@ -189,8 +195,8 @@
       },
       "meditation": {
         "description": "Guided meditations, relaxation music, and breathing sessions for inner calm.",
-        "kicker": "Meditation & Relaxation",
-        "empty": "No Meditation & Relaxation videos are published yet.",
+        "kicker": "Relaxation & Meditation",
+        "empty": "No Relaxation & Meditation videos are published yet.",
         "latestTitle": "Latest meditation videos",
         "duration": "{count} min",
         "open": "Open video"
@@ -1028,7 +1034,7 @@
   },
   "relaxation": {
     "eyebrow": "Inner calm",
-    "title": "Meditation & Relaxation",
+    "title": "Relaxation & Meditation",
     "intro": "A quiet area for guided meditation, relaxation music, and breathing against stress.",
     "categoryAria": "Meditation and relaxation areas",
     "categories": [
@@ -1236,7 +1242,7 @@
         },
         {
           "title": "Deep Relaxation",
-          "duration": "5 or 10 min",
+          "duration": "5-10 min",
           "description": "Guided diaphragmatic breathing for daily relaxation and releasing tension. The focus is breathing into the belly, which can activate the parasympathetic nervous system and reduce physical tension.",
           "steps": [
             "Position: Sit with an upright back or lie on your back. Place one hand on the chest and one on the belly, just below the ribs.",
@@ -1342,7 +1348,7 @@
       "programs": "Program",
       "courses": "Courses",
       "calendar": "Live Calendar",
-      "relaxation": "Meditation & Relaxation",
+      "relaxation": "Relaxation & Meditation",
       "blogs": "Blogs",
       "consultation": "Consultation",
       "impressum": "Imprint",

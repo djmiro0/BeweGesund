@@ -7,7 +7,7 @@
       "courses": "Kurse",
       "settings": "Einstellungen",
       "calendar": "Live-Kalender",
-      "relaxation": "Meditation",
+      "relaxation": "Entspannung",
       "blogs": "Blogs",
       "consultation": "Beratung",
       "about": "Über Uns",
@@ -153,6 +153,12 @@
         "joinFromCalendar": "Im Kalender öffnen",
         "explorePrograms": "Programm ansehen"
       },
+      "profile": {
+        "role": "Bewegesund Mitglied",
+        "packageLabel": "Mitgliedspaket",
+        "open": "Profil öffnen",
+        "avatarAlt": "Profilfoto von {name}"
+      },
       "workouts": {
         "title": "Dashboard",
         "subtitle": "Wähle einen Schwerpunkt und trainiere mit den Sessions, die zu deinem aktuellen Plan passen.",
@@ -189,8 +195,8 @@
       },
       "meditation": {
         "description": "Geführte Meditationen, Entspannungsmusik und Atemübungen für innere Ruhe.",
-        "kicker": "Meditation & Entspannung",
-        "empty": "In Meditation & Entspannung sind noch keine Videos veröffentlicht.",
+        "kicker": "Entspannung & Meditation",
+        "empty": "In Entspannung & Meditation sind noch keine Videos veröffentlicht.",
         "latestTitle": "Neueste Meditation Videos",
         "duration": "{count} Min",
         "open": "Video öffnen"
@@ -1028,7 +1034,7 @@
   },
   "relaxation": {
     "eyebrow": "Innere Ruhe",
-    "title": "Meditation & Entspannung",
+    "title": "Entspannung & Meditation",
     "intro": "Ein ruhiger Bereich für geführte Meditation, entspannende Musik und Atemübungen gegen Stress.",
     "categoryAria": "Meditations- und Entspannungsbereiche",
     "categories": [
@@ -1236,7 +1242,7 @@
         },
         {
           "title": "Tiefe Entspannung",
-          "duration": "5 oder 10 Min",
+          "duration": "5-10 Min",
           "description": "Angeleitete Zwerchfellatmung (Bauchatmung) für die tägliche Entspannung und den Abbau von Spannungen. Der Fokus liegt auf der Atmung in den Bauch, was das parasympathische Nervensystem aktiviert und körperliche Anspannung reduziert.",
           "steps": [
             "Position: Setze dich mit aufrechtem Rücken hin oder lege dich auf den Rücken. Lege eine Hand auf die Brust und die andere auf den Bauch, direkt unterhalb der Rippen.",
@@ -1342,7 +1348,7 @@
       "programs": "Programme",
       "courses": "Kurse",
       "calendar": "Live-Kalender",
-      "relaxation": "Meditation & Entspannung",
+      "relaxation": "Entspannung & Meditation",
       "blogs": "Blogs",
       "consultation": "Beratung",
       "impressum": "Impressum",

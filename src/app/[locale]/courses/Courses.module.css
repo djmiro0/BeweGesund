@@ -1,9 +1,7 @@
 .coursesSection {
   min-height: 100vh;
   padding: 6.75rem 1.1rem 3.75rem;
-  background:
-    linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.04) 0, transparent 13rem),
-    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 48%, var(--page-cream-1) 100%);
+
   color: var(--page-ink);
 }
 
@@ -22,7 +20,6 @@
     radial-gradient(circle at 16% 0%, rgba(var(--page-accent-rgb), 0.28), transparent 19rem),
     radial-gradient(circle at 86% 18%, rgba(var(--page-warm-rgb), 0.2), transparent 16rem),
     linear-gradient(135deg, var(--shell-bg-alt) 0%, var(--shell-bg) 62%, rgba(var(--shell-surface-rgb), 0.96) 100%);
-  box-shadow: 0 1.2rem 2.6rem rgba(var(--shell-bg-rgb), 0.24);
 }
 
 .categoryBlock {
@@ -494,7 +491,6 @@ a.categoryBlock:hover {
 }
 
 .overviewSection .categoryGrid > article {
-  min-width: 0;
   height: 100%;
 }
 

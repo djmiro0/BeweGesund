@@ -268,26 +268,38 @@
 
 .backLink {
   position: sticky;
-  top: 5.25rem;
+  top: 4.35rem;
   z-index: 5;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   width: fit-content;
   margin-bottom: 5px;
-  border: 1px solid var(--page-border);
-  border-radius: 10px;
-  background: var(--page-soft);
-  box-shadow: 0 0.6rem 1.4rem rgba(var(--shell-bg-rgb), 0.08);
+  margin-left: -0.42rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
   color: var(--page-olive);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.84rem;
   font-weight: 950;
-  padding: 0.62rem 0.82rem;
+  padding: 0.42rem 0.62rem;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 0.22s var(--transition);
+  transition:
+    border-color 0.22s var(--transition),
+    background 0.22s var(--transition),
+    box-shadow 0.22s var(--transition),
+    color 0.22s var(--transition);
+}
+
+.backLink[data-back-scrolled="true"] {
+  border-color: rgba(var(--page-olive-rgb), 0.16);
+  background: rgba(var(--page-soft-rgb), 0.72);
+  box-shadow: 0 0.45rem 1.1rem rgba(var(--shell-bg-rgb), 0.06);
+  backdrop-filter: blur(12px);
 }
 
 .backLink:hover {
@@ -917,24 +929,26 @@
   min-height: 100dvh;
   overflow: auto;
   overscroll-behavior: contain;
+  backdrop-filter: blur(18px);
   background:
-    radial-gradient(circle at 50% 42%, rgba(var(--page-olive-rgb), 0.24), transparent 22rem),
-    linear-gradient(135deg, rgba(var(--shell-bg-rgb), 0.94), rgba(var(--page-ink-rgb), 0.88));
+    radial-gradient(circle at 50% 42%, rgba(var(--page-olive-rgb), 0.28), transparent 22rem),
+    linear-gradient(135deg, rgba(var(--shell-bg-rgb), 0.96), rgba(var(--page-ink-rgb), 0.92));
   color: #fff;
   padding: clamp(1rem, 4vw, 3rem);
 }
 
 .breathingSessionClose {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 1.85rem;
+  right: 1.85rem;
   display: grid;
   width: 2.8rem;
   height: 2.8rem;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(var(--page-ink-rgb), 0.42);
+  backdrop-filter: blur(12px);
   color: #fff;
   cursor: pointer;
 }
@@ -1131,6 +1145,21 @@
   margin-bottom: 22%;
   color: rgba(var(--page-ink-rgb), 0.58);
   font-size: clamp(0.85rem, 2vw, 1.2rem);
+}
+
+.breathingSessionElapsed {
+  min-width: 4.5rem;
+  margin: -0.15rem 0 0.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 0.5rem 0.72rem;
+  text-align: center;
 }
 
 .breathingSessionDetails {

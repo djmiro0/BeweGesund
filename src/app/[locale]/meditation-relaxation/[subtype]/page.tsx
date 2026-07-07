@@ -115,7 +115,7 @@ export default async function MeditationRelaxationSubtypePage({
     <main className={styles.page}>
       <BackButton
         href={`/${locale}/meditation-relaxation`}
-        className={`${styles.backLink} ${isSelfMassage ? styles.backLink : ""}`}
+        className={`${styles.backLink} ${isSelfMassage ? styles.selfMassageBackLink : ""}`}
       >
         <ArrowLeft size={17} />
         {t("subtype.back")}

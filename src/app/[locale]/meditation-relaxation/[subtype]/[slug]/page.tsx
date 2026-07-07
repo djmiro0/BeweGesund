@@ -42,7 +42,7 @@ export default async function MeditationRelaxationDetailPage({
       <main className={styles.page}>
         <BackButton
           href={`/${locale}/meditation-relaxation/${subtype}`}
-          className={`${styles.backLink} ${styles.backLink}`}
+          className={`${styles.backLink} ${styles.selfMassageBackLink}`}
         >
           <ArrowLeft size={17} />
           {t("subtype.back")}

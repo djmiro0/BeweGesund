@@ -50,6 +50,13 @@ const copy = {
   },
 } as const;
 
+function formatSessionTime(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+}
+
 function vibrate(pattern: number | number[]) {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) {
     navigator.vibrate(pattern);
@@ -168,6 +175,7 @@ export default function BreathingSession({ locale, triggerLabel }: BreathingSess
               <span id="breath-session-title">{isRunning ? labels[phase.key] : labels.start}</span>
               <strong>{remaining}s</strong>
             </div>
+            <p className={styles.breathElapsed}>{formatSessionTime(elapsed)} / {formatSessionTime(SESSION_SECONDS)}</p>
             {!isRunning && remaining === SESSION_SECONDS ? (
               <button type="button" className={styles.breathStartButton} onClick={startSession}>
                 <Play size={18} />

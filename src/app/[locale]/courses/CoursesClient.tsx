@@ -246,9 +246,6 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
                     </div>
                     <div>
                       <h2 className={styles.categoryTitle}>{t(`courseTypes.categories.${group.id}.title`)}</h2>
-                      <p className={styles.categoryDescription}>
-                        {t(`courseTypes.categories.${group.id}.description`)}
-                      </p>
                     </div>
                   </div>
 

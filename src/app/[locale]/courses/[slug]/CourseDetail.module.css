@@ -10,7 +10,7 @@
 
 .backLink {
   position: sticky;
-  top: 5.25rem;
+  top: 4.35rem;
   z-index: 5;
   display: inline-flex;
   align-items: center;
@@ -18,19 +18,31 @@
   width: fit-content;
   max-width: 1180px;
   margin-bottom: 5px;
-  border: 1px solid rgba(var(--page-accent-rgb), 0.28);
-  border-radius: 10px;
-  background: var(--page-soft);
-  box-shadow: 0 0.6rem 1.4rem rgba(var(--shell-bg-rgb), 0.08);
+  margin-left: -0.42rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
   color: var(--page-accent);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.84rem;
   font-weight: 950;
-  padding: 0.62rem 0.82rem;
+  padding: 0.42rem 0.62rem;
   text-decoration: none;
   text-transform: uppercase;
-  transition: color 0.22s var(--transition);
+  transition:
+    border-color 0.22s var(--transition),
+    background 0.22s var(--transition),
+    box-shadow 0.22s var(--transition),
+    color 0.22s var(--transition);
+}
+
+.backLink[data-back-scrolled="true"] {
+  border-color: rgba(var(--page-accent-rgb), 0.16);
+  background: rgba(var(--page-soft-rgb), 0.72);
+  box-shadow: 0 0.45rem 1.1rem rgba(var(--shell-bg-rgb), 0.06);
+  backdrop-filter: blur(12px);
 }
 
 .backLink:hover {

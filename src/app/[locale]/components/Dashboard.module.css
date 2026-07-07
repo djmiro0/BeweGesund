@@ -46,20 +46,69 @@
   gap: 0.7rem;
 }
 
+.leftRail {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
 .appHeader {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--app-border);
-  border-radius: 1.2rem;
+  border-radius: 0.95rem;
   background: var(--app-surface);
   box-shadow: 0 18px 42px var(--app-shadow);
-  padding: 0.95rem;
+  padding: 0 0 0.82rem;
   backdrop-filter: blur(18px);
 }
 
-.profileRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+.profileCover {
+  min-height: 4.15rem;
+  background:
+    radial-gradient(circle at 78% 24%, rgba(var(--page-olive-rgb), 0.35), transparent 5rem),
+    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.72), rgba(var(--shell-bg-rgb), 0.94));
+}
+
+.profileIdentity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.78rem;
+  align-items: end;
+  margin: -2.05rem 0.9rem 0;
+}
+
+.profilePhotoLink {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.profilePhoto {
+  display: inline-grid;
+  width: 4.65rem;
+  height: 4.65rem;
+  place-items: center;
+  overflow: hidden;
+  border: 3px solid var(--app-surface-strong);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--shell-bg), var(--shell-surface));
+  color: var(--shell-text);
+  font-size: 1.28rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.profilePhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileText {
+  min-width: 0;
 }
 
 .welcome {
@@ -72,24 +121,50 @@
 .title {
   margin: 0.08rem 0 0;
   color: var(--app-text);
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: 950;
   letter-spacing: 0;
-  line-height: 0.95;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
-.profileButton {
-  display: inline-flex;
-  width: 2.45rem;
-  height: 2.45rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--app-border);
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--shell-bg), var(--shell-surface));
-  color: var(--shell-text);
-  font-size: 0.92rem;
+.profileRole {
+  margin: 0.28rem 0 0;
+  color: var(--app-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.profilePackage {
+  display: grid;
+  gap: 0.28rem;
+  margin: 0.9rem 0.9rem 0;
+  border-top: 1px solid var(--app-border);
+  padding-top: 0.76rem;
+}
+
+.profilePackage span {
+  color: var(--app-muted);
+  font-size: 0.58rem;
   font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.profilePackage strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  border-radius: 999px;
+  background: rgba(var(--page-olive-rgb), 0.13);
+  color: var(--app-text);
+  font-size: 0.86rem;
+  font-weight: 950;
+  line-height: 1;
+  padding: 0.48rem 0.62rem;
   text-transform: uppercase;
 }
 
@@ -103,9 +178,9 @@
 
 .statusStrip {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.38rem;
-  margin-top: 0.62rem;
+  margin: 0.62rem 0.9rem 0;
 }
 
 .statusItem {
@@ -275,25 +350,25 @@
 
 .quizChallengePanel {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 0.65rem;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.72rem;
+  align-items: start;
   border: 1px solid rgba(var(--page-olive-rgb), 0.24);
-  border-radius: 0.82rem;
+  border-radius: 0.95rem;
   background:
-    radial-gradient(circle at 8% 20%, rgba(var(--page-olive-rgb), 0.12), transparent 10rem),
+    radial-gradient(circle at 88% 8%, rgba(var(--page-olive-rgb), 0.22), transparent 7rem),
     linear-gradient(135deg, var(--app-surface-strong), var(--app-surface));
   box-shadow: 0 10px 22px var(--app-shadow);
-  padding: 0.58rem 0.66rem;
+  padding: 0.82rem;
 }
 
 .quizChallengeIcon {
   display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.45rem;
+  height: 2.45rem;
   place-items: center;
   border: 1px solid rgba(var(--page-olive-rgb), 0.25);
-  border-radius: 0.7rem;
+  border-radius: 0.72rem;
   background: rgba(var(--page-olive-rgb), 0.12);
   color: var(--page-olive);
 }
@@ -305,9 +380,9 @@
 .quizChallengeCopy h2 {
   margin: 0;
   color: var(--app-text);
-  font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+  font-size: clamp(1rem, 1.5vw, 1.14rem);
   font-weight: 950;
-  line-height: 1.08;
+  line-height: 1.12;
 }
 
 .quizChallengeMeta {
@@ -334,6 +409,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.36rem;
+  width: fit-content;
   border-radius: 999px;
   background: var(--page-olive);
   color: var(--page-soft);
@@ -883,19 +959,18 @@
 
 @media (min-width: 1180px) {
   .shell {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: minmax(17rem, 19rem) minmax(0, 1fr);
     gap: 1rem;
     align-items: start;
   }
 
-  .appHeader {
+  .leftRail {
     position: sticky;
     top: 6rem;
-    flex: 0 0 19rem;
   }
 
   .contentColumn {
-    flex: 1 1 auto;
     padding-top: 0.35rem;
   }
 

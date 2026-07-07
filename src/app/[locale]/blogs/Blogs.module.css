@@ -329,15 +329,28 @@
 .backLink {
   position: sticky;
   margin-bottom: 5px;
-  top: 5.25rem;
+  margin-left: -0.42rem;
+  top: 4.35rem;
   z-index: 5;
-  border: 1px solid var(--ui-border);
-  border-radius: 10px;
-  background: var(--ui-bg-alt);
-  box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.08);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
   cursor: pointer;
   font-family: inherit;
-  padding: 0.62rem 0.82rem;
+  padding: 0.42rem 0.62rem;
+  transition:
+    border-color 0.22s var(--transition),
+    background 0.22s var(--transition),
+    box-shadow 0.22s var(--transition),
+    color 0.22s var(--transition);
+}
+
+.backLink[data-back-scrolled="true"] {
+  border-color: rgba(var(--page-olive-rgb), 0.16);
+  background: var(--blogs-panel);
+  box-shadow: 0 0.45rem 1.1rem rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(12px);
 }
 
 .readLink:hover,

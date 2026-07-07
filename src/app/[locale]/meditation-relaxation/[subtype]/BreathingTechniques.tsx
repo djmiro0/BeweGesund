@@ -96,6 +96,13 @@ function getBreathingVisualClass(index: number) {
   return styles.breathingVisualCoherent;
 }
 
+function formatSessionTime(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remaining = seconds % 60;
+
+  return `${minutes}:${remaining.toString().padStart(2, "0")}`;
+}
+
 function createNoiseBuffer(audioContext: AudioContext, seconds = 2) {
   const bufferSize = Math.floor(audioContext.sampleRate * seconds);
   const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
@@ -270,6 +277,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const [elapsedSessionSeconds, setElapsedSessionSeconds] = useState(0);
   const [isSessionRunning, setIsSessionRunning] = useState(false);
   const [isMusicEnabled, setIsMusicEnabled] = useState(true);
   const [isBreathCueEnabled, setIsBreathCueEnabled] = useState(true);
@@ -293,6 +301,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
     setPhaseIndex(0);
     remainingSecondsRef.current = 0;
     setRemainingSeconds(0);
+    setElapsedSessionSeconds(0);
     setIsSessionRunning(false);
   };
 
@@ -305,6 +314,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
     setSelectedMusicIndex(0);
     remainingSecondsRef.current = breathingPatterns[index]?.[0]?.seconds ?? 0;
     setRemainingSeconds(remainingSecondsRef.current);
+    setElapsedSessionSeconds(0);
     setIsSessionRunning(false);
   };
 
@@ -321,6 +331,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
     if (isStartingFresh) {
       remainingSecondsRef.current = activePhase.seconds;
       setRemainingSeconds(activePhase.seconds);
+      setElapsedSessionSeconds(0);
     }
 
     if (soundRef.current) {
@@ -380,6 +391,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
     }
 
     const interval = window.setInterval(() => {
+      setElapsedSessionSeconds((current) => current + 1);
       setRemainingSeconds((current) => {
         const next = Math.max(current - 1, 0);
         remainingSecondsRef.current = next;
@@ -507,6 +519,7 @@ export default function BreathingTechniques({ copy }: BreathingTechniquesProps) 
                 <strong>{remainingSeconds || activePhase.seconds}s</strong>
               </button>
             </div>
+            <p className={styles.breathingSessionElapsed}>{formatSessionTime(elapsedSessionSeconds)}</p>
             <div className={styles.breathingAudioToggles} aria-label={copy.musicLabel}>
               <button
                 type="button"

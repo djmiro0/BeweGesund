@@ -953,6 +953,20 @@
   font-size: 1rem;
 }
 
+.breathElapsed {
+  min-width: 5.75rem;
+  margin: 0.8rem 0 0;
+  border-radius: 999px;
+  background: rgba(var(--page-soft-rgb), 0.78);
+  color: rgba(var(--page-ink-rgb), 0.62);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  padding: 0.48rem 0.7rem;
+  text-align: center;
+}
+
 .breathStartButton,
 .breathReminderPanel button {
   display: inline-flex;
