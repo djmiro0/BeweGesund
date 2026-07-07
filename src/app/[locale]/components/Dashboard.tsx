@@ -4,12 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, BookOpen, Brain, ChevronLeft, ChevronRight, Crown, Play, Sparkles, Timer } from "lucide-react";
+import { ArrowUpRight, BookOpen, Brain, ChevronLeft, ChevronRight, Crown, Play, PlusCircle, Sparkles, Timer } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { memberCourseCategories } from "@/data";
 import type { BlogPost, CourseSummary, MeditationRelaxationItem } from "@/lib/contentful";
 import { useAuth } from "./AuthProvider";
 import { getDashboardProgress } from "@/lib/dashboardProgress";
+import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Dashboard.module.css";
 
 interface DashboardUser {
@@ -53,7 +54,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     const packageT = useTranslations("packages");
     const packageSelectorT = useTranslations("profile.packageSelector");
     const locale = useLocale();
-    const { profile } = useAuth();
+    const { profile, user: authUser } = useAuth();
     const [activeTab, setActiveTab] = useState("for-you");
     const tabsRef = useRef<HTMLElement>(null);
     const [tabEdges, setTabEdges] = useState({ left: false, right: false });
@@ -131,9 +132,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
         upcomingCourseCount,
         recommendedCourseIds: recommendedCourseIdSet,
     } = useMemo(() => getDashboardProgress(profile), [profile]);
-    const activePackageLabel = profile?.subscriptionStatus === "active" || profile?.subscriptionStatus === "trialing"
-        ? packageT(profile.memberPackage)
-        : packageSelectorT("inactive");
+    const activePackageLabel = profile ? packageT(profile.memberPackage) : packageSelectorT("inactive");
+    const profileName = profile?.displayName || authUser?.displayName || user.name;
+    const profileInitial = profileName.charAt(0).toUpperCase();
+    const profilePhoto = authUser?.photoURL || profile?.photoURL || null;
+    const showPlusPackageIcon = profile?.memberPackage === "plus";
 
     const tabs = [
         {
@@ -218,34 +221,46 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     return (
         <section className={styles.dashboardSection}>
             <motion.div className={styles.shell} initial="hidden" animate="visible" variants={stagger}>
-                <motion.header className={styles.appHeader} variants={fadeUp}>
-                    <div className={styles.profileRow}>
-                        <div>
-                            <p className={styles.welcome}>{t("greeting", { name: user.name.split(" ")[0] })}</p>
-                            <h1 className={styles.title}>{t("workouts.title")}</h1>
+                <motion.aside className={styles.leftRail} variants={stagger}>
+                    <motion.header className={styles.appHeader} variants={fadeUp}>
+                        <div className={styles.profileCover} aria-hidden="true" />
+                        <div className={styles.profileIdentity}>
+                            <Link href={`/${locale}/profile`} className={styles.profilePhotoLink} aria-label={t("profile.open")}>
+                                {authUser ? (
+                                    <ProfileAvatar
+                                        userId={authUser.uid}
+                                        photoUrl={profilePhoto}
+                                        initial={profileInitial}
+                                        ariaLabel={t("profile.avatarAlt", { name: profileName })}
+                                        className={styles.profilePhoto}
+                                    />
+                                ) : (
+                                    <span className={styles.profilePhoto}>{profileInitial}</span>
+                                )}
+                            </Link>
+                            <div className={styles.profileText}>
+                                <h1 className={styles.title}>{profileName}</h1>
+                                <p className={styles.profileRole}>{t("profile.role")}</p>
+                            </div>
                         </div>
-                        <Link href={`/${locale}/profile`} className={styles.profileButton} aria-label="Profile">
-                            {user.name.charAt(0).toUpperCase()}
-                        </Link>
-                    </div>
-                    <p className={styles.subtitle}>{t("workouts.subtitle")}</p>
-                    <div className={styles.statusStrip}>
-                        <div className={styles.statusItem} data-testid="dashboard-overview-package">
-                            <span>{t("workouts.status.package")}</span>
-                            <strong>{activePackageLabel}</strong>
+                        <div className={styles.profilePackage} data-testid="dashboard-overview-package">
+                            <span>{t("profile.packageLabel")}</span>
+                            <strong>
+                                {showPlusPackageIcon ? <PlusCircle size={15} /> : null}
+                                {activePackageLabel}
+                            </strong>
                         </div>
-                        <div className={styles.statusItem} data-testid="dashboard-overview-upcoming">
-                            <span>{t("workouts.status.upcoming")}</span>
-                            <strong>{upcomingCourseCount}</strong>
+                        <div className={styles.statusStrip}>
+                            <div className={styles.statusItem} data-testid="dashboard-overview-upcoming">
+                                <span>{t("workouts.status.upcoming")}</span>
+                                <strong>{upcomingCourseCount}</strong>
+                            </div>
+                            <div className={styles.statusItem} data-testid="dashboard-overview-completed">
+                                <span>{t("workouts.status.completed")}</span>
+                                <strong>{completedCourseCount}</strong>
+                            </div>
                         </div>
-                        <div className={styles.statusItem} data-testid="dashboard-overview-completed">
-                            <span>{t("workouts.status.completed")}</span>
-                            <strong>{completedCourseCount}</strong>
-                        </div>
-                    </div>
-                </motion.header>
-
-                <div className={styles.contentColumn}>
+                    </motion.header>
                     <motion.section className={styles.quizChallengePanel} variants={fadeUp}>
                         <div className={styles.quizChallengeIcon} aria-hidden="true">
                             <Brain size={26} />
@@ -269,7 +284,9 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                             <ArrowUpRight size={15} />
                         </Link>
                     </motion.section>
+                </motion.aside>
 
+                <div className={styles.contentColumn}>
                     <motion.div
                         className={`${styles.tabsShell} ${tabEdges.left ? styles.tabsShellHasLeft : ""} ${
                             tabEdges.right ? styles.tabsShellHasRight : ""

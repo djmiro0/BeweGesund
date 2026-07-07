@@ -12,6 +12,9 @@ export const increment = FieldValue.increment;
 export const USERS_COLLECTION = "users";
 export const REWARDS_COLLECTION = "rewards";
 export const LEADERBOARDS_COLLECTION = "leaderboards";
+export const QUIZZES_COLLECTION = "quizzes";
+export const QUIZ_ANSWER_KEYS_COLLECTION = "quizAnswerKeys";
+export const QUIZ_LEADERBOARDS_COLLECTION = "quizLeaderboards";
 
 export function userRef(uid: string) {
   return db.collection(USERS_COLLECTION).doc(uid);

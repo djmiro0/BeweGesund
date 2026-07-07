@@ -43,6 +43,7 @@ export interface UserProfileData {
   weeklyLeaderboardRank: number | null;
   monthlyLeaderboardRank: number | null;
   claimedRewardIds: string[];
+  roles: string[];
 }
 
 export const emptyUserProfile: UserProfileData = {
@@ -75,6 +76,7 @@ export const emptyUserProfile: UserProfileData = {
   weeklyLeaderboardRank: null,
   monthlyLeaderboardRank: null,
   claimedRewardIds: [],
+  roles: ["member"],
 };
 
 function optionalString(value: unknown) {
@@ -154,6 +156,7 @@ export function normalizeUserProfile(data: Record<string, unknown> | undefined):
     weeklyLeaderboardRank: optionalNumber(data.weeklyLeaderboardRank),
     monthlyLeaderboardRank: optionalNumber(data.monthlyLeaderboardRank),
     claimedRewardIds: stringArray(data.claimedRewardIds),
+    roles: stringArray(data.roles),
   };
 }
 

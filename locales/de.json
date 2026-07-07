@@ -7,7 +7,7 @@
       "courses": "Kurse",
       "settings": "Einstellungen",
       "calendar": "Live-Kalender",
-      "relaxation": "Meditation",
+      "relaxation": "Entspannung",
       "blogs": "Blogs",
       "consultation": "Beratung",
       "about": "Über Uns",
@@ -153,6 +153,12 @@
         "joinFromCalendar": "Im Kalender öffnen",
         "explorePrograms": "Programm ansehen"
       },
+      "profile": {
+        "role": "Bewegesund Mitglied",
+        "packageLabel": "Mitgliedspaket",
+        "open": "Profil öffnen",
+        "avatarAlt": "Profilfoto von {name}"
+      },
       "workouts": {
         "title": "Dashboard",
         "subtitle": "Wähle einen Schwerpunkt und trainiere mit den Sessions, die zu deinem aktuellen Plan passen.",
@@ -189,8 +195,8 @@
       },
       "meditation": {
         "description": "Geführte Meditationen, Entspannungsmusik und Atemübungen für innere Ruhe.",
-        "kicker": "Meditation & Entspannung",
-        "empty": "In Meditation & Entspannung sind noch keine Videos veröffentlicht.",
+        "kicker": "Entspannung & Meditation",
+        "empty": "In Entspannung & Meditation sind noch keine Videos veröffentlicht.",
         "latestTitle": "Neueste Meditation Videos",
         "duration": "{count} Min",
         "open": "Video öffnen"
@@ -482,8 +488,9 @@
     }
   },
   "courses": {
-    "title": "Programme und Leistungen",
-    "intro": "Ein vollständiges Angebot aus geführter Bewegung, Live-Sessions, Bildung, individueller Begleitung und langfristigem Training.",
+    "eyebrow": "Trainingsbibliothek",
+    "title": "Kurse",
+    "intro": "Finde das passende Training für deine Ziele.",
     "overview": {
       "items": [
         {
@@ -506,15 +513,15 @@
       "categories": {
         "reha": {
           "title": "REHA",
-          "description": "Rehabilitationsprogramme mit wöchentlichem Videorhythmus und klarer Progression."
+          "description": "Gezielte Programme zur Regeneration und Schmerzlinderung."
         },
         "healthy-living": {
           "title": "Lebe Gesund",
-          "description": "Alltagstaugliche Formate für Mobilität, sanften Einstieg und regelmäßige Bewegung."
+          "description": "Mehr Energie, bessere Gewohnheiten und ein gesunder Alltag."
         },
         "overweight": {
           "title": "Übergewichts",
-          "description": "Bewegungs- und Ernährungsformate mit Fokus auf nachhaltige Gewichtsreduktion."
+          "description": "Nachhaltige Strategien für gesundes Abnehmen."
         },
         "definition": {
           "title": "Intensive",
@@ -522,15 +529,15 @@
         },
         "intensive": {
           "title": "Intensive",
-          "description": "Gezielte Kraft-, Definitions- und intensivere Trainingsformate."
+          "description": "Für alle, die mehr wollen - Kraft, Ausdauer und Fokus."
         },
         "pre-post-birth": {
           "title": "Pre & Postgeburt",
-          "description": "Begleitende Formate rund um Beckenboden, Geburtsvorbereitung und Training mit dem Baby."
+          "description": "Sichere und effektive Workouts für Schwangerschaft und danach."
         },
         "corporate-fitness": {
           "title": "Firmenfitness",
-          "description": "Kurze, wiederholbare Bewegungseinheiten für aktive Arbeitspausen im Berufsalltag."
+          "description": "Gesunde Teams, mehr Energie und weniger Ausfallzeiten."
         },
         "live-courses": {
           "title": "Live Kurse",
@@ -541,7 +548,7 @@
           "description": "Geplante edukative Live-Sessions mit fachlicher Begleitung."
         },
         "nutrition-seminars": {
-          "title": "Ernährungsseminare",
+          "title": "Ernährung",
           "description": "Ernährungsbildung und praktisches Gesundheitswissen."
         },
         "paragraph-20": {
@@ -690,8 +697,8 @@
   },
   "blogs": {
     "eyebrow": "Bewegesund Journal",
-    "title": "Wissen zu Schmerzlinderung, Gesundheit und Ernährung.",
-    "intro": "Praktische Artikel zu Training, Regeneration, Ernährung und gesünderen Routinen.",
+    "title": "Blogs",
+    "intro": "Kurze Beiträge zu Training, Gesundheit und Ernährung.",
     "articleCount": "{count, plural, one {# Artikel} other {# Artikel}}",
     "filterHint": "Nach Thema filtern",
     "filterAria": "Blog-Tags",
@@ -900,7 +907,7 @@
       "rank": "Rang",
       "competitor": "Teilnehmer",
       "points": "Punkte",
-      "champion": "Šampion meseca",
+      "champion": "Monats-Champion",
       "you": "Du · aktuelle Woche",
       "placeholder": "Vorschaudaten. Echte Punkte werden in der Gamification-Phase mit Trainings, Videos und Blogaktivitäten verbunden."
     },
@@ -1027,7 +1034,7 @@
   },
   "relaxation": {
     "eyebrow": "Innere Ruhe",
-    "title": "Meditation & Entspannung",
+    "title": "Entspannung & Meditation",
     "intro": "Ein ruhiger Bereich für geführte Meditation, entspannende Musik und Atemübungen gegen Stress.",
     "categoryAria": "Meditations- und Entspannungsbereiche",
     "categories": [
@@ -1235,7 +1242,7 @@
         },
         {
           "title": "Tiefe Entspannung",
-          "duration": "5 oder 10 Min",
+          "duration": "5-10 Min",
           "description": "Angeleitete Zwerchfellatmung (Bauchatmung) für die tägliche Entspannung und den Abbau von Spannungen. Der Fokus liegt auf der Atmung in den Bauch, was das parasympathische Nervensystem aktiviert und körperliche Anspannung reduziert.",
           "steps": [
             "Position: Setze dich mit aufrechtem Rücken hin oder lege dich auf den Rücken. Lege eine Hand auf die Brust und die andere auf den Bauch, direkt unterhalb der Rippen.",
@@ -1341,7 +1348,7 @@
       "programs": "Programme",
       "courses": "Kurse",
       "calendar": "Live-Kalender",
-      "relaxation": "Meditation & Entspannung",
+      "relaxation": "Entspannung & Meditation",
       "blogs": "Blogs",
       "consultation": "Beratung",
       "impressum": "Impressum",

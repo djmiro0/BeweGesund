@@ -9,6 +9,7 @@ import { functions } from "../../../../firebase.config";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
+import CookieConsentBanner from "./CookieConsentBanner";
 import LoadingScreen from "./LoadingScreen";
 import MobileTabBar from "./MobileTabBar";
 import NavigationFeedback from "./NavigationFeedback";
@@ -143,6 +144,7 @@ export function ShellFrame({
         <ComingSoon openAuth={openAuth} />
         <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
         <NavigationFeedback />
+        <CookieConsentBanner locale={locale} />
       </>
     );
   }
@@ -164,6 +166,7 @@ export function ShellFrame({
           requiresProfileSetup
         />
         <NavigationFeedback />
+        <CookieConsentBanner locale={locale} />
       </>
     );
   }
@@ -188,6 +191,7 @@ export function ShellFrame({
           <PaymentRequired locale={locale} />
         </main>
         <Footer />
+        <CookieConsentBanner locale={locale} />
       </>
     );
   }
@@ -211,6 +215,7 @@ export function ShellFrame({
       <main className={styles.main}>{children}</main>
       <MobileTabBar locale={locale} />
       <Footer />
+      <CookieConsentBanner locale={locale} />
     </>
   );
 }

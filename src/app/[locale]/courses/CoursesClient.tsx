@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import {
+  ArrowRight,
   Baby,
   BriefcaseBusiness,
   CalendarDays,
@@ -15,6 +16,7 @@ import {
   ShieldCheck,
   Video,
 } from "lucide-react";
+import type { CSSProperties } from "react";
 import { memberCourses } from "@/data";
 import type { CourseSummary } from "@/lib/contentful";
 import { useAuth } from "../components/AuthProvider";
@@ -95,6 +97,68 @@ const categoryIcons: Record<CategoryId, typeof HeartPulse> = {
   "nutrition-seminars": Salad,
 };
 
+const categoryVisuals: Partial<Record<CategoryId, {
+  accent: string;
+  glow: string;
+  image: string;
+  pillLimit: number;
+}>> = {
+  reha: {
+    accent: "#ff3455",
+    glow: "rgba(255, 52, 85, 0.32)",
+    image: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 3,
+  },
+  "healthy-living": {
+    accent: "#b5d83d",
+    glow: "rgba(181, 216, 61, 0.32)",
+    image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  overweight: {
+    accent: "#00c3bd",
+    glow: "rgba(0, 195, 189, 0.3)",
+    image: "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  intensive: {
+    accent: "#ff6b1a",
+    glow: "rgba(255, 107, 26, 0.3)",
+    image: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  "pre-post-birth": {
+    accent: "#f25aa5",
+    glow: "rgba(242, 90, 165, 0.28)",
+    image: "https://images.unsplash.com/photo-1537673156864-5d2c72de7824?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  "corporate-fitness": {
+    accent: "#8b5cf6",
+    glow: "rgba(139, 92, 246, 0.3)",
+    image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  "live-courses": {
+    accent: "#38bdf8",
+    glow: "rgba(56, 189, 248, 0.28)",
+    image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  "live-seminars": {
+    accent: "#f59e0b",
+    glow: "rgba(245, 158, 11, 0.26)",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  "nutrition-seminars": {
+    accent: "#22c55e",
+    glow: "rgba(34, 197, 94, 0.26)",
+    image: "https://images.unsplash.com/photo-1490818387583-1baba5e638af?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+};
+
 function canonicalCategory(categoryKey: unknown): CategoryId {
   const key = Array.isArray(categoryKey) ? categoryKey[0] : categoryKey;
 
@@ -125,25 +189,30 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
   const { user, openAuth } = useAuth();
   const locale = useLocale();
   const groupedCourses = groupCourses(courses);
+  const visibleGroups = groupedCourses.filter((group) => {
+    const hasSubtypes = memberCourses.some((course) => canonicalCategory(course.categoryKey) === group.id);
+    return Boolean(categoryVisuals[group.id]) && (hasSubtypes || group.courses.length > 0 || group.id.includes("seminars"));
+  });
 
   return (
-    <section className={styles.coursesSection}>
+    <section className={`${styles.coursesSection} ${styles.overviewSection}`}>
       <motion.header
-        className={`${styles.hero} ${styles.mobileHiddenHeader}`}
+        className={`${styles.hero} ${styles.overviewHero}`}
         initial="hidden"
         animate="visible"
         variants={stagger}
       >
         <motion.div className={styles.heroCopy} variants={fadeUp}>
-          <div className={styles.heroStatus}>
-            {user ? <ShieldCheck size={15} /> : <Dumbbell size={15} />}
-            {user ? t("labels.memberAccess") : t("labels.publicAccess")}
-          </div>
+          <p className={styles.eyebrow}>{t("eyebrow")}</p>
           <h1 className={styles.title}>{t("title")}</h1>
           <p className={styles.intro}>{t("intro")}</p>
         </motion.div>
 
-        <motion.aside className={styles.unlockPanel} variants={fadeUp}>
+        <motion.aside className={`${styles.unlockPanel} ${styles.overviewAccess}`} variants={fadeUp}>
+          <div className={styles.heroStatus}>
+            {user ? <ShieldCheck size={15} /> : <Dumbbell size={15} />}
+            {user ? t("labels.memberAccess") : t("labels.publicAccess")}
+          </div>
           <p className={styles.unlockLabel}>{t("weeklyUnlock.label")}</p>
           <strong>{t("weeklyUnlock.title")}</strong>
           <p>{t("weeklyUnlock.description")}</p>
@@ -151,15 +220,26 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
       </motion.header>
 
       <motion.div className={styles.categoryGrid} initial="hidden" animate="visible" variants={stagger}>
-        {groupedCourses.map((group) => {
+        {visibleGroups.map((group) => {
           const Icon = categoryIcons[group.id];
           const subtypes = memberCourses.filter((course) => canonicalCategory(course.categoryKey) === group.id);
           const hasCourses = subtypes.length > 0 || group.courses.length > 0;
+          const visual = categoryVisuals[group.id];
+          const pillItems = subtypes.length
+            ? subtypes.map((course) => ({ id: course.id, label: courseT(course.id) }))
+            : group.courses.map((course) => ({ id: course.id, label: course.title }));
+          const visiblePillItems = pillItems.slice(0, visual?.pillLimit ?? 2);
+          const hiddenPillCount = Math.max(0, pillItems.length - visiblePillItems.length);
+          const categoryStyle = {
+            "--category-accent": visual?.accent,
+            "--category-glow": visual?.glow,
+            "--category-image": `url(${visual?.image})`,
+          } as CSSProperties;
 
           return (
             <motion.article key={group.id} variants={fadeUp}>
               {hasCourses ? (
-                <Link href={`/${locale}/courses/${group.id}`} className={styles.categoryBlock}>
+                <Link href={`/${locale}/courses/${group.id}`} className={styles.categoryBlock} style={categoryStyle}>
                   <div className={styles.categoryHead}>
                     <div className={styles.categoryIcon}>
                       <Icon size={19} />
@@ -170,13 +250,17 @@ export default function CoursesClient({ courses }: { courses: CourseSummary[] })
                   </div>
 
                   <div className={styles.subtypePills}>
-                    {subtypes.map((course) => (
-                      <span key={course.id}>{courseT(course.id)}</span>
+                    {visiblePillItems.map((course) => (
+                      <span key={course.id}>{course.label}</span>
                     ))}
+                    {hiddenPillCount > 0 ? <span className={styles.pillCount}>+{hiddenPillCount}</span> : null}
                   </div>
+                  <span className={styles.categoryArrow} aria-hidden="true">
+                    <ArrowRight size={28} />
+                  </span>
                 </Link>
               ) : (
-                <section className={styles.categoryBlock}>
+                <section className={styles.categoryBlock} style={categoryStyle}>
                   <div className={styles.categoryHead}>
                     <div className={styles.categoryIcon}>
                       <Icon size={19} />

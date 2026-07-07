@@ -23,11 +23,15 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 const appCheckSiteKey = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY;
 const appCheckEnabled = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED === "true";
 const appCheckDebugToken = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN;
+const isLocalAppCheckHost = typeof window !== "undefined"
+  && ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+const shouldInitializeAppCheck = appCheckEnabled
+  && appCheckSiteKey
+  && (!isLocalAppCheckHost || appCheckDebugToken);
 
 if (
   typeof window !== "undefined"
-  && appCheckEnabled
-  && appCheckSiteKey
+  && shouldInitializeAppCheck
   && !window.__BEWEGESUND_APP_CHECK_INITIALIZED__
 ) {
   if (appCheckDebugToken) {
