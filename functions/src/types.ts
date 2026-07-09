@@ -11,6 +11,20 @@ export interface RewardClaimPayload {
   rewardId: string;
 }
 
+export type ContentRewardType = "blog" | "course" | "relaxation" | "quiz";
+
+export interface ContentEngagementPayload {
+  contentId?: string;
+  contentType?: ContentRewardType;
+  engagementSeconds?: number;
+  durationSeconds?: number;
+}
+
+export interface ContentRewardClaimPayload {
+  contentId?: string;
+  contentType?: ContentRewardType;
+}
+
 export interface StripeCheckoutPayload {
   locale?: "de" | "en";
   memberPackage?: MemberPackage;

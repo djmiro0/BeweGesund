@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { memberCourses, type MemberCourseDefinition } from "@/data";
 import { getCourseDetail, getCourses, type CourseSummary } from "@/lib/contentful";
 import BackButton from "../../components/BackButton";
+import { ContentRewardPanel } from "../../components/ContentReward";
 import ProtectedMuxPlayer from "./ProtectedMuxPlayer";
 import styles from "./CourseDetail.module.css";
 import coursesStyles from "../Courses.module.css";
@@ -58,6 +59,14 @@ function isNewlyPublished(publishedAt: string) {
   const ageMs = Date.now() - publishedTime;
 
   return ageMs >= 0 && ageMs < newBadgeWindowMs;
+}
+
+function durationTextToSeconds(duration: string) {
+  const match = duration.match(/(\d+(?:[.,]\d+)?)/);
+  if (!match) return undefined;
+
+  const minutes = Number(match[1].replace(",", "."));
+  return Number.isFinite(minutes) && minutes > 0 ? Math.round(minutes * 60) : undefined;
 }
 
 function getSubtypeVideos(courses: CourseSummary[], subtype: MemberCourseDefinition, categorySlug: string) {
@@ -246,6 +255,36 @@ export default async function CourseDetailPage({
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
+  const rewardLabels = locale === "de"
+    ? {
+        title: "Kurs-Bonus",
+        locked: "Fortschritt {percent}% / 50%.",
+        available: "Bonus verfügbar. Punkte werden gesammelt.",
+        claimed: "Abgeschlossen. Punkte gesammelt.",
+        dailyLimit: "Tägliches Kurslimit erreicht. Du hast heute bereits Punkte aus zwei Kursen gesammelt.",
+        signIn: "Melde dich an, um Kurspunkte zu sammeln.",
+        xp: "+{points} XP",
+        claim: "Punkte sammeln",
+        claiming: "Sammeln...",
+      }
+    : {
+        title: "Course bonus",
+        locked: "Progress {percent}% / 50%.",
+        available: "Reward available. Collecting points.",
+        claimed: "Completed. Points collected.",
+        dailyLimit: "Daily course limit reached. You have already earned points from two courses today.",
+        signIn: "Sign in to collect course points.",
+        xp: "+{points} XP",
+        claim: "Collect points",
+        claiming: "Collecting...",
+      };
+  const rewardTarget = {
+    contentId: `course_${locale}_${course.slug}`,
+    contentType: "course" as const,
+    durationSeconds: durationTextToSeconds(course.duration),
+    points: 40,
+    labels: rewardLabels,
+  };
 
   return (
     <article className={styles.page}>
@@ -261,6 +300,7 @@ export default async function CourseDetailPage({
           locale={locale}
           poster={course.posterImage}
           title={courseTitle}
+          reward={rewardTarget}
           messages={{
             videoPending: t("player.videoPending"),
             preparingVideo: t("player.preparingVideo"),
@@ -294,6 +334,7 @@ export default async function CourseDetailPage({
         </div>
 
         <aside className={styles.metaPanel}>
+          <ContentRewardPanel target={rewardTarget} />
           <div className={styles.metaItem}>
             <PlayCircle size={17} />
             <span>{course.muxPlaybackId ? t("meta.videoAvailable") : t("meta.videoPending")}</span>

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Brain, Clock, ImageIcon, Timer, Trophy } from "lucide-react";
 import { getBlogPost, getBlogPosts, type BlogPost } from "@/lib/contentful";
 import BackButton from "../../components/BackButton";
+import { ActiveReadingReward } from "../../components/ContentReward";
 import ArticleBody from "./ArticleBody";
 import BlogSelfCheck from "./BlogSelfCheck";
 import styles from "../Blogs.module.css";
@@ -60,6 +61,29 @@ export default async function BlogPostPage({
         quizMonthly: "24h monthly challenge",
         quizCta: "View quiz",
       };
+  const rewardLabels = locale === "de"
+    ? {
+        title: "Artikel-Bonus",
+        locked: "Verfügbar in {time} aktiver Lesezeit.",
+        available: "Bonus verfügbar. Punkte werden gesammelt.",
+        claimed: "Abgeschlossen. Punkte gesammelt.",
+        dailyLimit: "Tägliches Limit erreicht.",
+        signIn: "Melde dich an, um Lesepunkte zu sammeln.",
+        xp: "+{points} XP",
+        claim: "Punkte sammeln",
+        claiming: "Sammeln...",
+      }
+    : {
+        title: "Article bonus",
+        locked: "Available in {time} of active reading.",
+        available: "Reward available. Collecting points.",
+        claimed: "Completed. Points collected.",
+        dailyLimit: "Daily limit reached.",
+        signIn: "Sign in to collect reading points.",
+        xp: "+{points} XP",
+        claim: "Collect points",
+        claiming: "Collecting...",
+      };
   const recommendedPost = getRecommendedPost(post, posts);
 
   return (
@@ -102,6 +126,15 @@ export default async function BlogPostPage({
       </div>
 
       <ArticleBody body={post.body} />
+
+      <ActiveReadingReward
+        target={{
+          contentId: `blog_${locale}_${post.slug}`,
+          contentType: "blog",
+          points: 40,
+          labels: rewardLabels,
+        }}
+      />
 
       {post.tags.includes("selfcheck") ? <BlogSelfCheck locale={locale} /> : null}
 

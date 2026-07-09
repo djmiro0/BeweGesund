@@ -53,6 +53,85 @@
   content: "";
 }
 
+.quizGamePage {
+  max-width: 940px;
+  padding-block: 1.1rem;
+}
+
+.gameModeShell {
+  display: block;
+}
+
+.gameModeShell .liveQuizPanel {
+  min-height: calc(100svh - 2.2rem);
+}
+
+.gameOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--shell-bg-rgb), 0.72);
+  padding: clamp(0.7rem, 2vw, 1.2rem);
+  backdrop-filter: blur(12px);
+}
+
+.gameDialog {
+  width: min(100%, 58rem);
+  max-height: min(92svh, 54rem);
+  overflow: auto;
+  border: 1px solid rgba(var(--quiz-border-rgb), 0.18);
+  border-radius: 14px;
+  background: var(--quiz-bg-deep);
+  box-shadow: 0 1.8rem 5rem rgba(var(--shell-bg-rgb), 0.48);
+}
+
+.gameDialogHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(var(--quiz-border-rgb), 0.12);
+  background: rgba(var(--quiz-panel-rgb), 0.96);
+  padding: 0.85rem 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.gameDialogHeader h2 {
+  margin: 0;
+  color: var(--quiz-heading);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.gameCloseButton {
+  display: inline-grid;
+  width: 2.2rem;
+  height: 2.2rem;
+  place-items: center;
+  border: 1px solid rgba(var(--quiz-border-rgb), 0.16);
+  border-radius: 999px;
+  background: rgba(var(--quiz-panel-deep-rgb), 0.48);
+  color: rgba(var(--quiz-text-rgb), 0.74);
+  cursor: pointer;
+}
+
+.gameDialog .quizGamePage {
+  min-height: auto;
+  padding: 0;
+}
+
+.gameDialog .gameModeShell .liveQuizPanel {
+  min-height: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .backToOverview {
   display: inline-flex;
   align-items: center;
@@ -394,6 +473,22 @@
   width: 100%;
   min-height: 4.35rem;
   font-size: 1.06rem;
+}
+
+.inlineStartPanel {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid rgba(var(--quiz-border-rgb), 0.13);
+  border-radius: 12px;
+  background: rgba(var(--quiz-panel-deep-rgb), 0.44);
+  padding: clamp(1rem, 2.5vw, 1.45rem);
+}
+
+.startDialogTitle {
+  margin: 0;
+  color: var(--quiz-heading);
+  font-size: clamp(1.35rem, 2.5vw, 1.8rem);
+  line-height: 1.15;
 }
 
 .dailyQuestionShell {

@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { db, functions } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
 import styles from "./Quiz.module.css";
@@ -91,7 +91,7 @@ const copy = {
     signIn: "Einloggen zum Absenden",
     start: "Quiz starten",
     startTitle: "Bist du bereit?",
-    startDescription: "Der Timer startet erst, wenn du auf Start klickst. Du bekommst heute 5 Fragen und hast pro Frage 10 Sekunden Zeit.",
+    startDescription: "Der Timer startet erst, wenn du auf Start klickst. Du bekommst heute 5 Fragen und hast pro Frage 30 Sekunden Zeit.",
     back: "Zurück",
     next: "Weiter",
     done: "Fertig",
@@ -159,7 +159,7 @@ const copy = {
     signIn: "Sign in to submit",
     start: "Start quiz",
     startTitle: "Are you ready?",
-    startDescription: "The timer starts only when you click Start. You get 5 questions today and have 10 seconds for each question.",
+    startDescription: "The timer starts only when you click Start. You get 5 questions today and have 30 seconds for each question.",
     back: "Back",
     next: "Next",
     done: "Done",
@@ -216,7 +216,8 @@ const copy = {
 } as const;
 
 const DAILY_QUESTION_COUNT = 5;
-const DEFAULT_QUESTION_SECONDS = 10;
+const DEFAULT_QUESTION_SECONDS = 30;
+const MIN_QUESTION_SECONDS = 30;
 
 function dateFrom(value: PublicQuiz["availableFrom"]) {
   if (!value) return null;
@@ -314,12 +315,21 @@ function formatTemplate(template: string, values: Record<string, number>) {
   );
 }
 
-export default function QuizClient({ locale }: { locale: string }) {
+export default function QuizClient({
+  locale,
+  gameMode = false,
+  autoStart = false,
+}: {
+  locale: string;
+  gameMode?: boolean;
+  autoStart?: boolean;
+}) {
   const labels = locale === "de" ? copy.de : copy.en;
   const { user, loading: authLoading, openAuth } = useAuth();
   const quizPanelRef = useRef<HTMLElement | null>(null);
   const startedAtRef = useRef<number>(Date.now());
   const questionStartedAtRef = useRef<number>(Date.now());
+  const autoStartedRef = useRef(false);
   const [quizzes, setQuizzes] = useState<PublicQuiz[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [answeredAtMs, setAnsweredAtMs] = useState<Record<string, number>>({});
@@ -332,6 +342,7 @@ export default function QuizClient({ locale }: { locale: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [isExampleOpen, setIsExampleOpen] = useState(false);
   const [isStartDialogOpen, setIsStartDialogOpen] = useState(false);
+  const [isGamePopupOpen, setIsGamePopupOpen] = useState(false);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -371,7 +382,7 @@ export default function QuizClient({ locale }: { locale: string }) {
   ), [activeQuiz, quizDay]);
   const currentQuestion = activeQuestions[currentQuestionIndex] ?? null;
   const questionSeconds = activeQuiz?.timeLimitSeconds && Number.isFinite(activeQuiz.timeLimitSeconds)
-    ? Math.max(1, Math.round(activeQuiz.timeLimitSeconds))
+    ? Math.max(MIN_QUESTION_SECONDS, Math.round(activeQuiz.timeLimitSeconds))
     : DEFAULT_QUESTION_SECONDS;
   const currentQuestionAnswered = currentQuestion ? Boolean(selectedAnswers[currentQuestion.id]) : false;
   const currentQuestionTimedOut = currentQuestion ? Boolean(timedOutQuestions[currentQuestion.id]) : false;
@@ -385,6 +396,7 @@ export default function QuizClient({ locale }: { locale: string }) {
     setAnsweredAtMs({});
     setAnswerFeedbacks({});
     setTimedOutQuestions({});
+    autoStartedRef.current = false;
     setHasStarted(false);
     setIsStartDialogOpen(false);
     setResult(null);
@@ -416,9 +428,44 @@ export default function QuizClient({ locale }: { locale: string }) {
     return () => window.clearInterval(timer);
   }, [currentQuestion, currentQuestionAnswered, currentQuestionTimedOut, hasStarted, questionSeconds, result]);
 
+  const startQuizRound = useCallback(() => {
+    startedAtRef.current = Date.now();
+    questionStartedAtRef.current = Date.now();
+    setTimeLeft(questionSeconds);
+    setIsStartDialogOpen(false);
+    setHasStarted(true);
+    window.requestAnimationFrame(() => {
+      quizPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [questionSeconds]);
+
+  useEffect(() => {
+    if (!gameMode || !autoStart || autoStartedRef.current || authLoading || loading || !activeQuiz || hasStarted || result) {
+      return;
+    }
+
+    if (!user) {
+      openAuth();
+      return;
+    }
+
+    autoStartedRef.current = true;
+    startQuizRound();
+  }, [activeQuiz, authLoading, autoStart, gameMode, hasStarted, loading, openAuth, result, startQuizRound, user]);
+
   const handleOpenStart = () => {
     if (!user) {
       openAuth();
+      return;
+    }
+
+    if (!gameMode) {
+      setIsGamePopupOpen(true);
+      return;
+    }
+
+    if (gameMode) {
+      startQuizRound();
       return;
     }
 
@@ -432,14 +479,7 @@ export default function QuizClient({ locale }: { locale: string }) {
       return;
     }
 
-    startedAtRef.current = Date.now();
-    questionStartedAtRef.current = Date.now();
-    setTimeLeft(questionSeconds);
-    setIsStartDialogOpen(false);
-    setHasStarted(true);
-    window.requestAnimationFrame(() => {
-      quizPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+    startQuizRound();
   };
 
   const handleSelect = async (questionId: string, optionId: string) => {
@@ -547,94 +587,100 @@ export default function QuizClient({ locale }: { locale: string }) {
 
   return (
     <>
-      <section className={styles.hero} aria-labelledby="quiz-hero-title">
-        <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>
-            <Dumbbell size={18} />
-            {labels.heroEyebrow}
-          </p>
-          <h1 id="quiz-hero-title">
-            <span>{labels.heroTitleFirst}</span>
-            <span>{labels.heroTitleSecond}</span>
-          </h1>
-          <p>{labels.heroLead}</p>
-          <div className={styles.heroActions}>
-            <button type="button" className={styles.primaryLink} onClick={handleOpenStart} disabled={authLoading || loading || !activeQuiz}>
-              <Target size={17} />
-              {labels.start}
-              <ArrowRight size={17} />
-            </button>
-            <span className={styles.durationHint}>
-              <Clock3 size={16} />
-              {labels.duration}
-            </span>
-          </div>
-        </div>
+      {!gameMode ? (
+        <>
+          <section className={styles.hero} aria-labelledby="quiz-hero-title">
+            <div className={styles.heroCopy}>
+              <p className={styles.eyebrow}>
+                <Dumbbell size={18} />
+                {labels.heroEyebrow}
+              </p>
+              <h1 id="quiz-hero-title">
+                <span>{labels.heroTitleFirst}</span>
+                <span>{labels.heroTitleSecond}</span>
+              </h1>
+              <p>{labels.heroLead}</p>
+              <div className={styles.heroActions}>
+                <button type="button" className={styles.primaryLink} onClick={handleOpenStart} disabled={authLoading || loading || !activeQuiz}>
+                  <Target size={17} />
+                  {labels.start}
+                  <ArrowRight size={17} />
+                </button>
+                <span className={styles.durationHint}>
+                  <Clock3 size={16} />
+                  {labels.duration}
+                </span>
+              </div>
+            </div>
 
-        <div className={styles.heroVisual} aria-hidden="true">
-          <Image src="/quiz-hero-challenge.png" alt="" fill priority sizes="(max-width: 900px) 100vw, 46vw" />
-        </div>
+            <div className={styles.heroVisual} aria-hidden="true">
+              <Image src="/quiz-hero-challenge.png" alt="" fill priority sizes="(max-width: 900px) 100vw, 46vw" />
+            </div>
 
-        <div className={styles.heroCard} aria-hidden="true">
-          <div className={styles.heroCardIcon}><Clock3 size={27} /></div>
-          <strong>{labels.challengeTitle}</strong>
-          <span>{labels.challengeText}</span>
-          <div className={styles.heroCardIcon}><Target size={27} /></div>
-          <strong>{labels.pointsTitle}</strong>
-          <span>{labels.pointsText}</span>
-          <div className={styles.heroCardIcon}><Crown size={28} /></div>
-          <strong>{labels.championTitle}</strong>
-          <span>{labels.championText}</span>
-        </div>
-      </section>
+            <div className={styles.heroCard} aria-hidden="true">
+              <div className={styles.heroCardIcon}><Clock3 size={27} /></div>
+              <strong>{labels.challengeTitle}</strong>
+              <span>{labels.challengeText}</span>
+              <div className={styles.heroCardIcon}><Target size={27} /></div>
+              <strong>{labels.pointsTitle}</strong>
+              <span>{labels.pointsText}</span>
+              <div className={styles.heroCardIcon}><Crown size={28} /></div>
+              <strong>{labels.championTitle}</strong>
+              <span>{labels.championText}</span>
+            </div>
+          </section>
 
-      <section className={styles.featureGrid} aria-label={labels.heroEyebrow}>
-        <article className={styles.featureCard}>
-          <Clock3 size={40} />
-          <div>
-            <h2>{labels.dailyTitle}</h2>
-            <p>{labels.dailyText}</p>
-          </div>
-        </article>
-        <article className={styles.featureCard}>
-          <BookOpen size={40} />
-          <div>
-            <h2>{labels.knowledgeTitle}</h2>
-            <p>{labels.knowledgeText}</p>
-          </div>
-        </article>
-        <article className={styles.featureCard}>
-          <Crown size={42} />
-          <div>
-            <h2>{labels.monthlyTitle}</h2>
-            <p>{labels.monthlyText}</p>
-          </div>
-        </article>
-      </section>
+          <section className={styles.featureGrid} aria-label={labels.heroEyebrow}>
+            <article className={styles.featureCard}>
+              <Clock3 size={40} />
+              <div>
+                <h2>{labels.dailyTitle}</h2>
+                <p>{labels.dailyText}</p>
+              </div>
+            </article>
+            <article className={styles.featureCard}>
+              <BookOpen size={40} />
+              <div>
+                <h2>{labels.knowledgeTitle}</h2>
+                <p>{labels.knowledgeText}</p>
+              </div>
+            </article>
+            <article className={styles.featureCard}>
+              <Crown size={42} />
+              <div>
+                <h2>{labels.monthlyTitle}</h2>
+                <p>{labels.monthlyText}</p>
+              </div>
+            </article>
+          </section>
+        </>
+      ) : null}
 
-      <div className={styles.challengeGrid}>
+      <div className={gameMode ? styles.gameModeShell : styles.challengeGrid}>
         <section ref={quizPanelRef} className={styles.liveQuizPanel} aria-live="polite">
-      <div className={styles.sectionHeader}>
-        <div>
-          <p className={styles.todayBadge}>{labels.today}</p>
-          <h2 className={styles.quizTitle}>{activeQuiz?.title ?? labels.dailyQuizTitle}</h2>
-          <p className={styles.quizLead}>{activeQuiz?.description ?? labels.dailyQuizText}</p>
+      {!gameMode ? (
+        <div className={styles.sectionHeader}>
+          <div>
+            <p className={styles.todayBadge}>{labels.today}</p>
+            <h2 className={styles.quizTitle}>{activeQuiz?.title ?? labels.dailyQuizTitle}</h2>
+            <p className={styles.quizLead}>{activeQuiz?.description ?? labels.dailyQuizText}</p>
+          </div>
+          <div className={styles.quizHeaderActions}>
+            <span aria-hidden="true"><Shield size={18} /></span>
+            <span aria-hidden="true"><Clock3 size={18} /></span>
+            <span aria-hidden="true"><BriefcaseBusiness size={18} /></span>
+            <button
+              type="button"
+              className={styles.quizInfoButton}
+              onClick={() => setIsExampleOpen(true)}
+              aria-label={labels.infoLabel}
+            >
+              <Info size={18} />
+            </button>
+            {loading ? <Loader2 className={styles.spinIcon} size={24} /> : <Lock size={24} />}
+          </div>
         </div>
-        <div className={styles.quizHeaderActions}>
-          <span aria-hidden="true"><Shield size={18} /></span>
-          <span aria-hidden="true"><Clock3 size={18} /></span>
-          <span aria-hidden="true"><BriefcaseBusiness size={18} /></span>
-          <button
-            type="button"
-            className={styles.quizInfoButton}
-            onClick={() => setIsExampleOpen(true)}
-            aria-label={labels.infoLabel}
-          >
-            <Info size={18} />
-          </button>
-          {loading ? <Loader2 className={styles.spinIcon} size={24} /> : <Lock size={24} />}
-        </div>
-      </div>
+      ) : null}
 
       {loading ? <p className={styles.quizState}>{labels.loading}</p> : null}
       {!loading && !activeQuiz ? <p className={styles.quizState}>{loadError ?? labels.empty}</p> : null}
@@ -642,15 +688,23 @@ export default function QuizClient({ locale }: { locale: string }) {
       {activeQuiz ? (
         <div className={styles.liveQuizBody}>
           {!result && !hasStarted ? (
-            <button
-              type="button"
-              className={`${styles.submitQuizButton} ${styles.quizStartButton}`}
-              disabled={authLoading}
-              onClick={handleOpenStart}
-            >
-              <Clock3 size={16} />
-              {labels.start}
-            </button>
+            <div className={gameMode ? styles.inlineStartPanel : ""}>
+              {gameMode ? (
+                <div>
+                  <h3 className={styles.startDialogTitle}>{labels.startTitle}</h3>
+                  <p className={styles.startDialogText}>{labels.startDescription}</p>
+                </div>
+              ) : null}
+              <button
+                type="button"
+                className={`${styles.submitQuizButton} ${styles.quizStartButton}`}
+                disabled={authLoading}
+                onClick={handleOpenStart}
+              >
+                <Clock3 size={16} />
+                {labels.start}
+              </button>
+            </div>
           ) : null}
 
           {!result && hasStarted && currentQuestion ? (
@@ -828,6 +882,7 @@ export default function QuizClient({ locale }: { locale: string }) {
       ) : null}
         </section>
 
+        {!gameMode ? (
         <aside className={styles.leaderboardPanel} aria-labelledby="monthly-ranking-title">
           <div className={styles.leaderboardHeader}>
             <div>
@@ -864,8 +919,10 @@ export default function QuizClient({ locale }: { locale: string }) {
             </div>
           ))}
         </aside>
+        ) : null}
       </div>
 
+      {!gameMode ? (
       <section className={styles.statsRail} aria-label={labels.heroEyebrow}>
         <div>
           <Clock3 size={30} />
@@ -888,6 +945,32 @@ export default function QuizClient({ locale }: { locale: string }) {
           <span>{labels.statChampion}</span>
         </div>
       </section>
+      ) : null}
+
+      {isGamePopupOpen ? (
+        <div className={styles.gameOverlay} role="presentation" onClick={() => setIsGamePopupOpen(false)}>
+          <section
+            className={styles.gameDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="quiz-game-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className={styles.gameDialogHeader}>
+              <h2 id="quiz-game-title">{activeQuiz?.title ?? labels.dailyQuizTitle}</h2>
+              <button
+                type="button"
+                className={styles.gameCloseButton}
+                onClick={() => setIsGamePopupOpen(false)}
+                aria-label={labels.close}
+              >
+                <X size={18} />
+              </button>
+            </div>
+            <QuizClient locale={locale} gameMode />
+          </section>
+        </div>
+      ) : null}
 
       {isStartDialogOpen ? (
         <div className={styles.exampleOverlay} role="presentation" onClick={() => setIsStartDialogOpen(false)}>

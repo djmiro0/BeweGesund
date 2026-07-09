@@ -12,7 +12,7 @@ Public quiz documents live in `quizzes/{quizId}`. These documents are readable b
   "status": "published",
   "availableFrom": "2026-07-01T00:00:00.000Z",
   "availableUntil": "2026-07-02T00:00:00.000Z",
-  "timeLimitSeconds": 10,
+  "timeLimitSeconds": 30,
   "monthlyPeriod": "2026-07",
   "allowRetake": false,
   "pointsPerCorrect": 100,

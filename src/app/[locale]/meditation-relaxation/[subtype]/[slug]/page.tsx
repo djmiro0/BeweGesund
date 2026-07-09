@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, HandHeart, PlayCircle, ShieldCheck, Sparkles, UserRou
 import { getTranslations } from "next-intl/server";
 import { getMeditationRelaxationItem } from "@/lib/contentful";
 import BackButton from "../../../components/BackButton";
+import { ContentRewardPanel } from "../../../components/ContentReward";
 import ProtectedMuxPlayer from "../../../courses/[slug]/ProtectedMuxPlayer";
 import blogStyles from "../../../blogs/Blogs.module.css";
 import styles from "../../Relaxation.module.css";
@@ -37,6 +38,36 @@ export default async function MeditationRelaxationDetailPage({
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
+  const rewardLabels = locale === "de"
+    ? {
+        title: "Entspannungs-Bonus",
+        locked: "Fortschritt {percent}% / 50%.",
+        available: "Bonus verfügbar. Punkte werden gesammelt.",
+        claimed: "Abgeschlossen. Punkte gesammelt.",
+        dailyLimit: "Tägliches Limit erreicht.",
+        signIn: "Melde dich an, um Punkte zu sammeln.",
+        xp: "+{points} XP",
+        claim: "Punkte sammeln",
+        claiming: "Sammeln...",
+      }
+    : {
+        title: "Relaxation bonus",
+        locked: "Progress {percent}% / 50%.",
+        available: "Reward available. Collecting points.",
+        claimed: "Completed. Points collected.",
+        dailyLimit: "Daily limit reached.",
+        signIn: "Sign in to collect points.",
+        xp: "+{points} XP",
+        claim: "Collect points",
+        claiming: "Collecting...",
+      };
+  const rewardTarget = {
+    contentId: `relaxation_${locale}_${item.slug}`,
+    contentType: "relaxation" as const,
+    durationSeconds: item.durationMinutes ? item.durationMinutes * 60 : undefined,
+    points: 30,
+    labels: rewardLabels,
+  };
 
   if (isSelfMassage) {
     return (
@@ -120,6 +151,7 @@ export default async function MeditationRelaxationDetailPage({
           locale={locale}
           poster={item.posterImage}
           title={item.title}
+          reward={rewardTarget}
           messages={{
             videoPending: t("player.videoPending"),
             preparingVideo: t("player.preparingVideo"),
@@ -151,6 +183,7 @@ export default async function MeditationRelaxationDetailPage({
         </article>
 
         <aside className={styles.detailMeta}>
+          <ContentRewardPanel target={rewardTarget} />
           <span>
             <PlayCircle size={15} />
             {item.muxPlaybackId ? t("detail.videoAvailable") : t("player.videoPending")}

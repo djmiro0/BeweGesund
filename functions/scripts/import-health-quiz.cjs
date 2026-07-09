@@ -93,7 +93,7 @@ function buildQuiz(locale, sourceQuestions, translations) {
       locale,
       status: "published",
       monthlyPeriod: new Date().toISOString().slice(0, 7),
-      timeLimitSeconds: 10,
+      timeLimitSeconds: 30,
       allowRetake: false,
       pointsPerCorrect: 100,
       speedBonusMax: 50,
