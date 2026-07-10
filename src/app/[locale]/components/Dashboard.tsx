@@ -458,7 +458,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                         whileHover={{ y: -3 }}
                                         data-testid={`dashboard-workout-list-item-${course.id}`}
                                     >
-                                        <Link href={`/${locale}/courses/${course.slug}`} className={styles.newsImage}>
+                                        <Link
+                                            href={`/${locale}/courses/${course.slug}`}
+                                            className={styles.newsImage}
+                                            aria-label={course.title}
+                                        >
                                             {course.posterImage ? (
                                                 <Image
                                                     src={course.posterImage}
@@ -533,7 +537,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                         variants={fadeUp}
                                         whileHover={{ y: -3 }}
                                     >
-                                        <Link href={`/${locale}/blogs/${post.slug}`} className={styles.newsImage}>
+                                        <Link
+                                            href={`/${locale}/blogs/${post.slug}`}
+                                            className={styles.newsImage}
+                                            aria-label={post.title}
+                                        >
                                             {post.featuredImage ? (
                                                 <Image
                                                     src={post.featuredImage}
@@ -587,7 +595,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                         variants={fadeUp}
                                         whileHover={{ y: -3 }}
                                     >
-                                        <Link href={getMeditationHref(item)} className={`${styles.newsImage} ${styles.meditationImage}`}>
+                                        <Link
+                                            href={getMeditationHref(item)}
+                                            className={`${styles.newsImage} ${styles.meditationImage}`}
+                                            aria-label={item.title}
+                                        >
                                             {item.posterImage ? (
                                                 <Image
                                                     src={item.posterImage}
