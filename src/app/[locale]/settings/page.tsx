@@ -1,7 +1,7 @@
 "use client";
 
 import { updateProfile } from "firebase/auth";
-import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc, writeBatch } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import {
   Activity,
@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { type ComponentType, type ReactNode, useEffect, useState } from "react";
+import { type ComponentType, type ReactNode, useEffect, useMemo, useState } from "react";
 import { db, storage } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
 import BackButton from "../components/BackButton";
@@ -44,6 +44,14 @@ import { languageToLocale } from "@/lib/appPreferences";
 
 function cloneSettings(settings: UserSettings): UserSettings {
   return structuredClone(settings);
+}
+
+function areSettingsEqual(left: UserSettings, right: UserSettings) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function areRecordsEqual(left: Record<string, unknown>, right: Record<string, unknown>) {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 type SettingsSectionId =
@@ -80,11 +88,14 @@ export default function SettingsPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [storedSettings, setStoredSettings] = useState<Record<string, unknown>>({});
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [uploadingProgressPhoto, setUploadingProgressPhoto] = useState<"before" | "after" | null>(null);
   const [activeSection, setActiveSection] = useState<SettingsSectionId>("profile");
+  const isDirty = useMemo(
+    () => !areSettingsEqual(savedSettings, draftSettings),
+    [draftSettings, savedSettings],
+  );
 
   useEffect(() => {
     if (!userId) {
@@ -137,11 +148,10 @@ export default function SettingsPage() {
     }));
     setSuccessMessage("");
     setErrorMessage("");
-    setIsDirty(true);
   };
 
   const handleSave = async () => {
-    if (!user || isSaving) return;
+    if (!user || isSaving || !isDirty) return;
 
     setIsSaving(true);
     setSuccessMessage("");
@@ -164,26 +174,38 @@ export default function SettingsPage() {
         }
       }
 
-      const batch = writeBatch(db);
-      batch.update(doc(db, "users", user.uid), {
-        ...profileUpdateFromSettings(draftSettings),
-        updatedAt: serverTimestamp(),
-      });
-      batch.set(
-        doc(db, "users", user.uid, "settings", "preferences"),
-        {
-          ...storedSettingsFromForm(draftSettings),
+      const savedProfileUpdate = profileUpdateFromSettings(savedSettings);
+      const draftProfileUpdate = profileUpdateFromSettings(draftSettings);
+      const hasProfileChanges = !areRecordsEqual(savedProfileUpdate, draftProfileUpdate);
+      const savedStoredSettings = storedSettingsFromForm(savedSettings);
+      const draftStoredSettings = storedSettingsFromForm(draftSettings);
+      const hasStoredSettingsChanges = !areRecordsEqual(savedStoredSettings, draftStoredSettings);
+
+      if (hasProfileChanges) {
+        await updateDoc(doc(db, "users", user.uid), {
+          ...draftProfileUpdate,
           updatedAt: serverTimestamp(),
-        },
-        { merge: true },
-      );
-      await batch.commit();
-      await updateProfile(user, {
-        displayName: draftSettings.profile.fullName.trim(),
-      }).catch(() => undefined);
+        });
+      }
+
+      if (hasStoredSettingsChanges) {
+        await setDoc(
+          doc(db, "users", user.uid, "settings", "preferences"),
+          {
+            ...draftStoredSettings,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true },
+        );
+      }
+
+      if (hasProfileChanges && savedSettings.profile.fullName.trim() !== draftSettings.profile.fullName.trim()) {
+        await updateProfile(user, {
+          displayName: draftSettings.profile.fullName.trim(),
+        }).catch(() => undefined);
+      }
 
       setSavedSettings(cloneSettings(draftSettings));
-      setIsDirty(false);
       setSuccessMessage(t("messages.saveSuccess"));
 
       const nextLocale = languageToLocale(draftSettings.app.language);
@@ -322,7 +344,6 @@ export default function SettingsPage() {
     setDraftSettings(cloneSettings(savedSettings));
     setSuccessMessage("");
     setErrorMessage("");
-    setIsDirty(false);
   };
 
   const settingsSections: SettingsNavItem[] = [
@@ -498,18 +519,22 @@ export default function SettingsPage() {
                   <p className={styles.errorMessage} role="alert">
                     {errorMessage}
                   </p>
+                ) : isDirty ? (
+                  <p className={styles.dirtyMessage} role="status" data-testid="settings-dirty-message">
+                    {t("messages.unsavedChanges")}
+                  </p>
                 ) : (
                   <span />
                 )}
                 <div className={styles.actionButtons}>
-                  <button type="button" className={styles.resetButton} onClick={handleReset} disabled={isSaving}>
+                  <button type="button" className={styles.resetButton} onClick={handleReset} disabled={!isDirty || isSaving}>
                     {t("actions.reset")}
                   </button>
                   <button
                     type="button"
                     className={styles.saveButton}
                     onClick={() => void handleSave()}
-                    disabled={!isDirty || isSaving}
+                    disabled={!isDirty || isSaving || !preferencesLoaded}
                     data-testid="settings-save-button"
                   >
                     {isSaving ? t("actions.saving") : t("actions.save")}

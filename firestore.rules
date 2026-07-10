@@ -31,6 +31,23 @@ service cloud.firestore {
             && request.resource.data.weightKg <= 300));
     }
 
+    function fieldChanged(field) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasAny([field]);
+    }
+
+    function hasValidChangedHealthProfile() {
+      return (!fieldChanged("age") || isValidAge(request.resource.data.age))
+        && (!fieldChanged("gender") || isValidGender(request.resource.data.gender))
+        && (!fieldChanged("heightCm") || request.resource.data.heightCm == null
+          || (request.resource.data.heightCm is number
+            && request.resource.data.heightCm >= 80
+            && request.resource.data.heightCm <= 240))
+        && (!fieldChanged("weightKg") || request.resource.data.weightKg == null
+          || (request.resource.data.weightKg is number
+            && request.resource.data.weightKg >= 25
+            && request.resource.data.weightKg <= 300));
+    }
+
     function hasValidAnamnesis() {
       return request.resource.data.keys().hasAny(["anamnesis"])
         && request.resource.data.anamnesis is map
@@ -83,42 +100,50 @@ service cloud.firestore {
       ];
     }
 
-    function profileImmutableFieldsUnchanged() {
-      return request.resource.data.xp == resource.data.xp
-        && request.resource.data.points == resource.data.points
-        && request.resource.data.premiumStatus == resource.data.premiumStatus
-        && request.resource.data.subscriptionStatus == resource.data.subscriptionStatus
-        && request.resource.data.memberPackage == resource.data.memberPackage
-        && request.resource.data.currentStreak == resource.data.currentStreak
-        && request.resource.data.longestStreak == resource.data.longestStreak
-        && request.resource.data.weeklyLeaderboardRank == resource.data.weeklyLeaderboardRank
-        && request.resource.data.monthlyLeaderboardRank == resource.data.monthlyLeaderboardRank
-        && request.resource.data.weeklyScore == resource.data.weeklyScore
-        && request.resource.data.monthlyScore == resource.data.monthlyScore
-        && request.resource.data.claimedRewardIds == resource.data.claimedRewardIds
-        && request.resource.data.startedCourseIds == resource.data.startedCourseIds
-        && request.resource.data.completedCourseIds == resource.data.completedCourseIds
-        && request.resource.data.recommendedCourseIds == resource.data.recommendedCourseIds
-        && request.resource.data.anamnesis == resource.data.anamnesis
-        && request.resource.data.anamnesisStatusKey == resource.data.anamnesisStatusKey
-        && request.resource.data.consentAcceptedAt == resource.data.consentAcceptedAt
-        && request.resource.data.keys().hasAny(["healthConsentAcceptedAt"])
-          == resource.data.keys().hasAny(["healthConsentAcceptedAt"])
-        && (!resource.data.keys().hasAny(["healthConsentAcceptedAt"])
-          || request.resource.data.healthConsentAcceptedAt == resource.data.healthConsentAcceptedAt)
-        && request.resource.data.keys().hasAny(["stripeCustomerId"])
-          == resource.data.keys().hasAny(["stripeCustomerId"])
-        && (!resource.data.keys().hasAny(["stripeCustomerId"])
-          || request.resource.data.stripeCustomerId == resource.data.stripeCustomerId)
-        && request.resource.data.keys().hasAny(["stripeSubscriptionId"])
-          == resource.data.keys().hasAny(["stripeSubscriptionId"])
-        && (!resource.data.keys().hasAny(["stripeSubscriptionId"])
-          || request.resource.data.stripeSubscriptionId == resource.data.stripeSubscriptionId)
-        && request.resource.data.keys().hasAny(["stripeSubscriptionStatus"])
-          == resource.data.keys().hasAny(["stripeSubscriptionStatus"])
-        && (!resource.data.keys().hasAny(["stripeSubscriptionStatus"])
-          || request.resource.data.stripeSubscriptionStatus == resource.data.stripeSubscriptionStatus)
-        && request.resource.data.roles == resource.data.roles;
+    function profileOnlyMutableFieldsChanged() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        "firstName",
+        "lastName",
+        "displayName",
+        "photoURL",
+        "age",
+        "dateOfBirth",
+        "heightCm",
+        "weightKg",
+        "occupationKey",
+        "regionKey",
+        "averageStepsPerDay",
+        "primaryGoalKey",
+        "updatedAt"
+      ]);
+    }
+
+    function hasOnlySettingsFields() {
+      return request.resource.data.keys().hasOnly([
+        "profile",
+        "bodyProgress",
+        "workoutPreferences",
+        "nutrition",
+        "notifications",
+        "progressPhotos",
+        "privacy",
+        "app",
+        "updatedAt"
+      ]);
+    }
+
+    function settingsOnlyMutableFieldsChanged() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+        "profile",
+        "bodyProgress",
+        "workoutPreferences",
+        "nutrition",
+        "notifications",
+        "progressPhotos",
+        "privacy",
+        "app",
+        "updatedAt"
+      ]);
     }
 
     function hasOnlyProfileFields() {
@@ -199,10 +224,8 @@ service cloud.firestore {
       allow read: if isOwner(userId);
       allow create: if isValidProfileCreate(userId);
       allow update: if isOwner(userId)
-        && profileImmutableFieldsUnchanged()
-        && hasValidHealthProfile()
-        && request.resource.data.uid == resource.data.uid
-        && request.resource.data.email == resource.data.email;
+        && profileOnlyMutableFieldsChanged()
+        && hasValidChangedHealthProfile();
       allow delete: if false;
 
       match /lessonCompletions/{completionId} {
@@ -247,18 +270,8 @@ service cloud.firestore {
 
       match /settings/{settingsId} {
         allow read, delete: if isOwner(userId);
-        allow create, update: if isOwner(userId)
-          && request.resource.data.keys().hasOnly([
-            "profile",
-            "bodyProgress",
-            "workoutPreferences",
-            "nutrition",
-            "notifications",
-            "progressPhotos",
-            "privacy",
-            "app",
-            "updatedAt"
-          ]);
+        allow create: if isOwner(userId) && hasOnlySettingsFields();
+        allow update: if isOwner(userId) && settingsOnlyMutableFieldsChanged();
       }
     }
 
@@ -268,6 +281,15 @@ service cloud.firestore {
 
       match /entries/{entryId} {
         allow read: if isSignedIn();
+        allow write: if false;
+      }
+
+      match /regions/{regionKey}/entries/{entryId} {
+        allow read: if isSignedIn()
+          && isValidRegion(regionKey)
+          && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.regionKey == regionKey
+          && resource.data.regionKey == regionKey
+          && get(/databases/$(database)/documents/users/$(resource.data.userId)).data.regionKey == regionKey;
         allow write: if false;
       }
     }

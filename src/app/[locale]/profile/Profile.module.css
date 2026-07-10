@@ -1010,6 +1010,37 @@
   padding-bottom: 0.55rem;
 }
 
+.pointsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  padding: 0 0.82rem 0.72rem;
+}
+
+.pointsGrid > div {
+  display: grid;
+  gap: 0.18rem;
+  border: 1px solid rgba(var(--page-ink-rgb), 0.09);
+  border-radius: 0.75rem;
+  background: rgba(var(--page-soft-rgb), 0.7);
+  padding: 0.62rem;
+}
+
+.pointsGrid span {
+  color: rgba(var(--page-ink-rgb), 0.58);
+  font-size: 0.61rem;
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.pointsGrid strong {
+  color: var(--page-ink);
+  font-size: 1.12rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
 .progressTrack {
   height: 0.55rem;
   margin: 0 0.8rem 0.85rem;
@@ -1157,6 +1188,17 @@
 .leaderboardRow:hover {
   transform: translateX(3px);
   border-color: rgba(var(--page-warm-rgb), 0.42);
+}
+
+.leaderboardState {
+  margin: 0;
+  border: 1px dashed var(--leaderboard-row-border);
+  border-radius: 0.8rem;
+  color: var(--leaderboard-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
+  padding: 0.8rem;
 }
 
 .currentUserRow {

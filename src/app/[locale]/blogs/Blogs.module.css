@@ -86,9 +86,6 @@
 .heroMeta {
   display: grid;
   gap: 0.55rem;
-  border: 1px solid var(--blogs-border);
-  border-radius: 0.9rem;
-  background: var(--blogs-panel);
   color: var(--blogs-muted);
   font-size: 0.74rem;
   font-weight: 850;

@@ -254,7 +254,6 @@ export function profileUpdateFromSettings(settings: UserSettings) {
     lastName: lastNameParts.join(" "),
     displayName: settings.profile.fullName.trim(),
     ...(settings.profile.age > 0 ? { age: settings.profile.age } : {}),
-    ...(settings.profile.gender ? { gender: settings.profile.gender } : {}),
     heightCm: settings.profile.height > 0 ? settings.profile.height : null,
     weightKg: settings.profile.weight > 0 ? settings.profile.weight : null,
     primaryGoalKey: settings.profile.mainGoal,

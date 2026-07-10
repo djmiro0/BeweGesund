@@ -1,11 +1,12 @@
 "use client";
 
-import { AlertTriangle, Trash2, X } from "lucide-react";
+import { AlertTriangle, KeyRound, Trash2, X } from "lucide-react";
 import {
   EmailAuthProvider,
   GoogleAuthProvider,
   reauthenticateWithCredential,
   reauthenticateWithPopup,
+  sendPasswordResetEmail,
   signOut,
   type AuthError,
 } from "firebase/auth";
@@ -19,9 +20,11 @@ import styles from "../Settings.module.css";
 
 export default function AccountManagement() {
   const t = useTranslations("profile.delete");
+  const passwordT = useTranslations("profile.password");
   const locale = useLocale();
   const router = useRouter();
   const { user } = useAuth();
+  const [passwordMessage, setPasswordMessage] = useState("");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
@@ -51,6 +54,17 @@ export default function AccountManagement() {
         return t("errors.permissionDenied");
       default:
         return t("errors.generic");
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!user?.email) return;
+
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      setPasswordMessage(passwordT("success"));
+    } catch {
+      setPasswordMessage(passwordT("error"));
     }
   };
 
@@ -89,6 +103,24 @@ export default function AccountManagement() {
 
   return (
     <>
+      <section className={`${styles.accountManagement} ${styles.passwordManagement}`} data-testid="settings-password-management">
+        <div className={styles.accountManagementCopy}>
+          <span className={styles.accountIcon}>
+            <KeyRound size={21} />
+          </span>
+          <div>
+            <p className={styles.eyebrow}>{passwordT("eyebrow")}</p>
+            <h2>{passwordT("title")}</h2>
+            <p>{passwordT("description")}</p>
+            {passwordMessage ? <p className={styles.accountStatus} role="status">{passwordMessage}</p> : null}
+          </div>
+        </div>
+        <button type="button" className={styles.secondaryButton} onClick={() => void handlePasswordReset()}>
+          <KeyRound size={17} />
+          {passwordT("open")}
+        </button>
+      </section>
+
       <section className={styles.accountManagement} data-testid="settings-account-management">
         <div className={styles.accountManagementCopy}>
           <span className={styles.accountIcon}>

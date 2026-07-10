@@ -885,6 +885,11 @@
         "description": "Competitions for motivation, engagement, and regional progress."
       }
     },
+    "points": {
+      "total": "Points",
+      "xp": "XP",
+      "weekly": "Week"
+    },
     "calm": {
       "meditation": "Meditation",
       "breathTraining": "Breathing training",
@@ -901,21 +906,32 @@
       "empty": "No courses have been saved here yet."
     },
     "leaderboard": {
-      "eyebrow": "This week's arena",
-      "title": "Weekly leaderboard",
-      "description": "Consistency, learning, and completed training will shape this ranking once gamification goes live.",
+      "eyebrow": "Your region",
+      "title": "Regional leaderboard",
+      "description": "Only members from your selected region appear here. Points come from quizzes, courses, workouts, and content rewards.",
       "rank": "Rank",
       "competitor": "Competitor",
       "points": "Points",
       "champion": "Champion of the month",
       "you": "You · current week",
-      "placeholder": "Preview data. Real points will be connected to workouts, videos, and blog activity in the gamification phase."
+      "loading": "Loading regional leaderboard...",
+      "empty": "No points have been collected in your region yet.",
+      "noRegion": "Add your region in profile settings to see the local leaderboard.",
+      "note": "Your private total points stay in your profile. The shared leaderboard shows only regional weekly score and display name."
     },
     "account": {
       "eyebrow": "Account",
       "title": "End session",
       "description": "Sign out here when you do not want to keep this profile open on this device.",
       "signOut": "Sign out"
+    },
+    "password": {
+      "eyebrow": "Account security",
+      "title": "Change password",
+      "description": "Send a password reset email when you want to choose a new password for this account.",
+      "open": "Send reset email",
+      "success": "A password-change email was sent.",
+      "error": "The password email could not be sent."
     },
     "delete": {
       "eyebrow": "Account control",
@@ -1433,6 +1449,7 @@
         "description": "Personal details and training profile.",
         "changePhoto": "Change photo",
         "uploading": "Uploading...",
+        "loadingPhoto": "Loading profile photo",
         "photoHint": "JPG, PNG, or WebP. Maximum 5 MB."
       },
       "body": {
@@ -1567,6 +1584,7 @@
     },
     "messages": {
       "loadError": "Settings could not be loaded.",
+      "unsavedChanges": "You have unsaved changes.",
       "saveSuccess": "Settings saved successfully.",
       "permissionError": "Settings could not be saved because permission is missing.",
       "saveError": "Settings could not be saved. Please try again.",

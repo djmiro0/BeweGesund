@@ -311,6 +311,14 @@
   box-shadow: 0 0 0 3px rgba(var(--page-accent-rgb), 0.11);
 }
 
+.field input:disabled,
+.field select:disabled {
+  cursor: not-allowed;
+  border-color: rgba(var(--page-ink-rgb), 0.08);
+  background: rgba(var(--page-ink-rgb), 0.06);
+  color: rgba(var(--page-ink-rgb), 0.48);
+}
+
 .inputSuffix {
   position: absolute;
   right: 0.8rem;
@@ -334,6 +342,7 @@
 
 .avatarPlaceholder {
   display: flex;
+  position: relative;
   width: 4.4rem;
   height: 4.4rem;
   flex: 0 0 auto;
@@ -347,6 +356,27 @@
   font-size: 1.6rem;
   font-weight: 950;
   box-shadow: 0 16px 34px rgba(var(--page-accent-rgb), 0.16);
+}
+
+.avatarPlaceholderLoading {
+  background:
+    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.18), rgba(var(--page-olive-rgb), 0.18)),
+    rgba(var(--page-base-rgb), 0.68);
+}
+
+.avatarSpinner {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 3px solid rgba(var(--page-soft-rgb), 0.45);
+  border-top-color: var(--page-soft);
+  border-radius: 999px;
+  animation: avatarSpin 0.85s linear infinite;
+}
+
+@keyframes avatarSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .avatarUpload {
@@ -670,6 +700,11 @@
   transform: translateX(1.32rem);
 }
 
+.toggleRow:has(input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
 .accountActions,
 .actionButtons {
   display: flex;
@@ -719,9 +754,23 @@
   transform: translateY(-2px);
 }
 
+.secondaryButton:disabled,
+.dangerButton:disabled,
+.resetButton:disabled,
+.saveButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  transform: none;
+}
+
 .saveButton:hover {
   background: var(--page-accent);
   color: var(--shell-text);
+}
+
+.saveButton:disabled:hover {
+  background: var(--page-ink);
+  color: var(--page-base);
 }
 
 .actionBar {
@@ -743,6 +792,12 @@
   font-weight: 950;
 }
 
+.dirtyMessage {
+  margin: 0;
+  color: var(--page-muted);
+  font-weight: 850;
+}
+
 .accountManagement {
   display: flex;
   justify-content: space-between;
@@ -753,6 +808,11 @@
   border-radius: 1.35rem;
   background: linear-gradient(135deg, rgba(var(--accent-strong-rgb), 0.08), rgba(var(--page-soft-rgb), 0.96));
   padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.passwordManagement {
+  border-color: rgba(var(--page-olive-rgb), 0.24);
+  background: linear-gradient(135deg, rgba(var(--page-olive-rgb), 0.12), rgba(var(--page-soft-rgb), 0.96));
 }
 
 .accountManagementCopy {
@@ -790,6 +850,13 @@
   line-height: 1.55;
 }
 
+.accountStatus {
+  margin: 0.6rem 0 0;
+  color: var(--page-olive);
+  font-weight: 900;
+}
+
+.secondaryButton,
 .dangerButton {
   display: inline-flex;
   flex: 0 0 auto;

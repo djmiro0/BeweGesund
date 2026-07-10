@@ -25,17 +25,20 @@ const appCheckEnabled = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED === "t
 const appCheckDebugToken = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN;
 const isLocalAppCheckHost = typeof window !== "undefined"
   && ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+const appCheckDebugTokenValue = isLocalAppCheckHost && appCheckDebugToken === "..."
+  ? true
+  : appCheckDebugToken;
 const shouldInitializeAppCheck = appCheckEnabled
   && appCheckSiteKey
-  && (!isLocalAppCheckHost || appCheckDebugToken);
+  && (!isLocalAppCheckHost || appCheckDebugTokenValue);
 
 if (
   typeof window !== "undefined"
   && shouldInitializeAppCheck
   && !window.__BEWEGESUND_APP_CHECK_INITIALIZED__
 ) {
-  if (appCheckDebugToken) {
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = appCheckDebugToken === "true" ? true : appCheckDebugToken;
+  if (appCheckDebugTokenValue) {
+    self.FIREBASE_APPCHECK_DEBUG_TOKEN = appCheckDebugTokenValue === "true" ? true : appCheckDebugTokenValue;
   }
 
   initializeAppCheck(app, {
@@ -43,6 +46,16 @@ if (
     isTokenAutoRefreshEnabled: true,
   });
   window.__BEWEGESUND_APP_CHECK_INITIALIZED__ = true;
+
+  if (process.env.NODE_ENV === "development") {
+    console.info("[Firebase App Check]", {
+      appId: firebaseConfig.appId,
+      projectId: firebaseConfig.projectId,
+      host: window.location.hostname,
+      debugTokenConfigured: Boolean(appCheckDebugTokenValue),
+      siteKeyConfigured: Boolean(appCheckSiteKey),
+    });
+  }
 }
 
 export const auth = getAuth(app);

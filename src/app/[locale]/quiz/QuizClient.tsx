@@ -1,6 +1,6 @@
 "use client";
 
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import {
   ArrowLeft,
@@ -76,6 +76,18 @@ interface QuizAnswerFeedback {
   loading: boolean;
 }
 
+interface LeaderboardEntry {
+  userId: string;
+  displayName: string;
+  regionKey: string;
+  score: number;
+}
+
+interface LeaderboardState {
+  regionKey: string | null;
+  entries: LeaderboardEntry[];
+}
+
 const copy = {
   de: {
     title: "Aktiver Quiz",
@@ -137,9 +149,12 @@ const copy = {
     leaderboardEyebrow: "Monats-Champion",
     leaderboardTitle: "Monatsrangliste",
     fullRanking: "Komplette Rangliste",
-    cityBerlin: "Berlin",
-    cityMunich: "München",
-    cityHamburg: "Hamburg",
+    leaderboardLoading: "Regionale Rangliste wird geladen...",
+    leaderboardEmpty: "In deiner Region wurden noch keine Punkte gesammelt.",
+    leaderboardNoRegion: "Füge in deinem Profil eine Region hinzu, um die Rangliste zu sehen.",
+    leaderboardSignIn: "Einloggen, um deine regionale Rangliste zu sehen.",
+    leaderboardMember: "Mitglied",
+    you: "Du",
     statTime: "Zeit pro Challenge",
     statQuestions: "Fragen täglich",
     statKnowledge: "Wissen erweitern",
@@ -205,9 +220,12 @@ const copy = {
     leaderboardEyebrow: "Monthly champion",
     leaderboardTitle: "Monthly leaderboard",
     fullRanking: "Full ranking",
-    cityBerlin: "Berlin",
-    cityMunich: "Munich",
-    cityHamburg: "Hamburg",
+    leaderboardLoading: "Loading regional leaderboard...",
+    leaderboardEmpty: "No points have been collected in your region yet.",
+    leaderboardNoRegion: "Add a region in your profile to see the leaderboard.",
+    leaderboardSignIn: "Sign in to see your regional leaderboard.",
+    leaderboardMember: "Member",
+    you: "You",
     statTime: "Time per challenge",
     statQuestions: "Daily questions",
     statKnowledge: "Expand knowledge",
@@ -315,6 +333,25 @@ function formatTemplate(template: string, values: Record<string, number>) {
   );
 }
 
+function leaderboardInitials(name: string) {
+  const initials = name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
+
+  return initials || "M";
+}
+
+function readableRegion(regionKey: string) {
+  return regionKey
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 export default function QuizClient({
   locale,
   gameMode = false,
@@ -325,7 +362,7 @@ export default function QuizClient({
   autoStart?: boolean;
 }) {
   const labels = locale === "de" ? copy.de : copy.en;
-  const { user, loading: authLoading, openAuth } = useAuth();
+  const { user, profile, loading: authLoading, openAuth } = useAuth();
   const quizPanelRef = useRef<HTMLElement | null>(null);
   const startedAtRef = useRef<number>(Date.now());
   const questionStartedAtRef = useRef<number>(Date.now());
@@ -346,6 +383,10 @@ export default function QuizClient({
   const [result, setResult] = useState<QuizResult | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [leaderboardState, setLeaderboardState] = useState<LeaderboardState>({
+    regionKey: null,
+    entries: [],
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -375,6 +416,46 @@ export default function QuizClient({
     };
   }, [labels.loadError, locale]);
 
+  useEffect(() => {
+    if (!user || !profile?.regionKey) {
+      return undefined;
+    }
+
+    const entriesQuery = query(
+      collection(db, "leaderboards", "monthly", "regions", profile.regionKey, "entries"),
+      orderBy("score", "desc"),
+      limit(3),
+    );
+
+    return onSnapshot(
+      entriesQuery,
+      (snapshot) => {
+        const entries = snapshot.docs.map((document) => {
+          const data = document.data();
+          const displayName = typeof data.displayName === "string" && data.displayName.trim()
+            ? data.displayName.trim()
+            : labels.leaderboardMember;
+          const regionKey = typeof data.regionKey === "string" && data.regionKey.trim()
+            ? data.regionKey
+            : profile.regionKey ?? "";
+          const score = typeof data.score === "number" && Number.isFinite(data.score) ? data.score : 0;
+
+          return {
+            userId: document.id,
+            displayName,
+            regionKey,
+            score,
+          };
+        });
+
+        setLeaderboardState({ regionKey: profile.regionKey, entries });
+      },
+      () => {
+        setLeaderboardState({ regionKey: profile.regionKey, entries: [] });
+      },
+    );
+  }, [labels.leaderboardMember, profile?.regionKey, user]);
+
   const activeQuiz = quizzes[0] ?? null;
   const quizDay = useMemo(() => berlinDateKey(), []);
   const activeQuestions = useMemo(() => (
@@ -389,6 +470,23 @@ export default function QuizClient({
   const currentQuestionFeedback = currentQuestion ? answerFeedbacks[currentQuestion.id] : undefined;
   const canMoveForward = (currentQuestionAnswered && !currentQuestionFeedback?.loading) || currentQuestionTimedOut;
   const isLastQuestion = currentQuestionIndex >= activeQuestions.length - 1;
+  const regionKey = profile?.regionKey ?? null;
+  const leaderboardEntries = regionKey === leaderboardState.regionKey ? leaderboardState.entries : [];
+  const leaderboardLoading = Boolean(user && regionKey && regionKey !== leaderboardState.regionKey);
+  const numberFormatter = useMemo(() => new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }), [locale]);
+  const monthlyScore = typeof profile?.monthlyScore === "number" ? profile.monthlyScore : 0;
+  const displayName = profile?.firstName || profile?.displayName || user?.displayName || labels.leaderboardMember;
+  const leaderboardWithCurrentUser = user && regionKey && !leaderboardEntries.some((entry) => entry.userId === user.uid)
+    ? [
+      ...leaderboardEntries,
+      {
+        userId: user.uid,
+        displayName,
+        regionKey,
+        score: monthlyScore,
+      },
+    ].sort((left, right) => right.score - left.score).slice(0, 3)
+    : leaderboardEntries;
 
   useEffect(() => {
     setCurrentQuestionIndex(0);
@@ -892,32 +990,38 @@ export default function QuizClient({
               </p>
               <h2 id="monthly-ranking-title">{labels.leaderboardTitle}</h2>
             </div>
-            <button type="button" className={styles.rankingButton}>
+            <Link href={`/${locale}/profile`} className={styles.rankingButton}>
               {labels.fullRanking}
               <ArrowRight size={16} />
-            </button>
+            </Link>
           </div>
 
-          {[
-            { rank: 1, name: "Mira", city: labels.cityBerlin, points: "1.280", initials: "M" },
-            { rank: 2, name: "Lukas", city: labels.cityMunich, points: "1.150", initials: "L" },
-            { rank: 3, name: "Sophie", city: labels.cityHamburg, points: "1.020", initials: "S" },
-          ].map((player) => (
-            <div key={player.name} className={styles.leaderboardRow}>
-              <span className={`${styles.rank} ${styles[`rank${player.rank}` as "rank1" | "rank2" | "rank3"]}`}>
-                {player.rank}
-              </span>
-              <span className={styles.playerAvatar}>{player.initials}</span>
-              <span className={styles.player}>
-                <strong>
-                  {player.name}
-                  {player.rank === 1 ? <Crown size={14} /> : null}
-                </strong>
-                <small>{player.city}</small>
-              </span>
-              <strong className={styles.points}>{player.points}</strong>
-            </div>
-          ))}
+          {!user ? <p className={styles.leaderboardState}>{labels.leaderboardSignIn}</p> : null}
+          {user && !regionKey ? <p className={styles.leaderboardState}>{labels.leaderboardNoRegion}</p> : null}
+          {leaderboardLoading ? <p className={styles.leaderboardState}>{labels.leaderboardLoading}</p> : null}
+          {user && regionKey && !leaderboardLoading && leaderboardWithCurrentUser.length === 0 ? (
+            <p className={styles.leaderboardState}>{labels.leaderboardEmpty}</p>
+          ) : null}
+          {user && regionKey && !leaderboardLoading ? leaderboardWithCurrentUser.map((player, index) => {
+            const rank = index + 1;
+
+            return (
+              <div key={player.userId} className={styles.leaderboardRow}>
+                <span className={`${styles.rank} ${styles[`rank${rank}` as "rank1" | "rank2" | "rank3"]}`}>
+                  {rank}
+                </span>
+                <span className={styles.playerAvatar}>{leaderboardInitials(player.displayName)}</span>
+                <span className={styles.player}>
+                  <strong>
+                    {player.displayName}
+                    {rank === 1 ? <Crown size={14} /> : null}
+                  </strong>
+                  <small>{player.userId === user.uid ? labels.you : readableRegion(player.regionKey)}</small>
+                </span>
+                <strong className={styles.points}>{numberFormatter.format(player.score)}</strong>
+              </div>
+            );
+          }) : null}
         </aside>
         ) : null}
       </div>

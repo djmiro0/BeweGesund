@@ -314,6 +314,58 @@ function buildUserPointIncrements(points: number) {
   );
 }
 
+function publicDisplayName(profile: FirebaseFirestore.DocumentSnapshot) {
+  const firstName = profile.get("firstName");
+  const displayName = profile.get("displayName");
+
+  if (typeof firstName === "string" && firstName.trim()) return firstName.trim();
+  if (typeof displayName === "string" && displayName.trim()) return displayName.trim();
+
+  return "Member";
+}
+
+function numericProfileField(profile: FirebaseFirestore.DocumentSnapshot, field: string) {
+  const value = profile.get(field);
+
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function updateRegionalLeaderboardEntries(
+  transaction: FirebaseFirestore.Transaction,
+  profile: FirebaseFirestore.DocumentSnapshot,
+  uid: string,
+  pointsGain: number,
+) {
+  if (pointsGain <= 0) return;
+
+  const regionKey = profile.get("regionKey");
+  if (typeof regionKey !== "string" || !regionKey.trim()) return;
+
+  const displayName = publicDisplayName(profile);
+  const leaderboardUpdates = [
+    { period: "weekly", scoreField: "weeklyScore" },
+    { period: "monthly", scoreField: "monthlyScore" },
+  ] as const;
+
+  leaderboardUpdates.forEach(({ period, scoreField }) => {
+    const entryRef = db
+      .collection(LEADERBOARDS_COLLECTION)
+      .doc(period)
+      .collection("regions")
+      .doc(regionKey)
+      .collection("entries")
+      .doc(uid);
+
+    transaction.set(entryRef, {
+      userId: uid,
+      displayName,
+      regionKey,
+      score: numericProfileField(profile, scoreField) + pointsGain,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+  });
+}
+
 async function assertContentExists(contentId: string, contentType: ContentRewardType) {
   if (contentType !== "quiz") return;
 
@@ -424,6 +476,7 @@ async function claimContentRewardForUser(
     ...buildUserPointIncrements(config.points),
     updatedAt: serverTimestamp(),
   });
+  updateRegionalLeaderboardEntries(transaction, profileSnapshot, uid, config.points);
 
   if (config.rewardPolicy === "LIMITED_PER_DAY") {
     transaction.set(dailyRewardRef, {
@@ -791,6 +844,7 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
       lastCompletedAt: completedAt,
       updatedAt: serverTimestamp(),
     });
+    updateRegionalLeaderboardEntries(transaction, snapshot, userId, pointsGain);
 
     return {
       ok: true,
@@ -1197,6 +1251,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
       lastQuizCompletedAt: completedAt,
       updatedAt: serverTimestamp(),
     });
+    updateRegionalLeaderboardEntries(transaction, profileSnapshot, uid, score);
 
     return {
       ok: true,
@@ -1254,10 +1309,15 @@ async function rebuildLeaderboard(period: "weekly" | "monthly") {
   const batch = db.batch();
 
   snapshot.docs.forEach((doc, index) => {
+    const regionKey = doc.get("regionKey");
+    const displayName = publicDisplayName(doc);
+
     batch.set(
       leaderboardRef.collection("entries").doc(doc.id),
       {
         userId: doc.id,
+        displayName,
+        regionKey: typeof regionKey === "string" ? regionKey : null,
         rank: index + 1,
         score: doc.get(scoreField) ?? 0,
         updatedAt: serverTimestamp(),
@@ -1269,6 +1329,20 @@ async function rebuildLeaderboard(period: "weekly" | "monthly") {
       [rankField]: index + 1,
       updatedAt: serverTimestamp(),
     });
+
+    if (typeof regionKey === "string" && regionKey.trim()) {
+      batch.set(
+        leaderboardRef.collection("regions").doc(regionKey).collection("entries").doc(doc.id),
+        {
+          userId: doc.id,
+          displayName,
+          regionKey,
+          score: doc.get(scoreField) ?? 0,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
   });
 
   batch.set(
