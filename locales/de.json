@@ -885,6 +885,11 @@
         "description": "Wettbewerbe für Motivation, Engagement und regionale Fortschritte."
       }
     },
+    "points": {
+      "total": "Punkte",
+      "xp": "XP",
+      "weekly": "Woche"
+    },
     "calm": {
       "meditation": "Meditation",
       "breathTraining": "Atemtraining",
@@ -901,21 +906,32 @@
       "empty": "Hier wurden noch keine Kurse gespeichert."
     },
     "leaderboard": {
-      "eyebrow": "Arena dieser Woche",
-      "title": "Wochenrangliste",
-      "description": "Regelmäßigkeit, Lernen und absolvierte Trainings bestimmen künftig diese Rangliste.",
+      "eyebrow": "Deine Region",
+      "title": "Regionale Rangliste",
+      "description": "Hier erscheinen nur Mitglieder aus deiner ausgewählten Region. Punkte kommen aus Quizzes, Kursen, Workouts und Content-Belohnungen.",
       "rank": "Rang",
       "competitor": "Teilnehmer",
       "points": "Punkte",
       "champion": "Monats-Champion",
       "you": "Du · aktuelle Woche",
-      "placeholder": "Vorschaudaten. Echte Punkte werden in der Gamification-Phase mit Trainings, Videos und Blogaktivitäten verbunden."
+      "loading": "Regionale Rangliste wird geladen...",
+      "empty": "In deiner Region wurden noch keine Punkte gesammelt.",
+      "noRegion": "Füge in den Profileinstellungen deine Region hinzu, um die lokale Rangliste zu sehen.",
+      "note": "Deine privaten Gesamtpunkte bleiben in deinem Profil. Die gemeinsame Rangliste zeigt nur regionalen Wochenscore und Anzeigenamen."
     },
     "account": {
       "eyebrow": "Konto",
       "title": "Sitzung beenden",
       "description": "Melde dich hier ab, wenn du das Profil auf diesem Gerät nicht weiter geöffnet lassen möchtest.",
       "signOut": "Abmelden"
+    },
+    "password": {
+      "eyebrow": "Kontosicherheit",
+      "title": "Passwort ändern",
+      "description": "Sende eine E-Mail zum Zurücksetzen, wenn du ein neues Passwort für dieses Konto wählen möchtest.",
+      "open": "Reset-E-Mail senden",
+      "success": "Eine E-Mail zum Ändern des Passworts wurde gesendet.",
+      "error": "Die Passwort-E-Mail konnte nicht gesendet werden."
     },
     "delete": {
       "eyebrow": "Kontoverwaltung",
@@ -1433,6 +1449,7 @@
         "description": "Persönliche Angaben und Trainingsprofil.",
         "changePhoto": "Foto ändern",
         "uploading": "Wird hochgeladen...",
+        "loadingPhoto": "Profilfoto wird geladen",
         "photoHint": "JPG, PNG oder WebP. Maximal 5 MB."
       },
       "body": {
@@ -1567,6 +1584,7 @@
     },
     "messages": {
       "loadError": "Die Einstellungen konnten nicht geladen werden.",
+      "unsavedChanges": "Du hast ungespeicherte Änderungen.",
       "saveSuccess": "Einstellungen wurden gespeichert.",
       "permissionError": "Die Einstellungen konnten wegen fehlender Berechtigungen nicht gespeichert werden.",
       "saveError": "Die Einstellungen konnten nicht gespeichert werden. Bitte versuche es erneut.",

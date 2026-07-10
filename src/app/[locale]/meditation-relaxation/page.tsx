@@ -28,10 +28,6 @@ export default async function MeditationRelaxationPage({
           <h1>{t("title")}</h1>
           <p>{t("intro")}</p>
         </div>
-        <div className={styles.visual} aria-hidden="true">
-          <span className={styles.visualRing} />
-          <Waves size={74} />
-        </div>
       </section>
 
       <section className={styles.categoryGrid} aria-label={t("categoryAria")}>

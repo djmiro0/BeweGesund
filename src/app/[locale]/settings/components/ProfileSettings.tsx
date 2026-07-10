@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import type { FitnessLevel, Gender, MainGoal, ProfileSettingsData } from "../settingsData";
 import { SettingsInput, SettingsSection, SettingsSelect } from "./SettingsControls";
 import styles from "../Settings.module.css";
@@ -29,7 +30,9 @@ export default function ProfileSettings({
   unitSystem,
 }: ProfileSettingsProps) {
   const t = useTranslations("settings");
+  const [loadedProfileImageUrl, setLoadedProfileImageUrl] = useState("");
   const isImperial = unitSystem === "imperial";
+  const isProfileImageLoaded = Boolean(data.profileImageUrl && loadedProfileImageUrl === data.profileImageUrl);
   const genderOptions: Array<{ value: Gender | ""; label: string }> = [
     { value: "", label: t("options.gender.select") },
     { value: "female", label: t("options.gender.female") },
@@ -51,6 +54,26 @@ export default function ProfileSettings({
     onChange({ ...data, [key]: value });
   };
 
+  useEffect(() => {
+    if (!data.profileImageUrl) {
+      return;
+    }
+
+    let cancelled = false;
+    const image = new Image();
+    image.onload = () => {
+      if (!cancelled) setLoadedProfileImageUrl(data.profileImageUrl);
+    };
+    image.onerror = () => {
+      if (!cancelled) setLoadedProfileImageUrl("");
+    };
+    image.src = data.profileImageUrl;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [data.profileImageUrl]);
+
   return (
     <SettingsSection
       title={t("sections.profile.title")}
@@ -60,11 +83,15 @@ export default function ProfileSettings({
       <div className={styles.profileBlock}>
         <label className={styles.avatarUpload}>
           <div
-            className={styles.avatarPlaceholder}
+            className={`${styles.avatarPlaceholder} ${data.profileImageUrl && !isProfileImageLoaded ? styles.avatarPlaceholderLoading : ""}`}
             data-testid="settings-profile-image"
-            style={data.profileImageUrl ? { backgroundImage: `url("${data.profileImageUrl}")` } : undefined}
+            style={data.profileImageUrl && isProfileImageLoaded ? { backgroundImage: `url("${data.profileImageUrl}")` } : undefined}
           >
-            {data.profileImageUrl ? null : <span>{data.fullName.charAt(0)}</span>}
+            {data.profileImageUrl && !isProfileImageLoaded ? (
+              <span className={styles.avatarSpinner} aria-label={t("sections.profile.loadingPhoto")} />
+            ) : data.profileImageUrl ? null : (
+              <span>{data.fullName.charAt(0)}</span>
+            )}
           </div>
           <input
             type="file"
@@ -88,9 +115,9 @@ export default function ProfileSettings({
       <div className={styles.fieldGrid}>
         <SettingsInput id="fullName" label={t("fields.fullName")} value={data.fullName} onChange={(value) => update("fullName", value)} />
         <SettingsInput id="username" label={t("fields.username")} value={data.username} onChange={(value) => update("username", value)} />
-        <SettingsInput id="email" label={t("fields.email")} type="email" value={data.email} readOnly onChange={() => undefined} />
+        <SettingsInput id="email" label={t("fields.email")} type="email" value={data.email} readOnly disabled onChange={() => undefined} />
         <SettingsInput id="age" label={t("fields.age")} type="number" min={1} max={120} value={data.age} onChange={(value) => update("age", Number(value))} />
-        <SettingsSelect id="gender" label={t("fields.gender")} value={data.gender} options={genderOptions} onChange={(value) => update("gender", value as Gender | "")} />
+        <SettingsSelect id="gender" label={t("fields.gender")} value={data.gender} options={genderOptions} disabled onChange={() => undefined} />
         <SettingsInput
           id="height"
           label={t("fields.height")}

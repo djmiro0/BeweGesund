@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "firebase/auth";
+import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -21,8 +22,8 @@ import {
   Wind,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
-import { auth } from "../../../../firebase.config";
+import { useEffect, useState } from "react";
+import { auth, db } from "../../../../firebase.config";
 import { emptyUserProfile, getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
@@ -42,6 +43,19 @@ type ProfileSection = "membership" | "health" | "body" | "badges";
 const translatedGoalKeys = ["backPain"];
 const recommendedBmiMax = 24.9;
 const recommendedBmiMin = 18.5;
+const pointsPerBadgeLevel = 600;
+
+interface LeaderboardEntry {
+  userId: string;
+  displayName: string;
+  regionKey: string;
+  score: number;
+}
+
+interface LeaderboardState {
+  regionKey: string | null;
+  entries: LeaderboardEntry[];
+}
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
@@ -51,6 +65,50 @@ export default function ProfilePage() {
   const { user, profile: firebaseProfile, openAuth } = useAuth();
   const profile = firebaseProfile ?? emptyUserProfile;
   const [openSection, setOpenSection] = useState<ProfileSection | null>(null);
+  const [leaderboardState, setLeaderboardState] = useState<LeaderboardState>({
+    regionKey: null,
+    entries: [],
+  });
+
+  useEffect(() => {
+    if (!user || !profile.regionKey) {
+      return undefined;
+    }
+
+    const entriesQuery = query(
+      collection(db, "leaderboards", "weekly", "regions", profile.regionKey, "entries"),
+      orderBy("score", "desc"),
+      limit(20),
+    );
+
+    return onSnapshot(
+      entriesQuery,
+      (snapshot) => {
+        const entries = snapshot.docs.map((document) => {
+          const data = document.data();
+          const displayName = typeof data.displayName === "string" && data.displayName.trim()
+            ? data.displayName.trim()
+            : t("values.notProvided");
+          const regionKey = typeof data.regionKey === "string" && data.regionKey.trim()
+            ? data.regionKey
+            : profile.regionKey ?? "";
+          const score = typeof data.score === "number" && Number.isFinite(data.score) ? data.score : 0;
+
+          return {
+            userId: document.id,
+            displayName,
+            regionKey,
+            score,
+          };
+        });
+
+        setLeaderboardState({ regionKey: profile.regionKey, entries });
+      },
+      () => {
+        setLeaderboardState({ regionKey: profile.regionKey, entries: [] });
+      },
+    );
+  }, [profile.regionKey, t, user]);
 
   if (!user) {
     return (
@@ -156,22 +214,22 @@ export default function ProfilePage() {
       icon: Crown,
     },
   ];
-  const currentBadgePoints = 420;
-  const nextBadgePoints = 600;
-  const badgeProgress = Math.round((currentBadgePoints / nextBadgePoints) * 100);
-  const leaderboardEntries = [
-    { name: "Mia Weber", region: "Berlin", points: 980 },
-    { name: "Jonas Fischer", region: "Bayern", points: 860 },
-    { name: "Lea Schneider", region: "Hessen", points: 740 },
-    {
-      name: firstName,
-      region: profile.regionKey ? authT(`regions.${profile.regionKey}`) : t("values.notProvided"),
-      points: profile.weeklyScore,
-      isCurrentUser: true,
-    },
-    { name: "Noah Wagner", region: "Hamburg", points: 420 },
-    { name: "Emma Becker", region: "Sachsen", points: 310 },
-  ].sort((a, b) => b.points - a.points);
+  const currentBadgePoints = profile.points % pointsPerBadgeLevel;
+  const pointsToNextBadge = pointsPerBadgeLevel - currentBadgePoints;
+  const badgeProgress = Math.min(100, Math.round((currentBadgePoints / pointsPerBadgeLevel) * 100));
+  const leaderboardEntries = profile.regionKey === leaderboardState.regionKey ? leaderboardState.entries : [];
+  const leaderboardLoading = Boolean(profile.regionKey && profile.regionKey !== leaderboardState.regionKey);
+  const leaderboardWithCurrentUser = leaderboardEntries.some((entry) => entry.userId === user.uid)
+    ? leaderboardEntries
+    : [
+      ...leaderboardEntries,
+      {
+        userId: user.uid,
+        displayName: firstName,
+        regionKey: profile.regionKey ?? "",
+        score: profile.weeklyScore,
+      },
+    ].sort((left, right) => right.score - left.score);
 
   return (
     <motion.section
@@ -337,7 +395,21 @@ export default function ProfilePage() {
               <Award size={42} />
               <div>
                 <h3>{t("cards.badges.current")}</h3>
-                <p>{t("cards.badges.next", { count: nextBadgePoints - currentBadgePoints })}</p>
+                <p>{t("cards.badges.next", { count: pointsToNextBadge })}</p>
+              </div>
+            </div>
+            <div className={styles.pointsGrid}>
+              <div>
+                <span>{t("points.total")}</span>
+                <strong>{integerFormatter.format(profile.points)}</strong>
+              </div>
+              <div>
+                <span>{t("points.xp")}</span>
+                <strong>{integerFormatter.format(profile.xp)}</strong>
+              </div>
+              <div>
+                <span>{t("points.weekly")}</span>
+                <strong>{integerFormatter.format(profile.weeklyScore)}</strong>
               </div>
             </div>
             <div className={styles.progressTrack}>
@@ -363,26 +435,39 @@ export default function ProfilePage() {
               <span>{t("leaderboard.competitor")}</span>
               <span>{t("leaderboard.points")}</span>
             </div>
-            {leaderboardEntries.map((entry, index) => (
+            {profile.regionKey && !leaderboardLoading && leaderboardWithCurrentUser.length === 0 ? (
+              <p className={styles.leaderboardState}>{t("leaderboard.empty")}</p>
+            ) : null}
+            {!profile.regionKey ? (
+              <p className={styles.leaderboardState}>{t("leaderboard.noRegion")}</p>
+            ) : null}
+            {leaderboardLoading ? (
+              <p className={styles.leaderboardState}>{t("leaderboard.loading")}</p>
+            ) : null}
+            {!leaderboardLoading && profile.regionKey ? leaderboardWithCurrentUser.map((entry, index) => (
               <div
-                key={`${entry.name}-${entry.region}`}
-                className={`${styles.leaderboardRow} ${entry.isCurrentUser ? styles.currentUserRow : ""}`}
+                key={entry.userId}
+                className={`${styles.leaderboardRow} ${entry.userId === user.uid ? styles.currentUserRow : ""}`}
               >
                 <span className={`${styles.rank} ${index < 3 ? styles[`rank${index + 1}`] : ""}`}>
                   {index + 1}
                 </span>
                 <span className={styles.competitor}>
                   <strong>
-                    {entry.name}
+                    {entry.displayName}
                     {index < 3 ? <Crown size={14} aria-label={t("leaderboard.champion")} /> : null}
                   </strong>
-                  <small>{entry.isCurrentUser ? t("leaderboard.you") : entry.region}</small>
+                  <small>
+                    {entry.userId === user.uid
+                      ? t("leaderboard.you")
+                      : authT(`regions.${entry.regionKey}`)}
+                  </small>
                 </span>
-                <strong className={styles.points}>{integerFormatter.format(entry.points)}</strong>
+                <strong className={styles.points}>{integerFormatter.format(entry.score)}</strong>
               </div>
-            ))}
+            )) : null}
           </div>
-          <p className={styles.leaderboardNote}>{t("leaderboard.placeholder")}</p>
+          <p className={styles.leaderboardNote}>{t("leaderboard.note")}</p>
         </motion.section>
 
         <motion.section className={styles.accountPanel} variants={fadeUp}>

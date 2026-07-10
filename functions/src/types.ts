@@ -11,6 +11,20 @@ export interface RewardClaimPayload {
   rewardId: string;
 }
 
+export type ContentRewardType = "blog" | "course" | "relaxation" | "quiz";
+
+export interface ContentEngagementPayload {
+  contentId?: string;
+  contentType?: ContentRewardType;
+  engagementSeconds?: number;
+  durationSeconds?: number;
+}
+
+export interface ContentRewardClaimPayload {
+  contentId?: string;
+  contentType?: ContentRewardType;
+}
+
 export interface StripeCheckoutPayload {
   locale?: "de" | "en";
   memberPackage?: MemberPackage;
@@ -18,7 +32,7 @@ export interface StripeCheckoutPayload {
 
 export interface QuizAnswerPayload {
   questionId?: string;
-  optionId?: string;
+  optionId?: string | null;
   answeredAtMs?: number;
 }
 
@@ -27,6 +41,13 @@ export interface QuizAttemptPayload {
   answers?: QuizAnswerPayload[];
   durationMs?: number;
   completedAt?: string;
+}
+
+export interface CheckQuizAnswerPayload {
+  quizId?: string;
+  questionId?: string;
+  optionId?: string;
+  answeredAt?: string;
 }
 
 export interface QuizOptionPayload {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LockKeyhole, PlayCircle } from "lucide-react";
+import { usePlaybackReward, type ContentRewardTarget } from "../../components/ContentReward";
 import { useAuth } from "../../components/AuthProvider";
 import styles from "./CourseDetail.module.css";
 
@@ -14,6 +15,7 @@ interface ProtectedMuxPlayerProps {
   title: string;
   autoPlay?: boolean;
   paused?: boolean;
+  reward?: Omit<ContentRewardTarget, "labels" | "points">;
   onEnded?: () => void;
   onPause?: () => void;
   onPlay?: () => void;
@@ -43,6 +45,13 @@ function getPlaybackErrorMessage(errorCode: string | undefined, messages: Protec
   return messages.tokenError;
 }
 
+function getPlayerDurationSeconds(player: HTMLElement | null) {
+  const duration = (player as (HTMLElement & { duration?: number }) | null)?.duration;
+  return typeof duration === "number" && Number.isFinite(duration) && duration > 0
+    ? Math.round(duration)
+    : undefined;
+}
+
 export default function ProtectedMuxPlayer({
   playbackId,
   courseSlug,
@@ -52,6 +61,7 @@ export default function ProtectedMuxPlayer({
   title,
   autoPlay = false,
   paused = false,
+  reward,
   onEnded,
   onPause,
   onPlay,
@@ -60,6 +70,8 @@ export default function ProtectedMuxPlayer({
   const { user, loading, appPreferences } = useAuth();
   const [playbackToken, setPlaybackToken] = useState("");
   const [error, setError] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [mediaDurationSeconds, setMediaDurationSeconds] = useState<number | undefined>(reward?.durationSeconds);
   const playerRef = useRef<HTMLElement | null>(null);
   const fallbackStyle = poster
     ? {
@@ -129,18 +141,49 @@ export default function ProtectedMuxPlayer({
     };
   }, [contentType, courseSlug, locale, messages, playbackId, user]);
 
+  const rewardTarget = reward
+    ? {
+        ...reward,
+        durationSeconds: reward.durationSeconds ?? mediaDurationSeconds,
+      }
+    : null;
+
+  usePlaybackReward(rewardTarget, isPlaying && Boolean(playbackToken) && !paused);
+
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
 
-    if (onEnded) player.addEventListener("ended", onEnded);
-    if (onPause) player.addEventListener("pause", onPause);
-    if (onPlay) player.addEventListener("play", onPlay);
+    const syncDuration = () => {
+      setMediaDurationSeconds((current) => current ?? getPlayerDurationSeconds(player));
+    };
+    const handleEnded = () => {
+      setIsPlaying(false);
+      onEnded?.();
+    };
+    const handlePause = () => {
+      setIsPlaying(false);
+      onPause?.();
+    };
+    const handlePlay = () => {
+      setIsPlaying(true);
+      syncDuration();
+      onPlay?.();
+    };
+
+    syncDuration();
+    player.addEventListener("durationchange", syncDuration);
+    player.addEventListener("loadedmetadata", syncDuration);
+    player.addEventListener("ended", handleEnded);
+    player.addEventListener("pause", handlePause);
+    player.addEventListener("play", handlePlay);
 
     return () => {
-      if (onEnded) player.removeEventListener("ended", onEnded);
-      if (onPause) player.removeEventListener("pause", onPause);
-      if (onPlay) player.removeEventListener("play", onPlay);
+      player.removeEventListener("durationchange", syncDuration);
+      player.removeEventListener("loadedmetadata", syncDuration);
+      player.removeEventListener("ended", handleEnded);
+      player.removeEventListener("pause", handlePause);
+      player.removeEventListener("play", handlePlay);
     };
   }, [onEnded, onPause, onPlay, playbackId]);
 

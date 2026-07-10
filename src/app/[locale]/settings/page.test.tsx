@@ -4,11 +4,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import SettingsPage from "./page";
 
 const firebaseMocks = vi.hoisted(() => ({
-  batchCommit: vi.fn(),
-  batchSet: vi.fn(),
-  batchUpdate: vi.fn(),
   getDownloadURL: vi.fn(),
   getBlob: vi.fn(),
+  sendPasswordResetEmail: vi.fn(),
   setDoc: vi.fn(),
   updateDoc: vi.fn(),
   updateProfile: vi.fn(),
@@ -50,7 +48,8 @@ const firebaseMocks = vi.hoisted(() => ({
 
 vi.mock("next-intl", () => ({
   useLocale: () => "en",
-  useTranslations: () => (key: string) => ({
+  useTranslations: (namespace?: string) => (key: string) => {
+    const translations: Record<string, string> = {
     "fields.fullName": "Full name",
     "fields.username": "Username",
     "fields.email": "Email",
@@ -68,9 +67,19 @@ vi.mock("next-intl", () => ({
     "actions.backToProfile": "Back to profile",
     "actions.reset": "Cancel / Reset",
     "actions.save": "Save settings",
+    "messages.unsavedChanges": "You have unsaved changes.",
     "messages.saveSuccess": "Settings saved successfully.",
     "messages.photoSuccess": "Profile photo updated successfully.",
-  })[key] ?? key,
+    "profile.password.open": "Send reset email",
+    "profile.password.success": "A password-change email was sent.",
+    "profile.password.error": "The password email could not be sent.",
+    "profile.delete.open": "Delete profile",
+    "profile.delete.confirmTitle": "Delete profile",
+    "profile.delete.passwordLabel": "Current password",
+    };
+
+    return translations[namespace ? `${namespace}.${key}` : key] ?? translations[key] ?? key;
+  },
 }));
 
 vi.mock("next/navigation", () => ({
@@ -81,6 +90,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("../../../../firebase.config", () => ({
+  auth: {},
   db: {},
   storage: {},
 }));
@@ -89,6 +99,7 @@ vi.mock("firebase/auth", async () => {
   const actual = await vi.importActual<typeof import("firebase/auth")>("firebase/auth");
   return {
     ...actual,
+    sendPasswordResetEmail: firebaseMocks.sendPasswordResetEmail,
     updateProfile: firebaseMocks.updateProfile,
   };
 });
@@ -122,11 +133,6 @@ vi.mock("firebase/firestore", () => ({
   serverTimestamp: vi.fn(() => "server-timestamp"),
   setDoc: firebaseMocks.setDoc,
   updateDoc: firebaseMocks.updateDoc,
-  writeBatch: vi.fn(() => ({
-    update: firebaseMocks.batchUpdate,
-    set: firebaseMocks.batchSet,
-    commit: firebaseMocks.batchCommit,
-  })),
 }));
 
 vi.mock("firebase/storage", () => ({
@@ -145,11 +151,9 @@ vi.mock("../components/AuthProvider", () => ({
 
 describe("SettingsPage", () => {
   beforeEach(() => {
-    firebaseMocks.batchCommit.mockReset().mockResolvedValue(undefined);
-    firebaseMocks.batchSet.mockReset();
-    firebaseMocks.batchUpdate.mockReset();
     firebaseMocks.getDownloadURL.mockReset().mockResolvedValue("https://storage.example/avatar?token=test");
     firebaseMocks.getBlob.mockReset().mockResolvedValue(new Blob(["preview"], { type: "image/jpeg" }));
+    firebaseMocks.sendPasswordResetEmail.mockReset().mockResolvedValue(undefined);
     firebaseMocks.setDoc.mockReset().mockResolvedValue(undefined);
     firebaseMocks.updateDoc.mockReset().mockResolvedValue(undefined);
     firebaseMocks.updateProfile.mockReset().mockResolvedValue(undefined);
@@ -170,6 +174,8 @@ describe("SettingsPage", () => {
     );
     expect(await screen.findByDisplayValue("Firebase Profile Name")).toBeInTheDocument();
     expect(screen.getByDisplayValue("real@example.com")).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeDisabled();
+    expect(screen.getByLabelText("fields.gender")).toBeDisabled();
     expect(screen.getByDisplayValue("180")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Profile/ })).toHaveAttribute("aria-current", "page");
     await userEvent.click(screen.getByRole("button", { name: /^Progress\b/ }));
@@ -181,18 +187,25 @@ describe("SettingsPage", () => {
     render(<SettingsPage />);
 
     const fullName = await screen.findByLabelText("Full name");
+    const saveButton = screen.getByTestId("settings-save-button");
+    expect(saveButton).toBeDisabled();
     await user.clear(fullName);
     await user.type(fullName, "Alex Settings");
+    expect(screen.getByTestId("settings-dirty-message")).toHaveTextContent("You have unsaved changes.");
+    expect(saveButton).toBeEnabled();
     await user.click(screen.getByRole("button", { name: /Notifications/ }));
     await user.click(screen.getByTestId("settings-toggle-waterReminders"));
-    await user.click(screen.getByTestId("settings-save-button"));
+    await user.click(saveButton);
 
-    await waitFor(() => expect(firebaseMocks.batchCommit).toHaveBeenCalledTimes(1));
-    expect(firebaseMocks.batchUpdate).toHaveBeenCalledWith(
+    await waitFor(() => expect(firebaseMocks.updateDoc).toHaveBeenCalledWith(
       expect.stringContaining("users/user-1"),
       expect.objectContaining({ displayName: "Alex Settings" }),
+    ));
+    expect(firebaseMocks.updateDoc).toHaveBeenCalledWith(
+      expect.stringContaining("users/user-1"),
+      expect.not.objectContaining({ gender: expect.anything() }),
     );
-    expect(firebaseMocks.batchSet).toHaveBeenCalledWith(
+    expect(firebaseMocks.setDoc).toHaveBeenCalledWith(
       expect.stringContaining("settings/preferences"),
       expect.objectContaining({
         notifications: expect.objectContaining({ waterReminders: false }),
@@ -200,6 +213,56 @@ describe("SettingsPage", () => {
       { merge: true },
     );
     expect(screen.getByTestId("settings-success-message")).toHaveTextContent("Settings saved successfully.");
+    await waitFor(() => expect(saveButton).toBeDisabled());
+  });
+
+  it("saves preference-only changes without touching the profile document", async () => {
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    await user.click(await screen.findByRole("button", { name: /Notifications/ }));
+    await user.click(screen.getByTestId("settings-toggle-waterReminders"));
+    await user.click(screen.getByTestId("settings-save-button"));
+
+    await waitFor(() => expect(firebaseMocks.setDoc).toHaveBeenCalledTimes(1));
+    expect(firebaseMocks.updateDoc).not.toHaveBeenCalled();
+    expect(firebaseMocks.setDoc).toHaveBeenCalledWith(
+      expect.stringContaining("settings/preferences"),
+      expect.objectContaining({
+        notifications: expect.objectContaining({ waterReminders: false }),
+      }),
+      { merge: true },
+    );
+  });
+
+  it("saves profile-only changes without touching the settings document", async () => {
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    const fullName = await screen.findByLabelText("Full name");
+    await user.clear(fullName);
+    await user.type(fullName, "Only Profile");
+    await user.click(screen.getByTestId("settings-save-button"));
+
+    await waitFor(() => expect(firebaseMocks.updateDoc).toHaveBeenCalledWith(
+      expect.stringContaining("users/user-1"),
+      expect.objectContaining({ displayName: "Only Profile" }),
+    ));
+    expect(firebaseMocks.setDoc).not.toHaveBeenCalled();
+  });
+
+  it("sends a password reset email from account settings", async () => {
+    const user = userEvent.setup();
+    render(<SettingsPage />);
+
+    await user.click(await screen.findByRole("button", { name: /^Account\b/ }));
+    await user.click(await screen.findByRole("button", { name: "Send reset email" }));
+
+    await waitFor(() => expect(firebaseMocks.sendPasswordResetEmail).toHaveBeenCalledWith(
+      {},
+      "real@example.com",
+    ));
+    expect(screen.getByText("A password-change email was sent.")).toBeInTheDocument();
   });
 
   it("resets unsaved changes back to Firebase values", async () => {
@@ -207,11 +270,15 @@ describe("SettingsPage", () => {
     render(<SettingsPage />);
 
     const username = await screen.findByLabelText("Username");
+    const resetButton = screen.getByRole("button", { name: "Cancel / Reset" });
+    expect(resetButton).toBeDisabled();
     await user.clear(username);
     await user.type(username, "temporary");
-    await user.click(screen.getByRole("button", { name: "Cancel / Reset" }));
+    expect(resetButton).toBeEnabled();
+    await user.click(resetButton);
 
     expect(screen.getByLabelText("Username")).toHaveValue("real_member");
+    expect(resetButton).toBeDisabled();
   });
 
   it("uploads and saves a valid profile photo", async () => {
@@ -269,9 +336,9 @@ describe("SettingsPage", () => {
     render(<SettingsPage />);
 
     await user.click(await screen.findByRole("button", { name: /^Account\b/ }));
-    await user.click(await screen.findByRole("button", { name: "open" }));
+    await user.click(await screen.findByRole("button", { name: "Delete profile" }));
 
-    expect(screen.getByRole("dialog", { name: "confirmTitle" })).toBeInTheDocument();
-    expect(screen.getByLabelText("passwordLabel")).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Delete profile" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Current password")).toBeInTheDocument();
   });
 });

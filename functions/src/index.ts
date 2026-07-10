@@ -28,6 +28,10 @@ import {
 } from "./config";
 import type {
   CompletionPayload,
+  CheckQuizAnswerPayload,
+  ContentEngagementPayload,
+  ContentRewardClaimPayload,
+  ContentRewardType,
   MemberPackage,
   PremiumStatus,
   QuizAnswerPayload,
@@ -42,6 +46,17 @@ const appCheckCallableOptions = {
   region: REGION,
   enforceAppCheck: true,
 } as const;
+const authenticatedCallableOptions = {
+  region: REGION,
+  cors: true,
+} as const;
+const DAILY_QUIZ_QUESTION_COUNT = 5;
+const MIN_QUIZ_QUESTION_SECONDS = 30;
+const CONTENT_PROGRESS_COLLECTION = "contentProgress";
+const DAILY_REWARDS_COLLECTION = "dailyRewards";
+const POINTS_LEDGER_COLLECTION = "pointsLedger";
+const MAX_ENGAGEMENT_SECONDS_PER_UPDATE = 30;
+const MONTHLY_POINTS_FIELDS = ["monthlyPoints", "monthlyScore"];
 type StripeClient = InstanceType<typeof Stripe>;
 type StripeSubscription = Awaited<ReturnType<StripeClient["subscriptions"]["retrieve"]>>;
 type StripeEvent = ReturnType<StripeClient["webhooks"]["constructEvent"]>;
@@ -86,6 +101,59 @@ interface QuizDocument {
   xpReward?: number;
 }
 
+type RewardPolicy = "ONCE_PER_CONTENT" | "LIMITED_PER_DAY";
+type RewardState = "LOCKED" | "AVAILABLE" | "CLAIMED" | "DAILY_LIMIT_REACHED";
+
+interface ContentRewardConfig {
+  contentType: ContentRewardType;
+  requiredSeconds?: number;
+  requiredDurationRatio?: number;
+  rewardPolicy: RewardPolicy;
+  dailyLimit?: number;
+  points: number;
+}
+
+interface ContentProgressDocument {
+  contentId?: string;
+  contentType?: ContentRewardType;
+  engagementSeconds?: number;
+  requiredSeconds?: number;
+  completed?: boolean;
+  rewardAvailable?: boolean;
+  rewardClaimed?: boolean;
+  rewardClaimedAt?: unknown;
+  completedAt?: unknown;
+  createdAt?: unknown;
+}
+
+const CONTENT_REWARD_CONFIG: Record<ContentRewardType, ContentRewardConfig> = {
+  blog: {
+    contentType: "blog",
+    requiredSeconds: 60,
+    rewardPolicy: "ONCE_PER_CONTENT",
+    points: 40,
+  },
+  course: {
+    contentType: "course",
+    requiredDurationRatio: 0.5,
+    rewardPolicy: "LIMITED_PER_DAY",
+    dailyLimit: 2,
+    points: 40,
+  },
+  relaxation: {
+    contentType: "relaxation",
+    requiredDurationRatio: 0.5,
+    rewardPolicy: "ONCE_PER_CONTENT",
+    points: 30,
+  },
+  quiz: {
+    contentType: "quiz",
+    requiredSeconds: 0,
+    rewardPolicy: "ONCE_PER_CONTENT",
+    points: 25,
+  },
+};
+
 const GOOGLE_HEALTH_PROVIDER = "googleHealth";
 const GOOGLE_HEALTH_SCOPES = [
   "https://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly",
@@ -112,18 +180,39 @@ function getCivilDateParts(date: string) {
   return { year, month, day };
 }
 
-function todayIsoDate(locale = "de-DE") {
+function berlinIsoDate(date = new Date(), locale = "de-DE") {
   const parts = new Intl.DateTimeFormat(locale, {
     timeZone: "Europe/Berlin",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).formatToParts(new Date());
+  }).formatToParts(date);
   const year = parts.find((part) => part.type === "year")?.value;
   const month = parts.find((part) => part.type === "month")?.value;
   const day = parts.find((part) => part.type === "day")?.value;
 
   return `${year}-${month}-${day}`;
+}
+
+function todayIsoDate(locale = "de-DE") {
+  return berlinIsoDate(new Date(), locale);
+}
+
+function stableHash(value: string) {
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = Math.imul(31, hash) + value.charCodeAt(index);
+    hash |= 0;
+  }
+
+  return hash >>> 0;
+}
+
+function dailyQuizQuestions(questions: QuizQuestion[], dateKey: string) {
+  return [...questions]
+    .sort((left, right) => stableHash(`${dateKey}:${left.id}`) - stableHash(`${dateKey}:${right.id}`))
+    .slice(0, DAILY_QUIZ_QUESTION_COUNT);
 }
 
 function requireAuth(auth: { uid: string } | null | undefined) {
@@ -166,6 +255,247 @@ function requireStringId(value: unknown, fieldName: string) {
   return value.trim();
 }
 
+function requireContentType(value: unknown): ContentRewardType {
+  if (
+    value !== "blog"
+    && value !== "course"
+    && value !== "relaxation"
+    && value !== "quiz"
+  ) {
+    throw new HttpsError("invalid-argument", "contentType is invalid.");
+  }
+
+  return value;
+}
+
+function getContentRewardConfig(contentType: ContentRewardType) {
+  return CONTENT_REWARD_CONFIG[contentType];
+}
+
+function calculateRequiredSeconds(config: ContentRewardConfig, durationSeconds?: number) {
+  if (typeof config.requiredSeconds === "number") return config.requiredSeconds;
+
+  if (
+    typeof config.requiredDurationRatio === "number"
+    && typeof durationSeconds === "number"
+    && Number.isFinite(durationSeconds)
+    && durationSeconds > 0
+  ) {
+    return Math.max(1, Math.ceil(durationSeconds * config.requiredDurationRatio));
+  }
+
+  throw new HttpsError("invalid-argument", "durationSeconds is required for this content type.");
+}
+
+function getRewardState(
+  progress: Pick<ContentProgressDocument, "completed" | "rewardAvailable" | "rewardClaimed">,
+  dailyLimitReached = false,
+): RewardState {
+  if (progress.rewardClaimed) return "CLAIMED";
+  if (dailyLimitReached) return "DAILY_LIMIT_REACHED";
+  if (progress.completed || progress.rewardAvailable) return "AVAILABLE";
+  return "LOCKED";
+}
+
+function getContentProgressRef(uid: string, contentId: string) {
+  return userRef(uid).collection(CONTENT_PROGRESS_COLLECTION).doc(contentId);
+}
+
+function buildUserPointIncrements(points: number) {
+  return MONTHLY_POINTS_FIELDS.reduce<Record<string, ReturnType<typeof increment>>>(
+    (updates, field) => ({
+      ...updates,
+      [field]: increment(points),
+    }),
+    {
+      points: increment(points),
+      totalPoints: increment(points),
+    },
+  );
+}
+
+function publicDisplayName(profile: FirebaseFirestore.DocumentSnapshot) {
+  const firstName = profile.get("firstName");
+  const displayName = profile.get("displayName");
+
+  if (typeof firstName === "string" && firstName.trim()) return firstName.trim();
+  if (typeof displayName === "string" && displayName.trim()) return displayName.trim();
+
+  return "Member";
+}
+
+function numericProfileField(profile: FirebaseFirestore.DocumentSnapshot, field: string) {
+  const value = profile.get(field);
+
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+function updateRegionalLeaderboardEntries(
+  transaction: FirebaseFirestore.Transaction,
+  profile: FirebaseFirestore.DocumentSnapshot,
+  uid: string,
+  pointsGain: number,
+) {
+  if (pointsGain <= 0) return;
+
+  const regionKey = profile.get("regionKey");
+  if (typeof regionKey !== "string" || !regionKey.trim()) return;
+
+  const displayName = publicDisplayName(profile);
+  const leaderboardUpdates = [
+    { period: "weekly", scoreField: "weeklyScore" },
+    { period: "monthly", scoreField: "monthlyScore" },
+  ] as const;
+
+  leaderboardUpdates.forEach(({ period, scoreField }) => {
+    const entryRef = db
+      .collection(LEADERBOARDS_COLLECTION)
+      .doc(period)
+      .collection("regions")
+      .doc(regionKey)
+      .collection("entries")
+      .doc(uid);
+
+    transaction.set(entryRef, {
+      userId: uid,
+      displayName,
+      regionKey,
+      score: numericProfileField(profile, scoreField) + pointsGain,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+  });
+}
+
+async function assertContentExists(contentId: string, contentType: ContentRewardType) {
+  if (contentType !== "quiz") return;
+
+  const quizSnapshot = await db.collection(QUIZZES_COLLECTION).doc(contentId).get();
+  if (!quizSnapshot.exists) {
+    throw new HttpsError("not-found", "Content does not exist.");
+  }
+}
+
+async function claimContentRewardForUser(
+  uid: string,
+  contentId: string,
+  contentType: ContentRewardType,
+  transaction: FirebaseFirestore.Transaction,
+) {
+  const config = getContentRewardConfig(contentType);
+  const profileRef = userRef(uid);
+  const progressRef = getContentProgressRef(uid, contentId);
+  const today = todayIsoDate();
+  const dailyRewardRef = profileRef.collection(DAILY_REWARDS_COLLECTION).doc(today);
+  const ledgerRef = profileRef.collection(POINTS_LEDGER_COLLECTION).doc(`${contentType}_${contentId}`);
+  const reads = [transaction.get(profileRef), transaction.get(progressRef), transaction.get(ledgerRef)];
+
+  if (config.rewardPolicy === "LIMITED_PER_DAY") reads.push(transaction.get(dailyRewardRef));
+
+  const [profileSnapshot, progressSnapshot, ledgerSnapshot, dailyRewardSnapshot] = await Promise.all(reads);
+
+  if (!profileSnapshot.exists) {
+    throw new HttpsError("failed-precondition", "User profile does not exist.");
+  }
+
+  if (!progressSnapshot.exists) {
+    throw new HttpsError("failed-precondition", "Content progress does not exist.");
+  }
+
+  if (ledgerSnapshot.exists) {
+    const progress = progressSnapshot.data() as ContentProgressDocument;
+    return {
+      ok: true,
+      alreadyClaimed: true,
+      pointsGain: 0,
+      rewardState: getRewardState({ ...progress, rewardClaimed: true }),
+    };
+  }
+
+  const progress = progressSnapshot.data() as ContentProgressDocument;
+  const engagementSeconds = Math.max(0, Math.floor(progress.engagementSeconds ?? 0));
+  const requiredSeconds = Math.max(0, Math.floor(progress.requiredSeconds ?? 0));
+
+  if (progress.contentType !== contentType || progress.contentId !== contentId) {
+    throw new HttpsError("failed-precondition", "Content progress does not match this reward.");
+  }
+
+  if (progress.rewardClaimed) {
+    return {
+      ok: true,
+      alreadyClaimed: true,
+      pointsGain: 0,
+      rewardState: "CLAIMED" as RewardState,
+    };
+  }
+
+  if (engagementSeconds < requiredSeconds) {
+    throw new HttpsError("failed-precondition", "Required engagement has not been reached.");
+  }
+
+  const dailyRewardData = dailyRewardSnapshot?.exists
+    ? dailyRewardSnapshot.data() as { courseRewardCount?: number; rewardedContentIds?: string[] }
+    : null;
+  const rewardedContentIds = dailyRewardData?.rewardedContentIds ?? [];
+  const dailyLimitReached = config.rewardPolicy === "LIMITED_PER_DAY"
+    && !rewardedContentIds.includes(contentId)
+    && (dailyRewardData?.courseRewardCount ?? 0) >= (config.dailyLimit ?? 0);
+
+  if (dailyLimitReached) {
+    transaction.set(progressRef, {
+      rewardAvailable: true,
+      dailyLimitReached: true,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    return {
+      ok: true,
+      alreadyClaimed: false,
+      pointsGain: 0,
+      rewardState: "DAILY_LIMIT_REACHED" as RewardState,
+    };
+  }
+
+  transaction.set(progressRef, {
+    completed: true,
+    rewardAvailable: false,
+    rewardClaimed: true,
+    rewardClaimedAt: serverTimestamp(),
+    dailyLimitReached: false,
+    updatedAt: serverTimestamp(),
+  }, { merge: true });
+
+  transaction.set(ledgerRef, {
+    contentId,
+    contentType,
+    points: config.points,
+    reason: "content_reward",
+    createdAt: serverTimestamp(),
+  });
+
+  transaction.update(profileRef, {
+    ...buildUserPointIncrements(config.points),
+    updatedAt: serverTimestamp(),
+  });
+  updateRegionalLeaderboardEntries(transaction, profileSnapshot, uid, config.points);
+
+  if (config.rewardPolicy === "LIMITED_PER_DAY") {
+    transaction.set(dailyRewardRef, {
+      date: today,
+      courseRewardCount: increment(1),
+      rewardedContentIds: Array.from(new Set([...rewardedContentIds, contentId])),
+      updatedAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+    }, { merge: true });
+  }
+
+  return {
+    ok: true,
+    alreadyClaimed: false,
+    pointsGain: config.points,
+    rewardState: "CLAIMED" as RewardState,
+  };
+}
+
 function normalizeQuizAnswers(answers: QuizAnswerPayload[] | undefined) {
   if (!Array.isArray(answers) || answers.length === 0 || answers.length > 80) {
     throw new HttpsError("invalid-argument", "answers are required.");
@@ -173,7 +503,9 @@ function normalizeQuizAnswers(answers: QuizAnswerPayload[] | undefined) {
 
   return answers.map((answer) => ({
     questionId: requireStringId(answer.questionId, "questionId"),
-    optionId: requireStringId(answer.optionId, "optionId"),
+    optionId: typeof answer.optionId === "string" && answer.optionId.trim()
+      ? requireStringId(answer.optionId, "optionId")
+      : null,
     answeredAtMs: typeof answer.answeredAtMs === "number" && Number.isFinite(answer.answeredAtMs)
       ? Math.max(0, Math.round(answer.answeredAtMs))
       : null,
@@ -277,7 +609,9 @@ function normalizeSaveQuizPayload(payload: SaveQuizPayload) {
       availableFrom,
       availableUntil,
       monthlyPeriod: typeof payload.monthlyPeriod === "string" ? payload.monthlyPeriod.trim() : currentMonthPeriod(),
-      timeLimitSeconds: Number.isFinite(payload.timeLimitSeconds) ? Math.max(1, Math.round(payload.timeLimitSeconds ?? 180)) : 180,
+      timeLimitSeconds: Number.isFinite(payload.timeLimitSeconds)
+        ? Math.max(MIN_QUIZ_QUESTION_SECONDS, Math.round(payload.timeLimitSeconds ?? MIN_QUIZ_QUESTION_SECONDS))
+        : MIN_QUIZ_QUESTION_SECONDS,
       allowRetake: payload.allowRetake === true,
       pointsPerCorrect: Number.isFinite(payload.pointsPerCorrect) ? Math.max(1, Math.round(payload.pointsPerCorrect ?? 100)) : 100,
       speedBonusMax: Number.isFinite(payload.speedBonusMax) ? Math.max(0, Math.round(payload.speedBonusMax ?? 50)) : 50,
@@ -510,6 +844,7 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
       lastCompletedAt: completedAt,
       updatedAt: serverTimestamp(),
     });
+    updateRegionalLeaderboardEntries(transaction, snapshot, userId, pointsGain);
 
     return {
       ok: true,
@@ -520,6 +855,85 @@ async function applyCompletion(userId: string, kind: "lesson" | "workout", paylo
     };
   });
 }
+
+export const updateContentEngagement = onCall(appCheckCallableOptions, async (request) => {
+  const uid = requireAuth(request.auth);
+  const payload = request.data as ContentEngagementPayload;
+  const contentId = requireStringId(payload.contentId, "contentId");
+  const contentType = requireContentType(payload.contentType);
+  const config = getContentRewardConfig(contentType);
+  const engagementDelta = typeof payload.engagementSeconds === "number" && Number.isFinite(payload.engagementSeconds)
+    ? Math.max(0, Math.min(MAX_ENGAGEMENT_SECONDS_PER_UPDATE, Math.floor(payload.engagementSeconds)))
+    : 0;
+  const durationSeconds = typeof payload.durationSeconds === "number" && Number.isFinite(payload.durationSeconds)
+    ? Math.max(1, Math.floor(payload.durationSeconds))
+    : undefined;
+  const requiredSeconds = calculateRequiredSeconds(config, durationSeconds);
+
+  if (engagementDelta <= 0 && requiredSeconds > 0) {
+    throw new HttpsError("invalid-argument", "engagementSeconds must be greater than 0.");
+  }
+
+  await assertContentExists(contentId, contentType);
+
+  const progressRef = getContentProgressRef(uid, contentId);
+
+  return db.runTransaction(async (transaction) => {
+    const progressSnapshot = await transaction.get(progressRef);
+    const existing = progressSnapshot.exists ? progressSnapshot.data() as ContentProgressDocument : null;
+
+    if (existing?.contentType && existing.contentType !== contentType) {
+      throw new HttpsError("failed-precondition", "Content progress exists for a different content type.");
+    }
+
+    const currentEngagementSeconds = Math.max(0, Math.floor(existing?.engagementSeconds ?? 0));
+    const nextEngagementSeconds = existing?.rewardClaimed
+      ? currentEngagementSeconds
+      : Math.max(currentEngagementSeconds, currentEngagementSeconds + engagementDelta);
+    const completed = nextEngagementSeconds >= requiredSeconds;
+    const completedAt = existing?.completedAt ?? (completed ? serverTimestamp() : null);
+
+    transaction.set(progressRef, {
+      contentId,
+      contentType,
+      engagementSeconds: nextEngagementSeconds,
+      requiredSeconds,
+      completed,
+      rewardAvailable: completed && !existing?.rewardClaimed,
+      rewardClaimed: existing?.rewardClaimed ?? false,
+      rewardClaimedAt: existing?.rewardClaimedAt ?? null,
+      dailyLimitReached: false,
+      completedAt,
+      createdAt: progressSnapshot.exists ? existing?.createdAt ?? serverTimestamp() : serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    return {
+      ok: true,
+      contentId,
+      contentType,
+      engagementSeconds: nextEngagementSeconds,
+      requiredSeconds,
+      completed,
+      rewardState: getRewardState({
+        completed,
+        rewardAvailable: completed && !existing?.rewardClaimed,
+        rewardClaimed: existing?.rewardClaimed ?? false,
+      }),
+    };
+  });
+});
+
+export const claimContentReward = onCall(appCheckCallableOptions, async (request) => {
+  const uid = requireAuth(request.auth);
+  const payload = request.data as ContentRewardClaimPayload;
+  const contentId = requireStringId(payload.contentId, "contentId");
+  const contentType = requireContentType(payload.contentType);
+
+  await assertContentExists(contentId, contentType);
+
+  return db.runTransaction((transaction) => claimContentRewardForUser(uid, contentId, contentType, transaction));
+});
 
 export const deleteUserAccount = onCall(
   {
@@ -625,6 +1039,62 @@ export const saveQuiz = onCall(appCheckCallableOptions, async (request) => {
   return { ok: true, quizId };
 });
 
+export const checkQuizAnswer = onCall(authenticatedCallableOptions, async (request) => {
+  requireAuth(request.auth);
+
+  const payload = request.data as CheckQuizAnswerPayload;
+  const quizId = requireStringId(payload.quizId, "quizId");
+  const questionId = requireStringId(payload.questionId, "questionId");
+  const optionId = requireStringId(payload.optionId, "optionId");
+  const answeredAt = payload.answeredAt ? new Date(payload.answeredAt) : new Date();
+
+  if (Number.isNaN(answeredAt.getTime()) || answeredAt.getTime() > Date.now() + 60_000) {
+    throw new HttpsError("invalid-argument", "answeredAt is invalid.");
+  }
+
+  const [quizSnapshot, answerKeySnapshot] = await Promise.all([
+    db.collection(QUIZZES_COLLECTION).doc(quizId).get(),
+    db.collection(QUIZ_ANSWER_KEYS_COLLECTION).doc(quizId).get(),
+  ]);
+
+  if (!quizSnapshot.exists) {
+    throw new HttpsError("not-found", "Quiz does not exist.");
+  }
+
+  const quiz = quizSnapshot.data() as QuizDocument;
+  if (quiz.status !== "published") {
+    throw new HttpsError("failed-precondition", "Quiz is not published.");
+  }
+
+  const availability = getQuizAvailability(quiz, answeredAt);
+  if (!availability.isOpen) {
+    throw new HttpsError("failed-precondition", "Quiz is not currently available.");
+  }
+
+  const questions = Array.isArray(quiz.questions) ? quiz.questions : [];
+  const quizDay = berlinIsoDate(answeredAt);
+  const dailyQuestionIds = new Set(dailyQuizQuestions(questions, quizDay).map((question) => question.id));
+
+  if (!dailyQuestionIds.has(questionId)) {
+    throw new HttpsError("invalid-argument", "Question is not part of today's quiz.");
+  }
+
+  const answerKey = answerKeySnapshot.data() as { answers?: Record<string, unknown> } | undefined;
+  const correctOptionId = answerKey?.answers?.[questionId];
+
+  if (typeof correctOptionId !== "string") {
+    throw new HttpsError("failed-precondition", "Quiz answer key is incomplete.");
+  }
+
+  return {
+    ok: true,
+    questionId,
+    optionId,
+    correctOptionId,
+    correct: optionId === correctOptionId,
+  };
+});
+
 export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request) => {
   const uid = requireAuth(request.auth);
   const payload = request.data as QuizAttemptPayload;
@@ -642,7 +1112,8 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
   const quizRef = db.collection(QUIZZES_COLLECTION).doc(quizId);
   const answerKeyRef = db.collection(QUIZ_ANSWER_KEYS_COLLECTION).doc(quizId);
   const profileRef = userRef(uid);
-  const attemptRef = profileRef.collection("quizAttempts").doc(quizId);
+  const quizDay = berlinIsoDate(completedAt);
+  const attemptRef = profileRef.collection("quizAttempts").doc(`${quizId}_${quizDay}`);
 
   return db.runTransaction(async (transaction) => {
     const [profileSnapshot, attemptSnapshot, quizSnapshot, answerKeySnapshot] = await Promise.all([
@@ -702,14 +1173,15 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
       throw new HttpsError("failed-precondition", "Quiz answer key is missing.");
     }
 
-    const questionIds = new Set(questions.map((question) => question.id));
+    const dailyQuestions = dailyQuizQuestions(questions, quizDay);
+    const questionIds = new Set(dailyQuestions.map((question) => question.id));
     const submittedByQuestion = new Map(answers.map((answer) => [answer.questionId, answer]));
     const correctAnswers = Object.entries(answerKey.answers).filter(([questionId, optionId]) => (
       questionIds.has(questionId) && typeof optionId === "string"
     ));
 
-    if (correctAnswers.length === 0) {
-      throw new HttpsError("failed-precondition", "Quiz answer key is empty.");
+    if (correctAnswers.length !== dailyQuestions.length) {
+      throw new HttpsError("failed-precondition", "Daily quiz answer key is incomplete.");
     }
 
     let correctCount = 0;
@@ -730,10 +1202,11 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
     const totalQuestions = correctAnswers.length;
     const pointsPerCorrect = Number.isFinite(quiz.pointsPerCorrect) ? Math.max(1, quiz.pointsPerCorrect ?? 100) : 100;
     const speedBonusMax = Number.isFinite(quiz.speedBonusMax) ? Math.max(0, quiz.speedBonusMax ?? 50) : 50;
-    const timeLimitMs = Number.isFinite(quiz.timeLimitSeconds) && quiz.timeLimitSeconds
-      ? Math.max(1, quiz.timeLimitSeconds) * 1000
-      : null;
-    const speedRatio = durationMs !== null && timeLimitMs
+    const secondsPerQuestion = Number.isFinite(quiz.timeLimitSeconds) && quiz.timeLimitSeconds
+      ? Math.max(MIN_QUIZ_QUESTION_SECONDS, quiz.timeLimitSeconds)
+      : MIN_QUIZ_QUESTION_SECONDS;
+    const timeLimitMs = secondsPerQuestion * totalQuestions * 1000;
+    const speedRatio = durationMs !== null
       ? Math.max(0, 1 - Math.min(durationMs, timeLimitMs) / timeLimitMs)
       : 0;
     const speedBonus = correctCount > 0 ? Math.round(speedBonusMax * speedRatio) : 0;
@@ -748,6 +1221,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
 
     transaction.set(attemptRef, {
       quizId,
+      quizDay,
       userId: uid,
       score,
       correctCount,
@@ -762,9 +1236,9 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
     transaction.set(leaderboardEntryRef, {
       quizId,
       userId: uid,
-      score,
-      correctCount,
-      totalQuestions,
+      score: increment(score),
+      correctCount: increment(correctCount),
+      totalQuestions: increment(totalQuestions),
       durationMs,
       updatedAt: serverTimestamp(),
     }, { merge: true });
@@ -777,6 +1251,7 @@ export const submitQuizAttempt = onCall(appCheckCallableOptions, async (request)
       lastQuizCompletedAt: completedAt,
       updatedAt: serverTimestamp(),
     });
+    updateRegionalLeaderboardEntries(transaction, profileSnapshot, uid, score);
 
     return {
       ok: true,
@@ -834,10 +1309,15 @@ async function rebuildLeaderboard(period: "weekly" | "monthly") {
   const batch = db.batch();
 
   snapshot.docs.forEach((doc, index) => {
+    const regionKey = doc.get("regionKey");
+    const displayName = publicDisplayName(doc);
+
     batch.set(
       leaderboardRef.collection("entries").doc(doc.id),
       {
         userId: doc.id,
+        displayName,
+        regionKey: typeof regionKey === "string" ? regionKey : null,
         rank: index + 1,
         score: doc.get(scoreField) ?? 0,
         updatedAt: serverTimestamp(),
@@ -849,6 +1329,20 @@ async function rebuildLeaderboard(period: "weekly" | "monthly") {
       [rankField]: index + 1,
       updatedAt: serverTimestamp(),
     });
+
+    if (typeof regionKey === "string" && regionKey.trim()) {
+      batch.set(
+        leaderboardRef.collection("regions").doc(regionKey).collection("entries").doc(doc.id),
+        {
+          userId: doc.id,
+          displayName,
+          regionKey,
+          score: doc.get(scoreField) ?? 0,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+    }
   });
 
   batch.set(

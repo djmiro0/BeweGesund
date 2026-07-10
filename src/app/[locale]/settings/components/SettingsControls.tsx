@@ -16,6 +16,7 @@ interface SettingsInputProps {
   suffix?: string;
   testId?: string;
   readOnly?: boolean;
+  disabled?: boolean;
   min?: number;
   max?: number;
   onChange: (value: string) => void;
@@ -27,6 +28,7 @@ interface SettingsSelectProps {
   value: string;
   options: Array<{ value: string; label: string }>;
   testId?: string;
+  disabled?: boolean;
   onChange: (value: string) => void;
 }
 
@@ -35,6 +37,7 @@ interface SettingsToggleProps {
   label: string;
   checked: boolean;
   testId?: string;
+  disabled?: boolean;
   onChange: (checked: boolean) => void;
 }
 
@@ -58,6 +61,7 @@ export function SettingsInput({
   suffix,
   testId,
   readOnly,
+  disabled,
   min,
   max,
   onChange,
@@ -72,6 +76,7 @@ export function SettingsInput({
           type={type}
           value={value}
           readOnly={readOnly}
+          disabled={disabled}
           min={min}
           max={max}
           onChange={(event) => onChange(event.target.value)}
@@ -82,7 +87,7 @@ export function SettingsInput({
   );
 }
 
-export function SettingsSelect({ id, label, value, options, testId, onChange }: SettingsSelectProps) {
+export function SettingsSelect({ id, label, value, options, testId, disabled, onChange }: SettingsSelectProps) {
   return (
     <label className={styles.field} htmlFor={id}>
       <span>{label}</span>
@@ -90,6 +95,7 @@ export function SettingsSelect({ id, label, value, options, testId, onChange }: 
         id={id}
         data-testid={testId}
         value={value}
+        disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
       >
         {options.map((option) => (
@@ -102,7 +108,7 @@ export function SettingsSelect({ id, label, value, options, testId, onChange }: 
   );
 }
 
-export function SettingsToggle({ id, label, checked, testId, onChange }: SettingsToggleProps) {
+export function SettingsToggle({ id, label, checked, testId, disabled, onChange }: SettingsToggleProps) {
   return (
     <label className={styles.toggleRow} htmlFor={id}>
       <span>{label}</span>
@@ -111,6 +117,7 @@ export function SettingsToggle({ id, label, checked, testId, onChange }: Setting
         data-testid={testId}
         type="checkbox"
         checked={checked}
+        disabled={disabled}
         onChange={(event) => onChange(event.target.checked)}
       />
       <span className={styles.toggleTrack} aria-hidden="true" />

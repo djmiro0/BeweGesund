@@ -1,0 +1,95 @@
+.rewardPanel {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+  border: 1px solid var(--page-border, var(--ui-border));
+  border-radius: 0.8rem;
+  background:
+    linear-gradient(135deg, rgba(var(--page-olive-rgb, 181, 216, 61), 0.12), transparent 50%),
+    var(--ui-bg-alt);
+  color: var(--ui-text);
+  padding: 0.85rem;
+}
+
+.rewardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.rewardTitle {
+  margin: 0;
+  color: var(--ui-text);
+  font-size: 0.8rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rewardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  border: 1px solid rgba(var(--page-olive-rgb, 181, 216, 61), 0.28);
+  border-radius: 999px;
+  background: rgba(var(--page-olive-rgb, 181, 216, 61), 0.12);
+  color: var(--page-olive, #6c841f);
+  font-size: 0.7rem;
+  font-weight: 950;
+  padding: 0.36rem 0.55rem;
+  text-transform: uppercase;
+}
+
+.rewardText {
+  margin: 0;
+  color: var(--ui-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.progressTrack {
+  overflow: hidden;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: rgba(var(--page-ink-rgb, 22, 31, 46), 0.1);
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--page-olive, #b5d83d);
+  transition: width 0.24s var(--transition, ease);
+}
+
+.rewardButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: fit-content;
+  min-height: 2.35rem;
+  border: 1px solid rgba(var(--page-olive-rgb, 181, 216, 61), 0.32);
+  border-radius: 999px;
+  background: rgba(var(--page-olive-rgb, 181, 216, 61), 0.12);
+  color: var(--page-olive, #6c841f);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 950;
+  padding: 0.56rem 0.8rem;
+  text-transform: uppercase;
+}
+
+.rewardButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+}
+
+@media (max-width: 640px) {
+  .rewardHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

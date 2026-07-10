@@ -458,7 +458,11 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                         whileHover={{ y: -3 }}
                                         data-testid={`dashboard-workout-list-item-${course.id}`}
                                     >
-                                        <Link href={`/${locale}/courses/${course.slug}`} className={styles.newsImage}>
+                                        <Link
+                                            href={`/${locale}/courses/${course.slug}`}
+                                            className={styles.newsImage}
+                                            aria-label={course.title}
+                                        >
                                             {course.posterImage ? (
                                                 <Image
                                                     src={course.posterImage}
@@ -526,19 +530,24 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                 </Link>
                             </div>
                             <div className={styles.newsGrid}>
-                                {recentPosts.map((post) => (
+                                {recentPosts.map((post, index) => (
                                     <motion.article
                                         key={post.id}
                                         className={styles.newsCard}
                                         variants={fadeUp}
                                         whileHover={{ y: -3 }}
                                     >
-                                        <Link href={`/${locale}/blogs/${post.slug}`} className={styles.newsImage}>
+                                        <Link
+                                            href={`/${locale}/blogs/${post.slug}`}
+                                            className={styles.newsImage}
+                                            aria-label={post.title}
+                                        >
                                             {post.featuredImage ? (
                                                 <Image
                                                     src={post.featuredImage}
                                                     alt=""
                                                     fill
+                                                    loading={index === 0 ? "eager" : "lazy"}
                                                     sizes="(min-width: 1180px) 18rem, (min-width: 720px) 33vw, 88vw"
                                                 />
                                             ) : (
@@ -580,19 +589,24 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                                 </Link>
                             </div>
                             <div className={styles.newsGrid}>
-                                {recentMeditations.map((item) => (
+                                {recentMeditations.map((item, index) => (
                                     <motion.article
                                         key={item.id}
                                         className={styles.newsCard}
                                         variants={fadeUp}
                                         whileHover={{ y: -3 }}
                                     >
-                                        <Link href={getMeditationHref(item)} className={`${styles.newsImage} ${styles.meditationImage}`}>
+                                        <Link
+                                            href={getMeditationHref(item)}
+                                            className={`${styles.newsImage} ${styles.meditationImage}`}
+                                            aria-label={item.title}
+                                        >
                                             {item.posterImage ? (
                                                 <Image
                                                     src={item.posterImage}
                                                     alt=""
                                                     fill
+                                                    loading={index === 0 ? "eager" : "lazy"}
                                                     sizes="(min-width: 1180px) 18rem, (min-width: 720px) 33vw, 88vw"
                                                 />
                                             ) : (
