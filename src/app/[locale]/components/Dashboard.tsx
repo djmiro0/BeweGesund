@@ -28,9 +28,17 @@ const categoryAliases: Record<string, string> = {
     "weight-reduction": "overweight",
 };
 
+const categoryOverviewSlugs: Record<string, string> = {
+    definition: "intensive",
+};
+
 function canonicalCategory(value: unknown) {
     if (typeof value !== "string") return "";
     return categoryAliases[value] ?? value;
+}
+
+function getCourseCategoryOverviewSlug(categoryId: string) {
+    return categoryOverviewSlugs[categoryId] ?? categoryId;
 }
 
 const fadeUp = {
@@ -143,16 +151,19 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
             id: "for-you",
             label: t("workouts.forYou"),
             description: t("workouts.forYouDescription"),
+            href: `/${locale}/courses`,
         },
         ...categories.map((category) => ({
             id: category.id,
             label: category.title,
             description: category.description,
+            href: `/${locale}/courses/${getCourseCategoryOverviewSlug(category.id)}`,
         })),
         {
             id: "meditation-relaxation",
             label: relaxationT("title"),
             description: t("meditation.description"),
+            href: `/${locale}/meditation-relaxation`,
         },
     ];
 
@@ -339,7 +350,10 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                         data-testid="dashboard-active-workout-category"
                     >
                         <div>
-                            <p className={styles.panelEyebrow}>{activeGroup.label}</p>
+                            <Link href={activeGroup.href} className={styles.panelEyebrowLink}>
+                                {activeGroup.label}
+                                <ArrowUpRight size={13} />
+                            </Link>
                             <h2>{activeGroup.description}</h2>
                         </div>
                         <span className={styles.sessionCount}>{t("workouts.sessions", { count: activeDashboardItems.length })}</span>
