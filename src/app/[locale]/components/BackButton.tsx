@@ -15,7 +15,7 @@ function shouldUseBrowserBack(event: MouseEvent<HTMLAnchorElement>) {
   if (event.button !== 0) return false;
   if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return false;
 
-  return document.referrer ? new URL(document.referrer).origin === window.location.origin : false;
+  return true;
 }
 
 export default function BackButton({ href, children, onClick, ...props }: BackButtonProps) {

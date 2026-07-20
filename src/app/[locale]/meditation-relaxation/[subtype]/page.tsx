@@ -52,6 +52,7 @@ export default async function MeditationRelaxationSubtypePage({
   const categories = t.raw("categories") as Array<{ title: string; description: string }>;
   const category = categories[subtypeIndex];
   const isSelfMassage = subtype === "self-massage-stress-reduction";
+  const isBlogAlignedSubtype = subtype === "guided-meditation" || subtype === "relaxation-music";
   const selfMassageArticles = isSelfMassage ? courses.filter((item) => matchesRelaxationSubtype(item, subtype)) : [];
   const videos = isSelfMassage ? [] : getRelaxationVideos(courses, subtype);
   const hasStaticSubtypeContent =
@@ -113,7 +114,7 @@ export default async function MeditationRelaxationSubtypePage({
     : null;
 
   return (
-    <main className={isSelfMassage ? blogStyles.blogsPage : styles.page}>
+    <main className={isSelfMassage ? blogStyles.blogsPage : `${styles.page} ${isBlogAlignedSubtype ? styles.blogAlignedPage : ""}`}>
       <BackButton
         href={`/${locale}/meditation-relaxation`}
         className={isSelfMassage ? blogStyles.backLink : styles.backLink}

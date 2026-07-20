@@ -702,6 +702,24 @@
   text-transform: uppercase;
 }
 
+.panelEyebrowLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  width: fit-content;
+  margin: 0 0 0.22rem;
+  color: var(--page-accent);
+  font-size: 0.6rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.panelEyebrowLink:hover {
+  color: var(--app-text);
+}
+
 .panelHeader h2 {
   max-width: 52rem;
   margin: 0;

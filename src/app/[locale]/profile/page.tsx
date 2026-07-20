@@ -131,6 +131,7 @@ export default function ProfilePage() {
       return currentSection === section ? null : currentSection;
     });
   };
+  const activeDesktopSection = openSection ?? "body";
   const bmi = profile.heightCm && profile.weightKg
     ? profile.weightKg / ((profile.heightCm / 100) * (profile.heightCm / 100))
     : null;
@@ -230,6 +231,193 @@ export default function ProfilePage() {
         score: profile.weeklyScore,
       },
     ].sort((left, right) => right.score - left.score);
+  const profileSections = [
+    { id: "body" as const, title: t("cards.body.title"), icon: Scale, cardClassName: styles.bodyCard },
+    { id: "health" as const, title: t("wearables.title"), icon: HeartPulse, cardClassName: styles.healthCard },
+    { id: "membership" as const, title: t("packageSelector.title"), icon: Crown, cardClassName: styles.packageCard },
+    { id: "badges" as const, title: t("cards.badges.title"), icon: Medal, cardClassName: styles.badgeCard },
+  ];
+
+  const renderBodyContent = () => (
+    <>
+      <div className={styles.bodyPreview}>
+        {bodyDetails.slice(0, 4).map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.label} className={styles.iconLine}>
+              <Icon size={26} />
+              <p>
+                <span>{item.label}</span>
+                {item.value}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+      <div className={styles.expandedBlock}>
+        {bodyDetails.slice(4).map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.label} className={styles.detailRow}>
+              <Icon size={20} />
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+            </div>
+          );
+        })}
+        <p className={styles.note}>{t("cards.body.note")}</p>
+      </div>
+    </>
+  );
+
+  const renderMembershipContent = () => (
+    <div className={styles.expandedBlock}>
+      <div className={styles.sectionIntro}>
+        <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
+        <h2>{t("packageSelector.title")}</h2>
+        <p>{t("packageSelector.description")}</p>
+      </div>
+      <BillingActions
+        locale={locale}
+        memberPackage={profile.memberPackage}
+        subscriptionStatus={profile.subscriptionStatus}
+        basicName={packageT("basic")}
+        plusName={packageT("plus")}
+        basicPrice={t("packageSelector.basicPrice")}
+        plusPrice={t("packageSelector.plusPrice")}
+        basicCheckoutLabel={t("packageSelector.subscribeBasic")}
+        plusCheckoutLabel={t("packageSelector.subscribePlus")}
+        upgradeLabel={t("packageSelector.upgrade")}
+        downgradeLabel={t("packageSelector.downgrade")}
+        manageLabel={t("packageSelector.manage")}
+        processingLabel={t("packageSelector.processing")}
+        errorLabel={t("packageSelector.billingError")}
+        currentLabel={t("packageSelector.currentPackage")}
+        inactiveLabel={t("packageSelector.inactive")}
+        activeLabel={t("packageSelector.active")}
+        selectedLabel={t("packageSelector.selected")}
+        statusLabel={t("packageSelector.status")}
+      />
+      <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
+    </div>
+  );
+
+  const renderBadgesContent = () => (
+    <>
+      <div className={styles.badgeBody}>
+        <Award size={42} />
+        <div>
+          <h3>{t("cards.badges.current")}</h3>
+          <p>{t("cards.badges.next", { count: pointsToNextBadge })}</p>
+        </div>
+      </div>
+      <div className={styles.pointsGrid}>
+        <div>
+          <span>{t("points.total")}</span>
+          <strong>{integerFormatter.format(profile.points)}</strong>
+        </div>
+        <div>
+          <span>{t("points.xp")}</span>
+          <strong>{integerFormatter.format(profile.xp)}</strong>
+        </div>
+        <div>
+          <span>{t("points.weekly")}</span>
+          <strong>{integerFormatter.format(profile.weeklyScore)}</strong>
+        </div>
+      </div>
+      <div className={styles.progressTrack}>
+        <span style={{ width: `${badgeProgress}%` }} />
+      </div>
+    </>
+  );
+
+  const renderActiveDesktopContent = () => {
+    if (activeDesktopSection === "health") {
+      return (
+        <div className={styles.expandedBlock}>
+          <WearableIntegration locale={locale} />
+        </div>
+      );
+    }
+
+    if (activeDesktopSection === "membership") return renderMembershipContent();
+    if (activeDesktopSection === "badges") return renderBadgesContent();
+
+    return renderBodyContent();
+  };
+
+  const renderLeaderboard = () => (
+    <motion.section className={styles.leaderboard} variants={fadeUp}>
+      <div className={styles.leaderboardGlow} aria-hidden="true" />
+      <div className={styles.leaderboardHeader}>
+        <div>
+          <p className={styles.leaderboardEyebrow}>{t("leaderboard.eyebrow")}</p>
+          <h2>{t("leaderboard.title")}</h2>
+          <p>{t("leaderboard.description")}</p>
+        </div>
+        <span className={styles.trophyMark}>
+          <Trophy size={30} />
+        </span>
+      </div>
+      <div className={styles.leaderboardTable}>
+        <div className={styles.leaderboardLabels} aria-hidden="true">
+          <span>{t("leaderboard.rank")}</span>
+          <span>{t("leaderboard.competitor")}</span>
+          <span>{t("leaderboard.points")}</span>
+        </div>
+        {profile.regionKey && !leaderboardLoading && leaderboardWithCurrentUser.length === 0 ? (
+          <p className={styles.leaderboardState}>{t("leaderboard.empty")}</p>
+        ) : null}
+        {!profile.regionKey ? (
+          <p className={styles.leaderboardState}>{t("leaderboard.noRegion")}</p>
+        ) : null}
+        {leaderboardLoading ? (
+          <p className={styles.leaderboardState}>{t("leaderboard.loading")}</p>
+        ) : null}
+        {!leaderboardLoading && profile.regionKey ? leaderboardWithCurrentUser.map((entry, index) => (
+          <div
+            key={entry.userId}
+            className={`${styles.leaderboardRow} ${entry.userId === user.uid ? styles.currentUserRow : ""}`}
+          >
+            <span className={`${styles.rank} ${index < 3 ? styles[`rank${index + 1}`] : ""}`}>
+              {index + 1}
+            </span>
+            <span className={styles.competitor}>
+              <strong>
+                {entry.displayName}
+                {index < 3 ? <Crown size={14} aria-label={t("leaderboard.champion")} /> : null}
+              </strong>
+              <small>
+                {entry.userId === user.uid
+                  ? t("leaderboard.you")
+                  : authT(`regions.${entry.regionKey}`)}
+              </small>
+            </span>
+            <strong className={styles.points}>{integerFormatter.format(entry.score)}</strong>
+          </div>
+        )) : null}
+      </div>
+      <p className={styles.leaderboardNote}>{t("leaderboard.note")}</p>
+    </motion.section>
+  );
+
+  const renderAccountPanel = () => (
+    <motion.section className={styles.accountPanel} variants={fadeUp}>
+      <div>
+        <p className={styles.panelEyebrow}>{t("account.eyebrow")}</p>
+        <h2>{t("account.title")}</h2>
+        <p>{t("account.description")}</p>
+      </div>
+      <button
+        type="button"
+        className={styles.profileSignOutButton}
+        onClick={() => void signOut(auth)}
+      >
+        <LogOut size={18} />
+        {t("account.signOut")}
+      </button>
+    </motion.section>
+  );
 
   return (
     <motion.section
@@ -242,6 +430,75 @@ export default function ProfilePage() {
       }}
     >
       <div className={styles.shell}>
+        <div className={styles.desktopWorkspace}>
+          <aside className={styles.desktopSidebar} aria-label={t("eyebrow")}>
+            <div className={styles.desktopIdentity}>
+              <ProfileAvatar
+                userId={user.uid}
+                photoUrl={avatar}
+                initial={profileInitial}
+                className={styles.avatar}
+                ariaLabel={t("avatarAlt", { name: firstName })}
+              />
+              <div className={styles.identityText}>
+                <p className={styles.eyebrow}>{t("eyebrow")}</p>
+                <h1 className={styles.title}>{firstName}</h1>
+                <p className={styles.email}>{email}</p>
+              </div>
+              <ProfileSettingsAccess
+                locale={locale}
+                openLabel={t("settings.open")}
+              />
+            </div>
+            <nav className={styles.desktopNav}>
+              {profileSections.map((section) => {
+                const Icon = section.icon;
+                const isActive = activeDesktopSection === section.id;
+
+                return (
+                  <button
+                    key={section.id}
+                    type="button"
+                    className={`${styles.desktopNavButton} ${section.cardClassName} ${
+                      isActive ? styles.desktopNavButtonActive : ""
+                    }`}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => setOpenSection(section.id)}
+                  >
+                    <span>{section.title}</span>
+                    <Icon size={24} aria-hidden="true" />
+                  </button>
+                );
+              })}
+              <Link href={`/${locale}/courses`} className={`${styles.desktopNavButton} ${styles.trainingCard}`}>
+                <span>{t("cards.training.title")}</span>
+                <Dumbbell size={24} aria-hidden="true" />
+              </Link>
+              <Link href={`/${locale}/meditation-relaxation`} className={`${styles.desktopNavButton} ${styles.calmCard}`}>
+                <span>{t("cards.calm.title")}</span>
+                <Wind size={24} aria-hidden="true" />
+              </Link>
+            </nav>
+          </aside>
+
+          <div className={styles.desktopDetail}>
+            <section
+              className={`${styles.desktopPanel} ${
+                profileSections.find((section) => section.id === activeDesktopSection)?.cardClassName ?? ""
+              }`}
+            >
+              <div className={styles.desktopPanelHeader}>
+                <p className={styles.panelEyebrow}>{t("eyebrow")}</p>
+                <h2>{profileSections.find((section) => section.id === activeDesktopSection)?.title}</h2>
+              </div>
+              {renderActiveDesktopContent()}
+            </section>
+            {renderLeaderboard()}
+            {renderAccountPanel()}
+          </div>
+        </div>
+
+        <div className={styles.mobileProfileFlow}>
         <motion.header className={styles.mobileHeader} variants={fadeUp}>
           <ProfileAvatar
             userId={user.uid}
@@ -272,33 +529,7 @@ export default function ProfilePage() {
             <Scale size={34} />
             <ChevronDown className={styles.chevron} size={20} />
           </summary>
-          <div className={styles.bodyPreview}>
-            {bodyDetails.slice(0, 4).map((item) => {
-              const Icon = item.icon;
-              return (
-                  <div key={item.label} className={styles.iconLine}>
-                    <Icon size={26} />
-                    <p>
-                      <span>{item.label}</span>
-                      {item.value}
-                    </p>
-                  </div>
-              );
-            })}
-          </div>
-          <div className={styles.expandedBlock}>
-            {bodyDetails.slice(4).map((item) => {
-              const Icon = item.icon;
-              return (
-                  <div key={item.label} className={styles.detailRow}>
-                    <Icon size={20} />
-                    <span>{item.label}</span>
-                    <strong>{item.value}</strong>
-                  </div>
-              );
-            })}
-            <p className={styles.note}>{t("cards.body.note")}</p>
-          </div>
+          {renderBodyContent()}
         </motion.details>
 
         <motion.details
@@ -327,35 +558,7 @@ export default function ProfilePage() {
             <Crown size={30} />
             <ChevronDown className={styles.chevron} size={19} />
           </summary>
-          <div className={styles.expandedBlock}>
-            <div className={styles.sectionIntro}>
-              <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
-              <h2>{t("packageSelector.title")}</h2>
-              <p>{t("packageSelector.description")}</p>
-            </div>
-            <BillingActions
-                locale={locale}
-                memberPackage={profile.memberPackage}
-                subscriptionStatus={profile.subscriptionStatus}
-                basicName={packageT("basic")}
-                plusName={packageT("plus")}
-                basicPrice={t("packageSelector.basicPrice")}
-                plusPrice={t("packageSelector.plusPrice")}
-                basicCheckoutLabel={t("packageSelector.subscribeBasic")}
-                plusCheckoutLabel={t("packageSelector.subscribePlus")}
-                upgradeLabel={t("packageSelector.upgrade")}
-                downgradeLabel={t("packageSelector.downgrade")}
-                manageLabel={t("packageSelector.manage")}
-                processingLabel={t("packageSelector.processing")}
-                errorLabel={t("packageSelector.billingError")}
-                currentLabel={t("packageSelector.currentPackage")}
-                inactiveLabel={t("packageSelector.inactive")}
-                activeLabel={t("packageSelector.active")}
-                selectedLabel={t("packageSelector.selected")}
-                statusLabel={t("packageSelector.status")}
-            />
-            <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
-          </div>
+          {renderMembershipContent()}
         </motion.details>
 
         <div className={styles.twoColumnRow}>
@@ -391,100 +594,12 @@ export default function ProfilePage() {
               <Medal size={30} />
               <ChevronDown className={styles.chevron} size={19} />
             </summary>
-            <div className={styles.badgeBody}>
-              <Award size={42} />
-              <div>
-                <h3>{t("cards.badges.current")}</h3>
-                <p>{t("cards.badges.next", { count: pointsToNextBadge })}</p>
-              </div>
-            </div>
-            <div className={styles.pointsGrid}>
-              <div>
-                <span>{t("points.total")}</span>
-                <strong>{integerFormatter.format(profile.points)}</strong>
-              </div>
-              <div>
-                <span>{t("points.xp")}</span>
-                <strong>{integerFormatter.format(profile.xp)}</strong>
-              </div>
-              <div>
-                <span>{t("points.weekly")}</span>
-                <strong>{integerFormatter.format(profile.weeklyScore)}</strong>
-              </div>
-            </div>
-            <div className={styles.progressTrack}>
-              <span style={{ width: `${badgeProgress}%` }} />
-            </div>
+            {renderBadgesContent()}
         </motion.details>
 
-        <motion.section className={styles.leaderboard} variants={fadeUp}>
-          <div className={styles.leaderboardGlow} aria-hidden="true" />
-          <div className={styles.leaderboardHeader}>
-            <div>
-              <p className={styles.leaderboardEyebrow}>{t("leaderboard.eyebrow")}</p>
-              <h2>{t("leaderboard.title")}</h2>
-              <p>{t("leaderboard.description")}</p>
-            </div>
-            <span className={styles.trophyMark}>
-              <Trophy size={30} />
-            </span>
-          </div>
-          <div className={styles.leaderboardTable}>
-            <div className={styles.leaderboardLabels} aria-hidden="true">
-              <span>{t("leaderboard.rank")}</span>
-              <span>{t("leaderboard.competitor")}</span>
-              <span>{t("leaderboard.points")}</span>
-            </div>
-            {profile.regionKey && !leaderboardLoading && leaderboardWithCurrentUser.length === 0 ? (
-              <p className={styles.leaderboardState}>{t("leaderboard.empty")}</p>
-            ) : null}
-            {!profile.regionKey ? (
-              <p className={styles.leaderboardState}>{t("leaderboard.noRegion")}</p>
-            ) : null}
-            {leaderboardLoading ? (
-              <p className={styles.leaderboardState}>{t("leaderboard.loading")}</p>
-            ) : null}
-            {!leaderboardLoading && profile.regionKey ? leaderboardWithCurrentUser.map((entry, index) => (
-              <div
-                key={entry.userId}
-                className={`${styles.leaderboardRow} ${entry.userId === user.uid ? styles.currentUserRow : ""}`}
-              >
-                <span className={`${styles.rank} ${index < 3 ? styles[`rank${index + 1}`] : ""}`}>
-                  {index + 1}
-                </span>
-                <span className={styles.competitor}>
-                  <strong>
-                    {entry.displayName}
-                    {index < 3 ? <Crown size={14} aria-label={t("leaderboard.champion")} /> : null}
-                  </strong>
-                  <small>
-                    {entry.userId === user.uid
-                      ? t("leaderboard.you")
-                      : authT(`regions.${entry.regionKey}`)}
-                  </small>
-                </span>
-                <strong className={styles.points}>{integerFormatter.format(entry.score)}</strong>
-              </div>
-            )) : null}
-          </div>
-          <p className={styles.leaderboardNote}>{t("leaderboard.note")}</p>
-        </motion.section>
-
-        <motion.section className={styles.accountPanel} variants={fadeUp}>
-          <div>
-            <p className={styles.panelEyebrow}>{t("account.eyebrow")}</p>
-            <h2>{t("account.title")}</h2>
-            <p>{t("account.description")}</p>
-          </div>
-          <button
-            type="button"
-            className={styles.profileSignOutButton}
-            onClick={() => void signOut(auth)}
-          >
-            <LogOut size={18} />
-            {t("account.signOut")}
-          </button>
-        </motion.section>
+        {renderLeaderboard()}
+        {renderAccountPanel()}
+        </div>
       </div>
 
     </motion.section>

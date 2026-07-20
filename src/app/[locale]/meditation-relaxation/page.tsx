@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, HandHeart, Music2, Sparkles, Waves, Wind } from "lucide-react";
+import { ArrowRight, HandHeart, Music2, Sparkles, Wind } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import styles from "./Relaxation.module.css";
 

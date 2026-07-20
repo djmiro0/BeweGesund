@@ -210,7 +210,16 @@ async function installAuthOnboardingMocks(page: Page, events: EventName[]) {
   });
 }
 
+async function dismissCookieBanner(page: Page) {
+  const acceptButton = page.getByRole("button", { name: /akzeptieren|accept/i });
+
+  if (await acceptButton.isVisible().catch(() => false)) {
+    await acceptButton.click();
+  }
+}
+
 async function completeAccountStep(page: Page) {
+  await dismissCookieBanner(page);
   await page.getByRole("button", { name: /mitglieder-login/i }).click();
   await page.getByRole("button", { name: /konto erstellen/i }).click();
 
@@ -263,15 +272,16 @@ test.describe("account onboarding and payment", () => {
 
     await page.getByRole("link", { name: /complete payment/i }).click();
     events.push("stripe:return");
-    await expect(page).toHaveURL(/\/de$/);
     await expect.poll(() => events).toContain("functions:confirmStripeCheckoutSession");
-    await expect(page.getByRole("link", { name: /profil öffnen/i })).toBeVisible();
+    await expect(page).toHaveURL(/\/de$/);
+    await expect(page.getByRole("link", { name: /profil öffnen/i }).first()).toBeVisible();
 
     const returningContext = await browser.newContext({ baseURL: appBaseURL });
     const returningPage = await returningContext.newPage();
     await installAuthOnboardingMocks(returningPage, events);
 
     await returningPage.goto("/de");
+    await dismissCookieBanner(returningPage);
     await returningPage.getByRole("button", { name: /mitglieder-login/i }).click();
     await returningPage.getByLabel(/e-mail-adresse/i).fill(firebaseUser.email);
     await returningPage.getByLabel(/^passwort$/i).fill(firebaseUser.password);
