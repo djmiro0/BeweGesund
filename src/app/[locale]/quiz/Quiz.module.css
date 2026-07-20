@@ -207,7 +207,7 @@
   max-width: 37rem;
   margin: 0;
   color: var(--quiz-heading);
-  font-size: clamp(2.7rem, 5.2vw, 4.15rem);
+  font-size: 2.2rem;
   font-weight: 950;
   letter-spacing: 0;
   line-height: 1.08;

@@ -13,6 +13,16 @@
   gap: 0.8rem;
 }
 
+.desktopWorkspace {
+  display: none;
+}
+
+.mobileProfileFlow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
 .mobileHeader {
   display: grid;
   grid-template-columns: 4rem minmax(0, 1fr) 2.65rem;
@@ -1561,8 +1571,206 @@
 }
 
 @media (min-width: 1080px) {
+  .profileSection {
+    padding: 7rem clamp(1rem, 3vw, 2rem) 4rem;
+  }
+
   .shell {
-    width: min(100%, 68rem);
+    width: min(100%, 1240px);
+    display: block;
+  }
+
+  .mobileProfileFlow {
+    display: none;
+  }
+
+  .desktopWorkspace {
+    display: grid;
+    grid-template-columns: minmax(15rem, 18rem) minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: start;
+  }
+
+  .desktopSidebar {
+    position: sticky;
+    top: 6rem;
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .desktopIdentity {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.8rem;
+    align-items: center;
+    padding-bottom: 0.95rem;
+    border-bottom: 1px solid var(--page-border-soft);
+  }
+
+  .desktopIdentity .avatar {
+    width: 3.1rem;
+    height: 3.1rem;
+    border-width: 3px;
+    font-size: 1.15rem;
+  }
+
+  .desktopIdentity .title {
+    overflow: hidden;
+    font-size: 1.55rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desktopNav {
+    display: grid;
+    gap: 0.42rem;
+  }
+
+  .desktopNavButton {
+    --nav-accent: var(--card-accent, var(--page-accent));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    width: 100%;
+    min-height: 3.45rem;
+    overflow: hidden;
+    border: 1px solid rgba(var(--page-ink-rgb), 0.1);
+    border-left: 3px solid var(--nav-accent);
+    border-radius: 0.95rem;
+    background:
+      linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.78), rgba(var(--page-soft-alt-rgb), 0.66));
+    color: var(--page-ink);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 950;
+    padding: 0.85rem 0.9rem;
+    text-align: left;
+    text-decoration: none;
+    transition:
+      border-color 0.22s var(--transition),
+      background 0.22s var(--transition),
+      box-shadow 0.22s var(--transition),
+      transform 0.22s var(--transition);
+  }
+
+  .desktopNavButton:hover {
+    position: relative;
+    z-index: 1;
+    transform: translateX(4px) scale(1.025);
+    transform-origin: left center;
+    border-color: rgba(var(--page-ink-rgb), 0.16);
+    border-left-color: var(--nav-accent);
+    background:
+      linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.94)),
+      linear-gradient(90deg, rgba(var(--page-ink-rgb), 0.08), rgba(var(--page-ink-rgb), 0.02));
+    box-shadow:
+      0 16px 34px rgba(var(--page-ink-rgb), 0.14),
+      0 0 0 1px rgba(var(--page-soft-rgb), 0.42);
+  }
+
+  .desktopNavButtonActive {
+    position: relative;
+    z-index: 2;
+    min-height: 4rem;
+    margin: -0.12rem 0;
+    transform: translateX(8px) scale(1.055);
+    transform-origin: left center;
+    border-color: rgba(var(--page-ink-rgb), 0.24);
+    border-left-width: 6px;
+    border-left-color: var(--nav-accent);
+    background:
+      linear-gradient(145deg, rgba(var(--page-soft-rgb), 1), rgba(var(--page-soft-alt-rgb), 0.98)),
+      linear-gradient(90deg, rgba(var(--page-ink-rgb), 0.18), rgba(var(--page-ink-rgb), 0.04));
+    box-shadow:
+      0 24px 52px rgba(var(--page-ink-rgb), 0.24),
+      0 0 0 1px rgba(var(--page-soft-rgb), 0.7),
+      inset 0 0 0 1px rgba(var(--page-soft-rgb), 0.74);
+  }
+
+  .desktopNavButtonActive span {
+    font-size: 0.98rem;
+  }
+
+  .desktopNavButtonActive svg {
+    transform: scale(1.12);
+  }
+
+  .desktopNavButton:focus-visible {
+    outline: 3px solid rgba(var(--page-warm-rgb), 0.78);
+    outline-offset: 3px;
+  }
+
+  .desktopNavButton span {
+    overflow: hidden;
+    font-size: 0.92rem;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desktopNavButton svg {
+    color: var(--nav-accent);
+  }
+
+  .desktopDetail {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .desktopPanel {
+    --panel-accent: var(--card-accent, var(--page-accent));
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(var(--page-ink-rgb), 0.1);
+    border-left: 4px solid var(--panel-accent);
+    border-radius: 1.1rem;
+    background:
+      linear-gradient(145deg, rgba(var(--page-soft-rgb), 0.96), rgba(var(--page-soft-alt-rgb), 0.9));
+    padding: clamp(1rem, 2vw, 1.25rem);
+    box-shadow: 0 18px 46px rgba(var(--page-ink-rgb), 0.1);
+  }
+
+  .desktopPanelHeader {
+    display: grid;
+    gap: 0.25rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--page-border-soft);
+  }
+
+  .desktopPanelHeader h2 {
+    margin: 0;
+    color: var(--page-ink);
+    font-size: 1.35rem;
+    font-weight: 950;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .desktopPanel .bodyPreview {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 0;
+  }
+
+  .desktopPanel .expandedBlock,
+  .desktopPanel .pointsGrid {
+    padding: 0;
+  }
+
+  .desktopPanel .progressTrack {
+    margin: 0;
+  }
+
+  .desktopPanel .wearablePanel {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
   }
 }
 

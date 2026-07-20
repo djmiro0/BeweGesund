@@ -85,6 +85,7 @@
   font-weight: 900;
   text-transform: uppercase;
   font-style: italic;
+  line-break: anywhere;
 }
 
 .intro {
