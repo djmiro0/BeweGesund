@@ -691,9 +691,21 @@ function getStripePriceId(memberPackage: MemberPackage) {
   return memberPackage === "plus" ? stripePlusPriceId.value() : stripeBasicPriceId.value();
 }
 
-function getMemberPackageForPrice(priceId: string | undefined): MemberPackage {
-  if (priceId === stripeBasicPriceId.value()) return "basic";
-  if (priceId === stripePlusPriceId.value()) return "plus";
+function getMemberPackageFromMetadata(value: unknown): MemberPackage | undefined {
+  return value === "basic" || value === "plus" ? value : undefined;
+}
+
+function getMemberPackageForPrice(
+  priceId: string | undefined,
+  fallbackPackage?: MemberPackage,
+): MemberPackage {
+  const basicPriceId = stripeBasicPriceId.value();
+  const plusPriceId = stripePlusPriceId.value();
+
+  if (basicPriceId === plusPriceId && fallbackPackage) return fallbackPackage;
+  if (priceId === basicPriceId) return "basic";
+  if (priceId === plusPriceId) return "plus";
+  if (fallbackPackage) return fallbackPackage;
 
   throw new Error(`Unknown Stripe Price ID: ${priceId ?? "missing"}`);
 }
@@ -708,18 +720,23 @@ function getInternalSubscriptionStatus(status: StripeSubscriptionStatus): Premiu
   return "canceled";
 }
 
-function subscriptionAccess(subscription: StripeSubscription) {
+function subscriptionAccess(subscription: StripeSubscription, fallbackPackage?: MemberPackage) {
   const internalStatus = getInternalSubscriptionStatus(subscription.status);
+  const metadataPackage = getMemberPackageFromMetadata(subscription.metadata.memberPackage) ?? fallbackPackage;
 
   return {
-    memberPackage: getMemberPackageForPrice(subscription.items.data[0]?.price.id),
+    memberPackage: getMemberPackageForPrice(subscription.items.data[0]?.price.id, metadataPackage),
     premiumStatus: internalStatus,
     subscriptionStatus: internalStatus,
     stripeSubscriptionStatus: subscription.status,
   };
 }
 
-async function syncStripeSubscription(subscription: StripeSubscription, fallbackUid?: string | null) {
+async function syncStripeSubscription(
+  subscription: StripeSubscription,
+  fallbackUid?: string | null,
+  fallbackPackage?: MemberPackage,
+) {
   const uid = subscription.metadata.uid || fallbackUid;
 
   if (!uid) {
@@ -731,7 +748,7 @@ async function syncStripeSubscription(subscription: StripeSubscription, fallback
 
   const subscriptionItem = subscription.items.data[0];
   const customerId = getStripeCustomerId(subscription.customer);
-  const access = subscriptionAccess(subscription);
+  const access = subscriptionAccess(subscription, fallbackPackage);
 
   await userRef(uid).set(
     {
@@ -747,6 +764,7 @@ async function syncStripeSubscription(subscription: StripeSubscription, fallback
     {
       subscriptionId: subscription.id,
       customerId,
+      memberPackage: access.memberPackage,
       priceId: subscriptionItem?.price.id ?? null,
       status: subscription.status,
       currentPeriodEnd: subscriptionItem?.current_period_end ?? null,
@@ -772,7 +790,11 @@ async function syncStripeCheckoutSession(stripe: StripeClient, session: StripeCh
   }
 
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  await syncStripeSubscription(subscription, session.client_reference_id ?? session.metadata?.uid);
+  await syncStripeSubscription(
+    subscription,
+    session.client_reference_id ?? session.metadata?.uid,
+    getMemberPackageFromMetadata(session.metadata?.memberPackage),
+  );
 }
 
 async function applyCompletion(userId: string, kind: "lesson" | "workout", payload: CompletionPayload) {

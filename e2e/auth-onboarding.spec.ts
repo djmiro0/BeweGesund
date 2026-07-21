@@ -14,7 +14,6 @@ const appBaseURL = process.env.PLAYWRIGHT_BASE_URL
 type EventName =
   | "auth:signUp"
   | "auth:updateProfile"
-  | "auth:sendVerification"
   | "firestore:profileWrite"
   | "functions:createStripeCheckoutSession"
   | "stripe:checkout"
@@ -291,7 +290,6 @@ test.describe("account onboarding and payment", () => {
       "auth:signUp",
       "auth:updateProfile",
       "firestore:profileWrite",
-      "auth:sendVerification",
       "functions:createStripeCheckoutSession",
       "stripe:checkout",
       "stripe:return",

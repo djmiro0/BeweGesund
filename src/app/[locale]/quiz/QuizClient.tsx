@@ -69,13 +69,6 @@ interface QuizResult {
   }>;
 }
 
-interface QuizAnswerFeedback {
-  optionId: string;
-  correctOptionId?: string;
-  correct?: boolean;
-  loading: boolean;
-}
-
 interface LeaderboardEntry {
   userId: string;
   displayName: string;
@@ -125,7 +118,6 @@ const copy = {
     correctBadge: "Richtig",
     wrongBadge: "Falsch",
     submitError: "Der Quiz konnte nicht gespeichert werden.",
-    answerCheckError: "Die Antwort konnte nicht geprüft werden.",
     heroEyebrow: "Bewegesund Challenges",
     heroTitleFirst: "Teste dein Wissen.",
     heroTitleSecond: "Werde Champion.",
@@ -140,7 +132,7 @@ const copy = {
     dailyTitle: "Täglicher 24h Quiz",
     dailyText: "Jeden Tag 5 neue Fragen zu Ernährung, Training, Mental Health und Prävention.",
     knowledgeTitle: "Wissen, das bleibt",
-    knowledgeText: "Kurze Erklärungen nach jeder Antwort. So lernst du mit jeder Challenge dazu.",
+    knowledgeText: "Deine Auswertung am Ende zeigt dir, was richtig war. So lernst du mit jeder Challenge dazu.",
     monthlyTitle: "Monats-Champion",
     monthlyText: "Die besten drei Profile erhalten monatlich eine exklusive Krone neben ihrem Namen.",
     today: "Heute",
@@ -196,7 +188,6 @@ const copy = {
     correctBadge: "Correct",
     wrongBadge: "Wrong",
     submitError: "The quiz could not be saved.",
-    answerCheckError: "The answer could not be checked.",
     heroEyebrow: "Bewegesund challenges",
     heroTitleFirst: "Test your knowledge.",
     heroTitleSecond: "Become champion.",
@@ -211,7 +202,7 @@ const copy = {
     dailyTitle: "Daily 24h quiz",
     dailyText: "Five new daily questions on nutrition, training, mental health, and prevention.",
     knowledgeTitle: "Knowledge that sticks",
-    knowledgeText: "Short explanations after every answer help you learn with each challenge.",
+    knowledgeText: "Your end review shows what was correct, helping you learn with each challenge.",
     monthlyTitle: "Monthly champion",
     monthlyText: "The best three profiles receive an exclusive monthly crown next to their name.",
     today: "Today",
@@ -370,7 +361,6 @@ export default function QuizClient({
   const [quizzes, setQuizzes] = useState<PublicQuiz[]>([]);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
   const [answeredAtMs, setAnsweredAtMs] = useState<Record<string, number>>({});
-  const [answerFeedbacks, setAnswerFeedbacks] = useState<Record<string, QuizAnswerFeedback>>({});
   const [timedOutQuestions, setTimedOutQuestions] = useState<Record<string, boolean>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(DEFAULT_QUESTION_SECONDS);
@@ -467,8 +457,7 @@ export default function QuizClient({
     : DEFAULT_QUESTION_SECONDS;
   const currentQuestionAnswered = currentQuestion ? Boolean(selectedAnswers[currentQuestion.id]) : false;
   const currentQuestionTimedOut = currentQuestion ? Boolean(timedOutQuestions[currentQuestion.id]) : false;
-  const currentQuestionFeedback = currentQuestion ? answerFeedbacks[currentQuestion.id] : undefined;
-  const canMoveForward = (currentQuestionAnswered && !currentQuestionFeedback?.loading) || currentQuestionTimedOut;
+  const canMoveForward = currentQuestionAnswered || currentQuestionTimedOut;
   const isLastQuestion = currentQuestionIndex >= activeQuestions.length - 1;
   const regionKey = profile?.regionKey ?? null;
   const leaderboardEntries = regionKey === leaderboardState.regionKey ? leaderboardState.entries : [];
@@ -492,7 +481,6 @@ export default function QuizClient({
     setCurrentQuestionIndex(0);
     setSelectedAnswers({});
     setAnsweredAtMs({});
-    setAnswerFeedbacks({});
     setTimedOutQuestions({});
     autoStartedRef.current = false;
     setHasStarted(false);
@@ -551,6 +539,17 @@ export default function QuizClient({
     startQuizRound();
   }, [activeQuiz, authLoading, autoStart, gameMode, hasStarted, loading, openAuth, result, startQuizRound, user]);
 
+  useEffect(() => {
+    if (!isGamePopupOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isGamePopupOpen]);
+
   const handleOpenStart = () => {
     if (!user) {
       openAuth();
@@ -580,48 +579,14 @@ export default function QuizClient({
     startQuizRound();
   };
 
-  const handleSelect = async (questionId: string, optionId: string) => {
+  const handleSelect = (questionId: string, optionId: string) => {
     if (timedOutQuestions[questionId] || selectedAnswers[questionId] || result) return;
 
+    setSubmitError(null);
     setSelectedAnswers((current) => ({ ...current, [questionId]: optionId }));
     setAnsweredAtMs((current) => (
       current[questionId] ? current : { ...current, [questionId]: Date.now() - questionStartedAtRef.current }
     ));
-    setAnswerFeedbacks((current) => ({
-      ...current,
-      [questionId]: { optionId, loading: true },
-    }));
-
-    if (!activeQuiz || !user) return;
-
-    try {
-      const checkQuizAnswer = httpsCallable<
-        { quizId: string; questionId: string; optionId: string; answeredAt: string },
-        { ok: boolean; questionId: string; optionId: string; correctOptionId: string; correct: boolean }
-      >(functions, "checkQuizAnswer");
-      const response = await checkQuizAnswer({
-        quizId: activeQuiz.id,
-        questionId,
-        optionId,
-        answeredAt: new Date().toISOString(),
-      });
-
-      setAnswerFeedbacks((current) => ({
-        ...current,
-        [questionId]: {
-          optionId,
-          correctOptionId: response.data.correctOptionId,
-          correct: response.data.correct,
-          loading: false,
-        },
-      }));
-    } catch {
-      setAnswerFeedbacks((current) => ({
-        ...current,
-        [questionId]: { optionId, loading: false },
-      }));
-      setSubmitError(labels.answerCheckError);
-    }
   };
 
   const handleNext = () => {
@@ -839,13 +804,8 @@ export default function QuizClient({
                 <div className={styles.liveOptions}>
                   {currentQuestion.options.map((option) => {
                     const selected = selectedAnswers[currentQuestion.id] === option.id;
-                    const isCorrectAnswer = currentQuestionFeedback?.correctOptionId === option.id;
-                    const isWrongSelection = selected && currentQuestionFeedback?.correct === false;
-                    const isCorrectSelection = selected && currentQuestionFeedback?.correct === true;
                     const optionClassName = [
                       selected ? styles.liveOptionActive : styles.liveOption,
-                      isCorrectAnswer || isCorrectSelection ? styles.liveOptionCorrect : "",
-                      isWrongSelection ? styles.liveOptionWrong : "",
                     ].filter(Boolean).join(" ");
 
                     return (
@@ -857,9 +817,7 @@ export default function QuizClient({
                         disabled={currentQuestionAnswered || currentQuestionTimedOut || Boolean(result)}
                       >
                         <span className={styles.optionMarker} aria-hidden="true">
-                          {selected && currentQuestionFeedback?.loading ? <Loader2 className={styles.spinIcon} size={15} /> : null}
-                          {isCorrectAnswer || isCorrectSelection ? <Check size={17} /> : null}
-                          {isWrongSelection ? <X size={17} /> : null}
+                          {selected ? <Check size={17} /> : null}
                         </span>
                         {option.label}
                       </button>

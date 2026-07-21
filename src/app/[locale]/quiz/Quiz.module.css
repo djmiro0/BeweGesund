@@ -72,15 +72,19 @@
   z-index: 140;
   display: grid;
   place-items: center;
+  overflow: hidden;
   background: rgba(var(--shell-bg-rgb), 0.72);
   padding: clamp(0.7rem, 2vw, 1.2rem);
   backdrop-filter: blur(12px);
+  overscroll-behavior: contain;
 }
 
 .gameDialog {
+  display: flex;
+  flex-direction: column;
   width: min(100%, 58rem);
   max-height: min(92svh, 54rem);
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid rgba(var(--quiz-border-rgb), 0.18);
   border-radius: 14px;
   background: var(--quiz-bg-deep);
@@ -121,15 +125,28 @@
 }
 
 .gameDialog .quizGamePage {
-  min-height: auto;
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
   padding: 0;
+}
+
+.gameDialog .gameModeShell {
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .gameDialog .gameModeShell .liveQuizPanel {
   min-height: auto;
+  max-height: calc(min(92svh, 54rem) - 4rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 0;
   border-radius: 0;
   box-shadow: none;
+  scrollbar-color: rgba(var(--quiz-text-rgb), 0.48) transparent;
 }
 
 .backToOverview {
@@ -751,12 +768,31 @@
 }
 
 .completionPanel {
+  position: relative;
   display: grid;
   gap: 1.15rem;
+  overflow: hidden;
   border: 1px solid rgba(var(--page-green-rgb), 0.24);
   border-radius: 12px;
-  background: rgba(var(--quiz-panel-deep-rgb), 0.44);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(var(--page-green-rgb), 0.18), transparent 15rem),
+    linear-gradient(145deg, rgba(var(--quiz-panel-deep-rgb), 0.72), rgba(var(--quiz-panel-rgb), 0.42));
   padding: clamp(1rem, 2.4vw, 1.35rem);
+}
+
+.completionPanel::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 0 52%, rgba(var(--page-green-rgb), 0.12) 52.4%, transparent 53%),
+    linear-gradient(22deg, transparent 0 70%, rgba(var(--page-warm-rgb), 0.11) 70.4%, transparent 71%);
+  content: "";
+}
+
+.completionPanel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .completionHero {
@@ -774,6 +810,9 @@
   border-radius: 999px;
   background: var(--quiz-accent);
   color: var(--quiz-action-text);
+  box-shadow:
+    0 0 0 0.55rem rgba(var(--page-green-rgb), 0.08),
+    0 1rem 2.6rem rgba(var(--page-green-rgb), 0.2);
 }
 
 .completionHero p {
@@ -801,20 +840,56 @@
 }
 
 .quizResult {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(11rem, auto) repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: stretch;
+  max-width: 44rem;
 }
 
 .quizResult span {
-  border: 1px solid rgba(var(--quiz-border-rgb), 0.14);
-  border-radius: 999px;
-  background: rgba(var(--quiz-text-rgb), 0.07);
+  display: inline-flex;
+  min-height: 3.1rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(var(--quiz-border-rgb), 0.12);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(var(--quiz-text-rgb), 0.1), rgba(var(--quiz-text-rgb), 0.045));
   color: var(--quiz-heading);
   font-size: 0.82rem;
   font-weight: 900;
-  padding: 0.5rem 0.7rem;
+  padding: 0.58rem 0.78rem;
+  text-align: center;
+}
+
+.quizResult span:first-child {
+  position: relative;
+  min-height: 4.35rem;
+  justify-content: flex-start;
+  overflow: hidden;
+  border-color: rgba(var(--page-green-rgb), 0.5);
+  background:
+    radial-gradient(circle at 84% 20%, rgba(var(--shell-text-rgb), 0.2), transparent 4.6rem),
+    linear-gradient(135deg, var(--quiz-accent-strong), var(--quiz-accent-shade));
+  color: var(--quiz-action-text);
+  font-size: clamp(1.15rem, 2.4vw, 1.7rem);
+  letter-spacing: 0;
+  box-shadow:
+    0 1rem 2.5rem rgba(var(--page-green-rgb), 0.2),
+    inset 0 1px 0 rgba(var(--shell-text-rgb), 0.26);
+}
+
+.quizResult span:first-child::after {
+  position: absolute;
+  right: -1.4rem;
+  bottom: -1.7rem;
+  width: 5.2rem;
+  height: 5.2rem;
+  border: 1px solid rgba(var(--shell-text-rgb), 0.28);
+  border-radius: 999px;
+  background: rgba(var(--shell-text-rgb), 0.12);
+  content: "";
 }
 
 .completionActions {
@@ -1238,6 +1313,18 @@
 
   .quizQuestionActions {
     flex-direction: column;
+  }
+
+  .completionHero {
+    grid-template-columns: 1fr;
+  }
+
+  .quizResult {
+    grid-template-columns: 1fr;
+  }
+
+  .quizResult span:first-child {
+    justify-content: center;
   }
 
   .quizStepper {

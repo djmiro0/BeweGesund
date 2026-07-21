@@ -299,20 +299,21 @@ describe("AuthModal Google sign-in", () => {
 
   it("opens checkout after email registration and anamnesis", async () => {
     const user = userEvent.setup();
+    const onClose = vi.fn();
     mocks.createUserWithEmailAndPassword.mockResolvedValue({
       user: {
         uid: "email-user",
         email: "new@example.com",
+        emailVerified: false,
         photoURL: null,
         providerData: [{ providerId: "password" }],
       },
     });
     mocks.updateProfile.mockResolvedValue(undefined);
     mocks.setDoc.mockResolvedValue(undefined);
-    mocks.sendEmailVerification.mockResolvedValue(undefined);
     mocks.signOut.mockResolvedValue(undefined);
 
-    render(<AuthModal isOpen onClose={vi.fn()} />);
+    render(<AuthModal isOpen onClose={onClose} />);
     await user.click(screen.getByRole("button", { name: "Create an account" }));
 
     await user.type(screen.getByPlaceholderText("First name"), "New");
@@ -350,14 +351,36 @@ describe("AuthModal Google sign-in", () => {
 
     await user.click(screen.getByRole("button", { name: "Complete anamnesis" }));
 
-    expect(mocks.sendEmailVerification).toHaveBeenCalledTimes(1);
-    expect(mocks.sendEmailVerification).toHaveBeenCalledWith(
-      expect.objectContaining({ uid: "email-user" }),
-      { url: "http://localhost:3000/en" },
-    );
     expect(mocks.signOut).not.toHaveBeenCalled();
     expect(mocks.callable).toHaveBeenCalledWith({ locale: "en", memberPackage: "basic" });
+    expect(onClose).not.toHaveBeenCalled();
     expect(mocks.locationAssign).toHaveBeenCalledWith("https://checkout.example/session");
+  });
+
+  it("signs in password users without requiring email verification", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    mocks.signInWithEmailAndPassword.mockResolvedValue({
+      user: {
+        uid: "email-user",
+        email: "member@example.com",
+        emailVerified: false,
+        providerData: [{ providerId: "password" }],
+      },
+    });
+
+    render(<AuthModal isOpen onClose={onClose} />);
+    await user.type(screen.getByLabelText("Email address"), "member@example.com");
+    await user.type(screen.getByLabelText("Password"), "secret123");
+    await user.click(screen.getByRole("button", { name: "Sign In" }));
+
+    expect(mocks.signInWithEmailAndPassword).toHaveBeenCalledWith(
+      expect.anything(),
+      "member@example.com",
+      "secret123",
+    );
+    expect(mocks.signOut).not.toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("lets the user change email or sign in when registration email already exists", async () => {
