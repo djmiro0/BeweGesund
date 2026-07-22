@@ -1683,7 +1683,6 @@
     background:
       linear-gradient(145deg, rgba(var(--page-soft-rgb), 1), rgba(var(--page-soft-alt-rgb), 0.98)),
       linear-gradient(90deg, rgba(var(--page-ink-rgb), 0.18), rgba(var(--page-ink-rgb), 0.04));
-
   }
 
   .desktopNavButtonActive span {

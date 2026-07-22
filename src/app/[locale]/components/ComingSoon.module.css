@@ -10,7 +10,7 @@
   padding-top: 4rem;
   background:
     linear-gradient(90deg, var(--coming-bg) 0%, rgba(var(--coming-bg-rgb), 0.94) 40%, rgba(var(--coming-bg-rgb), 0.58) 62%, rgba(var(--coming-bg-rgb), 0.16) 100%),
-    url("/training.jpg") center / cover;
+    url("../../../../public/bewegesund-background.png") center / cover;
   color: var(--coming-text);
 }
 
@@ -194,7 +194,7 @@
   .comingSoon {
     background:
       linear-gradient(180deg, rgba(var(--coming-bg-rgb), 0.18) 0%, rgba(var(--coming-bg-rgb), 0.72) 52%, var(--coming-bg) 88%),
-      url("/training.jpg") center / cover;
+      url("../../../../public/bewegesund-background.png") center / cover;
   }
 
   .hero {
