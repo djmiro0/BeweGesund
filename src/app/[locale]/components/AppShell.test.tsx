@@ -1,9 +1,12 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AppPreferenceEffects, ShellFrame } from "./AppShell";
+import { AppPreferenceEffects, CheckoutReturnSync, ShellFrame } from "./AppShell";
 import { ThemeProvider, useTheme } from "./ThemeProvider";
 
 const mocks = vi.hoisted(() => ({
+  callable: vi.fn(),
+  httpsCallable: vi.fn(),
+  signOut: vi.fn(),
   pathname: "/de",
   auth: {
     user: null as null | {
@@ -32,6 +35,19 @@ const mocks = vi.hoisted(() => ({
     openAuth: vi.fn(),
     closeAuth: vi.fn(),
   },
+}));
+
+vi.mock("../../../../firebase.config", () => ({
+  auth: {},
+  functions: {},
+}));
+
+vi.mock("firebase/auth", () => ({
+  signOut: mocks.signOut,
+}));
+
+vi.mock("firebase/functions", () => ({
+  httpsCallable: mocks.httpsCallable,
 }));
 
 vi.mock("next/navigation", () => ({
@@ -84,6 +100,12 @@ describe("ShellFrame launch routing", () => {
     mocks.auth.profile = null;
     mocks.auth.appPreferences = { theme: "system" };
     mocks.auth.loading = false;
+    mocks.callable.mockReset();
+    mocks.callable.mockResolvedValue({ data: { ok: true } });
+    mocks.httpsCallable.mockReset();
+    mocks.httpsCallable.mockReturnValue(mocks.callable);
+    mocks.signOut.mockReset();
+    mocks.signOut.mockResolvedValue(undefined);
     vi.unstubAllEnvs();
     window.localStorage.clear();
     document.documentElement.removeAttribute("data-theme");
@@ -127,6 +149,39 @@ describe("ShellFrame launch routing", () => {
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
     expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
     expect(screen.getByTestId("header")).toHaveAttribute("data-launch-mode", "false");
+  });
+
+  it("confirms successful Stripe checkout returns", async () => {
+    window.history.replaceState(null, "", "/de?checkout=success&session_id=cs_test_123");
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+
+    render(<CheckoutReturnSync />);
+
+    await waitFor(() => expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "confirmStripeCheckoutSession"));
+    expect(mocks.callable).toHaveBeenCalledWith({ sessionId: "cs_test_123" });
+    await waitFor(() => expect(window.location.search).toBe(""));
+  });
+
+  it("deletes the incomplete account after canceled Stripe checkout returns", async () => {
+    window.history.replaceState(null, "", "/de?checkout=canceled");
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+
+    render(<CheckoutReturnSync />);
+
+    await waitFor(() => expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "deleteUserAccount"));
+    expect(mocks.callable).toHaveBeenCalledWith({});
+    await waitFor(() => expect(mocks.signOut).toHaveBeenCalledWith({}));
+    await waitFor(() => expect(window.location.search).toBe(""));
   });
 
   it("renders public routes when the coming soon flag is disabled", () => {
@@ -229,6 +284,37 @@ describe("ShellFrame launch routing", () => {
 
   it("keeps the profile page visible for authenticated users without paid access", () => {
     mocks.pathname = "/de/profile";
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+    mocks.auth.profile = {
+      email: "member@example.com",
+      firstName: "Paid",
+      lastName: "Pending",
+      age: 42,
+      gender: "female",
+      heightCm: 170,
+      weightKg: 70,
+      regionKey: "berlin",
+      photoURL: null,
+      subscriptionStatus: "free",
+    };
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByTestId("page-content")).toBeInTheDocument();
+    expect(screen.queryByTestId("payment-required")).not.toBeInTheDocument();
+  });
+
+  it("keeps settings visible for authenticated users without paid access", () => {
+    mocks.pathname = "/de/settings";
     mocks.auth.user = {
       uid: "user-1",
       displayName: "Member",

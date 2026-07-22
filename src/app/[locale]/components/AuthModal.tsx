@@ -6,7 +6,6 @@ import {
     createUserWithEmailAndPassword,
     deleteUser,
     GoogleAuthProvider,
-    sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signInWithPopup,
@@ -691,7 +690,13 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                         throw profileError;
                     }
 
-                    await openCheckoutForSelectedPackage();
+                    try {
+                        await openCheckoutForSelectedPackage();
+                    } catch (checkoutError) {
+                        await deleteIncompleteAccount(googleUser);
+                        throw checkoutError;
+                    }
+
                     return;
                 }
 
@@ -711,15 +716,12 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                 }
 
                 try {
-                    await sendEmailVerification(credential.user, getAuthActionSettings());
-                } catch (verificationError) {
-                    console.warn("Firebase verification email failed", {
-                        code: getFirebaseErrorCode(verificationError),
-                        error: verificationError,
-                    });
+                    await openCheckoutForSelectedPackage();
+                } catch (checkoutError) {
+                    await deleteIncompleteAccount(credential.user);
+                    throw checkoutError;
                 }
 
-                await openCheckoutForSelectedPackage();
                 return;
             } else {
                 setHasAttemptedSignInSubmit(true);
@@ -728,16 +730,7 @@ export default function AuthModal({ isOpen, onClose, requiresProfileSetup = fals
                     return;
                 }
 
-                const credential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
-                const usesPassword = credential.user.providerData.some(
-                    (provider) => provider.providerId === "password",
-                );
-
-                if (usesPassword && !credential.user.emailVerified) {
-                    await signOut(auth);
-                    setErrorMessage(`${t("errorPrefix")} ${t("emailNotVerified")}`);
-                    return;
-                }
+                await signInWithEmailAndPassword(auth, trimmedEmail, password);
             }
             resetForm();
             onClose();

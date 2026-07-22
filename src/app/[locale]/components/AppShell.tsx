@@ -4,8 +4,9 @@ import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { signOut } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../../../firebase.config";
+import { auth, functions } from "../../../../firebase.config";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import ComingSoon from "./ComingSoon";
@@ -21,7 +22,7 @@ import { getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
 import { isComingSoonEnabled } from "@/lib/launchFlags";
 import styles from "./AppShell.module.css";
 
-const paidAccessRoutes = ["courses", "calendar", "settings", "consultation"];
+const paidAccessRoutes = ["courses", "calendar", "consultation"];
 
 function isPaidAccessRoute(pathname: string, locale: string) {
   const localizedPath = `/${locale}`;
@@ -55,14 +56,42 @@ export function AppPreferenceEffects() {
 export function CheckoutReturnSync() {
   const { user } = useAuth();
   const processedSessionRef = useRef<string | null>(null);
+  const processedCancellationRef = useRef(false);
 
   useEffect(() => {
     if (!user || typeof window === "undefined") return;
 
     const url = new URL(window.location.href);
+    const checkoutStatus = url.searchParams.get("checkout");
     const sessionId = url.searchParams.get("session_id");
 
-    if (url.searchParams.get("checkout") !== "success" || !sessionId) return;
+    if (checkoutStatus === "canceled") {
+      if (processedCancellationRef.current) return;
+      processedCancellationRef.current = true;
+
+      const deleteAccount = httpsCallable<Record<string, never>, { ok: boolean }>(
+        functions,
+        "deleteUserAccount",
+      );
+
+      void deleteAccount({})
+        .catch((error) => {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn("Canceled Stripe checkout account cleanup failed.", error);
+          }
+        })
+        .finally(() => {
+          void signOut(auth).finally(() => {
+            const cleanUrl = new URL(window.location.href);
+            cleanUrl.searchParams.delete("checkout");
+            cleanUrl.searchParams.delete("session_id");
+            window.history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+          });
+        });
+      return;
+    }
+
+    if (checkoutStatus !== "success" || !sessionId) return;
     if (processedSessionRef.current === sessionId) return;
 
     processedSessionRef.current = sessionId;
