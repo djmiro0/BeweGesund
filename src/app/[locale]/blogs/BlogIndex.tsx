@@ -5,7 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { ArrowUpRight, BookOpen, Clock, ImageIcon, Search, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  BookOpen,
+  Clock,
+  ImageIcon,
+  Search,
+  X,
+} from "lucide-react";
 import type { BlogPost, BlogTag } from "@/lib/contentful";
 import { blogTagOptions, getBlogTagLabel } from "./blogTags";
 import styles from "./Blogs.module.css";
@@ -32,8 +39,9 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       const matchesTag = activeTag === "all" || post.tags.includes(activeTag);
-      const matchesSearch = !normalizedSearchQuery
-        || [
+      const matchesSearch =
+        !normalizedSearchQuery ||
+        [
           post.title,
           post.excerpt,
           post.author,
@@ -123,9 +131,16 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
           }}
         >
           {filteredPosts.map((post) => (
-            <motion.article key={post.id} className={styles.postCard} variants={fadeUp}>
+            <motion.article
+              key={post.id}
+              className={styles.postCard}
+              variants={fadeUp}
+            >
               {post.featuredImage ? (
-                <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
+                <Link
+                  href={`/${locale}/blogs/${post.slug}`}
+                  className={styles.postImageLink}
+                >
                   <Image
                     src={post.featuredImage}
                     alt=""
@@ -135,7 +150,10 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
                   />
                 </Link>
               ) : (
-                <Link href={`/${locale}/blogs/${post.slug}`} className={styles.postImageLink}>
+                <Link
+                  href={`/${locale}/blogs/${post.slug}`}
+                  className={styles.postImageLink}
+                >
                   <span className={styles.imageFallback} aria-hidden="true">
                     <ImageIcon size={24} />
                   </span>
@@ -143,7 +161,9 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
               )}
               <div className={styles.postCopy}>
                 <h2 className={styles.postTitle}>
-                  <Link href={`/${locale}/blogs/${post.slug}`}>{post.title}</Link>
+                  <Link href={`/${locale}/blogs/${post.slug}`}>
+                    {post.title}
+                  </Link>
                 </h2>
                 <p className={styles.excerpt}>{post.excerpt}</p>
                 <div className={styles.postMeta}>
@@ -153,7 +173,10 @@ export default function BlogIndex({ locale, posts }: BlogIndexProps) {
                     {post.readTimeMinutes} min
                   </span>
                 </div>
-                <Link href={`/${locale}/blogs/${post.slug}`} className={styles.readLink}>
+                <Link
+                  href={`/${locale}/blogs/${post.slug}`}
+                  className={styles.readLink}
+                >
                   {t("readArticle")}
                   <ArrowUpRight size={17} />
                 </Link>

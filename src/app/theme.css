@@ -115,13 +115,29 @@
   --accent-soft-rgb: var(--quaternary-rgb);
   --navy-rgb: var(--shell-bg-rgb);
 
-  --gradient1: linear-gradient(135deg, var(--shell-bg) 0%, var(--shell-bg-alt) 100%);
+  --gradient1: linear-gradient(
+    135deg,
+    var(--shell-bg) 0%,
+    var(--shell-bg-alt) 100%
+  );
   --gradient2:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
     linear-gradient(160deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
   --gradient-hero:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(var(--accent-soft-rgb), 0.12), transparent 20%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 85% 18%,
+      rgba(var(--accent-soft-rgb), 0.12),
+      transparent 20%
+    ),
     linear-gradient(180deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
 
   --button-primary-bg: var(--highlight);
@@ -217,13 +233,29 @@
   --ui-link-hover: var(--foreground);
   --ui-image-bg: rgba(var(--foreground-rgb), 0.08);
 
-  --gradient1: linear-gradient(135deg, var(--shell-bg) 0%, var(--shell-bg-alt) 100%);
+  --gradient1: linear-gradient(
+    135deg,
+    var(--shell-bg) 0%,
+    var(--shell-bg-alt) 100%
+  );
   --gradient2:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
     linear-gradient(160deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
   --gradient-hero:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(var(--accent-soft-rgb), 0.12), transparent 20%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 85% 18%,
+      rgba(var(--accent-soft-rgb), 0.12),
+      transparent 20%
+    ),
     linear-gradient(180deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
 
   color-scheme: dark;

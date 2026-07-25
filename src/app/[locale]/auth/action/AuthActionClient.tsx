@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { applyActionCode, confirmPasswordReset, verifyPasswordResetCode } from "firebase/auth";
+import {
+  applyActionCode,
+  confirmPasswordReset,
+  verifyPasswordResetCode,
+} from "firebase/auth";
 import { CheckCircle2, LoaderCircle, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { auth } from "../../../../../firebase.config";
@@ -93,8 +97,12 @@ export default function AuthActionClient() {
   const isReset = mode === "resetPassword";
 
   return (
-    <main className={`${authTheme.scope} grid min-h-[calc(100svh-5rem)] place-items-center bg-[var(--auth-panel-alt)] px-4 py-12`}>
-      <section className={`${authTheme.panel} w-full max-w-xl rounded-[2rem] border border-[var(--border-soft)] p-6 backdrop-blur-xl sm:p-9`}>
+    <main
+      className={`${authTheme.scope} grid min-h-[calc(100svh-5rem)] place-items-center bg-[var(--auth-panel-alt)] px-4 py-12`}
+    >
+      <section
+        className={`${authTheme.panel} w-full max-w-xl rounded-[2rem] border border-[var(--border-soft)] p-6 backdrop-blur-xl sm:p-9`}
+      >
         <div className="mb-6 inline-flex rounded-full border border-[rgba(var(--accent-rgb),0.25)] bg-[rgba(var(--accent-rgb),0.1)] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[var(--highlight-soft)]">
           Bewegesund
         </div>
@@ -102,8 +110,13 @@ export default function AuthActionClient() {
         {status === "loading" ? (
           <div className="grid min-h-56 place-items-center text-center">
             <div>
-              <LoaderCircle className="mx-auto animate-spin text-[var(--highlight-soft)]" size={36} />
-              <p className="mt-4 text-sm text-[var(--text-dim)]">{t("checkingLink")}</p>
+              <LoaderCircle
+                className="mx-auto animate-spin text-[var(--highlight-soft)]"
+                size={36}
+              />
+              <p className="mt-4 text-sm text-[var(--text-dim)]">
+                {t("checkingLink")}
+              </p>
             </div>
           </div>
         ) : null}
@@ -111,11 +124,17 @@ export default function AuthActionClient() {
         {status === "ready" && isReset ? (
           <>
             <ShieldCheck size={38} className="text-[var(--highlight-soft)]" />
-            <h1 className="mt-5 text-3xl font-black italic uppercase">{t("resetTitle")}</h1>
-            <p className="mt-2 text-sm leading-6 text-[var(--text-dim)]">{t("resetFor", { email })}</p>
+            <h1 className="mt-5 text-3xl font-black italic uppercase">
+              {t("resetTitle")}
+            </h1>
+            <p className="mt-2 text-sm leading-6 text-[var(--text-dim)]">
+              {t("resetFor", { email })}
+            </p>
             <form onSubmit={handleReset} className="mt-6 space-y-4">
               <label className="block">
-                <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("newPassword")}</span>
+                <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">
+                  {t("newPassword")}
+                </span>
                 <input
                   type="password"
                   value={password}
@@ -126,7 +145,9 @@ export default function AuthActionClient() {
                 />
               </label>
               <label className="block">
-                <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">{t("confirmPassword")}</span>
+                <span className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-dim)]">
+                  {t("confirmPassword")}
+                </span>
                 <input
                   type="password"
                   value={confirmPassword}
@@ -136,7 +157,11 @@ export default function AuthActionClient() {
                   required
                 />
               </label>
-              {errorMessage ? <p className="text-sm font-bold text-[var(--highlight-soft)]">{errorMessage}</p> : null}
+              {errorMessage ? (
+                <p className="text-sm font-bold text-[var(--highlight-soft)]">
+                  {errorMessage}
+                </p>
+              ) : null}
               <button className="w-full rounded-full bg-[var(--secondary)] py-4 font-black uppercase tracking-[0.16em] text-[var(--text-on-warm)]">
                 {t("savePassword")}
               </button>
@@ -153,7 +178,10 @@ export default function AuthActionClient() {
             <p className="mt-3 text-sm leading-6 text-[var(--text-dim)]">
               {isReset ? t("resetSuccessText") : t("verificationSuccessText")}
             </p>
-            <Link href={`/${params.locale}`} className="mt-7 block rounded-full bg-[var(--secondary)] py-4 text-center font-black uppercase tracking-[0.16em] text-[var(--text-on-warm)]">
+            <Link
+              href={`/${params.locale}`}
+              className="mt-7 block rounded-full bg-[var(--secondary)] py-4 text-center font-black uppercase tracking-[0.16em] text-[var(--text-on-warm)]"
+            >
               {t("continueToApp")}
             </Link>
           </div>
@@ -162,9 +190,16 @@ export default function AuthActionClient() {
         {status === "error" ? (
           <div className="py-4">
             <ShieldCheck size={42} className="text-[var(--highlight-soft)]" />
-            <h1 className="mt-5 text-3xl font-black italic uppercase">{t("linkErrorTitle")}</h1>
-            <p className="mt-3 text-sm leading-6 text-[var(--text-dim)]">{errorMessage}</p>
-            <Link href={`/${params.locale}`} className="mt-7 block rounded-full border border-[var(--border-soft)] py-4 text-center font-black uppercase tracking-[0.16em]">
+            <h1 className="mt-5 text-3xl font-black italic uppercase">
+              {t("linkErrorTitle")}
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-[var(--text-dim)]">
+              {errorMessage}
+            </p>
+            <Link
+              href={`/${params.locale}`}
+              className="mt-7 block rounded-full border border-[var(--border-soft)] py-4 text-center font-black uppercase tracking-[0.16em]"
+            >
               {t("backToApp")}
             </Link>
           </div>

@@ -27,9 +27,11 @@ const paidAccessRoutes = ["courses", "calendar", "consultation"];
 function isPaidAccessRoute(pathname: string, locale: string) {
   const localizedPath = `/${locale}`;
 
-  return paidAccessRoutes.some((route) => (
-    pathname === `${localizedPath}/${route}` || pathname.startsWith(`${localizedPath}/${route}/`)
-  ));
+  return paidAccessRoutes.some(
+    (route) =>
+      pathname === `${localizedPath}/${route}` ||
+      pathname.startsWith(`${localizedPath}/${route}/`),
+  );
 }
 
 export function AppPreferenceEffects() {
@@ -69,15 +71,18 @@ export function CheckoutReturnSync() {
       if (processedCancellationRef.current) return;
       processedCancellationRef.current = true;
 
-      const deleteAccount = httpsCallable<Record<string, never>, { ok: boolean }>(
-        functions,
-        "deleteUserAccount",
-      );
+      const deleteAccount = httpsCallable<
+        Record<string, never>,
+        { ok: boolean }
+      >(functions, "deleteUserAccount");
 
       void deleteAccount({})
         .catch((error) => {
           if (process.env.NODE_ENV !== "production") {
-            console.warn("Canceled Stripe checkout account cleanup failed.", error);
+            console.warn(
+              "Canceled Stripe checkout account cleanup failed.",
+              error,
+            );
           }
         })
         .finally(() => {
@@ -85,7 +90,11 @@ export function CheckoutReturnSync() {
             const cleanUrl = new URL(window.location.href);
             cleanUrl.searchParams.delete("checkout");
             cleanUrl.searchParams.delete("session_id");
-            window.history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+            window.history.replaceState(
+              null,
+              "",
+              `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`,
+            );
           });
         });
       return;
@@ -104,14 +113,21 @@ export function CheckoutReturnSync() {
     void confirmSession({ sessionId })
       .catch((error) => {
         if (process.env.NODE_ENV !== "production") {
-          console.warn("Stripe checkout session could not be confirmed.", error);
+          console.warn(
+            "Stripe checkout session could not be confirmed.",
+            error,
+          );
         }
       })
       .finally(() => {
         const cleanUrl = new URL(window.location.href);
         cleanUrl.searchParams.delete("checkout");
         cleanUrl.searchParams.delete("session_id");
-        window.history.replaceState(null, "", `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+        window.history.replaceState(
+          null,
+          "",
+          `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`,
+        );
       });
   }, [user]);
 
@@ -128,30 +144,32 @@ export function ShellFrame({
   const { user, profile, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
   const pathname = usePathname();
   const isAuthActionRoute = pathname.startsWith(`/${locale}/auth/action`);
-  const isGoogleUser = user?.providerData.some((provider) => provider.providerId === "google.com") ?? false;
+  const isGoogleUser =
+    user?.providerData.some(
+      (provider) => provider.providerId === "google.com",
+    ) ?? false;
   const requiresProfileSetup = Boolean(
-    user
-      && isGoogleUser
-      && profile
-      && (
-        !profile.email
-        || !profile.firstName
-        || !profile.lastName
-        || !profile.age
-        || !profile.gender
-        || !profile.heightCm
-        || !profile.weightKg
-        || !profile.regionKey
-      ),
+    user &&
+    isGoogleUser &&
+    profile &&
+    (!profile.email ||
+      !profile.firstName ||
+      !profile.lastName ||
+      !profile.age ||
+      !profile.gender ||
+      !profile.heightCm ||
+      !profile.weightKg ||
+      !profile.regionKey),
   );
   const hasActiveSubscription =
-    profile?.subscriptionStatus === "active" || profile?.subscriptionStatus === "trialing";
+    profile?.subscriptionStatus === "active" ||
+    profile?.subscriptionStatus === "trialing";
   const requiresPayment = Boolean(
-    user
-      && profile
-      && !requiresProfileSetup
-      && !hasActiveSubscription
-      && isPaidAccessRoute(pathname, locale),
+    user &&
+    profile &&
+    !requiresProfileSetup &&
+    !hasActiveSubscription &&
+    isPaidAccessRoute(pathname, locale),
   );
 
   if (loading) {
@@ -185,15 +203,13 @@ export function ShellFrame({
         <Header
           locale={locale}
           user={user}
-          profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
+          profileName={
+            profile ? getProfileFirstName(profile, user?.displayName) : null
+          }
           profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
           openAuth={openAuth}
         />
-        <AuthModal
-          isOpen
-          onClose={closeAuth}
-          requiresProfileSetup
-        />
+        <AuthModal isOpen onClose={closeAuth} requiresProfileSetup />
         <NavigationFeedback />
         <CookieConsentBanner locale={locale} />
       </>
@@ -207,14 +223,13 @@ export function ShellFrame({
         <Header
           locale={locale}
           user={user}
-          profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
+          profileName={
+            profile ? getProfileFirstName(profile, user?.displayName) : null
+          }
           profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
           openAuth={openAuth}
         />
-        <AuthModal
-          isOpen={isAuthOpen}
-          onClose={closeAuth}
-        />
+        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
         <NavigationFeedback />
         <main className={styles.main}>
           <PaymentRequired locale={locale} />
@@ -231,7 +246,9 @@ export function ShellFrame({
       <Header
         locale={locale}
         user={user}
-        profileName={profile ? getProfileFirstName(profile, user?.displayName) : null}
+        profileName={
+          profile ? getProfileFirstName(profile, user?.displayName) : null
+        }
         profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
         openAuth={openAuth}
       />

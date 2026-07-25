@@ -1,6 +1,8 @@
 const defaultBookingUrl = "https://cal.eu/bewegesund";
 
-export function resolveBookingUrl(configuredBookingUrl = process.env.CONSULTATION_BOOKING_URL) {
+export function resolveBookingUrl(
+  configuredBookingUrl = process.env.CONSULTATION_BOOKING_URL,
+) {
   const candidate = configuredBookingUrl || defaultBookingUrl;
 
   try {

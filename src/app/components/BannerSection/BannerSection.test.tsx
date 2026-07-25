@@ -20,10 +20,18 @@ describe("BannerSection", () => {
     render(<BannerSection />);
 
     // The carousel should start on the training story and expose arrow buttons.
-    expect(screen.getByRole("heading", { name: "Move With Confidence" })).toBeInTheDocument();
-    expect(screen.getByText("Build stability and mobility")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /previous banner/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /next banner/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Move With Confidence" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Build stability and mobility"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /previous banner/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /next banner/i }),
+    ).toBeInTheDocument();
   });
 
   it("moves to the next slide when the next arrow is clicked", async () => {
@@ -34,7 +42,9 @@ describe("BannerSection", () => {
 
     // The visual transition is animated, so wait for the next slide text.
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Live Guidance and Support" })).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: "Live Guidance and Support" }),
+      ).toBeInTheDocument();
     });
   });
 });

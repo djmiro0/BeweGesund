@@ -11,8 +11,9 @@ export function getDashboardProgress(profile: UserProfileData | null) {
 
   const completedIds = new Set(profile.completedCourseIds);
   const upcomingCourseIds = new Set(
-    [...profile.startedCourseIds, ...profile.recommendedCourseIds]
-      .filter((courseId) => !completedIds.has(courseId)),
+    [...profile.startedCourseIds, ...profile.recommendedCourseIds].filter(
+      (courseId) => !completedIds.has(courseId),
+    ),
   );
 
   return {

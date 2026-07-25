@@ -1,9 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Clock, HandHeart, PlayCircle, ShieldCheck, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Clock,
+  HandHeart,
+  PlayCircle,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { getMeditationRelaxationItems, type MeditationRelaxationItem } from "@/lib/contentful";
+import {
+  getMeditationRelaxationItems,
+  type MeditationRelaxationItem,
+} from "@/lib/contentful";
 import BackButton from "../../components/BackButton";
 import BreathingTechniques from "./BreathingTechniques";
 import RelaxationMusicPlaylist from "./RelaxationMusicPlaylist";
@@ -17,20 +28,34 @@ const relaxationSubcategoryKeys = [
   "self-massage-stress-reduction",
 ] as const;
 
-function canShowRelaxationItem(item: MeditationRelaxationItem, subtype: string) {
+function canShowRelaxationItem(
+  item: MeditationRelaxationItem,
+  subtype: string,
+) {
   const isFallbackSubtype = subtype === relaxationSubcategoryKeys[0];
-  const matchesSubtype = item.subcategoryKey === subtype || (isFallbackSubtype && !item.subcategoryKey);
+  const matchesSubtype =
+    item.subcategoryKey === subtype ||
+    (isFallbackSubtype && !item.subcategoryKey);
 
   return matchesSubtype && Boolean(item.muxPlaybackId);
 }
 
-function matchesRelaxationSubtype(item: MeditationRelaxationItem, subtype: string) {
+function matchesRelaxationSubtype(
+  item: MeditationRelaxationItem,
+  subtype: string,
+) {
   const isFallbackSubtype = subtype === relaxationSubcategoryKeys[0];
 
-  return item.subcategoryKey === subtype || (isFallbackSubtype && !item.subcategoryKey);
+  return (
+    item.subcategoryKey === subtype ||
+    (isFallbackSubtype && !item.subcategoryKey)
+  );
 }
 
-function getRelaxationVideos(items: MeditationRelaxationItem[], subtype: string) {
+function getRelaxationVideos(
+  items: MeditationRelaxationItem[],
+  subtype: string,
+) {
   return items.filter((item) => canShowRelaxationItem(item, subtype));
 }
 
@@ -40,7 +65,9 @@ export default async function MeditationRelaxationSubtypePage({
   params: Promise<{ locale: string; subtype: string }>;
 }) {
   const { locale, subtype } = await params;
-  const subtypeIndex = relaxationSubcategoryKeys.findIndex((key) => key === subtype);
+  const subtypeIndex = relaxationSubcategoryKeys.findIndex(
+    (key) => key === subtype,
+  );
 
   if (subtypeIndex === -1) notFound();
 
@@ -49,72 +76,86 @@ export default async function MeditationRelaxationSubtypePage({
     getTranslations({ locale, namespace: "packages" }),
     getMeditationRelaxationItems(locale),
   ]);
-  const categories = t.raw("categories") as Array<{ title: string; description: string }>;
+  const categories = t.raw("categories") as Array<{
+    title: string;
+    description: string;
+  }>;
   const category = categories[subtypeIndex];
   const isSelfMassage = subtype === "self-massage-stress-reduction";
-  const isBlogAlignedSubtype = subtype === "guided-meditation" || subtype === "relaxation-music";
-  const selfMassageArticles = isSelfMassage ? courses.filter((item) => matchesRelaxationSubtype(item, subtype)) : [];
+  const isBlogAlignedSubtype =
+    subtype === "guided-meditation" || subtype === "relaxation-music";
+  const selfMassageArticles = isSelfMassage
+    ? courses.filter((item) => matchesRelaxationSubtype(item, subtype))
+    : [];
   const videos = isSelfMassage ? [] : getRelaxationVideos(courses, subtype);
   const hasStaticSubtypeContent =
+    subtype === "relaxation-music" ||
+    subtype === "breathing-against-stress" ||
+    isSelfMassage;
+  const musicPlayerCopy =
     subtype === "relaxation-music"
-    || subtype === "breathing-against-stress"
-    || isSelfMassage;
-  const musicPlayerCopy = subtype === "relaxation-music"
-    ? t.raw("musicPlayer") as {
-        title: string;
-        play: string;
-        pause: string;
-        playing: string;
-        playAll: string;
-        stopAll: string;
-        previous: string;
-        next: string;
-      }
-    : null;
-  const breathingTechniques = subtype === "breathing-against-stress"
-    ? t.raw("breathingTechniques") as {
-        title: string;
-        intro: string;
-        musicNote: string;
-        play: string;
-        pause: string;
-        open: string;
-        close: string;
-        inhale: string;
-        exhale: string;
-        hold: string;
-        rest: string;
-        rhythmLabel: string;
-        animationLabel: string;
-        musicLabel: string;
-        instructionLabel: string;
-        musicOnLabel: string;
-        musicOffLabel: string;
-        breathSoundOnLabel: string;
-        breathSoundOffLabel: string;
-        education: {
-          summary: string;
+      ? (t.raw("musicPlayer") as {
+          title: string;
+          play: string;
+          pause: string;
+          playing: string;
+          playAll: string;
+          stopAll: string;
+          previous: string;
+          next: string;
+        })
+      : null;
+  const breathingTechniques =
+    subtype === "breathing-against-stress"
+      ? (t.raw("breathingTechniques") as {
           title: string;
           intro: string;
-          items: Array<{ title: string; basis: string; howItWorks: string }>;
-          disclaimerTitle: string;
-          disclaimer: string;
-        };
-        sections: Array<{
-          title: string;
-          duration: string;
-          description: string;
-          steps: string[];
-          rhythm: string[];
-          animation: string;
-          music: string[];
-          note?: string;
-        }>;
-      }
-    : null;
+          musicNote: string;
+          play: string;
+          pause: string;
+          open: string;
+          close: string;
+          inhale: string;
+          exhale: string;
+          hold: string;
+          rest: string;
+          rhythmLabel: string;
+          animationLabel: string;
+          musicLabel: string;
+          instructionLabel: string;
+          musicOnLabel: string;
+          musicOffLabel: string;
+          breathSoundOnLabel: string;
+          breathSoundOffLabel: string;
+          education: {
+            summary: string;
+            title: string;
+            intro: string;
+            items: Array<{ title: string; basis: string; howItWorks: string }>;
+            disclaimerTitle: string;
+            disclaimer: string;
+          };
+          sections: Array<{
+            title: string;
+            duration: string;
+            description: string;
+            steps: string[];
+            rhythm: string[];
+            animation: string;
+            music: string[];
+            note?: string;
+          }>;
+        })
+      : null;
 
   return (
-    <main className={isSelfMassage ? blogStyles.blogsPage : `${styles.page} ${isBlogAlignedSubtype ? styles.blogAlignedPage : ""}`}>
+    <main
+      className={
+        isSelfMassage
+          ? blogStyles.blogsPage
+          : `${styles.page} ${isBlogAlignedSubtype ? styles.blogAlignedPage : ""}`
+      }
+    >
       <BackButton
         href={`/${locale}/meditation-relaxation`}
         className={isSelfMassage ? blogStyles.backLink : styles.backLink}
@@ -124,11 +165,21 @@ export default async function MeditationRelaxationSubtypePage({
       </BackButton>
 
       {!breathingTechniques ? (
-        <section className={isSelfMassage ? blogStyles.hero : styles.subtypeHero}>
-          <div className={isSelfMassage ? blogStyles.heroCopy : styles.heroCopy}>
-            <p className={isSelfMassage ? blogStyles.eyebrow : styles.eyebrow}>{t("title")}</p>
-            <h1 className={isSelfMassage ? blogStyles.title : undefined}>{category.title}</h1>
-            <p className={isSelfMassage ? blogStyles.intro : undefined}>{category.description}</p>
+        <section
+          className={isSelfMassage ? blogStyles.hero : styles.subtypeHero}
+        >
+          <div
+            className={isSelfMassage ? blogStyles.heroCopy : styles.heroCopy}
+          >
+            <p className={isSelfMassage ? blogStyles.eyebrow : styles.eyebrow}>
+              {t("title")}
+            </p>
+            <h1 className={isSelfMassage ? blogStyles.title : undefined}>
+              {category.title}
+            </h1>
+            <p className={isSelfMassage ? blogStyles.intro : undefined}>
+              {category.description}
+            </p>
           </div>
         </section>
       ) : null}
@@ -142,7 +193,9 @@ export default async function MeditationRelaxationSubtypePage({
           videos={videos.map((video) => ({
             ...video,
             packageLabel: packages(video.packageRequired),
-            durationLabel: video.durationMinutes ? t("videos.duration", { count: video.durationMinutes }) : null,
+            durationLabel: video.durationMinutes
+              ? t("videos.duration", { count: video.durationMinutes })
+              : null,
           }))}
           locale={locale}
           copy={musicPlayerCopy}
@@ -180,7 +233,10 @@ export default async function MeditationRelaxationSubtypePage({
                       className={blogStyles.postImage}
                     />
                   ) : (
-                    <span className={blogStyles.imageFallback} aria-hidden="true">
+                    <span
+                      className={blogStyles.imageFallback}
+                      aria-hidden="true"
+                    >
                       <HandHeart size={26} />
                     </span>
                   )}
@@ -188,11 +244,15 @@ export default async function MeditationRelaxationSubtypePage({
 
                 <div className={blogStyles.postCopy}>
                   <h2 className={blogStyles.postTitle}>
-                    <Link href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}>
+                    <Link
+                      href={`/${locale}/meditation-relaxation/${subtype}/${article.slug}`}
+                    >
                       {article.title}
                     </Link>
                   </h2>
-                  {article.description ? <p className={blogStyles.excerpt}>{article.description}</p> : null}
+                  {article.description ? (
+                    <p className={blogStyles.excerpt}>{article.description}</p>
+                  ) : null}
                   <div className={blogStyles.postMeta}>
                     {article.coach ? (
                       <span>
@@ -203,7 +263,9 @@ export default async function MeditationRelaxationSubtypePage({
                     {article.durationMinutes ? (
                       <span>
                         <Clock size={14} />
-                        {t("videos.duration", { count: article.durationMinutes })}
+                        {t("videos.duration", {
+                          count: article.durationMinutes,
+                        })}
                       </span>
                     ) : null}
                     <span>
@@ -232,43 +294,48 @@ export default async function MeditationRelaxationSubtypePage({
       {(!musicPlayerCopy && videos.length) || !hasStaticSubtypeContent ? (
         <section className={styles.videoList} aria-label={category.title}>
           {videos.length ? (
-          videos.map((video) => (
-            <Link
-              key={video.id}
-              href={`/${locale}/meditation-relaxation/${subtype}/${video.slug}`}
-              className={styles.videoCourseCard}
-            >
-              <div className={styles.videoPoster}>
-                {video.posterImage ? (
-                  <Image src={video.posterImage} alt="" fill sizes="(max-width: 720px) 100vw, 360px" />
-                ) : (
-                  <PlayCircle size={36} />
-                )}
-                <span className={styles.videoPlayBadge} aria-hidden="true">
-                  <PlayCircle size={18} />
-                </span>
-              </div>
-
-              <div className={styles.videoCardCopy}>
-                <div>
-                  <h2>{video.title}</h2>
-                  {video.description ? <p>{video.description}</p> : null}
-                </div>
-                <div className={styles.videoMeta}>
-                  {video.durationMinutes ? (
-                    <span>
-                      <Clock size={13} />
-                      {t("videos.duration", { count: video.durationMinutes })}
-                    </span>
-                  ) : null}
-                  <span>
-                    <ShieldCheck size={13} />
-                    {packages(video.packageRequired)}
+            videos.map((video) => (
+              <Link
+                key={video.id}
+                href={`/${locale}/meditation-relaxation/${subtype}/${video.slug}`}
+                className={styles.videoCourseCard}
+              >
+                <div className={styles.videoPoster}>
+                  {video.posterImage ? (
+                    <Image
+                      src={video.posterImage}
+                      alt=""
+                      fill
+                      sizes="(max-width: 720px) 100vw, 360px"
+                    />
+                  ) : (
+                    <PlayCircle size={36} />
+                  )}
+                  <span className={styles.videoPlayBadge} aria-hidden="true">
+                    <PlayCircle size={18} />
                   </span>
                 </div>
-              </div>
-            </Link>
-          ))
+
+                <div className={styles.videoCardCopy}>
+                  <div>
+                    <h2>{video.title}</h2>
+                    {video.description ? <p>{video.description}</p> : null}
+                  </div>
+                  <div className={styles.videoMeta}>
+                    {video.durationMinutes ? (
+                      <span>
+                        <Clock size={13} />
+                        {t("videos.duration", { count: video.durationMinutes })}
+                      </span>
+                    ) : null}
+                    <span>
+                      <ShieldCheck size={13} />
+                      {packages(video.packageRequired)}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))
           ) : (
             <article className={styles.emptyVideoState}>
               <strong>{t("subtype.emptyTitle")}</strong>

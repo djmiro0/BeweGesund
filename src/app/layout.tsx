@@ -28,7 +28,11 @@ export const viewport: Viewport = {
   themeColor: "#9b2b42",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="de" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body>

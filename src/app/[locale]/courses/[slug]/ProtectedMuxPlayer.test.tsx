@@ -40,18 +40,27 @@ describe("ProtectedMuxPlayer", () => {
     authState.user.getIdToken.mockClear();
     pauseSpy.mockClear();
     playSpy.mockClear();
-    (HTMLElement.prototype as HTMLElement & { pause?: () => void }).pause = pauseSpy;
-    (HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }).play = playSpy;
-    vi.stubGlobal("fetch", vi.fn(async () => ({
-      ok: true,
-      json: async () => ({ playbackToken: "signed-token" }),
-    })));
+    (HTMLElement.prototype as HTMLElement & { pause?: () => void }).pause =
+      pauseSpy;
+    (
+      HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }
+    ).play = playSpy;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ playbackToken: "signed-token" }),
+      })),
+    );
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
-    delete (HTMLElement.prototype as HTMLElement & { pause?: () => void }).pause;
-    delete (HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }).play;
+    delete (HTMLElement.prototype as HTMLElement & { pause?: () => void })
+      .pause;
+    delete (
+      HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }
+    ).play;
   });
 
   it("pauses the mux player when paused becomes true", async () => {

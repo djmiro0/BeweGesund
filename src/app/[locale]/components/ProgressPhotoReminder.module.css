@@ -14,7 +14,11 @@
   width: min(100%, 31rem);
   border: 1px solid rgba(var(--page-accent-rgb), 0.22);
   border-radius: 1.7rem;
-  background: linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.99), rgba(var(--page-cream-2-rgb), 0.99));
+  background: linear-gradient(
+    180deg,
+    rgba(var(--page-soft-rgb), 0.99),
+    rgba(var(--page-cream-2-rgb), 0.99)
+  );
   padding: clamp(1.25rem, 4vw, 2rem);
   color: var(--page-ink);
   box-shadow: 0 32px 90px rgba(0, 0, 0, 0.34);

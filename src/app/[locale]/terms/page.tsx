@@ -1,7 +1,11 @@
 import InfoPage from "@/app/components/InfoPage/InfoPage";
 import { getLegalProvider } from "@/lib/legal";
 
-export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function TermsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   const provider = getLegalProvider();
   const isGerman = locale === "de";
@@ -86,9 +90,11 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
   return (
     <InfoPage
       title={isGerman ? "Nutzungsbedingungen" : "Terms of Service"}
-      intro={isGerman
-        ? "Bedingungen für die Nutzung der Bewegesund Plattform."
-        : "Terms for using the Bewegesund platform."}
+      intro={
+        isGerman
+          ? "Bedingungen für die Nutzung der Bewegesund Plattform."
+          : "Terms for using the Bewegesund platform."
+      }
       sections={sections}
       note={isGerman ? "Stand: Juni 2026" : "Last updated: June 2026"}
     />

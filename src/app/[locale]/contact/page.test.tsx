@@ -13,7 +13,9 @@ describe("KontaktPage booking URL", () => {
   });
 
   it("allows a secure booking URL override", () => {
-    expect(resolveBookingUrl("https://cal.eu/bewegesund/team")).toBe("https://cal.eu/bewegesund/team");
+    expect(resolveBookingUrl("https://cal.eu/bewegesund/team")).toBe(
+      "https://cal.eu/bewegesund/team",
+    );
   });
 
   it("rejects non-HTTPS booking URLs", () => {

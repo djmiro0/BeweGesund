@@ -23,9 +23,9 @@ export function readCookieConsent() {
     if (!rawConsent) return null;
     const parsed = JSON.parse(rawConsent) as Partial<StoredCookieConsent>;
 
-    return parsed.version === COOKIE_CONSENT_VERSION
-      && (parsed.value === "accepted" || parsed.value === "declined")
-      ? parsed as StoredCookieConsent
+    return parsed.version === COOKIE_CONSENT_VERSION &&
+      (parsed.value === "accepted" || parsed.value === "declined")
+      ? (parsed as StoredCookieConsent)
       : null;
   } catch {
     return null;
@@ -41,8 +41,13 @@ export function storeCookieConsent(value: CookieConsentValue) {
     updatedAt: new Date().toISOString(),
   };
 
-  window.localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, JSON.stringify(consent));
-  window.dispatchEvent(new CustomEvent(COOKIE_CONSENT_EVENT, { detail: consent }));
+  window.localStorage.setItem(
+    COOKIE_CONSENT_STORAGE_KEY,
+    JSON.stringify(consent),
+  );
+  window.dispatchEvent(
+    new CustomEvent(COOKIE_CONSENT_EVENT, { detail: consent }),
+  );
 }
 
 export default function ConsentAwareAnalytics() {

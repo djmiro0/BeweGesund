@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
-import { readCookieConsent, storeCookieConsent } from "@/app/components/ConsentAwareAnalytics";
+import {
+  readCookieConsent,
+  storeCookieConsent,
+} from "@/app/components/ConsentAwareAnalytics";
 import { COOKIE_CONSENT_EVENT } from "@/app/components/ConsentAwareAnalytics";
 import styles from "./AppShell.module.css";
 
@@ -10,8 +13,7 @@ const copy = {
   de: {
     eyebrow: "Datenschutz",
     title: "Cookies & Analyse",
-    body:
-      "Wir verwenden notwendige Speicherfunktionen für den Betrieb der App. Analyse-Cookies setzen wir nur, wenn du zustimmst.",
+    body: "Wir verwenden notwendige Speicherfunktionen für den Betrieb der App. Analyse-Cookies setzen wir nur, wenn du zustimmst.",
     accept: "Akzeptieren",
     decline: "Ablehnen",
     privacy: "Datenschutz",
@@ -19,8 +21,7 @@ const copy = {
   en: {
     eyebrow: "Privacy",
     title: "Cookies & analytics",
-    body:
-      "We use necessary storage for the app to work. Analytics cookies are only enabled if you consent.",
+    body: "We use necessary storage for the app to work. Analytics cookies are only enabled if you consent.",
     accept: "Accept",
     decline: "Decline",
     privacy: "Privacy policy",
@@ -43,7 +44,11 @@ function getCookieConsentSnapshot() {
 
 export default function CookieConsentBanner({ locale }: { locale: string }) {
   const labels = locale === "de" ? copy.de : copy.en;
-  const consent = useSyncExternalStore(subscribeToCookieConsent, getCookieConsentSnapshot, () => "pending");
+  const consent = useSyncExternalStore(
+    subscribeToCookieConsent,
+    getCookieConsentSnapshot,
+    () => "pending",
+  );
   const isVisible = consent === "unset";
 
   const handleConsent = (value: "accepted" | "declined") => {
@@ -53,7 +58,10 @@ export default function CookieConsentBanner({ locale }: { locale: string }) {
   if (!isVisible) return null;
 
   return (
-    <section className={styles.cookieBanner} aria-labelledby="cookie-consent-title">
+    <section
+      className={styles.cookieBanner}
+      aria-labelledby="cookie-consent-title"
+    >
       <div className={styles.cookieBannerCopy}>
         <p className={styles.cookieBannerEyebrow}>{labels.eyebrow}</p>
         <h2 id="cookie-consent-title">{labels.title}</h2>
@@ -63,10 +71,18 @@ export default function CookieConsentBanner({ locale }: { locale: string }) {
         </Link>
       </div>
       <div className={styles.cookieBannerActions}>
-        <button type="button" className={styles.cookieDeclineButton} onClick={() => handleConsent("declined")}>
+        <button
+          type="button"
+          className={styles.cookieDeclineButton}
+          onClick={() => handleConsent("declined")}
+        >
           {labels.decline}
         </button>
-        <button type="button" className={styles.cookieAcceptButton} onClick={() => handleConsent("accepted")}>
+        <button
+          type="button"
+          className={styles.cookieAcceptButton}
+          onClick={() => handleConsent("accepted")}
+        >
           {labels.accept}
         </button>
       </div>

@@ -1,7 +1,13 @@
 "use client";
 
 import { updateProfile } from "firebase/auth";
-import { doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import {
   Activity,
@@ -18,7 +24,13 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { type ComponentType, type ReactNode, useEffect, useMemo, useState } from "react";
+import {
+  type ComponentType,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { db, storage } from "../../../../firebase.config";
 import { useAuth } from "../components/AuthProvider";
 import BackButton from "../components/BackButton";
@@ -50,7 +62,10 @@ function areSettingsEqual(left: UserSettings, right: UserSettings) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
-function areRecordsEqual(left: Record<string, unknown>, right: Record<string, unknown>) {
+function areRecordsEqual(
+  left: Record<string, unknown>,
+  right: Record<string, unknown>,
+) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
@@ -82,16 +97,25 @@ export default function SettingsPage() {
   const settingsLoadError = t("messages.loadError");
   const { user, profile } = useAuth();
   const userId = user?.uid;
-  const [savedSettings, setSavedSettings] = useState<UserSettings>(() => cloneSettings(defaultUserSettings));
-  const [draftSettings, setDraftSettings] = useState<UserSettings>(() => cloneSettings(defaultUserSettings));
+  const [savedSettings, setSavedSettings] = useState<UserSettings>(() =>
+    cloneSettings(defaultUserSettings),
+  );
+  const [draftSettings, setDraftSettings] = useState<UserSettings>(() =>
+    cloneSettings(defaultUserSettings),
+  );
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [storedSettings, setStoredSettings] = useState<Record<string, unknown>>({});
+  const [storedSettings, setStoredSettings] = useState<Record<string, unknown>>(
+    {},
+  );
   const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [uploadingProgressPhoto, setUploadingProgressPhoto] = useState<"before" | "after" | null>(null);
-  const [activeSection, setActiveSection] = useState<SettingsSectionId>("profile");
+  const [uploadingProgressPhoto, setUploadingProgressPhoto] = useState<
+    "before" | "after" | null
+  >(null);
+  const [activeSection, setActiveSection] =
+    useState<SettingsSectionId>("profile");
   const isDirty = useMemo(
     () => !areSettingsEqual(savedSettings, draftSettings),
     [draftSettings, savedSettings],
@@ -120,12 +144,20 @@ export default function SettingsPage() {
   useEffect(() => {
     if (!user || !profile || !preferencesLoaded || isDirty) return;
 
-    const nextSettings = settingsFromFirebase(profile, storedSettings, user, locale);
+    const nextSettings = settingsFromFirebase(
+      profile,
+      storedSettings,
+      user,
+      locale,
+    );
     setSavedSettings(cloneSettings(nextSettings));
     setDraftSettings(cloneSettings(nextSettings));
   }, [isDirty, locale, preferencesLoaded, profile, storedSettings, user]);
 
-  const updateSection = <Key extends keyof UserSettings>(key: Key, value: UserSettings[Key]) => {
+  const updateSection = <Key extends keyof UserSettings>(
+    key: Key,
+    value: UserSettings[Key],
+  ) => {
     setDraftSettings((current) => ({
       ...current,
       [key]: value,
@@ -164,9 +196,10 @@ export default function SettingsPage() {
           return;
         }
 
-        const permission = Notification.permission === "default"
-          ? await Notification.requestPermission()
-          : Notification.permission;
+        const permission =
+          Notification.permission === "default"
+            ? await Notification.requestPermission()
+            : Notification.permission;
 
         if (permission !== "granted") {
           setErrorMessage(t("messages.pushPermissionDenied"));
@@ -176,10 +209,16 @@ export default function SettingsPage() {
 
       const savedProfileUpdate = profileUpdateFromSettings(savedSettings);
       const draftProfileUpdate = profileUpdateFromSettings(draftSettings);
-      const hasProfileChanges = !areRecordsEqual(savedProfileUpdate, draftProfileUpdate);
+      const hasProfileChanges = !areRecordsEqual(
+        savedProfileUpdate,
+        draftProfileUpdate,
+      );
       const savedStoredSettings = storedSettingsFromForm(savedSettings);
       const draftStoredSettings = storedSettingsFromForm(draftSettings);
-      const hasStoredSettingsChanges = !areRecordsEqual(savedStoredSettings, draftStoredSettings);
+      const hasStoredSettingsChanges = !areRecordsEqual(
+        savedStoredSettings,
+        draftStoredSettings,
+      );
 
       if (hasProfileChanges) {
         await updateDoc(doc(db, "users", user.uid), {
@@ -199,7 +238,11 @@ export default function SettingsPage() {
         );
       }
 
-      if (hasProfileChanges && savedSettings.profile.fullName.trim() !== draftSettings.profile.fullName.trim()) {
+      if (
+        hasProfileChanges &&
+        savedSettings.profile.fullName.trim() !==
+          draftSettings.profile.fullName.trim()
+      ) {
         await updateProfile(user, {
           displayName: draftSettings.profile.fullName.trim(),
         }).catch(() => undefined);
@@ -210,7 +253,10 @@ export default function SettingsPage() {
 
       const nextLocale = languageToLocale(draftSettings.app.language);
       if (nextLocale !== locale) {
-        const nextPath = pathname.replace(/^\/(de|en)(?=\/|$)/, `/${nextLocale}`);
+        const nextPath = pathname.replace(
+          /^\/(de|en)(?=\/|$)/,
+          `/${nextLocale}`,
+        );
         router.replace(nextPath);
       }
     } catch (error) {
@@ -276,14 +322,17 @@ export default function SettingsPage() {
           ? t("messages.photoPermissionError")
           : code === "storage/bucket-not-found" || code === "storage/unknown"
             ? t("messages.photoStorageError")
-          : t("messages.photoError"),
+            : t("messages.photoError"),
       );
     } finally {
       setIsUploadingPhoto(false);
     }
   };
 
-  const handleProgressPhotoSelect = async (slot: "before" | "after", file: File) => {
+  const handleProgressPhotoSelect = async (
+    slot: "before" | "after",
+    file: File,
+  ) => {
     if (!user || uploadingProgressPhoto) return;
 
     const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -302,10 +351,14 @@ export default function SettingsPage() {
 
     try {
       const uploadedAt = new Date().toISOString();
-      await uploadBytes(ref(storage, `users/${user.uid}/progress/${slot}`), file, {
-        contentType: file.type,
-        cacheControl: "private,max-age=3600",
-      });
+      await uploadBytes(
+        ref(storage, `users/${user.uid}/progress/${slot}`),
+        file,
+        {
+          contentType: file.type,
+          cacheControl: "private,max-age=3600",
+        },
+      );
       await setDoc(
         doc(db, "users", user.uid, "settings", "preferences"),
         {
@@ -376,35 +429,49 @@ export default function SettingsPage() {
       ),
     },
     ...(user
-      ? [{
-          id: "progressPhotos" as const,
-          title: t("sections.progressPhotos.title"),
-          description: t("sections.progressPhotos.description"),
-          icon: Camera,
-          content: (
-            <ProgressPhotoSettings
-              userId={user.uid}
-              data={draftSettings.progressPhotos}
-              uploadingSlot={uploadingProgressPhoto}
-              onChange={(value) => updateSection("progressPhotos", value)}
-              onPhotoSelect={(slot, file) => void handleProgressPhotoSelect(slot, file)}
-            />
-          ),
-        }]
+      ? [
+          {
+            id: "progressPhotos" as const,
+            title: t("sections.progressPhotos.title"),
+            description: t("sections.progressPhotos.description"),
+            icon: Camera,
+            content: (
+              <ProgressPhotoSettings
+                userId={user.uid}
+                data={draftSettings.progressPhotos}
+                uploadingSlot={uploadingProgressPhoto}
+                onChange={(value) => updateSection("progressPhotos", value)}
+                onPhotoSelect={(slot, file) =>
+                  void handleProgressPhotoSelect(slot, file)
+                }
+              />
+            ),
+          },
+        ]
       : []),
     {
       id: "workout",
       title: t("sections.workout.title"),
       description: t("sections.workout.description"),
       icon: Dumbbell,
-      content: <WorkoutPreferences data={draftSettings.workoutPreferences} onChange={(value) => updateSection("workoutPreferences", value)} />,
+      content: (
+        <WorkoutPreferences
+          data={draftSettings.workoutPreferences}
+          onChange={(value) => updateSection("workoutPreferences", value)}
+        />
+      ),
     },
     {
       id: "nutrition",
       title: t("sections.nutrition.title"),
       description: t("sections.nutrition.description"),
       icon: Utensils,
-      content: <NutritionSettings data={draftSettings.nutrition} onChange={(value) => updateSection("nutrition", value)} />,
+      content: (
+        <NutritionSettings
+          data={draftSettings.nutrition}
+          onChange={(value) => updateSection("nutrition", value)}
+        />
+      ),
     },
     {
       id: "gamification",
@@ -418,21 +485,36 @@ export default function SettingsPage() {
       title: t("sections.notifications.title"),
       description: t("sections.notifications.description"),
       icon: Bell,
-      content: <NotificationSettings data={draftSettings.notifications} onChange={(value) => updateSection("notifications", value)} />,
+      content: (
+        <NotificationSettings
+          data={draftSettings.notifications}
+          onChange={(value) => updateSection("notifications", value)}
+        />
+      ),
     },
     {
       id: "privacy",
       title: t("sections.privacy.title"),
       description: t("sections.privacy.description"),
       icon: ShieldCheck,
-      content: <PrivacySettings data={draftSettings.privacy} onChange={(value) => updateSection("privacy", value)} />,
+      content: (
+        <PrivacySettings
+          data={draftSettings.privacy}
+          onChange={(value) => updateSection("privacy", value)}
+        />
+      ),
     },
     {
       id: "app",
       title: t("sections.app.title"),
       description: t("sections.app.description"),
       icon: SlidersHorizontal,
-      content: <AppSettings data={draftSettings.app} onChange={(value) => updateSection("app", value)} />,
+      content: (
+        <AppSettings
+          data={draftSettings.app}
+          onChange={(value) => updateSection("app", value)}
+        />
+      ),
     },
     {
       id: "account",
@@ -442,7 +524,9 @@ export default function SettingsPage() {
       content: <AccountManagement />,
     },
   ];
-  const activeSettingsSection = settingsSections.find((section) => section.id === activeSection) ?? settingsSections[0];
+  const activeSettingsSection =
+    settingsSections.find((section) => section.id === activeSection) ??
+    settingsSections[0];
   const showSaveActions = activeSettingsSection.id !== "account";
 
   return (
@@ -464,17 +548,31 @@ export default function SettingsPage() {
         </header>
 
         <div className={styles.settingsWorkspace}>
-          <aside className={styles.settingsSidebar} aria-label={t("navigation.label")}>
+          <aside
+            className={styles.settingsSidebar}
+            aria-label={t("navigation.label")}
+          >
             <div className={styles.sidebarProfile}>
               <div
                 className={styles.sidebarAvatar}
-                style={draftSettings.profile.profileImageUrl ? { backgroundImage: `url("${draftSettings.profile.profileImageUrl}")` } : undefined}
+                style={
+                  draftSettings.profile.profileImageUrl
+                    ? {
+                        backgroundImage: `url("${draftSettings.profile.profileImageUrl}")`,
+                      }
+                    : undefined
+                }
                 aria-hidden="true"
               >
-                {draftSettings.profile.profileImageUrl ? null : draftSettings.profile.fullName.charAt(0)}
+                {draftSettings.profile.profileImageUrl
+                  ? null
+                  : draftSettings.profile.fullName.charAt(0)}
               </div>
               <div>
-                <strong>{draftSettings.profile.fullName || t("navigation.profileFallback")}</strong>
+                <strong>
+                  {draftSettings.profile.fullName ||
+                    t("navigation.profileFallback")}
+                </strong>
                 <span>{draftSettings.profile.email}</span>
               </div>
             </div>
@@ -512,7 +610,11 @@ export default function SettingsPage() {
             {showSaveActions ? (
               <div className={styles.actionBar}>
                 {successMessage ? (
-                  <p className={styles.successMessage} role="status" data-testid="settings-success-message">
+                  <p
+                    className={styles.successMessage}
+                    role="status"
+                    data-testid="settings-success-message"
+                  >
                     {successMessage}
                   </p>
                 ) : errorMessage ? (
@@ -520,14 +622,23 @@ export default function SettingsPage() {
                     {errorMessage}
                   </p>
                 ) : isDirty ? (
-                  <p className={styles.dirtyMessage} role="status" data-testid="settings-dirty-message">
+                  <p
+                    className={styles.dirtyMessage}
+                    role="status"
+                    data-testid="settings-dirty-message"
+                  >
                     {t("messages.unsavedChanges")}
                   </p>
                 ) : (
                   <span />
                 )}
                 <div className={styles.actionButtons}>
-                  <button type="button" className={styles.resetButton} onClick={handleReset} disabled={!isDirty || isSaving}>
+                  <button
+                    type="button"
+                    className={styles.resetButton}
+                    onClick={handleReset}
+                    disabled={!isDirty || isSaving}
+                  >
                     {t("actions.reset")}
                   </button>
                   <button

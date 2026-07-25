@@ -18,7 +18,11 @@ interface ProgressPhotoSettingsProps {
   onPhotoSelect: (slot: ProgressPhotoSlot, file: File) => void;
 }
 
-function usePrivatePhotoPreview(userId: string, slot: ProgressPhotoSlot, uploadedAt: string) {
+function usePrivatePhotoPreview(
+  userId: string,
+  slot: ProgressPhotoSlot,
+  uploadedAt: string,
+) {
   const [previewUrl, setPreviewUrl] = useState("");
 
   useEffect(() => {
@@ -54,8 +58,16 @@ export default function ProgressPhotoSettings({
   onPhotoSelect,
 }: ProgressPhotoSettingsProps) {
   const t = useTranslations("settings");
-  const beforePreview = usePrivatePhotoPreview(userId, "before", data.beforeUploadedAt);
-  const afterPreview = usePrivatePhotoPreview(userId, "after", data.afterUploadedAt);
+  const beforePreview = usePrivatePhotoPreview(
+    userId,
+    "before",
+    data.beforeUploadedAt,
+  );
+  const afterPreview = usePrivatePhotoPreview(
+    userId,
+    "after",
+    data.afterUploadedAt,
+  );
 
   const cards: Array<{
     slot: ProgressPhotoSlot;
@@ -91,10 +103,16 @@ export default function ProgressPhotoSettings({
           <article className={styles.progressPhotoCard} key={card.slot}>
             <div
               className={styles.progressPhotoPreview}
-              style={card.previewUrl ? { backgroundImage: `url("${card.previewUrl}")` } : undefined}
+              style={
+                card.previewUrl
+                  ? { backgroundImage: `url("${card.previewUrl}")` }
+                  : undefined
+              }
               data-testid={`progress-photo-${card.slot}-preview`}
             >
-              {!card.previewUrl ? <span>{t("sections.progressPhotos.empty")}</span> : null}
+              {!card.previewUrl ? (
+                <span>{t("sections.progressPhotos.empty")}</span>
+              ) : null}
             </div>
             <div className={styles.progressPhotoCopy}>
               <strong>{card.title}</strong>
@@ -132,7 +150,9 @@ export default function ProgressPhotoSettings({
         testId="settings-toggle-progressPhotoReminder"
         onChange={(reminderEnabled) => onChange({ ...data, reminderEnabled })}
       />
-      <p className={styles.progressPhotoPrivacy}>{t("sections.progressPhotos.privacy")}</p>
+      <p className={styles.progressPhotoPrivacy}>
+        {t("sections.progressPhotos.privacy")}
+      </p>
     </SettingsSection>
   );
 }

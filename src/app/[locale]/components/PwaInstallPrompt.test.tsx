@@ -5,16 +5,17 @@ import PwaInstallPrompt from "./PwaInstallPrompt";
 import { PWA_INSTALL_REQUEST_EVENT } from "@/lib/pwaInstall";
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => ({
-    title: "Install the app",
-    iosDescription: "Install the app in two steps",
-    iosStepShare: "Tap Share",
-    iosStepAdd: "Add to Home Screen",
-    install: "Install app",
-    understood: "Got it",
-    later: "Later",
-    close: "Close installation prompt",
-  })[key] ?? key,
+  useTranslations: () => (key: string) =>
+    ({
+      title: "Install the app",
+      iosDescription: "Install the app in two steps",
+      iosStepShare: "Tap Share",
+      iosStepAdd: "Add to Home Screen",
+      install: "Install app",
+      understood: "Got it",
+      later: "Later",
+      close: "Close installation prompt",
+    })[key] ?? key,
 }));
 
 function setUserAgent(value: string) {
@@ -25,7 +26,10 @@ function setUserAgent(value: string) {
 }
 
 function setStandalone(matches: boolean) {
-  vi.stubGlobal("matchMedia", vi.fn(() => ({ matches })));
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn(() => ({ matches })),
+  );
 }
 
 describe("PwaInstallPrompt", () => {
@@ -41,7 +45,9 @@ describe("PwaInstallPrompt", () => {
 
     render(<PwaInstallPrompt />);
 
-    expect(await screen.findByRole("dialog")).toHaveTextContent("Install the app in two steps");
+    expect(await screen.findByRole("dialog")).toHaveTextContent(
+      "Install the app in two steps",
+    );
     expect(screen.getByText("Add to Home Screen")).toBeInTheDocument();
   });
 
@@ -84,7 +90,9 @@ describe("PwaInstallPrompt", () => {
     });
     fireEvent(window, event);
 
-    await user.click(await screen.findByRole("button", { name: "Install app" }));
+    await user.click(
+      await screen.findByRole("button", { name: "Install app" }),
+    );
 
     await waitFor(() => expect(prompt).toHaveBeenCalledTimes(1));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();

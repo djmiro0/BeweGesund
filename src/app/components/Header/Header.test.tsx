@@ -89,15 +89,24 @@ describe("Header", () => {
   it("uses the site logo as the header brand", () => {
     render(<Header locale="en" />);
 
-    expect(screen.getByTestId("header-brand-logo")).toHaveAttribute("src", "/logo.png");
-    expect(screen.getByTestId("header-brand-logo")).toHaveClass(styles.brandLogo);
+    expect(screen.getByTestId("header-brand-logo")).toHaveAttribute(
+      "src",
+      "/logo.png",
+    );
+    expect(screen.getByTestId("header-brand-logo")).toHaveClass(
+      styles.brandLogo,
+    );
   });
 
   it("hides locked navigation while the public launch screen is active", () => {
     render(<Header locale="en" launchMode />);
 
-    expect(screen.queryByRole("link", { name: "Program" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Blogs" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Program" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Blogs" }),
+    ).not.toBeInTheDocument();
     expect(screen.queryByTestId("mobile-menu-trigger")).not.toBeInTheDocument();
     expect(screen.getByTestId("theme-toggle")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
@@ -133,14 +142,22 @@ describe("Header", () => {
     await user.click(trigger);
 
     expect(trigger).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByTestId("mobile-menu")).toHaveClass(styles.mobileMenuOpen);
-    expect(screen.getByTestId("mobile-menu-backdrop")).toHaveClass(styles.mobileBackdrop);
+    expect(screen.getByTestId("mobile-menu")).toHaveClass(
+      styles.mobileMenuOpen,
+    );
+    expect(screen.getByTestId("mobile-menu-backdrop")).toHaveClass(
+      styles.mobileBackdrop,
+    );
 
     await user.click(screen.getByTestId("mobile-menu-backdrop"));
 
     expect(trigger).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByTestId("mobile-menu-backdrop")).not.toBeInTheDocument();
-    expect(screen.getByTestId("mobile-menu")).not.toHaveClass(styles.mobileMenuOpen);
+    expect(
+      screen.queryByTestId("mobile-menu-backdrop"),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId("mobile-menu")).not.toHaveClass(
+      styles.mobileMenuOpen,
+    );
   });
 
   it("closes the mobile menu after selecting a menu link", async () => {
@@ -152,6 +169,8 @@ describe("Header", () => {
     await user.click(screen.getAllByRole("link", { name: "Calendar" })[1]);
 
     expect(trigger).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByTestId("mobile-menu-backdrop")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("mobile-menu-backdrop"),
+    ).not.toBeInTheDocument();
   });
 });

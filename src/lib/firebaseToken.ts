@@ -14,7 +14,8 @@ interface FirebaseTokenPayload {
   user_id?: string;
 }
 
-let cachedCerts: { expiresAt: number; value: Record<string, string> } | null = null;
+let cachedCerts: { expiresAt: number; value: Record<string, string> } | null =
+  null;
 
 function base64UrlDecode(value: string) {
   const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
@@ -40,7 +41,9 @@ async function getFirebaseCerts() {
     throw new Error("Firebase public certificates could not be loaded.");
   }
 
-  const maxAge = response.headers.get("cache-control")?.match(/max-age=(\d+)/)?.[1];
+  const maxAge = response.headers
+    .get("cache-control")
+    ?.match(/max-age=(\d+)/)?.[1];
   const expiresAt = now + Number(maxAge ?? 3600) * 1000;
   const value = (await response.json()) as Record<string, string>;
   cachedCerts = { expiresAt, value };
@@ -84,7 +87,11 @@ export async function verifyFirebaseIdToken(idToken: string) {
   verifier.update(`${encodedHeader}.${encodedPayload}`);
   verifier.end();
 
-  const isValid = verifier.verify(cert, signature.replace(/-/g, "+").replace(/_/g, "/"), "base64");
+  const isValid = verifier.verify(
+    cert,
+    signature.replace(/-/g, "+").replace(/_/g, "/"),
+    "base64",
+  );
   if (!isValid) {
     throw new Error("Firebase token signature is invalid.");
   }

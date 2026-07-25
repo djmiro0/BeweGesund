@@ -29,13 +29,18 @@ export async function getFirebaseUserAccess(
   );
 
   if (!response.ok) {
-    throw new Error(`Firebase user profile could not be loaded (${response.status}).`);
+    throw new Error(
+      `Firebase user profile could not be loaded (${response.status}).`,
+    );
   }
 
   const document = (await response.json()) as FirestoreDocument;
 
   return {
-    memberPackage: normalizeMemberPackage(document.fields?.memberPackage?.stringValue),
-    subscriptionStatus: document.fields?.subscriptionStatus?.stringValue ?? "free",
+    memberPackage: normalizeMemberPackage(
+      document.fields?.memberPackage?.stringValue,
+    ),
+    subscriptionStatus:
+      document.fields?.subscriptionStatus?.stringValue ?? "free",
   };
 }

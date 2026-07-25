@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, Dumbbell, PlayCircle, ShieldCheck } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  Dumbbell,
+  PlayCircle,
+  ShieldCheck,
+} from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { memberCourses, type MemberCourseDefinition } from "@/data";
 import { getCourses, type CourseSummary } from "@/lib/contentful";
@@ -37,23 +43,42 @@ function isNewlyPublished(publishedAt: string) {
   return ageMs >= 0 && ageMs < newBadgeWindowMs;
 }
 
-function getSubtypeVideos(courses: CourseSummary[], subtype: MemberCourseDefinition, categorySlug: string) {
-  const categorySubtypes = memberCourses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+function getSubtypeVideos(
+  courses: CourseSummary[],
+  subtype: MemberCourseDefinition,
+  categorySlug: string,
+) {
+  const categorySubtypes = memberCourses.filter(
+    (course) => canonicalCategory(course.categoryKey) === categorySlug,
+  );
   const subtypeIds = new Set(categorySubtypes.map((course) => course.id));
   const plannedOnlyIds = new Set(memberCourses.map((course) => course.id));
   const categoryItems = courses.filter(
-    (course) => canonicalCategory(course.categoryKey) === categorySlug && !(plannedOnlyIds.has(course.id) && !course.hasVideo),
+    (course) =>
+      canonicalCategory(course.categoryKey) === categorySlug &&
+      !(plannedOnlyIds.has(course.id) && !course.hasVideo),
   );
-  const directMatches = categoryItems.filter((course) => course.subcategoryKey === subtype.id || course.slug === subtype.id);
+  const directMatches = categoryItems.filter(
+    (course) =>
+      course.subcategoryKey === subtype.id || course.slug === subtype.id,
+  );
   const isFallbackSubtype = categorySubtypes[0]?.id === subtype.id;
 
   if (!isFallbackSubtype) return directMatches;
 
   const fallbackMatches = categoryItems.filter(
-    (course) => course.subcategoryKey === "" || !subtypeIds.has(course.subcategoryKey),
+    (course) =>
+      course.subcategoryKey === "" || !subtypeIds.has(course.subcategoryKey),
   );
 
-  return Array.from(new Map([...directMatches, ...fallbackMatches].map((course) => [course.id, course])).values());
+  return Array.from(
+    new Map(
+      [...directMatches, ...fallbackMatches].map((course) => [
+        course.id,
+        course,
+      ]),
+    ).values(),
+  );
 }
 
 export default async function CourseSubtypePage({
@@ -68,19 +93,25 @@ export default async function CourseSubtypePage({
   const packages = await getTranslations({ locale, namespace: "packages" });
   const t = await getTranslations({ locale, namespace: "courseDetail" });
   const subtypeDefinition = memberCourses.find(
-    (course) => course.id === subtype && canonicalCategory(course.categoryKey) === categorySlug,
+    (course) =>
+      course.id === subtype &&
+      canonicalCategory(course.categoryKey) === categorySlug,
   );
 
   if (!subtypeDefinition) notFound();
 
   const courses = await getCourses(locale);
   const videos = getSubtypeVideos(courses, subtypeDefinition, categorySlug);
-  const plannedTrainingCount = subtypeDefinition.plannedTrainingCount ?? videos.length;
+  const plannedTrainingCount =
+    subtypeDefinition.plannedTrainingCount ?? videos.length;
   const availableVideoCount = videos.filter((video) => video.hasVideo).length;
 
   return (
     <section className={coursesStyles.coursesSection}>
-      <BackButton href={`/${locale}/courses/${categorySlug}`} className={detailStyles.backLink}>
+      <BackButton
+        href={`/${locale}/courses/${categorySlug}`}
+        className={detailStyles.backLink}
+      >
         <ArrowLeft size={17} />
         {t("back")}
       </BackButton>
@@ -91,20 +122,34 @@ export default async function CourseSubtypePage({
             <Dumbbell size={15} />
             {coursesT(`courseTypes.categories.${categorySlug}.title`)}
           </div>
-          <h1 className={coursesStyles.title}>{courseT(subtypeDefinition.id)}</h1>
-          <p className={coursesStyles.intro}>{coursesT("weeklyUnlock.description")}</p>
+          <h1 className={coursesStyles.title}>
+            {courseT(subtypeDefinition.id)}
+          </h1>
+          <p className={coursesStyles.intro}>
+            {coursesT("weeklyUnlock.description")}
+          </p>
         </div>
 
         <aside className={coursesStyles.unlockPanel}>
-          <p className={coursesStyles.unlockLabel}>{coursesT("weeklyUnlock.label")}</p>
-          <strong>{coursesT("courseTypes.meta.videoCount", { count: availableVideoCount })}</strong>
-          <p>{coursesT("courseTypes.meta.plannedCount", { count: plannedTrainingCount })}</p>
+          <p className={coursesStyles.unlockLabel}>
+            {coursesT("weeklyUnlock.label")}
+          </p>
+          <strong>
+            {coursesT("courseTypes.meta.videoCount", {
+              count: availableVideoCount,
+            })}
+          </strong>
+          <p>
+            {coursesT("courseTypes.meta.plannedCount", {
+              count: plannedTrainingCount,
+            })}
+          </p>
         </aside>
       </header>
 
       <div className={coursesStyles.subtypeList}>
         {videos.length ? (
-          videos.map((video) => (
+          videos.map((video) =>
             video.hasVideo ? (
               <Link
                 key={video.id}
@@ -112,13 +157,22 @@ export default async function CourseSubtypePage({
                 className={`${coursesStyles.courseCard} ${coursesStyles.videoCourseCard}`}
               >
                 {video.isLive ? (
-                  <span className={coursesStyles.liveBadge}>{coursesT("courseTypes.meta.live")}</span>
+                  <span className={coursesStyles.liveBadge}>
+                    {coursesT("courseTypes.meta.live")}
+                  </span>
                 ) : isNewlyPublished(video.publishedAt) ? (
-                  <span className={coursesStyles.videoBadge}>{coursesT("courseTypes.meta.newThisWeek")}</span>
+                  <span className={coursesStyles.videoBadge}>
+                    {coursesT("courseTypes.meta.newThisWeek")}
+                  </span>
                 ) : null}
                 <div className={coursesStyles.videoPoster}>
                   {video.posterImage ? (
-                    <Image src={video.posterImage} alt="" fill sizes="(max-width: 720px) 100vw, 240px" />
+                    <Image
+                      src={video.posterImage}
+                      alt=""
+                      fill
+                      sizes="(max-width: 720px) 100vw, 240px"
+                    />
                   ) : (
                     <PlayCircle size={34} />
                   )}
@@ -126,14 +180,20 @@ export default async function CourseSubtypePage({
                 <div className={coursesStyles.videoCardCopy}>
                   <div>
                     <h2 className={coursesStyles.courseTitle}>{video.title}</h2>
-                    {video.description ? <p className={coursesStyles.courseDescription}>{video.description}</p> : null}
+                    {video.description ? (
+                      <p className={coursesStyles.courseDescription}>
+                        {video.description}
+                      </p>
+                    ) : null}
                   </div>
                   <div className={coursesStyles.courseMeta}>
                     <span>{coursesT("courseTypes.meta.videoAvailable")}</span>
                     {video.durationMinutes ? (
                       <span>
                         <Clock size={12} />
-                        {coursesT("courseTypes.meta.duration", { count: video.durationMinutes })}
+                        {coursesT("courseTypes.meta.duration", {
+                          count: video.durationMinutes,
+                        })}
                       </span>
                     ) : null}
                     <span>
@@ -148,17 +208,26 @@ export default async function CourseSubtypePage({
                 </div>
               </Link>
             ) : (
-              <article key={video.id} className={`${coursesStyles.courseCard} ${coursesStyles.courseCardUnavailable}`}>
+              <article
+                key={video.id}
+                className={`${coursesStyles.courseCard} ${coursesStyles.courseCardUnavailable}`}
+              >
                 <div>
                   <h2 className={coursesStyles.courseTitle}>{video.title}</h2>
-                  {video.description ? <p className={coursesStyles.courseDescription}>{video.description}</p> : null}
+                  {video.description ? (
+                    <p className={coursesStyles.courseDescription}>
+                      {video.description}
+                    </p>
+                  ) : null}
                 </div>
                 <div className={coursesStyles.courseMeta}>
                   <span>{coursesT("courseTypes.meta.comingSoon")}</span>
                   {video.durationMinutes ? (
                     <span>
                       <Clock size={12} />
-                      {coursesT("courseTypes.meta.duration", { count: video.durationMinutes })}
+                      {coursesT("courseTypes.meta.duration", {
+                        count: video.durationMinutes,
+                      })}
                     </span>
                   ) : null}
                   <span>
@@ -167,13 +236,19 @@ export default async function CourseSubtypePage({
                   </span>
                 </div>
               </article>
-            )
-          ))
+            ),
+          )
         ) : (
-          <article className={`${coursesStyles.courseCard} ${coursesStyles.courseCardUnavailable}`}>
+          <article
+            className={`${coursesStyles.courseCard} ${coursesStyles.courseCardUnavailable}`}
+          >
             <div>
-              <h2 className={coursesStyles.courseTitle}>{coursesT("courseTypes.meta.comingSoon")}</h2>
-              <p className={coursesStyles.courseDescription}>{coursesT("courseTypes.emptyCategory")}</p>
+              <h2 className={coursesStyles.courseTitle}>
+                {coursesT("courseTypes.meta.comingSoon")}
+              </h2>
+              <p className={coursesStyles.courseDescription}>
+                {coursesT("courseTypes.emptyCategory")}
+              </p>
             </div>
           </article>
         )}

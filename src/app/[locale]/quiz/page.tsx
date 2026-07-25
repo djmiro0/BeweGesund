@@ -26,13 +26,19 @@ export default async function QuizPage({
   const shouldAutoStart = isGameMode && query?.autostart === "1";
 
   return (
-    <main className={`${styles.quizPage} ${isGameMode ? styles.quizGamePage : ""}`}>
+    <main
+      className={`${styles.quizPage} ${isGameMode ? styles.quizGamePage : ""}`}
+    >
       <Link href={`/${locale}`} className={styles.backToOverview}>
         <ArrowLeft size={18} />
         {labels.backLabel}
       </Link>
 
-      <QuizClient locale={locale} gameMode={isGameMode} autoStart={shouldAutoStart} />
+      <QuizClient
+        locale={locale}
+        gameMode={isGameMode}
+        autoStart={shouldAutoStart}
+      />
     </main>
   );
 }

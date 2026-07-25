@@ -8,8 +8,12 @@
   position: relative;
   overflow: hidden;
   padding: clamp(4.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 5rem);
-  background:
-    linear-gradient(180deg, var(--page-cream-2) 0%, var(--page-base) 54%, var(--page-soft) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--page-cream-2) 0%,
+    var(--page-base) 54%,
+    var(--page-soft) 100%
+  );
   color: var(--page-ink);
 }
 
@@ -132,7 +136,9 @@
   box-shadow: 0 18px 48px rgba(var(--page-ink-rgb), 0.08);
   padding: 1rem;
   backdrop-filter: blur(18px);
-  transition: border-color 0.28s var(--transition), box-shadow 0.28s var(--transition);
+  transition:
+    border-color 0.28s var(--transition),
+    box-shadow 0.28s var(--transition);
 }
 
 .highlightItem:hover {
@@ -147,7 +153,11 @@
   width: 3rem;
   height: 3rem;
   border-radius: 1rem;
-  background: linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.14), rgba(var(--page-warm-rgb), 0.22));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--page-accent-rgb), 0.14),
+    rgba(var(--page-warm-rgb), 0.22)
+  );
   color: var(--page-accent);
 }
 

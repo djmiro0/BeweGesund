@@ -1,9 +1,18 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { Equipment, FitnessLevel, TrainingLocation, WorkoutPreferencesData } from "../settingsData";
+import type {
+  Equipment,
+  FitnessLevel,
+  TrainingLocation,
+  WorkoutPreferencesData,
+} from "../settingsData";
 import { workoutDays } from "../settingsData";
-import { SettingsInput, SettingsSection, SettingsSelect } from "./SettingsControls";
+import {
+  SettingsInput,
+  SettingsSection,
+  SettingsSelect,
+} from "./SettingsControls";
 import styles from "../Settings.module.css";
 
 interface WorkoutPreferencesProps {
@@ -11,9 +20,15 @@ interface WorkoutPreferencesProps {
   onChange: (data: WorkoutPreferencesData) => void;
 }
 
-export default function WorkoutPreferences({ data, onChange }: WorkoutPreferencesProps) {
+export default function WorkoutPreferences({
+  data,
+  onChange,
+}: WorkoutPreferencesProps) {
   const t = useTranslations("settings");
-  const trainingLocationOptions: Array<{ value: TrainingLocation; label: string }> = [
+  const trainingLocationOptions: Array<{
+    value: TrainingLocation;
+    label: string;
+  }> = [
     { value: "gym", label: t("options.location.gym") },
     { value: "home", label: t("options.location.home") },
     { value: "outdoor", label: t("options.location.outdoor") },
@@ -28,7 +43,10 @@ export default function WorkoutPreferences({ data, onChange }: WorkoutPreference
     { value: "intermediate", label: t("options.fitness.intermediate") },
     { value: "advanced", label: t("options.fitness.advanced") },
   ];
-  const update = <Key extends keyof WorkoutPreferencesData>(key: Key, value: WorkoutPreferencesData[Key]) => {
+  const update = <Key extends keyof WorkoutPreferencesData>(
+    key: Key,
+    value: WorkoutPreferencesData[Key],
+  ) => {
     onChange({ ...data, [key]: value });
   };
 
@@ -63,11 +81,45 @@ export default function WorkoutPreferences({ data, onChange }: WorkoutPreference
       </div>
 
       <div className={styles.fieldGrid}>
-        <SettingsInput id="workoutDuration" label={t("fields.workoutDuration")} type="number" suffix="min" value={data.workoutDuration} onChange={(value) => update("workoutDuration", Number(value))} />
-        <SettingsSelect id="trainingLocation" label={t("fields.trainingLocation")} value={data.trainingLocation} options={trainingLocationOptions} onChange={(value) => update("trainingLocation", value as TrainingLocation)} />
-        <SettingsSelect id="equipment" label={t("fields.equipment")} value={data.equipment} options={equipmentOptions} onChange={(value) => update("equipment", value as Equipment)} />
-        <SettingsSelect id="difficultyLevel" label={t("fields.difficulty")} value={data.difficultyLevel} options={difficultyOptions} onChange={(value) => update("difficultyLevel", value as FitnessLevel)} />
-        <SettingsInput id="restTimerDuration" label={t("fields.restTimer")} type="number" suffix={t("units.seconds")} value={data.restTimerDuration} onChange={(value) => update("restTimerDuration", Number(value))} />
+        <SettingsInput
+          id="workoutDuration"
+          label={t("fields.workoutDuration")}
+          type="number"
+          suffix="min"
+          value={data.workoutDuration}
+          onChange={(value) => update("workoutDuration", Number(value))}
+        />
+        <SettingsSelect
+          id="trainingLocation"
+          label={t("fields.trainingLocation")}
+          value={data.trainingLocation}
+          options={trainingLocationOptions}
+          onChange={(value) =>
+            update("trainingLocation", value as TrainingLocation)
+          }
+        />
+        <SettingsSelect
+          id="equipment"
+          label={t("fields.equipment")}
+          value={data.equipment}
+          options={equipmentOptions}
+          onChange={(value) => update("equipment", value as Equipment)}
+        />
+        <SettingsSelect
+          id="difficultyLevel"
+          label={t("fields.difficulty")}
+          value={data.difficultyLevel}
+          options={difficultyOptions}
+          onChange={(value) => update("difficultyLevel", value as FitnessLevel)}
+        />
+        <SettingsInput
+          id="restTimerDuration"
+          label={t("fields.restTimer")}
+          type="number"
+          suffix={t("units.seconds")}
+          value={data.restTimerDuration}
+          onChange={(value) => update("restTimerDuration", Number(value))}
+        />
       </div>
     </SettingsSection>
   );

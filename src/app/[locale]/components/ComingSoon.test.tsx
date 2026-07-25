@@ -21,9 +21,15 @@ describe("ComingSoon", () => {
   it("renders translated launch content", () => {
     render(<ComingSoon openAuth={vi.fn()} />);
 
-    expect(screen.getByRole("heading", { name: "Website under construction" })).toBeInTheDocument();
-    expect(screen.getByText("We are building the platform.")).toBeInTheDocument();
-    expect(screen.getByText("Public access is coming soon")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Website under construction" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("We are building the platform."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Public access is coming soon"),
+    ).toBeInTheDocument();
   });
 
   it("opens member authentication", async () => {

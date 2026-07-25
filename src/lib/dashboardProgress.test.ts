@@ -13,6 +13,10 @@ describe("getDashboardProgress", () => {
 
     expect(progress.completedCourseCount).toBe(2);
     expect(progress.upcomingCourseCount).toBe(2);
-    expect([...progress.recommendedCourseIds]).toEqual(["course-b", "course-c", "course-d"]);
+    expect([...progress.recommendedCourseIds]).toEqual([
+      "course-b",
+      "course-c",
+      "course-d",
+    ]);
   });
 });

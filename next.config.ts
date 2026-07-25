@@ -1,6 +1,6 @@
-import {NextConfig} from 'next';
-import createNextIntlPlugin from 'next-intl/plugin';
- 
+import { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -15,7 +15,10 @@ const nextConfig: NextConfig = {
       {
         source: "/sw.js",
         headers: [
-          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
           { key: "Service-Worker-Allowed", value: "/" },
         ],
       },
@@ -29,13 +32,19 @@ const nextConfig: NextConfig = {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(), payment=()",
           },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+          {
+            key: "Cross-Origin-Opener-Policy",
+            value: "same-origin-allow-popups",
+          },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains",
+          },
         ],
       },
     ];
   },
 };
- 
+
 const withNextIntl = createNextIntlPlugin();
 export default withNextIntl(nextConfig);

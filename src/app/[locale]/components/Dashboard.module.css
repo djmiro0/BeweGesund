@@ -1,7 +1,15 @@
 .dashboardSection {
   --app-bg:
-    radial-gradient(circle at 12% 0%, rgba(var(--shell-surface-rgb), 0.16), transparent 18rem),
-    radial-gradient(circle at 92% 4%, rgba(var(--page-olive-rgb), 0.14), transparent 18rem),
+    radial-gradient(
+      circle at 12% 0%,
+      rgba(var(--shell-surface-rgb), 0.16),
+      transparent 18rem
+    ),
+    radial-gradient(
+      circle at 92% 4%,
+      rgba(var(--page-olive-rgb), 0.14),
+      transparent 18rem
+    ),
     linear-gradient(180deg, var(--page-cream-1), var(--page-cream-2));
   --app-surface: rgba(var(--page-soft-rgb), 0.82);
   --app-surface-strong: rgba(var(--page-soft-rgb), 0.96);
@@ -18,8 +26,16 @@
 
 :global(:root[data-theme="dark"]) .dashboardSection {
   --app-bg:
-    radial-gradient(circle at 12% 0%, rgba(var(--shell-surface-rgb), 0.42), transparent 18rem),
-    radial-gradient(circle at 92% 4%, rgba(var(--page-olive-rgb), 0.12), transparent 18rem),
+    radial-gradient(
+      circle at 12% 0%,
+      rgba(var(--shell-surface-rgb), 0.42),
+      transparent 18rem
+    ),
+    radial-gradient(
+      circle at 92% 4%,
+      rgba(var(--page-olive-rgb), 0.12),
+      transparent 18rem
+    ),
     linear-gradient(180deg, var(--shell-bg-alt), var(--shell-bg));
   --app-surface: rgba(var(--shell-surface-rgb), 0.72);
   --app-surface-strong: rgba(var(--shell-surface-rgb), 0.9);
@@ -67,8 +83,16 @@
 .profileCover {
   min-height: 4.15rem;
   background:
-    radial-gradient(circle at 78% 24%, rgba(var(--page-olive-rgb), 0.35), transparent 5rem),
-    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.72), rgba(var(--shell-bg-rgb), 0.94));
+    radial-gradient(
+      circle at 78% 24%,
+      rgba(var(--page-olive-rgb), 0.35),
+      transparent 5rem
+    ),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-accent-rgb), 0.72),
+      rgba(var(--shell-bg-rgb), 0.94)
+    );
 }
 
 .profileIdentity {
@@ -356,7 +380,11 @@
   border: 1px solid rgba(var(--page-olive-rgb), 0.24);
   border-radius: 0.95rem;
   background:
-    radial-gradient(circle at 88% 8%, rgba(var(--page-olive-rgb), 0.22), transparent 7rem),
+    radial-gradient(
+      circle at 88% 8%,
+      rgba(var(--page-olive-rgb), 0.22),
+      transparent 7rem
+    ),
     linear-gradient(135deg, var(--app-surface-strong), var(--app-surface));
   box-shadow: 0 10px 22px var(--app-shadow);
   padding: 0.82rem;
@@ -470,9 +498,16 @@
       rgba(var(--shell-surface-rgb), 0.48) 45%,
       transparent 58%
     ),
-    radial-gradient(circle at 25% 20%, rgba(var(--page-accent-rgb), 0.22), transparent 9rem),
+    radial-gradient(
+      circle at 25% 20%,
+      rgba(var(--page-accent-rgb), 0.22),
+      transparent 9rem
+    ),
     linear-gradient(135deg, var(--shell-bg-alt), var(--shell-bg));
-  background-size: 220% 100%, auto, auto;
+  background-size:
+    220% 100%,
+    auto,
+    auto;
   animation: featureSkeletonPulse 1.6s ease-in-out infinite;
 }
 
@@ -498,11 +533,17 @@
 
 @keyframes featureSkeletonPulse {
   from {
-    background-position: 120% 0, 0 0, 0 0;
+    background-position:
+      120% 0,
+      0 0,
+      0 0;
   }
 
   to {
-    background-position: -120% 0, 0 0, 0 0;
+    background-position:
+      -120% 0,
+      0 0,
+      0 0;
   }
 }
 
@@ -524,7 +565,11 @@
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 25% 20%, rgba(var(--page-accent-rgb), 0.3), transparent 9rem),
+    radial-gradient(
+      circle at 25% 20%,
+      rgba(var(--page-accent-rgb), 0.3),
+      transparent 9rem
+    ),
     linear-gradient(135deg, var(--shell-bg-alt), var(--shell-bg));
   color: var(--page-warm);
 }
@@ -534,8 +579,16 @@
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(circle at 22% 20%, rgba(var(--shell-surface-rgb), 0.5), transparent 36%),
-    linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.04), rgba(var(--shell-bg-rgb), 0.42));
+    radial-gradient(
+      circle at 22% 20%,
+      rgba(var(--shell-surface-rgb), 0.5),
+      transparent 36%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(var(--shell-bg-rgb), 0.04),
+      rgba(var(--shell-bg-rgb), 0.42)
+    );
 }
 
 .playBadge,
@@ -904,15 +957,27 @@
   place-items: center;
   overflow: hidden;
   background:
-    radial-gradient(circle at 20% 15%, rgba(var(--page-accent-rgb), 0.2), transparent 7rem),
+    radial-gradient(
+      circle at 20% 15%,
+      rgba(var(--page-accent-rgb), 0.2),
+      transparent 7rem
+    ),
     var(--shell-bg);
   color: var(--page-warm);
 }
 
 .meditationImage {
   background:
-    radial-gradient(circle at 28% 18%, rgba(var(--page-olive-rgb), 0.24), transparent 7rem),
-    linear-gradient(135deg, rgba(var(--page-soft-rgb), 0.9), rgba(var(--page-accent-rgb), 0.18)),
+    radial-gradient(
+      circle at 28% 18%,
+      rgba(var(--page-olive-rgb), 0.24),
+      transparent 7rem
+    ),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-soft-rgb), 0.9),
+      rgba(var(--page-accent-rgb), 0.18)
+    ),
     var(--shell-bg);
   color: var(--page-olive);
 }

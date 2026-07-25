@@ -1,6 +1,10 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AppPreferenceEffects, CheckoutReturnSync, ShellFrame } from "./AppShell";
+import {
+  AppPreferenceEffects,
+  CheckoutReturnSync,
+  ShellFrame,
+} from "./AppShell";
 import { ThemeProvider, useTheme } from "./ThemeProvider";
 
 const mocks = vi.hoisted(() => ({
@@ -65,7 +69,10 @@ vi.mock("./AuthProvider", () => ({
 
 vi.mock("@/app/components/Header/Header", () => ({
   default: ({ launchMode }: { launchMode?: boolean }) => (
-    <div data-testid="header" data-launch-mode={launchMode ? "true" : "false"} />
+    <div
+      data-testid="header"
+      data-launch-mode={launchMode ? "true" : "false"}
+    />
   ),
 }));
 
@@ -132,7 +139,10 @@ describe("ShellFrame launch routing", () => {
       );
 
       expect(screen.getByTestId("coming-soon")).toBeInTheDocument();
-      expect(screen.getByTestId("header")).toHaveAttribute("data-launch-mode", "true");
+      expect(screen.getByTestId("header")).toHaveAttribute(
+        "data-launch-mode",
+        "true",
+      );
       expect(screen.queryByTestId("page-content")).not.toBeInTheDocument();
     },
   );
@@ -148,11 +158,18 @@ describe("ShellFrame launch routing", () => {
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
     expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
-    expect(screen.getByTestId("header")).toHaveAttribute("data-launch-mode", "false");
+    expect(screen.getByTestId("header")).toHaveAttribute(
+      "data-launch-mode",
+      "false",
+    );
   });
 
   it("confirms successful Stripe checkout returns", async () => {
-    window.history.replaceState(null, "", "/de?checkout=success&session_id=cs_test_123");
+    window.history.replaceState(
+      null,
+      "",
+      "/de?checkout=success&session_id=cs_test_123",
+    );
     mocks.auth.user = {
       uid: "user-1",
       displayName: "Member",
@@ -162,7 +179,12 @@ describe("ShellFrame launch routing", () => {
 
     render(<CheckoutReturnSync />);
 
-    await waitFor(() => expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "confirmStripeCheckoutSession"));
+    await waitFor(() =>
+      expect(mocks.httpsCallable).toHaveBeenCalledWith(
+        {},
+        "confirmStripeCheckoutSession",
+      ),
+    );
     expect(mocks.callable).toHaveBeenCalledWith({ sessionId: "cs_test_123" });
     await waitFor(() => expect(window.location.search).toBe(""));
   });
@@ -178,7 +200,9 @@ describe("ShellFrame launch routing", () => {
 
     render(<CheckoutReturnSync />);
 
-    await waitFor(() => expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "deleteUserAccount"));
+    await waitFor(() =>
+      expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "deleteUserAccount"),
+    );
     expect(mocks.callable).toHaveBeenCalledWith({});
     await waitFor(() => expect(mocks.signOut).toHaveBeenCalledWith({}));
     await waitFor(() => expect(window.location.search).toBe(""));
@@ -196,7 +220,10 @@ describe("ShellFrame launch routing", () => {
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
     expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
-    expect(screen.getByTestId("header")).toHaveAttribute("data-launch-mode", "false");
+    expect(screen.getByTestId("header")).toHaveAttribute(
+      "data-launch-mode",
+      "false",
+    );
   });
 
   it("renders the application for authenticated users", () => {
@@ -248,7 +275,9 @@ describe("ShellFrame launch routing", () => {
     expect(screen.getByTestId("payment-required")).toBeInTheDocument();
     expect(screen.queryByTestId("page-content")).not.toBeInTheDocument();
     expect(screen.queryByTestId("mobile-tabs")).not.toBeInTheDocument();
-    expect(screen.queryByTestId("progress-photo-reminder")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("progress-photo-reminder"),
+    ).not.toBeInTheDocument();
   });
 
   it("keeps the home page visible for authenticated users without paid access", () => {
@@ -402,7 +431,9 @@ describe("ShellFrame launch routing", () => {
     );
 
     expect(screen.getByTestId("auth-modal")).toBeInTheDocument();
-    expect(screen.queryByTestId("progress-photo-reminder")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("progress-photo-reminder"),
+    ).not.toBeInTheDocument();
     expect(screen.queryByTestId("page-content")).not.toBeInTheDocument();
     expect(screen.queryByTestId("mobile-tabs")).not.toBeInTheDocument();
   });
@@ -433,11 +464,15 @@ describe("ShellFrame launch routing", () => {
       </ThemeProvider>,
     );
 
-    await waitFor(() => expect(screen.getByTestId("theme-probe")).toHaveTextContent("light"));
+    await waitFor(() =>
+      expect(screen.getByTestId("theme-probe")).toHaveTextContent("light"),
+    );
 
     fireEvent.click(screen.getByTestId("theme-probe"));
 
-    await waitFor(() => expect(screen.getByTestId("theme-probe")).toHaveTextContent("dark"));
+    await waitFor(() =>
+      expect(screen.getByTestId("theme-probe")).toHaveTextContent("dark"),
+    );
     expect(window.localStorage.getItem("sbewegesund-theme")).toBe("dark");
   });
 });

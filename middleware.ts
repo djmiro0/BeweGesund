@@ -5,7 +5,7 @@ import createMiddleware from "next-intl/middleware";
 const intlMiddleware = createMiddleware({
   locales: ["de", "en"],
   defaultLocale: "de",
-  localeDetection: false
+  localeDetection: false,
 });
 
 export function middleware(request: NextRequest) {
@@ -26,5 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*).*)"]
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

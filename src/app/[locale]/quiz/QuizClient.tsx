@@ -1,6 +1,13 @@
 "use client";
 
-import { collection, getDocs, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import {
   ArrowLeft,
@@ -27,6 +34,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { db, functions } from "../../../../firebase.config";
+import {
+  DEFAULT_QUIZ_QUESTION_COUNT,
+  selectRandomQuizQuestions,
+} from "../../../lib/quizSelection";
 import { useAuth } from "../components/AuthProvider";
 import styles from "./Quiz.module.css";
 
@@ -87,16 +98,24 @@ const copy = {
     infoLabel: "Beispiel anzeigen",
     close: "Schließen",
     sampleTitle: "Beispiel-Frage",
-    sampleQuestion: "Welche Kombination zählt künftig am stärksten für die Quiz-Rangliste?",
-    sampleOptions: ["Nur die Anzahl gelesener Artikel", "Richtige Antworten plus Geschwindigkeit", "Nur Trainingsminuten"],
-    sampleNote: "Die echte Quiz-Logik mit Timer, Auswertung und Anti-Cheat läuft über die geschützte Cloud Function.",
+    sampleQuestion:
+      "Welche Kombination zählt künftig am stärksten für die Quiz-Rangliste?",
+    sampleOptions: [
+      "Nur die Anzahl gelesener Artikel",
+      "Richtige Antworten plus Geschwindigkeit",
+      "Nur Trainingsminuten",
+    ],
+    sampleNote:
+      "Die echte Quiz-Logik mit Timer, Auswertung und Anti-Cheat läuft über die geschützte Cloud Function.",
     loading: "Quiz wird geladen...",
-    empty: "Noch kein veröffentlichter Firestore-Quiz verfügbar. Lege ein Dokument in quizzes an, dann erscheint er hier automatisch.",
+    empty:
+      "Noch kein veröffentlichter Firestore-Quiz verfügbar. Lege ein Dokument in quizzes an, dann erscheint er hier automatisch.",
     loadError: "Der Quiz konnte nicht geladen werden.",
     signIn: "Einloggen zum Absenden",
     start: "Quiz starten",
     startTitle: "Bist du bereit?",
-    startDescription: "Der Timer startet erst, wenn du auf Start klickst. Du bekommst heute 5 Fragen und hast pro Frage 30 Sekunden Zeit.",
+    startDescription:
+      "Der Timer startet erst, wenn du auf Start klickst. Du bekommst heute 5 Fragen und hast pro Frage 30 Sekunden Zeit.",
     back: "Zurück",
     next: "Weiter",
     done: "Fertig",
@@ -110,7 +129,8 @@ const copy = {
     correct: "{correct}/{total} richtig",
     speedBonus: "+{bonus} Speed-Bonus",
     completedTitle: "Glückwunsch, du hast den Test abgeschlossen!",
-    completedText: "Deine Antworten wurden gespeichert. Schau dir jetzt in Ruhe an, was du ausgewählt hast und welche Antwort richtig war.",
+    completedText:
+      "Deine Antworten wurden gespeichert. Schau dir jetzt in Ruhe an, was du ausgewählt hast und welche Antwort richtig war.",
     reviewTitle: "Deine Antworten im Überblick",
     homeCta: "Zur Startseite",
     yourAnswer: "Deine Antwort",
@@ -121,7 +141,8 @@ const copy = {
     heroEyebrow: "Bewegesund Challenges",
     heroTitleFirst: "Teste dein Wissen.",
     heroTitleSecond: "Werde Champion.",
-    heroLead: "Tägliche Quizzes, Punkte sammeln und jeden Monat die Chance auf die Champion-Krone.",
+    heroLead:
+      "Tägliche Quizzes, Punkte sammeln und jeden Monat die Chance auf die Champion-Krone.",
     duration: "Dauert nur 2 Minuten",
     challengeTitle: "24h Challenge",
     challengeText: "Täglich neue Fragen",
@@ -130,20 +151,25 @@ const copy = {
     championTitle: "Monats-Champion",
     championText: "Top 3 gewinnen die Krone",
     dailyTitle: "Täglicher 24h Quiz",
-    dailyText: "Jeden Tag 5 neue Fragen zu Ernährung, Training, Mental Health und Prävention.",
+    dailyText:
+      "Jeden Tag 5 neue Fragen zu Ernährung, Training, Mental Health und Prävention.",
     knowledgeTitle: "Wissen, das bleibt",
-    knowledgeText: "Deine Auswertung am Ende zeigt dir, was richtig war. So lernst du mit jeder Challenge dazu.",
+    knowledgeText:
+      "Deine Auswertung am Ende zeigt dir, was richtig war. So lernst du mit jeder Challenge dazu.",
     monthlyTitle: "Monats-Champion",
-    monthlyText: "Die besten drei Profile erhalten monatlich eine exklusive Krone neben ihrem Namen.",
+    monthlyText:
+      "Die besten drei Profile erhalten monatlich eine exklusive Krone neben ihrem Namen.",
     today: "Heute",
     dailyQuizTitle: "Tägliches Gesundheitsquiz",
-    dailyQuizText: "5 kurze Fragen • 24 Stunden • Dein Wissen, dein Fortschritt",
+    dailyQuizText:
+      "5 kurze Fragen • 24 Stunden • Dein Wissen, dein Fortschritt",
     leaderboardEyebrow: "Monats-Champion",
     leaderboardTitle: "Monatsrangliste",
     fullRanking: "Komplette Rangliste",
     leaderboardLoading: "Regionale Rangliste wird geladen...",
     leaderboardEmpty: "In deiner Region wurden noch keine Punkte gesammelt.",
-    leaderboardNoRegion: "Füge in deinem Profil eine Region hinzu, um die Rangliste zu sehen.",
+    leaderboardNoRegion:
+      "Füge in deinem Profil eine Region hinzu, um die Rangliste zu sehen.",
     leaderboardSignIn: "Einloggen, um deine regionale Rangliste zu sehen.",
     leaderboardMember: "Mitglied",
     you: "Du",
@@ -157,16 +183,24 @@ const copy = {
     infoLabel: "Show example",
     close: "Close",
     sampleTitle: "Example question",
-    sampleQuestion: "Which combination will matter most for the quiz leaderboard?",
-    sampleOptions: ["Only the number of read articles", "Correct answers plus speed", "Only training minutes"],
-    sampleNote: "The real quiz logic with timer, scoring, and anti-cheat runs through the protected Cloud Function.",
+    sampleQuestion:
+      "Which combination will matter most for the quiz leaderboard?",
+    sampleOptions: [
+      "Only the number of read articles",
+      "Correct answers plus speed",
+      "Only training minutes",
+    ],
+    sampleNote:
+      "The real quiz logic with timer, scoring, and anti-cheat runs through the protected Cloud Function.",
     loading: "Loading quiz...",
-    empty: "No published Firestore quiz is available yet. Add a document in quizzes and it will appear here automatically.",
+    empty:
+      "No published Firestore quiz is available yet. Add a document in quizzes and it will appear here automatically.",
     loadError: "The quiz could not be loaded.",
     signIn: "Sign in to submit",
     start: "Start quiz",
     startTitle: "Are you ready?",
-    startDescription: "The timer starts only when you click Start. You get 5 questions today and have 30 seconds for each question.",
+    startDescription:
+      "The timer starts only when you click Start. You get 5 questions today and have 30 seconds for each question.",
     back: "Back",
     next: "Next",
     done: "Done",
@@ -180,7 +214,8 @@ const copy = {
     correct: "{correct}/{total} correct",
     speedBonus: "+{bonus} speed bonus",
     completedTitle: "Congratulations, you completed the test!",
-    completedText: "Your answers have been saved. Review what you selected and compare it with the correct answers.",
+    completedText:
+      "Your answers have been saved. Review what you selected and compare it with the correct answers.",
     reviewTitle: "Review your answers",
     homeCta: "Go to homepage",
     yourAnswer: "Your answer",
@@ -191,7 +226,8 @@ const copy = {
     heroEyebrow: "Bewegesund challenges",
     heroTitleFirst: "Test your knowledge.",
     heroTitleSecond: "Become champion.",
-    heroLead: "Daily quizzes, collect points, and compete each month for the champion crown.",
+    heroLead:
+      "Daily quizzes, collect points, and compete each month for the champion crown.",
     duration: "Only takes 2 minutes",
     challengeTitle: "24h challenge",
     challengeText: "Fresh questions daily",
@@ -200,14 +236,18 @@ const copy = {
     championTitle: "Monthly champion",
     championText: "Top 3 win the crown",
     dailyTitle: "Daily 24h quiz",
-    dailyText: "Five new daily questions on nutrition, training, mental health, and prevention.",
+    dailyText:
+      "Five new daily questions on nutrition, training, mental health, and prevention.",
     knowledgeTitle: "Knowledge that sticks",
-    knowledgeText: "Your end review shows what was correct, helping you learn with each challenge.",
+    knowledgeText:
+      "Your end review shows what was correct, helping you learn with each challenge.",
     monthlyTitle: "Monthly champion",
-    monthlyText: "The best three profiles receive an exclusive monthly crown next to their name.",
+    monthlyText:
+      "The best three profiles receive an exclusive monthly crown next to their name.",
     today: "Today",
     dailyQuizTitle: "Daily health quiz",
-    dailyQuizText: "5 quick questions • 24 hours • Your knowledge, your progress",
+    dailyQuizText:
+      "5 quick questions • 24 hours • Your knowledge, your progress",
     leaderboardEyebrow: "Monthly champion",
     leaderboardTitle: "Monthly leaderboard",
     fullRanking: "Full ranking",
@@ -224,7 +264,6 @@ const copy = {
   },
 } as const;
 
-const DAILY_QUESTION_COUNT = 5;
 const DEFAULT_QUESTION_SECONDS = 30;
 const MIN_QUESTION_SECONDS = 30;
 
@@ -242,64 +281,45 @@ function isActiveQuiz(quiz: PublicQuiz, locale: string, now: Date) {
   const availableFrom = dateFrom(quiz.availableFrom);
   const availableUntil = dateFrom(quiz.availableUntil);
 
-  return quiz.status === "published"
-    && (!quiz.locale || quiz.locale === locale)
-    && (!availableFrom || availableFrom.getTime() <= now.getTime())
-    && (!availableUntil || availableUntil.getTime() >= now.getTime())
-    && quiz.questions.length > 0;
+  return (
+    quiz.status === "published" &&
+    (!quiz.locale || quiz.locale === locale) &&
+    (!availableFrom || availableFrom.getTime() <= now.getTime()) &&
+    (!availableUntil || availableUntil.getTime() >= now.getTime()) &&
+    quiz.questions.length > 0
+  );
 }
 
-function berlinDateKey(date = new Date()) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Berlin",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(date);
-  const year = parts.find((part) => part.type === "year")?.value;
-  const month = parts.find((part) => part.type === "month")?.value;
-  const day = parts.find((part) => part.type === "day")?.value;
-
-  return `${year}-${month}-${day}`;
-}
-
-function stableHash(value: string) {
-  let hash = 0;
-
-  for (let index = 0; index < value.length; index += 1) {
-    hash = Math.imul(31, hash) + value.charCodeAt(index);
-    hash |= 0;
-  }
-
-  return hash >>> 0;
-}
-
-function dailyQuestions(questions: PublicQuizQuestion[], dateKey: string) {
-  return [...questions]
-    .sort((left, right) => stableHash(`${dateKey}:${left.id}`) - stableHash(`${dateKey}:${right.id}`))
-    .slice(0, DAILY_QUESTION_COUNT);
-}
-
-function normalizeQuiz(id: string, data: Record<string, unknown>): PublicQuiz | null {
+function normalizeQuiz(
+  id: string,
+  data: Record<string, unknown>,
+): PublicQuiz | null {
   const questions = Array.isArray(data.questions)
-    ? data.questions.map((question) => {
-        if (!question || typeof question !== "object") return null;
-        const questionData = question as Record<string, unknown>;
-        const options = Array.isArray(questionData.options)
-          ? questionData.options.map((option) => {
-              if (!option || typeof option !== "object") return null;
-              const optionData = option as Record<string, unknown>;
+    ? data.questions
+        .map((question) => {
+          if (!question || typeof question !== "object") return null;
+          const questionData = question as Record<string, unknown>;
+          const options = Array.isArray(questionData.options)
+            ? questionData.options
+                .map((option) => {
+                  if (!option || typeof option !== "object") return null;
+                  const optionData = option as Record<string, unknown>;
 
-              return typeof optionData.id === "string" && typeof optionData.label === "string"
-                ? { id: optionData.id, label: optionData.label }
-                : null;
-            }).filter((option): option is PublicQuizOption => Boolean(option))
-          : [];
+                  return typeof optionData.id === "string" &&
+                    typeof optionData.label === "string"
+                    ? { id: optionData.id, label: optionData.label }
+                    : null;
+                })
+                .filter((option): option is PublicQuizOption => Boolean(option))
+            : [];
 
-        return typeof questionData.id === "string" && typeof questionData.prompt === "string" && options.length > 0
-          ? { id: questionData.id, prompt: questionData.prompt, options }
-          : null;
-      }).filter((question): question is PublicQuizQuestion => Boolean(question))
+          return typeof questionData.id === "string" &&
+            typeof questionData.prompt === "string" &&
+            options.length > 0
+            ? { id: questionData.id, prompt: questionData.prompt, options }
+            : null;
+        })
+        .filter((question): question is PublicQuizQuestion => Boolean(question))
     : [];
 
   if (typeof data.title !== "string" || questions.length === 0) return null;
@@ -307,12 +327,16 @@ function normalizeQuiz(id: string, data: Record<string, unknown>): PublicQuiz | 
   return {
     id,
     title: data.title,
-    description: typeof data.description === "string" ? data.description : undefined,
+    description:
+      typeof data.description === "string" ? data.description : undefined,
     locale: typeof data.locale === "string" ? data.locale : undefined,
     status: typeof data.status === "string" ? data.status : undefined,
     availableFrom: data.availableFrom as PublicQuiz["availableFrom"],
     availableUntil: data.availableUntil as PublicQuiz["availableUntil"],
-    timeLimitSeconds: typeof data.timeLimitSeconds === "number" ? data.timeLimitSeconds : undefined,
+    timeLimitSeconds:
+      typeof data.timeLimitSeconds === "number"
+        ? data.timeLimitSeconds
+        : undefined,
     questions,
   };
 }
@@ -359,10 +383,17 @@ export default function QuizClient({
   const questionStartedAtRef = useRef<number>(Date.now());
   const autoStartedRef = useRef(false);
   const [quizzes, setQuizzes] = useState<PublicQuiz[]>([]);
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<
+    Record<string, string>
+  >({});
   const [answeredAtMs, setAnsweredAtMs] = useState<Record<string, number>>({});
-  const [timedOutQuestions, setTimedOutQuestions] = useState<Record<string, boolean>>({});
+  const [timedOutQuestions, setTimedOutQuestions] = useState<
+    Record<string, boolean>
+  >({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [activeQuestions, setActiveQuestions] = useState<PublicQuizQuestion[]>(
+    [],
+  );
   const [timeLeft, setTimeLeft] = useState(DEFAULT_QUESTION_SECONDS);
   const [hasStarted, setHasStarted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -412,7 +443,14 @@ export default function QuizClient({
     }
 
     const entriesQuery = query(
-      collection(db, "leaderboards", "monthly", "regions", profile.regionKey, "entries"),
+      collection(
+        db,
+        "leaderboards",
+        "monthly",
+        "regions",
+        profile.regionKey,
+        "entries",
+      ),
       orderBy("score", "desc"),
       limit(3),
     );
@@ -422,13 +460,18 @@ export default function QuizClient({
       (snapshot) => {
         const entries = snapshot.docs.map((document) => {
           const data = document.data();
-          const displayName = typeof data.displayName === "string" && data.displayName.trim()
-            ? data.displayName.trim()
-            : labels.leaderboardMember;
-          const regionKey = typeof data.regionKey === "string" && data.regionKey.trim()
-            ? data.regionKey
-            : profile.regionKey ?? "";
-          const score = typeof data.score === "number" && Number.isFinite(data.score) ? data.score : 0;
+          const displayName =
+            typeof data.displayName === "string" && data.displayName.trim()
+              ? data.displayName.trim()
+              : labels.leaderboardMember;
+          const regionKey =
+            typeof data.regionKey === "string" && data.regionKey.trim()
+              ? data.regionKey
+              : (profile.regionKey ?? "");
+          const score =
+            typeof data.score === "number" && Number.isFinite(data.score)
+              ? data.score
+              : 0;
 
           return {
             userId: document.id,
@@ -447,35 +490,52 @@ export default function QuizClient({
   }, [labels.leaderboardMember, profile?.regionKey, user]);
 
   const activeQuiz = quizzes[0] ?? null;
-  const quizDay = useMemo(() => berlinDateKey(), []);
-  const activeQuestions = useMemo(() => (
-    activeQuiz ? dailyQuestions(activeQuiz.questions, quizDay) : []
-  ), [activeQuiz, quizDay]);
   const currentQuestion = activeQuestions[currentQuestionIndex] ?? null;
-  const questionSeconds = activeQuiz?.timeLimitSeconds && Number.isFinite(activeQuiz.timeLimitSeconds)
-    ? Math.max(MIN_QUESTION_SECONDS, Math.round(activeQuiz.timeLimitSeconds))
-    : DEFAULT_QUESTION_SECONDS;
-  const currentQuestionAnswered = currentQuestion ? Boolean(selectedAnswers[currentQuestion.id]) : false;
-  const currentQuestionTimedOut = currentQuestion ? Boolean(timedOutQuestions[currentQuestion.id]) : false;
+  const questionSeconds =
+    activeQuiz?.timeLimitSeconds && Number.isFinite(activeQuiz.timeLimitSeconds)
+      ? Math.max(MIN_QUESTION_SECONDS, Math.round(activeQuiz.timeLimitSeconds))
+      : DEFAULT_QUESTION_SECONDS;
+  const currentQuestionAnswered = currentQuestion
+    ? Boolean(selectedAnswers[currentQuestion.id])
+    : false;
+  const currentQuestionTimedOut = currentQuestion
+    ? Boolean(timedOutQuestions[currentQuestion.id])
+    : false;
   const canMoveForward = currentQuestionAnswered || currentQuestionTimedOut;
   const isLastQuestion = currentQuestionIndex >= activeQuestions.length - 1;
   const regionKey = profile?.regionKey ?? null;
-  const leaderboardEntries = regionKey === leaderboardState.regionKey ? leaderboardState.entries : [];
-  const leaderboardLoading = Boolean(user && regionKey && regionKey !== leaderboardState.regionKey);
-  const numberFormatter = useMemo(() => new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }), [locale]);
-  const monthlyScore = typeof profile?.monthlyScore === "number" ? profile.monthlyScore : 0;
-  const displayName = profile?.firstName || profile?.displayName || user?.displayName || labels.leaderboardMember;
-  const leaderboardWithCurrentUser = user && regionKey && !leaderboardEntries.some((entry) => entry.userId === user.uid)
-    ? [
-      ...leaderboardEntries,
-      {
-        userId: user.uid,
-        displayName,
-        regionKey,
-        score: monthlyScore,
-      },
-    ].sort((left, right) => right.score - left.score).slice(0, 3)
-    : leaderboardEntries;
+  const leaderboardEntries =
+    regionKey === leaderboardState.regionKey ? leaderboardState.entries : [];
+  const leaderboardLoading = Boolean(
+    user && regionKey && regionKey !== leaderboardState.regionKey,
+  );
+  const numberFormatter = useMemo(
+    () => new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }),
+    [locale],
+  );
+  const monthlyScore =
+    typeof profile?.monthlyScore === "number" ? profile.monthlyScore : 0;
+  const displayName =
+    profile?.firstName ||
+    profile?.displayName ||
+    user?.displayName ||
+    labels.leaderboardMember;
+  const leaderboardWithCurrentUser =
+    user &&
+    regionKey &&
+    !leaderboardEntries.some((entry) => entry.userId === user.uid)
+      ? [
+          ...leaderboardEntries,
+          {
+            userId: user.uid,
+            displayName,
+            regionKey,
+            score: monthlyScore,
+          },
+        ]
+          .sort((left, right) => right.score - left.score)
+          .slice(0, 3)
+      : leaderboardEntries;
 
   useEffect(() => {
     setCurrentQuestionIndex(0);
@@ -486,7 +546,18 @@ export default function QuizClient({
     setHasStarted(false);
     setIsStartDialogOpen(false);
     setResult(null);
-  }, [activeQuiz?.id, quizDay]);
+    setActiveQuestions(
+      activeQuiz
+        ? selectRandomQuizQuestions(
+            activeQuiz.questions,
+            `quiz-recent-sets:${activeQuiz.id}:${user?.uid ?? "guest"}`,
+            {
+              count: DEFAULT_QUIZ_QUESTION_COUNT,
+            },
+          )
+        : [],
+    );
+  }, [activeQuiz, user?.uid]);
 
   useEffect(() => {
     questionStartedAtRef.current = Date.now();
@@ -494,16 +565,28 @@ export default function QuizClient({
   }, [currentQuestion?.id, questionSeconds]);
 
   useEffect(() => {
-    if (!hasStarted || !currentQuestion || result || currentQuestionAnswered || currentQuestionTimedOut) return undefined;
+    if (
+      !hasStarted ||
+      !currentQuestion ||
+      result ||
+      currentQuestionAnswered ||
+      currentQuestionTimedOut
+    )
+      return undefined;
 
     const timer = window.setInterval(() => {
       setTimeLeft((current) => {
         if (current <= 1) {
           window.clearInterval(timer);
-          setTimedOutQuestions((questions) => ({ ...questions, [currentQuestion.id]: true }));
-          setAnsweredAtMs((answers) => (
-            answers[currentQuestion.id] ? answers : { ...answers, [currentQuestion.id]: questionSeconds * 1000 }
-          ));
+          setTimedOutQuestions((questions) => ({
+            ...questions,
+            [currentQuestion.id]: true,
+          }));
+          setAnsweredAtMs((answers) =>
+            answers[currentQuestion.id]
+              ? answers
+              : { ...answers, [currentQuestion.id]: questionSeconds * 1000 },
+          );
           return 0;
         }
 
@@ -512,7 +595,14 @@ export default function QuizClient({
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [currentQuestion, currentQuestionAnswered, currentQuestionTimedOut, hasStarted, questionSeconds, result]);
+  }, [
+    currentQuestion,
+    currentQuestionAnswered,
+    currentQuestionTimedOut,
+    hasStarted,
+    questionSeconds,
+    result,
+  ]);
 
   const startQuizRound = useCallback(() => {
     startedAtRef.current = Date.now();
@@ -521,12 +611,24 @@ export default function QuizClient({
     setIsStartDialogOpen(false);
     setHasStarted(true);
     window.requestAnimationFrame(() => {
-      quizPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      quizPanelRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     });
   }, [questionSeconds]);
 
   useEffect(() => {
-    if (!gameMode || !autoStart || autoStartedRef.current || authLoading || loading || !activeQuiz || hasStarted || result) {
+    if (
+      !gameMode ||
+      !autoStart ||
+      autoStartedRef.current ||
+      authLoading ||
+      loading ||
+      !activeQuiz ||
+      hasStarted ||
+      result
+    ) {
       return;
     }
 
@@ -537,7 +639,18 @@ export default function QuizClient({
 
     autoStartedRef.current = true;
     startQuizRound();
-  }, [activeQuiz, authLoading, autoStart, gameMode, hasStarted, loading, openAuth, result, startQuizRound, user]);
+  }, [
+    activeQuiz,
+    authLoading,
+    autoStart,
+    gameMode,
+    hasStarted,
+    loading,
+    openAuth,
+    result,
+    startQuizRound,
+    user,
+  ]);
 
   useEffect(() => {
     if (!isGamePopupOpen) return undefined;
@@ -580,13 +693,19 @@ export default function QuizClient({
   };
 
   const handleSelect = (questionId: string, optionId: string) => {
-    if (timedOutQuestions[questionId] || selectedAnswers[questionId] || result) return;
+    if (timedOutQuestions[questionId] || selectedAnswers[questionId] || result)
+      return;
 
     setSubmitError(null);
     setSelectedAnswers((current) => ({ ...current, [questionId]: optionId }));
-    setAnsweredAtMs((current) => (
-      current[questionId] ? current : { ...current, [questionId]: Date.now() - questionStartedAtRef.current }
-    ));
+    setAnsweredAtMs((current) =>
+      current[questionId]
+        ? current
+        : {
+            ...current,
+            [questionId]: Date.now() - questionStartedAtRef.current,
+          },
+    );
   };
 
   const handleNext = () => {
@@ -597,7 +716,9 @@ export default function QuizClient({
       return;
     }
 
-    setCurrentQuestionIndex((current) => Math.min(current + 1, activeQuestions.length - 1));
+    setCurrentQuestionIndex((current) =>
+      Math.min(current + 1, activeQuestions.length - 1),
+    );
   };
 
   const handlePrevious = () => {
@@ -621,7 +742,11 @@ export default function QuizClient({
           quizId: string;
           durationMs: number;
           completedAt: string;
-          answers: Array<{ questionId: string; optionId: string | null; answeredAtMs?: number }>;
+          answers: Array<{
+            questionId: string;
+            optionId: string | null;
+            answeredAtMs?: number;
+          }>;
         },
         QuizResult
       >(functions, "submitQuizAttempt");
@@ -644,9 +769,10 @@ export default function QuizClient({
     }
   };
 
-  const getOptionLabel = (question: PublicQuizQuestion, optionId: string | null | undefined) => (
-    question.options.find((option) => option.id === optionId)?.label ?? "-"
-  );
+  const getOptionLabel = (
+    question: PublicQuizQuestion,
+    optionId: string | null | undefined,
+  ) => question.options.find((option) => option.id === optionId)?.label ?? "-";
 
   return (
     <>
@@ -664,7 +790,12 @@ export default function QuizClient({
               </h1>
               <p>{labels.heroLead}</p>
               <div className={styles.heroActions}>
-                <button type="button" className={styles.primaryLink} onClick={handleOpenStart} disabled={authLoading || loading || !activeQuiz}>
+                <button
+                  type="button"
+                  className={styles.primaryLink}
+                  onClick={handleOpenStart}
+                  disabled={authLoading || loading || !activeQuiz}
+                >
                   <Target size={17} />
                   {labels.start}
                   <ArrowRight size={17} />
@@ -677,23 +808,38 @@ export default function QuizClient({
             </div>
 
             <div className={styles.heroVisual} aria-hidden="true">
-              <Image src="/quiz-hero-challenge.png" alt="" fill priority sizes="(max-width: 900px) 100vw, 46vw" />
+              <Image
+                src="/quiz-hero-challenge.png"
+                alt=""
+                fill
+                priority
+                sizes="(max-width: 900px) 100vw, 46vw"
+              />
             </div>
 
             <div className={styles.heroCard} aria-hidden="true">
-              <div className={styles.heroCardIcon}><Clock3 size={27} /></div>
+              <div className={styles.heroCardIcon}>
+                <Clock3 size={27} />
+              </div>
               <strong>{labels.challengeTitle}</strong>
               <span>{labels.challengeText}</span>
-              <div className={styles.heroCardIcon}><Target size={27} /></div>
+              <div className={styles.heroCardIcon}>
+                <Target size={27} />
+              </div>
               <strong>{labels.pointsTitle}</strong>
               <span>{labels.pointsText}</span>
-              <div className={styles.heroCardIcon}><Crown size={28} /></div>
+              <div className={styles.heroCardIcon}>
+                <Crown size={28} />
+              </div>
               <strong>{labels.championTitle}</strong>
               <span>{labels.championText}</span>
             </div>
           </section>
 
-          <section className={styles.featureGrid} aria-label={labels.heroEyebrow}>
+          <section
+            className={styles.featureGrid}
+            aria-label={labels.heroEyebrow}
+          >
             <article className={styles.featureCard}>
               <Clock3 size={40} />
               <div>
@@ -720,297 +866,458 @@ export default function QuizClient({
       ) : null}
 
       <div className={gameMode ? styles.gameModeShell : styles.challengeGrid}>
-        <section ref={quizPanelRef} className={styles.liveQuizPanel} aria-live="polite">
-      {!gameMode ? (
-        <div className={styles.sectionHeader}>
-          <div>
-            <p className={styles.todayBadge}>{labels.today}</p>
-            <h2 className={styles.quizTitle}>{activeQuiz?.title ?? labels.dailyQuizTitle}</h2>
-            <p className={styles.quizLead}>{activeQuiz?.description ?? labels.dailyQuizText}</p>
-          </div>
-          <div className={styles.quizHeaderActions}>
-            <span aria-hidden="true"><Shield size={18} /></span>
-            <span aria-hidden="true"><Clock3 size={18} /></span>
-            <span aria-hidden="true"><BriefcaseBusiness size={18} /></span>
-            <button
-              type="button"
-              className={styles.quizInfoButton}
-              onClick={() => setIsExampleOpen(true)}
-              aria-label={labels.infoLabel}
-            >
-              <Info size={18} />
-            </button>
-            {loading ? <Loader2 className={styles.spinIcon} size={24} /> : <Lock size={24} />}
-          </div>
-        </div>
-      ) : null}
+        <section
+          ref={quizPanelRef}
+          className={styles.liveQuizPanel}
+          aria-live="polite"
+        >
+          {!gameMode ? (
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.todayBadge}>{labels.today}</p>
+                <h2 className={styles.quizTitle}>
+                  {activeQuiz?.title ?? labels.dailyQuizTitle}
+                </h2>
+                <p className={styles.quizLead}>
+                  {activeQuiz?.description ?? labels.dailyQuizText}
+                </p>
+              </div>
+              <div className={styles.quizHeaderActions}>
+                <span aria-hidden="true">
+                  <Shield size={18} />
+                </span>
+                <span aria-hidden="true">
+                  <Clock3 size={18} />
+                </span>
+                <span aria-hidden="true">
+                  <BriefcaseBusiness size={18} />
+                </span>
+                <button
+                  type="button"
+                  className={styles.quizInfoButton}
+                  onClick={() => setIsExampleOpen(true)}
+                  aria-label={labels.infoLabel}
+                >
+                  <Info size={18} />
+                </button>
+                {loading ? (
+                  <Loader2 className={styles.spinIcon} size={24} />
+                ) : (
+                  <Lock size={24} />
+                )}
+              </div>
+            </div>
+          ) : null}
 
-      {loading ? <p className={styles.quizState}>{labels.loading}</p> : null}
-      {!loading && !activeQuiz ? <p className={styles.quizState}>{loadError ?? labels.empty}</p> : null}
+          {loading ? (
+            <p className={styles.quizState}>{labels.loading}</p>
+          ) : null}
+          {!loading && !activeQuiz ? (
+            <p className={styles.quizState}>{loadError ?? labels.empty}</p>
+          ) : null}
 
-      {activeQuiz ? (
-        <div className={styles.liveQuizBody}>
-          {!result && !hasStarted ? (
-            <div className={gameMode ? styles.inlineStartPanel : ""}>
-              {gameMode ? (
-                <div>
-                  <h3 className={styles.startDialogTitle}>{labels.startTitle}</h3>
-                  <p className={styles.startDialogText}>{labels.startDescription}</p>
+          {activeQuiz ? (
+            <div className={styles.liveQuizBody}>
+              {!result && !hasStarted ? (
+                <div className={gameMode ? styles.inlineStartPanel : ""}>
+                  {gameMode ? (
+                    <div>
+                      <h3 className={styles.startDialogTitle}>
+                        {labels.startTitle}
+                      </h3>
+                      <p className={styles.startDialogText}>
+                        {labels.startDescription}
+                      </p>
+                    </div>
+                  ) : null}
+                  <button
+                    type="button"
+                    className={`${styles.submitQuizButton} ${styles.quizStartButton}`}
+                    disabled={authLoading}
+                    onClick={handleOpenStart}
+                  >
+                    <Clock3 size={16} />
+                    {labels.start}
+                  </button>
                 </div>
               ) : null}
-              <button
-                type="button"
-                className={`${styles.submitQuizButton} ${styles.quizStartButton}`}
-                disabled={authLoading}
-                onClick={handleOpenStart}
-              >
-                <Clock3 size={16} />
-                {labels.start}
-              </button>
-            </div>
-          ) : null}
 
-          {!result && hasStarted && currentQuestion ? (
-            <div className={styles.dailyQuestionShell}>
-              <div className={styles.dailyQuizMeta}>
-                <span>
-                  {formatTemplate(labels.progress, {
-                    current: currentQuestionIndex + 1,
-                    total: activeQuestions.length,
-                  })}
-                </span>
-                <span className={currentQuestionTimedOut ? styles.timerExpired : styles.timerPill}>
-                  <Clock3 size={15} />
-                  {currentQuestionTimedOut
-                    ? labels.timeUp
-                    : formatTemplate(labels.secondsLeft, { seconds: timeLeft })}
-                </span>
-              </div>
-              <div className={styles.quizProgressTrack} aria-hidden="true">
-                <span
-                  style={{
-                    width: `${((currentQuestionIndex + (canMoveForward ? 1 : 0.15)) / Math.max(activeQuestions.length, 1)) * 100}%`,
-                  }}
-                />
-              </div>
-
-              <section className={styles.liveQuestion} aria-labelledby={`quiz-question-${currentQuestion.id}`}>
-                <div className={styles.questionPromptRow}>
-                  <div className={styles.questionIcon} aria-hidden="true">
-                    <Leaf size={38} />
-                  </div>
-                  <h3 id={`quiz-question-${currentQuestion.id}`}>{currentQuestion.prompt}</h3>
-                </div>
-                <div className={styles.liveOptions}>
-                  {currentQuestion.options.map((option) => {
-                    const selected = selectedAnswers[currentQuestion.id] === option.id;
-                    const optionClassName = [
-                      selected ? styles.liveOptionActive : styles.liveOption,
-                    ].filter(Boolean).join(" ");
-
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        className={optionClassName}
-                        onClick={() => void handleSelect(currentQuestion.id, option.id)}
-                        disabled={currentQuestionAnswered || currentQuestionTimedOut || Boolean(result)}
-                      >
-                        <span className={styles.optionMarker} aria-hidden="true">
-                          {selected ? <Check size={17} /> : null}
-                        </span>
-                        {option.label}
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className={styles.quizQuestionActions}>
-                  <button
-                    type="button"
-                    className={styles.previousQuizButton}
-                    disabled={currentQuestionIndex === 0 || submitting}
-                    onClick={handlePrevious}
-                  >
-                    <ArrowLeft size={18} />
-                    {labels.back}
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.submitQuizButton}
-                    disabled={!canMoveForward || submitting}
-                    onClick={handleNext}
-                  >
-                    {isLastQuestion ? (user ? labels.done : labels.signIn) : labels.next}
-                    {submitting ? <Loader2 className={styles.spinIcon} size={16} /> : isLastQuestion ? <Send size={16} /> : <ArrowRight size={18} />}
-                  </button>
-                </div>
-              </section>
-
-              <div className={styles.quizStepper} aria-label={formatTemplate(labels.progress, {
-                current: currentQuestionIndex + 1,
-                total: activeQuestions.length,
-              })}
-              >
-                {activeQuestions.map((question, index) => {
-                  const isAnswered = Boolean(selectedAnswers[question.id]) || Boolean(timedOutQuestions[question.id]);
-                  const isCurrent = index === currentQuestionIndex;
-
-                  return (
-                    <span
-                      key={question.id}
-                      className={`${styles.quizStep} ${isCurrent ? styles.quizStepCurrent : ""} ${isAnswered ? styles.quizStepDone : ""}`}
-                    >
-                      <span className={styles.quizStepDot}>
-                        {isAnswered && !isCurrent ? <Check size={13} /> : index + 1}
-                      </span>
-                      <span className={styles.quizStepLabel}>{formatTemplate(labels.progress, {
-                        current: index + 1,
+              {!result && hasStarted && currentQuestion ? (
+                <div className={styles.dailyQuestionShell}>
+                  <div className={styles.dailyQuizMeta}>
+                    <span>
+                      {formatTemplate(labels.progress, {
+                        current: currentQuestionIndex + 1,
                         total: activeQuestions.length,
-                      }).replace(`/${activeQuestions.length}`, "")}</span>
+                      })}
                     </span>
-                  );
-                })}
-              </div>
+                    <span
+                      className={
+                        currentQuestionTimedOut
+                          ? styles.timerExpired
+                          : styles.timerPill
+                      }
+                    >
+                      <Clock3 size={15} />
+                      {currentQuestionTimedOut
+                        ? labels.timeUp
+                        : formatTemplate(labels.secondsLeft, {
+                            seconds: timeLeft,
+                          })}
+                    </span>
+                  </div>
+                  <div className={styles.quizProgressTrack} aria-hidden="true">
+                    <span
+                      style={{
+                        width: `${((currentQuestionIndex + (canMoveForward ? 1 : 0.15)) / Math.max(activeQuestions.length, 1)) * 100}%`,
+                      }}
+                    />
+                  </div>
+
+                  <section
+                    className={styles.liveQuestion}
+                    aria-labelledby={`quiz-question-${currentQuestion.id}`}
+                  >
+                    <div className={styles.questionPromptRow}>
+                      <div className={styles.questionIcon} aria-hidden="true">
+                        <Leaf size={38} />
+                      </div>
+                      <h3 id={`quiz-question-${currentQuestion.id}`}>
+                        {currentQuestion.prompt}
+                      </h3>
+                    </div>
+                    <div className={styles.liveOptions}>
+                      {currentQuestion.options.map((option) => {
+                        const selected =
+                          selectedAnswers[currentQuestion.id] === option.id;
+                        const optionClassName = [
+                          selected
+                            ? styles.liveOptionActive
+                            : styles.liveOption,
+                        ]
+                          .filter(Boolean)
+                          .join(" ");
+
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            className={optionClassName}
+                            onClick={() =>
+                              void handleSelect(currentQuestion.id, option.id)
+                            }
+                            disabled={
+                              currentQuestionAnswered ||
+                              currentQuestionTimedOut ||
+                              Boolean(result)
+                            }
+                          >
+                            <span
+                              className={styles.optionMarker}
+                              aria-hidden="true"
+                            >
+                              {selected ? <Check size={17} /> : null}
+                            </span>
+                            {option.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className={styles.quizQuestionActions}>
+                      <button
+                        type="button"
+                        className={styles.previousQuizButton}
+                        disabled={currentQuestionIndex === 0 || submitting}
+                        onClick={handlePrevious}
+                      >
+                        <ArrowLeft size={18} />
+                        {labels.back}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.submitQuizButton}
+                        disabled={!canMoveForward || submitting}
+                        onClick={handleNext}
+                      >
+                        {isLastQuestion
+                          ? user
+                            ? labels.done
+                            : labels.signIn
+                          : labels.next}
+                        {submitting ? (
+                          <Loader2 className={styles.spinIcon} size={16} />
+                        ) : isLastQuestion ? (
+                          <Send size={16} />
+                        ) : (
+                          <ArrowRight size={18} />
+                        )}
+                      </button>
+                    </div>
+                  </section>
+
+                  <div
+                    className={styles.quizStepper}
+                    aria-label={formatTemplate(labels.progress, {
+                      current: currentQuestionIndex + 1,
+                      total: activeQuestions.length,
+                    })}
+                  >
+                    {activeQuestions.map((question, index) => {
+                      const isAnswered =
+                        Boolean(selectedAnswers[question.id]) ||
+                        Boolean(timedOutQuestions[question.id]);
+                      const isCurrent = index === currentQuestionIndex;
+
+                      return (
+                        <span
+                          key={question.id}
+                          className={`${styles.quizStep} ${isCurrent ? styles.quizStepCurrent : ""} ${isAnswered ? styles.quizStepDone : ""}`}
+                        >
+                          <span className={styles.quizStepDot}>
+                            {isAnswered && !isCurrent ? (
+                              <Check size={13} />
+                            ) : (
+                              index + 1
+                            )}
+                          </span>
+                          <span className={styles.quizStepLabel}>
+                            {formatTemplate(labels.progress, {
+                              current: index + 1,
+                              total: activeQuestions.length,
+                            }).replace(`/${activeQuestions.length}`, "")}
+                          </span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+
+              {result ? (
+                <section
+                  className={styles.completionPanel}
+                  aria-labelledby="quiz-completed-title"
+                >
+                  <div className={styles.completionHero}>
+                    <div className={styles.completionIcon} aria-hidden="true">
+                      <CheckCircle2 size={34} />
+                    </div>
+                    <div>
+                      <p>
+                        {result.alreadySubmitted
+                          ? labels.alreadySubmitted
+                          : labels.submitted}
+                      </p>
+                      <h3 id="quiz-completed-title">{labels.completedTitle}</h3>
+                      <span>{labels.completedText}</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.quizResult}>
+                    <span>
+                      {formatTemplate(labels.score, {
+                        score: result.score ?? 0,
+                      })}
+                    </span>
+                    <span>
+                      {formatTemplate(labels.correct, {
+                        correct: result.correctCount ?? 0,
+                        total: result.totalQuestions ?? activeQuestions.length,
+                      })}
+                    </span>
+                    <span>
+                      {formatTemplate(labels.speedBonus, {
+                        bonus: result.speedBonus ?? 0,
+                      })}
+                    </span>
+                  </div>
+
+                  <div className={styles.completionActions}>
+                    <Link href={`/${locale}`} className={styles.homeButton}>
+                      {labels.homeCta}
+                      <ArrowRight size={18} />
+                    </Link>
+                  </div>
+
+                  <div>
+                    <h3 className={styles.answerReviewTitle}>
+                      {labels.reviewTitle}
+                    </h3>
+                    <div className={styles.answerReviewList}>
+                      {(result.answers?.length && activeQuiz
+                        ? result.answers
+                            .map((answer) =>
+                              activeQuiz.questions.find(
+                                (question) => question.id === answer.questionId,
+                              ),
+                            )
+                            .filter(
+                              (question): question is PublicQuizQuestion =>
+                                Boolean(question),
+                            )
+                        : activeQuestions
+                      ).map((question) => {
+                        const answer = result.answers?.find(
+                          (item) => item.questionId === question.id,
+                        );
+
+                        return (
+                          <article
+                            key={question.id}
+                            className={styles.answerReviewCard}
+                          >
+                            <div className={styles.answerReviewHeader}>
+                              <h4>{question.prompt}</h4>
+                              <span
+                                className={
+                                  answer?.correct
+                                    ? styles.answerCorrectBadge
+                                    : styles.answerWrongBadge
+                                }
+                              >
+                                {answer?.correct
+                                  ? labels.correctBadge
+                                  : labels.wrongBadge}
+                              </span>
+                            </div>
+                            <p>
+                              <strong>{labels.yourAnswer}:</strong>{" "}
+                              {getOptionLabel(question, answer?.optionId)}
+                            </p>
+                            <p>
+                              <strong>{labels.correctAnswer}:</strong>{" "}
+                              {getOptionLabel(
+                                question,
+                                answer?.correctOptionId,
+                              )}
+                            </p>
+                          </article>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
+              ) : null}
+
+              {submitError ? (
+                <p className={styles.quizError}>{submitError}</p>
+              ) : null}
             </div>
           ) : null}
-
-          {result ? (
-            <section className={styles.completionPanel} aria-labelledby="quiz-completed-title">
-              <div className={styles.completionHero}>
-                <div className={styles.completionIcon} aria-hidden="true">
-                  <CheckCircle2 size={34} />
-                </div>
-                <div>
-                  <p>{result.alreadySubmitted ? labels.alreadySubmitted : labels.submitted}</p>
-                  <h3 id="quiz-completed-title">{labels.completedTitle}</h3>
-                  <span>{labels.completedText}</span>
-                </div>
-              </div>
-
-              <div className={styles.quizResult}>
-                <span>{formatTemplate(labels.score, { score: result.score ?? 0 })}</span>
-                <span>
-                  {formatTemplate(labels.correct, {
-                    correct: result.correctCount ?? 0,
-                    total: result.totalQuestions ?? activeQuestions.length,
-                  })}
-                </span>
-                <span>{formatTemplate(labels.speedBonus, { bonus: result.speedBonus ?? 0 })}</span>
-              </div>
-
-              <div className={styles.completionActions}>
-                <Link href={`/${locale}`} className={styles.homeButton}>
-                  {labels.homeCta}
-                  <ArrowRight size={18} />
-                </Link>
-              </div>
-
-              <div>
-                <h3 className={styles.answerReviewTitle}>{labels.reviewTitle}</h3>
-              <div className={styles.answerReviewList}>
-                {activeQuestions.map((question) => {
-                  const answer = result.answers?.find((item) => item.questionId === question.id);
-
-                  return (
-                    <article key={question.id} className={styles.answerReviewCard}>
-                      <div className={styles.answerReviewHeader}>
-                        <h4>{question.prompt}</h4>
-                        <span className={answer?.correct ? styles.answerCorrectBadge : styles.answerWrongBadge}>
-                          {answer?.correct ? labels.correctBadge : labels.wrongBadge}
-                        </span>
-                      </div>
-                      <p>
-                        <strong>{labels.yourAnswer}:</strong> {getOptionLabel(question, answer?.optionId)}
-                      </p>
-                      <p>
-                        <strong>{labels.correctAnswer}:</strong> {getOptionLabel(question, answer?.correctOptionId)}
-                      </p>
-                    </article>
-                  );
-                })}
-              </div>
-              </div>
-            </section>
-          ) : null}
-
-          {submitError ? <p className={styles.quizError}>{submitError}</p> : null}
-        </div>
-      ) : null}
         </section>
 
         {!gameMode ? (
-        <aside className={styles.leaderboardPanel} aria-labelledby="monthly-ranking-title">
-          <div className={styles.leaderboardHeader}>
-            <div>
-              <p className={styles.leaderboardEyebrow}>
-                <Trophy size={15} />
-                {labels.leaderboardEyebrow}
-              </p>
-              <h2 id="monthly-ranking-title">{labels.leaderboardTitle}</h2>
-            </div>
-            <Link href={`/${locale}/profile`} className={styles.rankingButton}>
-              {labels.fullRanking}
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-
-          {!user ? <p className={styles.leaderboardState}>{labels.leaderboardSignIn}</p> : null}
-          {user && !regionKey ? <p className={styles.leaderboardState}>{labels.leaderboardNoRegion}</p> : null}
-          {leaderboardLoading ? <p className={styles.leaderboardState}>{labels.leaderboardLoading}</p> : null}
-          {user && regionKey && !leaderboardLoading && leaderboardWithCurrentUser.length === 0 ? (
-            <p className={styles.leaderboardState}>{labels.leaderboardEmpty}</p>
-          ) : null}
-          {user && regionKey && !leaderboardLoading ? leaderboardWithCurrentUser.map((player, index) => {
-            const rank = index + 1;
-
-            return (
-              <div key={player.userId} className={styles.leaderboardRow}>
-                <span className={`${styles.rank} ${styles[`rank${rank}` as "rank1" | "rank2" | "rank3"]}`}>
-                  {rank}
-                </span>
-                <span className={styles.playerAvatar}>{leaderboardInitials(player.displayName)}</span>
-                <span className={styles.player}>
-                  <strong>
-                    {player.displayName}
-                    {rank === 1 ? <Crown size={14} /> : null}
-                  </strong>
-                  <small>{player.userId === user.uid ? labels.you : readableRegion(player.regionKey)}</small>
-                </span>
-                <strong className={styles.points}>{numberFormatter.format(player.score)}</strong>
+          <aside
+            className={styles.leaderboardPanel}
+            aria-labelledby="monthly-ranking-title"
+          >
+            <div className={styles.leaderboardHeader}>
+              <div>
+                <p className={styles.leaderboardEyebrow}>
+                  <Trophy size={15} />
+                  {labels.leaderboardEyebrow}
+                </p>
+                <h2 id="monthly-ranking-title">{labels.leaderboardTitle}</h2>
               </div>
-            );
-          }) : null}
-        </aside>
+              <Link
+                href={`/${locale}/profile`}
+                className={styles.rankingButton}
+              >
+                {labels.fullRanking}
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+
+            {!user ? (
+              <p className={styles.leaderboardState}>
+                {labels.leaderboardSignIn}
+              </p>
+            ) : null}
+            {user && !regionKey ? (
+              <p className={styles.leaderboardState}>
+                {labels.leaderboardNoRegion}
+              </p>
+            ) : null}
+            {leaderboardLoading ? (
+              <p className={styles.leaderboardState}>
+                {labels.leaderboardLoading}
+              </p>
+            ) : null}
+            {user &&
+            regionKey &&
+            !leaderboardLoading &&
+            leaderboardWithCurrentUser.length === 0 ? (
+              <p className={styles.leaderboardState}>
+                {labels.leaderboardEmpty}
+              </p>
+            ) : null}
+            {user && regionKey && !leaderboardLoading
+              ? leaderboardWithCurrentUser.map((player, index) => {
+                  const rank = index + 1;
+
+                  return (
+                    <div key={player.userId} className={styles.leaderboardRow}>
+                      <span
+                        className={`${styles.rank} ${styles[`rank${rank}` as "rank1" | "rank2" | "rank3"]}`}
+                      >
+                        {rank}
+                      </span>
+                      <span className={styles.playerAvatar}>
+                        {leaderboardInitials(player.displayName)}
+                      </span>
+                      <span className={styles.player}>
+                        <strong>
+                          {player.displayName}
+                          {rank === 1 ? <Crown size={14} /> : null}
+                        </strong>
+                        <small>
+                          {player.userId === user.uid
+                            ? labels.you
+                            : readableRegion(player.regionKey)}
+                        </small>
+                      </span>
+                      <strong className={styles.points}>
+                        {numberFormatter.format(player.score)}
+                      </strong>
+                    </div>
+                  );
+                })
+              : null}
+          </aside>
         ) : null}
       </div>
 
       {!gameMode ? (
-      <section className={styles.statsRail} aria-label={labels.heroEyebrow}>
-        <div>
-          <Clock3 size={30} />
-          <strong>24h</strong>
-          <span>{labels.statTime}</span>
-        </div>
-        <div>
-          <Info size={30} />
-          <strong>5</strong>
-          <span>{labels.statQuestions}</span>
-        </div>
-        <div>
-          <Medal size={30} />
-          <strong>∞</strong>
-          <span>{labels.statKnowledge}</span>
-        </div>
-        <div>
-          <Crown size={30} />
-          <strong>1</strong>
-          <span>{labels.statChampion}</span>
-        </div>
-      </section>
+        <section className={styles.statsRail} aria-label={labels.heroEyebrow}>
+          <div>
+            <Clock3 size={30} />
+            <strong>24h</strong>
+            <span>{labels.statTime}</span>
+          </div>
+          <div>
+            <Info size={30} />
+            <strong>5</strong>
+            <span>{labels.statQuestions}</span>
+          </div>
+          <div>
+            <Medal size={30} />
+            <strong>∞</strong>
+            <span>{labels.statKnowledge}</span>
+          </div>
+          <div>
+            <Crown size={30} />
+            <strong>1</strong>
+            <span>{labels.statChampion}</span>
+          </div>
+        </section>
       ) : null}
 
       {isGamePopupOpen ? (
-        <div className={styles.gameOverlay} role="presentation" onClick={() => setIsGamePopupOpen(false)}>
+        <div
+          className={styles.gameOverlay}
+          role="presentation"
+          onClick={() => setIsGamePopupOpen(false)}
+        >
           <section
             className={styles.gameDialog}
             role="dialog"
@@ -1019,7 +1326,9 @@ export default function QuizClient({
             onClick={(event) => event.stopPropagation()}
           >
             <div className={styles.gameDialogHeader}>
-              <h2 id="quiz-game-title">{activeQuiz?.title ?? labels.dailyQuizTitle}</h2>
+              <h2 id="quiz-game-title">
+                {activeQuiz?.title ?? labels.dailyQuizTitle}
+              </h2>
               <button
                 type="button"
                 className={styles.gameCloseButton}
@@ -1035,7 +1344,11 @@ export default function QuizClient({
       ) : null}
 
       {isStartDialogOpen ? (
-        <div className={styles.exampleOverlay} role="presentation" onClick={() => setIsStartDialogOpen(false)}>
+        <div
+          className={styles.exampleOverlay}
+          role="presentation"
+          onClick={() => setIsStartDialogOpen(false)}
+        >
           <section
             className={styles.exampleDialog}
             role="dialog"
@@ -1045,8 +1358,12 @@ export default function QuizClient({
           >
             <div className={styles.exampleDialogHeader}>
               <div>
-                <h2 id="quiz-start-title" className={styles.startDialogTitle}>{labels.startTitle}</h2>
-                <p className={styles.startDialogText}>{labels.startDescription}</p>
+                <h2 id="quiz-start-title" className={styles.startDialogTitle}>
+                  {labels.startTitle}
+                </h2>
+                <p className={styles.startDialogText}>
+                  {labels.startDescription}
+                </p>
               </div>
               <button
                 type="button"
@@ -1057,7 +1374,12 @@ export default function QuizClient({
                 <X size={18} />
               </button>
             </div>
-            <button type="button" className={styles.startDialogButton} disabled={authLoading} onClick={handleStart}>
+            <button
+              type="button"
+              className={styles.startDialogButton}
+              disabled={authLoading}
+              onClick={handleStart}
+            >
               <Clock3 size={16} />
               {labels.start}
             </button>
@@ -1066,7 +1388,11 @@ export default function QuizClient({
       ) : null}
 
       {isExampleOpen ? (
-        <div className={styles.exampleOverlay} role="presentation" onClick={() => setIsExampleOpen(false)}>
+        <div
+          className={styles.exampleOverlay}
+          role="presentation"
+          onClick={() => setIsExampleOpen(false)}
+        >
           <section
             className={styles.exampleDialog}
             role="dialog"

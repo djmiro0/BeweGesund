@@ -46,7 +46,10 @@ export default function InfoPage({
       >
         <motion.header
           className={styles.hero}
-          variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}
+          variants={{
+            hidden: { opacity: 0, y: 24 },
+            visible: { opacity: 1, y: 0 },
+          }}
         >
           <p className={styles.eyebrow}>Bewegesund</p>
           <h1 className={styles.title}>{title}</h1>
@@ -74,7 +77,10 @@ export default function InfoPage({
             <motion.article
               key={section.title}
               className={styles.card}
-              variants={{ hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }}
+              variants={{
+                hidden: { opacity: 0, y: 22 },
+                visible: { opacity: 1, y: 0 },
+              }}
             >
               <h2 className={styles.cardTitle}>{section.title}</h2>
               <p className={styles.cardBody}>{section.body}</p>
@@ -84,7 +90,10 @@ export default function InfoPage({
 
         <motion.div
           className={styles.noteBlock}
-          variants={{ hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }}
+          variants={{
+            hidden: { opacity: 0, y: 22 },
+            visible: { opacity: 1, y: 0 },
+          }}
         >
           <p>{note}</p>
         </motion.div>

@@ -53,8 +53,17 @@
   color: var(--text-light);
   padding: clamp(1.25rem, 5vw, 4rem);
   background:
-    linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.78) 0%, rgba(var(--shell-bg-rgb), 0.42) 46%, transparent 100%),
-    linear-gradient(180deg, transparent 20%, rgba(var(--shell-bg-rgb), 0.72) 100%);
+    linear-gradient(
+      90deg,
+      rgba(var(--shell-bg-rgb), 0.78) 0%,
+      rgba(var(--shell-bg-rgb), 0.42) 46%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 20%,
+      rgba(var(--shell-bg-rgb), 0.72) 100%
+    );
 }
 
 .textBox {
@@ -131,7 +140,9 @@
   height: 0.55rem;
   border-radius: 999px;
   background: rgba(var(--page-base-rgb), 0.38);
-  transition: width 0.3s var(--transition), background 0.3s var(--transition);
+  transition:
+    width 0.3s var(--transition),
+    background 0.3s var(--transition);
 }
 
 .dotActive {

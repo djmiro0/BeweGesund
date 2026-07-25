@@ -21,7 +21,9 @@ const plans: MemberPackage[] = ["basic", "plus"];
 export default function PaymentRequired({ locale }: PaymentRequiredProps) {
   const t = useTranslations("paymentRequired");
   const packages = useTranslations("packages");
-  const [pendingPackage, setPendingPackage] = useState<MemberPackage | null>(null);
+  const [pendingPackage, setPendingPackage] = useState<MemberPackage | null>(
+    null,
+  );
   const [error, setError] = useState("");
 
   const openCheckout = async (memberPackage: MemberPackage) => {
@@ -44,7 +46,10 @@ export default function PaymentRequired({ locale }: PaymentRequiredProps) {
       window.location.assign(result.data.url);
     } catch (checkoutError) {
       if (process.env.NODE_ENV !== "production") {
-        console.warn("Stripe checkout could not be opened from payment gate.", checkoutError);
+        console.warn(
+          "Stripe checkout could not be opened from payment gate.",
+          checkoutError,
+        );
       }
 
       setError(t("error"));
@@ -79,7 +84,11 @@ export default function PaymentRequired({ locale }: PaymentRequiredProps) {
                 disabled={Boolean(pendingPackage)}
                 onClick={() => void openCheckout(plan)}
               >
-                {isPending ? <LoaderCircle className={styles.paymentSpinner} size={17} /> : <CreditCard size={17} />}
+                {isPending ? (
+                  <LoaderCircle className={styles.paymentSpinner} size={17} />
+                ) : (
+                  <CreditCard size={17} />
+                )}
                 {isPending ? t("processing") : t(`${plan}.action`)}
               </button>
             </article>
@@ -87,7 +96,11 @@ export default function PaymentRequired({ locale }: PaymentRequiredProps) {
         })}
       </div>
 
-      {error ? <p className={styles.paymentError} role="alert">{error}</p> : null}
+      {error ? (
+        <p className={styles.paymentError} role="alert">
+          {error}
+        </p>
+      ) : null}
       <p className={styles.paymentGateNote}>{t("note")}</p>
     </section>
   );

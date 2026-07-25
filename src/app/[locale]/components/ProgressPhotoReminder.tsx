@@ -30,10 +30,13 @@ export default function ProgressPhotoReminder() {
       ? new Date(user.metadata.creationTime).getTime()
       : Number.NaN;
     const accountAge = Date.now() - creationTime;
-    const isWithinReminderWindow = Number.isFinite(accountAge)
-      && accountAge >= 0
-      && accountAge <= REMINDER_WINDOW_DAYS * 24 * 60 * 60 * 1000;
-    const dismissedThisSession = sessionStorage.getItem(`progress-photo-reminder:${user.uid}`) === "dismissed";
+    const isWithinReminderWindow =
+      Number.isFinite(accountAge) &&
+      accountAge >= 0 &&
+      accountAge <= REMINDER_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+    const dismissedThisSession =
+      sessionStorage.getItem(`progress-photo-reminder:${user.uid}`) ===
+      "dismissed";
 
     if (!isWithinReminderWindow || dismissedThisSession) {
       setIsOpen(false);
@@ -44,11 +47,13 @@ export default function ProgressPhotoReminder() {
       doc(db, "users", user.uid, "settings", "preferences"),
       (snapshot) => {
         const progressPhotos = snapshot.exists()
-          ? snapshot.data().progressPhotos as Record<string, unknown> | undefined
+          ? (snapshot.data().progressPhotos as
+              Record<string, unknown> | undefined)
           : undefined;
         const reminderEnabled = progressPhotos?.reminderEnabled !== false;
-        const hasBeforePhoto = typeof progressPhotos?.beforeUploadedAt === "string"
-          && progressPhotos.beforeUploadedAt.length > 0;
+        const hasBeforePhoto =
+          typeof progressPhotos?.beforeUploadedAt === "string" &&
+          progressPhotos.beforeUploadedAt.length > 0;
         setIsOpen(reminderEnabled && !hasBeforePhoto);
       },
       () => setIsOpen(false),
@@ -90,13 +95,22 @@ export default function ProgressPhotoReminder() {
     setErrorMessage("");
     try {
       const uploadedAt = new Date().toISOString();
-      await uploadBytes(ref(storage, `users/${user.uid}/progress/before`), file, {
-        contentType: file.type,
-        cacheControl: "private,max-age=3600",
-      });
+      await uploadBytes(
+        ref(storage, `users/${user.uid}/progress/before`),
+        file,
+        {
+          contentType: file.type,
+          cacheControl: "private,max-age=3600",
+        },
+      );
       await setDoc(
         doc(db, "users", user.uid, "settings", "preferences"),
-        { progressPhotos: { beforeUploadedAt: uploadedAt, reminderEnabled: true } },
+        {
+          progressPhotos: {
+            beforeUploadedAt: uploadedAt,
+            reminderEnabled: true,
+          },
+        },
         { merge: true },
       );
       setIsOpen(false);
@@ -108,7 +122,10 @@ export default function ProgressPhotoReminder() {
   };
 
   return (
-    <div className={styles.overlay} data-testid="progress-photo-reminder-overlay">
+    <div
+      className={styles.overlay}
+      data-testid="progress-photo-reminder-overlay"
+    >
       <section
         className={styles.modal}
         role="dialog"
@@ -144,13 +161,25 @@ export default function ProgressPhotoReminder() {
           />
           <span>{isUploading ? t("uploading") : t("upload")}</span>
         </label>
-        <button type="button" className={styles.laterButton} onClick={dismissForSession}>
+        <button
+          type="button"
+          className={styles.laterButton}
+          onClick={dismissForSession}
+        >
           {t("later")}
         </button>
-        <button type="button" className={styles.disableButton} onClick={() => void disableReminder()}>
+        <button
+          type="button"
+          className={styles.disableButton}
+          onClick={() => void disableReminder()}
+        >
           {t("disable")}
         </button>
-        {errorMessage ? <p className={styles.error} role="alert">{errorMessage}</p> : null}
+        {errorMessage ? (
+          <p className={styles.error} role="alert">
+            {errorMessage}
+          </p>
+        ) : null}
         <p className={styles.privacy}>{t("privacy")}</p>
       </section>
     </div>

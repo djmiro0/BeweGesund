@@ -41,7 +41,12 @@ interface SettingsToggleProps {
   onChange: (checked: boolean) => void;
 }
 
-export function SettingsSection({ title, description, children, testId }: SettingsSectionProps) {
+export function SettingsSection({
+  title,
+  description,
+  children,
+  testId,
+}: SettingsSectionProps) {
   return (
     <section className={styles.sectionCard} data-testid={testId}>
       <div className={styles.sectionHeader}>
@@ -87,7 +92,15 @@ export function SettingsInput({
   );
 }
 
-export function SettingsSelect({ id, label, value, options, testId, disabled, onChange }: SettingsSelectProps) {
+export function SettingsSelect({
+  id,
+  label,
+  value,
+  options,
+  testId,
+  disabled,
+  onChange,
+}: SettingsSelectProps) {
   return (
     <label className={styles.field} htmlFor={id}>
       <span>{label}</span>
@@ -108,7 +121,14 @@ export function SettingsSelect({ id, label, value, options, testId, disabled, on
   );
 }
 
-export function SettingsToggle({ id, label, checked, testId, disabled, onChange }: SettingsToggleProps) {
+export function SettingsToggle({
+  id,
+  label,
+  checked,
+  testId,
+  disabled,
+  onChange,
+}: SettingsToggleProps) {
   return (
     <label className={styles.toggleRow} htmlFor={id}>
       <span>{label}</span>

@@ -123,7 +123,11 @@
   place-items: center;
   border-radius: 999px;
   background:
-    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.9), rgba(var(--page-olive-rgb), 0.82)),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-accent-rgb), 0.9),
+      rgba(var(--page-olive-rgb), 0.82)
+    ),
     rgba(var(--page-soft-rgb), 0.92);
   background-position: center;
   background-size: cover;
@@ -360,7 +364,11 @@
 
 .avatarPlaceholderLoading {
   background:
-    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.18), rgba(var(--page-olive-rgb), 0.18)),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-accent-rgb), 0.18),
+      rgba(var(--page-olive-rgb), 0.18)
+    ),
     rgba(var(--page-base-rgb), 0.68);
 }
 
@@ -459,7 +467,11 @@
   place-items: center;
   border-radius: 0.8rem;
   background:
-    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.12), rgba(var(--page-olive-rgb), 0.12)),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-accent-rgb), 0.12),
+      rgba(var(--page-olive-rgb), 0.12)
+    ),
     rgba(var(--page-soft-rgb), 0.72);
   background-position: center;
   background-size: cover;
@@ -806,13 +818,21 @@
   margin-top: 1.25rem;
   border: 1px solid rgba(var(--accent-strong-rgb), 0.22);
   border-radius: 1.35rem;
-  background: linear-gradient(135deg, rgba(var(--accent-strong-rgb), 0.08), rgba(var(--page-soft-rgb), 0.96));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-strong-rgb), 0.08),
+    rgba(var(--page-soft-rgb), 0.96)
+  );
   padding: clamp(1rem, 2vw, 1.35rem);
 }
 
 .passwordManagement {
   border-color: rgba(var(--page-olive-rgb), 0.24);
-  background: linear-gradient(135deg, rgba(var(--page-olive-rgb), 0.12), rgba(var(--page-soft-rgb), 0.96));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--page-olive-rgb), 0.12),
+    rgba(var(--page-soft-rgb), 0.96)
+  );
 }
 
 .accountManagementCopy {
@@ -881,7 +901,11 @@
   width: min(100%, 34rem);
   border: 1px solid rgba(var(--accent-strong-rgb), 0.25);
   border-radius: 1.6rem;
-  background: linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.99), rgba(var(--page-cream-2-rgb), 0.99));
+  background: linear-gradient(
+    180deg,
+    rgba(var(--page-soft-rgb), 0.99),
+    rgba(var(--page-cream-2-rgb), 0.99)
+  );
   padding: 1.5rem;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.34);
 }

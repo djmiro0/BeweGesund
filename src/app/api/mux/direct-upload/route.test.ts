@@ -11,9 +11,11 @@ describe("Mux direct upload route", () => {
     vi.stubEnv("MUX_TOKEN_SECRET", "token-secret");
     vi.stubEnv("MUX_ADMIN_UPLOAD_TOKEN", "");
 
-    const response = await POST(new Request("https://bewegesund.de/api/mux/direct-upload", {
-      method: "POST",
-    }));
+    const response = await POST(
+      new Request("https://bewegesund.de/api/mux/direct-upload", {
+        method: "POST",
+      }),
+    );
 
     expect(response.status).toBe(500);
   });
@@ -24,10 +26,12 @@ describe("Mux direct upload route", () => {
     vi.stubEnv("MUX_ADMIN_UPLOAD_TOKEN", "correct-token");
     const fetchSpy = vi.spyOn(globalThis, "fetch");
 
-    const response = await POST(new Request("https://bewegesund.de/api/mux/direct-upload", {
-      method: "POST",
-      headers: { Authorization: "Bearer incorrect-token" },
-    }));
+    const response = await POST(
+      new Request("https://bewegesund.de/api/mux/direct-upload", {
+        method: "POST",
+        headers: { Authorization: "Bearer incorrect-token" },
+      }),
+    );
 
     expect(response.status).toBe(403);
     expect(fetchSpy).not.toHaveBeenCalled();

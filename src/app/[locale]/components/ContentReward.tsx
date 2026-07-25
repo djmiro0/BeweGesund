@@ -9,7 +9,8 @@ import { useAuth } from "./AuthProvider";
 import styles from "./ContentReward.module.css";
 
 export type ContentRewardType = "blog" | "course" | "relaxation" | "quiz";
-export type RewardState = "LOCKED" | "AVAILABLE" | "CLAIMED" | "DAILY_LIMIT_REACHED";
+export type RewardState =
+  "LOCKED" | "AVAILABLE" | "CLAIMED" | "DAILY_LIMIT_REACHED";
 
 interface ContentProgress {
   engagementSeconds: number;
@@ -63,10 +64,14 @@ function getRewardState(progress: ContentProgress): RewardState {
   return "LOCKED";
 }
 
-function normalizeProgress(data: Record<string, unknown> | undefined): ContentProgress {
+function normalizeProgress(
+  data: Record<string, unknown> | undefined,
+): ContentProgress {
   return {
-    engagementSeconds: typeof data?.engagementSeconds === "number" ? data.engagementSeconds : 0,
-    requiredSeconds: typeof data?.requiredSeconds === "number" ? data.requiredSeconds : 0,
+    engagementSeconds:
+      typeof data?.engagementSeconds === "number" ? data.engagementSeconds : 0,
+    requiredSeconds:
+      typeof data?.requiredSeconds === "number" ? data.requiredSeconds : 0,
     completed: data?.completed === true,
     rewardAvailable: data?.rewardAvailable === true,
     rewardClaimed: data?.rewardClaimed === true,
@@ -74,7 +79,9 @@ function normalizeProgress(data: Record<string, unknown> | undefined): ContentPr
   };
 }
 
-export function useContentReward(target: Omit<ContentRewardTarget, "labels" | "points"> | null) {
+export function useContentReward(
+  target: Omit<ContentRewardTarget, "labels" | "points"> | null,
+) {
   const { user } = useAuth();
   const contentId = target?.contentId;
   const contentType = target?.contentType;
@@ -99,7 +106,11 @@ export function useContentReward(target: Omit<ContentRewardTarget, "labels" | "p
     return onSnapshot(
       doc(db, "users", user.uid, "contentProgress", contentId),
       (snapshot) => {
-        setProgress(snapshot.exists() ? normalizeProgress(snapshot.data()) : defaultProgress);
+        setProgress(
+          snapshot.exists()
+            ? normalizeProgress(snapshot.data())
+            : defaultProgress,
+        );
         setLoading(false);
       },
       () => {
@@ -109,26 +120,29 @@ export function useContentReward(target: Omit<ContentRewardTarget, "labels" | "p
     );
   }, [contentId, user]);
 
-  const updateEngagement = useCallback(async (engagementSeconds: number) => {
-    if (!user || !contentId || !contentType || engagementSeconds <= 0) return;
+  const updateEngagement = useCallback(
+    async (engagementSeconds: number) => {
+      if (!user || !contentId || !contentType || engagementSeconds <= 0) return;
 
-    const updateContentEngagement = httpsCallable<
-      {
-        contentId: string;
-        contentType: ContentRewardType;
-        engagementSeconds: number;
-        durationSeconds?: number;
-      },
-      unknown
-    >(functions, "updateContentEngagement");
+      const updateContentEngagement = httpsCallable<
+        {
+          contentId: string;
+          contentType: ContentRewardType;
+          engagementSeconds: number;
+          durationSeconds?: number;
+        },
+        unknown
+      >(functions, "updateContentEngagement");
 
-    await updateContentEngagement({
-      contentId,
-      contentType,
-      engagementSeconds,
-      durationSeconds,
-    });
-  }, [contentId, contentType, durationSeconds, user]);
+      await updateContentEngagement({
+        contentId,
+        contentType,
+        engagementSeconds,
+        durationSeconds,
+      });
+    },
+    [contentId, contentType, durationSeconds, user],
+  );
 
   const claimReward = useCallback(async () => {
     if (!user || !contentId || !contentType || claiming) return;
@@ -175,30 +189,46 @@ export function useContentReward(target: Omit<ContentRewardTarget, "labels" | "p
   };
 }
 
-export function useActiveReadingReward(target: Omit<ContentRewardTarget, "labels" | "points"> | null) {
+export function useActiveReadingReward(
+  target: Omit<ContentRewardTarget, "labels" | "points"> | null,
+) {
   const reward = useContentReward(target);
   const { isSignedIn, rewardState, updateEngagement } = reward;
   const contentId = target?.contentId;
   const idleSecondsRef = useRef(0);
 
   useEffect(() => {
-    if (!contentId || !isSignedIn || rewardState === "CLAIMED") return undefined;
+    if (!contentId || !isSignedIn || rewardState === "CLAIMED")
+      return undefined;
 
     const resetIdle = () => {
       idleSecondsRef.current = 0;
     };
-    const activityEvents = ["scroll", "click", "keydown", "touchstart", "pointermove"] as const;
-    activityEvents.forEach((eventName) => window.addEventListener(eventName, resetIdle, { passive: true }));
+    const activityEvents = [
+      "scroll",
+      "click",
+      "keydown",
+      "touchstart",
+      "pointermove",
+    ] as const;
+    activityEvents.forEach((eventName) =>
+      window.addEventListener(eventName, resetIdle, { passive: true }),
+    );
 
     const intervalId = window.setInterval(() => {
-      const isActive = document.visibilityState === "visible" && document.hasFocus() && idleSecondsRef.current < 15;
+      const isActive =
+        document.visibilityState === "visible" &&
+        document.hasFocus() &&
+        idleSecondsRef.current < 15;
       idleSecondsRef.current += 1;
       if (isActive) void updateEngagement(1).catch(() => undefined);
     }, 1000);
 
     return () => {
       window.clearInterval(intervalId);
-      activityEvents.forEach((eventName) => window.removeEventListener(eventName, resetIdle));
+      activityEvents.forEach((eventName) =>
+        window.removeEventListener(eventName, resetIdle),
+      );
     };
   }, [contentId, isSignedIn, rewardState, updateEngagement]);
 
@@ -214,7 +244,8 @@ export function usePlaybackReward(
   const contentId = target?.contentId;
 
   useEffect(() => {
-    if (!contentId || !isSignedIn || !isPlaying || rewardState === "CLAIMED") return undefined;
+    if (!contentId || !isSignedIn || !isPlaying || rewardState === "CLAIMED")
+      return undefined;
 
     const intervalId = window.setInterval(() => {
       if (document.visibilityState === "visible") {
@@ -228,25 +259,46 @@ export function usePlaybackReward(
   return reward;
 }
 
-export function ContentRewardPanel({ target }: { target: ContentRewardTarget }) {
+export function ContentRewardPanel({
+  target,
+}: {
+  target: ContentRewardTarget;
+}) {
   const { user } = useAuth();
   const reward = useContentReward(target);
-  const remainingSeconds = Math.max(0, reward.progress.requiredSeconds - reward.progress.engagementSeconds);
-  const percent = reward.progress.requiredSeconds > 0
-    ? Math.min(100, Math.round((reward.progress.engagementSeconds / reward.progress.requiredSeconds) * 100))
-    : reward.rewardState === "CLAIMED" ? 100 : 0;
+  const remainingSeconds = Math.max(
+    0,
+    reward.progress.requiredSeconds - reward.progress.engagementSeconds,
+  );
+  const percent =
+    reward.progress.requiredSeconds > 0
+      ? Math.min(
+          100,
+          Math.round(
+            (reward.progress.engagementSeconds /
+              reward.progress.requiredSeconds) *
+              100,
+          ),
+        )
+      : reward.rewardState === "CLAIMED"
+        ? 100
+        : 0;
   const message = useMemo(() => {
     if (!user) return target.labels.signIn;
     if (reward.rewardState === "CLAIMED") return target.labels.claimed;
-    if (reward.rewardState === "DAILY_LIMIT_REACHED") return target.labels.dailyLimit;
+    if (reward.rewardState === "DAILY_LIMIT_REACHED")
+      return target.labels.dailyLimit;
     if (reward.rewardState === "AVAILABLE") return target.labels.available;
-    return target.labels.locked.replace("{time}", formatRemaining(remainingSeconds)).replace("{percent}", String(percent));
+    return target.labels.locked
+      .replace("{time}", formatRemaining(remainingSeconds))
+      .replace("{percent}", String(percent));
   }, [percent, remainingSeconds, reward.rewardState, target.labels, user]);
-  const Icon = reward.rewardState === "CLAIMED"
-    ? CheckCircle2
-    : reward.rewardState === "AVAILABLE"
-      ? Trophy
-      : LockKeyhole;
+  const Icon =
+    reward.rewardState === "CLAIMED"
+      ? CheckCircle2
+      : reward.rewardState === "AVAILABLE"
+        ? Trophy
+        : LockKeyhole;
 
   return (
     <aside className={styles.rewardPanel} aria-live="polite">
@@ -258,9 +310,7 @@ export function ContentRewardPanel({ target }: { target: ContentRewardTarget }) 
         </span>
       </div>
       <p className={styles.rewardText}>
-        <Icon size={15} />
-        {" "}
-        {message}
+        <Icon size={15} /> {message}
       </p>
       <div className={styles.progressTrack} aria-hidden="true">
         <div className={styles.progressFill} style={{ width: `${percent}%` }} />
@@ -276,12 +326,18 @@ export function ContentRewardPanel({ target }: { target: ContentRewardTarget }) 
           {reward.claiming ? target.labels.claiming : target.labels.claim}
         </button>
       ) : null}
-      {reward.error ? <p className={styles.rewardText}>{target.labels.available}</p> : null}
+      {reward.error ? (
+        <p className={styles.rewardText}>{target.labels.available}</p>
+      ) : null}
     </aside>
   );
 }
 
-export function ActiveReadingReward({ target }: { target: ContentRewardTarget }) {
+export function ActiveReadingReward({
+  target,
+}: {
+  target: ContentRewardTarget;
+}) {
   useActiveReadingReward(target);
 
   return <ContentRewardPanel target={target} />;

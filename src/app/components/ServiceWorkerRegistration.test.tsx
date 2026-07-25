@@ -22,10 +22,12 @@ describe("ServiceWorkerRegistration", () => {
 
     render(<ServiceWorkerRegistration />);
 
-    await waitFor(() => expect(register).toHaveBeenCalledWith("/sw.js", {
-      scope: "/",
-      updateViaCache: "none",
-    }));
+    await waitFor(() =>
+      expect(register).toHaveBeenCalledWith("/sw.js", {
+        scope: "/",
+        updateViaCache: "none",
+      }),
+    );
   });
 
   it("does not register a service worker during development", () => {

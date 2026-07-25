@@ -1,21 +1,30 @@
 import { BLOCKS } from "@contentful/rich-text-types";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getBlogPosts, getCourses, getMeditationRelaxationItems } from "./contentful";
+import {
+  getBlogPosts,
+  getCourses,
+  getMeditationRelaxationItems,
+} from "./contentful";
 
 function mockBlogResponse(body: unknown) {
-  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-    ok: true,
-    json: async () => ({
-      items: [{
-        sys: { id: "post-1" },
-        fields: {
-          title: "Test post",
-          slug: "test-post",
-          body,
-        },
-      }],
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        items: [
+          {
+            sys: { id: "post-1" },
+            fields: {
+              title: "Test post",
+              slug: "test-post",
+              body,
+            },
+          },
+        ],
+      }),
     }),
-  }));
+  );
 }
 
 describe("Contentful blog body normalization", () => {
@@ -59,21 +68,26 @@ describe("Contentful course normalization", () => {
   it("keeps the package required by Contentful for recorded courses", async () => {
     vi.stubEnv("CONTENTFUL_SPACE_ID", "space");
     vi.stubEnv("CONTENTFUL_DELIVERY_TOKEN", "token");
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        items: [{
-          sys: { id: "meditation-video-1" },
-          fields: {
-            title: "Guided meditation",
-            slug: "guided-meditation",
-            categoryKey: "meditation-relaxation",
-            muxPlaybackId: "playback-1",
-            packageRequired: "plus",
-          },
-        }],
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          items: [
+            {
+              sys: { id: "meditation-video-1" },
+              fields: {
+                title: "Guided meditation",
+                slug: "guided-meditation",
+                categoryKey: "meditation-relaxation",
+                muxPlaybackId: "playback-1",
+                packageRequired: "plus",
+              },
+            },
+          ],
+        }),
       }),
-    }));
+    );
 
     const courses = await getCourses("en");
     const course = courses.find((item) => item.slug === "guided-meditation");
@@ -91,22 +105,27 @@ describe("Contentful meditation and relaxation normalization", () => {
   it("maps the dedicated meditation and relaxation content type", async () => {
     vi.stubEnv("CONTENTFUL_SPACE_ID", "space");
     vi.stubEnv("CONTENTFUL_DELIVERY_TOKEN", "token");
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        items: [{
-          sys: { id: "meditation-1" },
-          fields: {
-            title: "Guided meditation",
-            slug: "guided-meditation",
-            subcategoryKey: "Guided Meditation",
-            muxPlaybackId: "playback-1",
-            packageRequired: "plus",
-            durationMinutes: 10,
-          },
-        }],
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          items: [
+            {
+              sys: { id: "meditation-1" },
+              fields: {
+                title: "Guided meditation",
+                slug: "guided-meditation",
+                subcategoryKey: "Guided Meditation",
+                muxPlaybackId: "playback-1",
+                packageRequired: "plus",
+                durationMinutes: 10,
+              },
+            },
+          ],
+        }),
       }),
-    }));
+    );
 
     const [item] = await getMeditationRelaxationItems("en");
 

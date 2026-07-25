@@ -1,7 +1,15 @@
 "use client";
 
 import { httpsCallable } from "firebase/functions";
-import { Activity, Footprints, HeartPulse, LoaderCircle, Moon, PlugZap, Unplug } from "lucide-react";
+import {
+  Activity,
+  Footprints,
+  HeartPulse,
+  LoaderCircle,
+  Moon,
+  PlugZap,
+  Unplug,
+} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { functions } from "../../../../firebase.config";
@@ -30,7 +38,9 @@ interface SyncResult {
   summary?: WearableSummary;
 }
 
-export default function WearableIntegration({ locale }: WearableIntegrationProps) {
+export default function WearableIntegration({
+  locale,
+}: WearableIntegrationProps) {
   const t = useTranslations("profile.wearables");
   const [isConnected, setIsConnected] = useState(false);
   const [summary, setSummary] = useState<WearableSummary | null>(null);
@@ -43,7 +53,10 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     setError("");
 
     try {
-      const getStatus = httpsCallable<unknown, ConnectionStatusResult>(functions, "getGoogleHealthConnectionStatus");
+      const getStatus = httpsCallable<unknown, ConnectionStatusResult>(
+        functions,
+        "getGoogleHealthConnectionStatus",
+      );
       const status = await getStatus({});
       setIsConnected(Boolean(status.data.connected));
     } catch {
@@ -61,7 +74,10 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     setError("");
 
     try {
-      const sync = httpsCallable<unknown, SyncResult>(functions, "syncGoogleHealthDailySummary");
+      const sync = httpsCallable<unknown, SyncResult>(
+        functions,
+        "syncGoogleHealthDailySummary",
+      );
       const result = await sync({});
       setSummary(result.data.summary ?? null);
       setIsConnected(true);
@@ -96,7 +112,8 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
       );
       const result = await createUrl({ locale });
 
-      if (!result.data.url) throw new Error("Missing Google Health authorization URL.");
+      if (!result.data.url)
+        throw new Error("Missing Google Health authorization URL.");
 
       window.location.assign(result.data.url);
     } catch {
@@ -112,7 +129,10 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
     setError("");
 
     try {
-      const disconnect = httpsCallable<unknown, { ok?: boolean }>(functions, "disconnectGoogleHealth");
+      const disconnect = httpsCallable<unknown, { ok?: boolean }>(
+        functions,
+        "disconnectGoogleHealth",
+      );
       await disconnect({});
       setIsConnected(false);
       setSummary(null);
@@ -126,22 +146,34 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
   const statItems = [
     {
       label: t("steps"),
-      value: summary?.steps != null ? new Intl.NumberFormat(locale).format(summary.steps) : "-",
+      value:
+        summary?.steps != null
+          ? new Intl.NumberFormat(locale).format(summary.steps)
+          : "-",
       icon: Footprints,
     },
     {
       label: t("activeMinutes"),
-      value: summary?.activeMinutes != null ? t("minutes", { count: summary.activeMinutes }) : "-",
+      value:
+        summary?.activeMinutes != null
+          ? t("minutes", { count: summary.activeMinutes })
+          : "-",
       icon: Activity,
     },
     {
       label: t("sleep"),
-      value: summary?.sleepMinutes != null ? t("hours", { count: Math.round(summary.sleepMinutes / 6) / 10 }) : "-",
+      value:
+        summary?.sleepMinutes != null
+          ? t("hours", { count: Math.round(summary.sleepMinutes / 6) / 10 })
+          : "-",
       icon: Moon,
     },
     {
       label: t("restingHeartRate"),
-      value: summary?.restingHeartRate != null ? t("bpm", { count: summary.restingHeartRate }) : "-",
+      value:
+        summary?.restingHeartRate != null
+          ? t("bpm", { count: summary.restingHeartRate })
+          : "-",
       icon: HeartPulse,
     },
   ];
@@ -154,7 +186,11 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
           <h2>{t("title")}</h2>
           <p>{t("description")}</p>
         </div>
-        <span className={isConnected ? styles.wearableStatusConnected : styles.wearableStatus}>
+        <span
+          className={
+            isConnected ? styles.wearableStatusConnected : styles.wearableStatus
+          }
+        >
           {isConnected ? t("connected") : t("notConnected")}
         </span>
       </div>
@@ -178,24 +214,48 @@ export default function WearableIntegration({ locale }: WearableIntegrationProps
       <div className={styles.wearableActions}>
         {isConnected ? (
           <>
-            <button type="button" onClick={() => void syncSummary()} disabled={isLoading || isSyncing}>
-              {isSyncing ? <LoaderCircle className={styles.billingSpinner} size={17} /> : <PlugZap size={17} />}
+            <button
+              type="button"
+              onClick={() => void syncSummary()}
+              disabled={isLoading || isSyncing}
+            >
+              {isSyncing ? (
+                <LoaderCircle className={styles.billingSpinner} size={17} />
+              ) : (
+                <PlugZap size={17} />
+              )}
               {isSyncing ? t("syncing") : t("sync")}
             </button>
-            <button type="button" onClick={() => void disconnectWearable()} disabled={isLoading || isSyncing}>
+            <button
+              type="button"
+              onClick={() => void disconnectWearable()}
+              disabled={isLoading || isSyncing}
+            >
               <Unplug size={17} />
               {t("disconnect")}
             </button>
           </>
         ) : (
-          <button type="button" onClick={() => void connectWearable()} disabled={isLoading || isSyncing}>
-            {isSyncing ? <LoaderCircle className={styles.billingSpinner} size={17} /> : <PlugZap size={17} />}
+          <button
+            type="button"
+            onClick={() => void connectWearable()}
+            disabled={isLoading || isSyncing}
+          >
+            {isSyncing ? (
+              <LoaderCircle className={styles.billingSpinner} size={17} />
+            ) : (
+              <PlugZap size={17} />
+            )}
             {isSyncing ? t("opening") : t("connect")}
           </button>
         )}
       </div>
 
-      {error ? <p className={styles.billingError} role="alert">{error}</p> : null}
+      {error ? (
+        <p className={styles.billingError} role="alert">
+          {error}
+        </p>
+      ) : null}
       <p className={styles.packageHint}>{t("privacy")}</p>
     </div>
   );

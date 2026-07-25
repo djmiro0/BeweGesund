@@ -27,10 +27,9 @@ describe("ProfileSettingsAccess", () => {
   it("links directly to profile settings", () => {
     render(<ProfileSettingsAccess {...labels} />);
 
-    expect(screen.getByRole("link", { name: "Open profile settings" })).toHaveAttribute(
-      "href",
-      "/en/settings",
-    );
+    expect(
+      screen.getByRole("link", { name: "Open profile settings" }),
+    ).toHaveAttribute("href", "/en/settings");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });

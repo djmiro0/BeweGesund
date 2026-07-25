@@ -35,13 +35,17 @@ describe("ProfileAvatar", () => {
       />,
     );
 
-    expect(screen.getByRole("presentation"))
-      .toHaveAttribute("src", "https://fallback.example/avatar.jpg");
+    expect(screen.getByRole("presentation")).toHaveAttribute(
+      "src",
+      "https://fallback.example/avatar.jpg",
+    );
     expect(mocks.getBlob).not.toHaveBeenCalled();
   });
 
   it("loads the authenticated private avatar from Firebase Storage when no URL is stored", async () => {
-    mocks.getBlob.mockResolvedValue(new Blob(["avatar"], { type: "image/jpeg" }));
+    mocks.getBlob.mockResolvedValue(
+      new Blob(["avatar"], { type: "image/jpeg" }),
+    );
     render(
       <ProfileAvatar
         userId="user-1"
@@ -51,8 +55,12 @@ describe("ProfileAvatar", () => {
       />,
     );
 
-    await waitFor(() => expect(screen.getByRole("presentation"))
-      .toHaveAttribute("src", "blob:private-avatar"));
+    await waitFor(() =>
+      expect(screen.getByRole("presentation")).toHaveAttribute(
+        "src",
+        "blob:private-avatar",
+      ),
+    );
   });
 
   it("falls back to the initial when both photo sources fail", async () => {

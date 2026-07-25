@@ -1,8 +1,17 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { AppLanguage, AppSettingsData, AppTheme, UnitSystem } from "../settingsData";
-import { SettingsSection, SettingsSelect, SettingsToggle } from "./SettingsControls";
+import type {
+  AppLanguage,
+  AppSettingsData,
+  AppTheme,
+  UnitSystem,
+} from "../settingsData";
+import {
+  SettingsSection,
+  SettingsSelect,
+  SettingsToggle,
+} from "./SettingsControls";
 import styles from "../Settings.module.css";
 import PwaInstallAction from "./PwaInstallAction";
 
@@ -27,7 +36,10 @@ export default function AppSettings({ data, onChange }: AppSettingsProps) {
     { value: "dark", label: t("options.theme.dark") },
     { value: "system", label: t("options.theme.system") },
   ];
-  const update = <Key extends keyof AppSettingsData>(key: Key, value: AppSettingsData[Key]) => {
+  const update = <Key extends keyof AppSettingsData>(
+    key: Key,
+    value: AppSettingsData[Key],
+  ) => {
     onChange({ ...data, [key]: value });
   };
 
@@ -38,9 +50,27 @@ export default function AppSettings({ data, onChange }: AppSettingsProps) {
       testId="settings-app-section"
     >
       <div className={styles.fieldGrid}>
-        <SettingsSelect id="language" label={t("fields.language")} value={data.language} options={languageOptions} onChange={(value) => update("language", value as AppLanguage)} />
-        <SettingsSelect id="theme" label={t("fields.theme")} value={data.theme} options={themeOptions} onChange={(value) => update("theme", value as AppTheme)} />
-        <SettingsSelect id="units" label={t("fields.units")} value={data.units} options={unitOptions} onChange={(value) => update("units", value as UnitSystem)} />
+        <SettingsSelect
+          id="language"
+          label={t("fields.language")}
+          value={data.language}
+          options={languageOptions}
+          onChange={(value) => update("language", value as AppLanguage)}
+        />
+        <SettingsSelect
+          id="theme"
+          label={t("fields.theme")}
+          value={data.theme}
+          options={themeOptions}
+          onChange={(value) => update("theme", value as AppTheme)}
+        />
+        <SettingsSelect
+          id="units"
+          label={t("fields.units")}
+          value={data.units}
+          options={unitOptions}
+          onChange={(value) => update("units", value as UnitSystem)}
+        />
       </div>
       <div className={styles.toggleList}>
         <SettingsToggle

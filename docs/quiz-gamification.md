@@ -44,13 +44,14 @@ Private answer keys live in `quizAnswerKeys/{quizId}`. Firestore rules do not ex
 
 ## Submit flow
 
-The app reads published `quizzes` documents, opens a deterministic daily set of up to 5 questions, and sends selected answers to the callable function `submitQuizAttempt`.
+The app reads published `quizzes` documents, opens a random set of up to 5 questions, avoids recently used local combinations where possible, and sends selected answers to the callable function `submitQuizAttempt`.
 
 The function:
 
 - requires Firebase Auth and App Check
 - validates that the quiz is published and currently available
-- compares the daily answers against `quizAnswerKeys/{quizId}`
+- compares submitted answers against `quizAnswerKeys/{quizId}`
+- validates that the submitted question IDs and option IDs belong to the quiz
 - stores the result in `users/{uid}/quizAttempts/{quizId}_{YYYY-MM-DD}`
 - updates `quizLeaderboards/{monthlyPeriod}/entries/{uid}`
 - increments user `xp`, `points`, `weeklyScore`, and `monthlyScore`
@@ -61,3 +62,10 @@ The function:
 2. Deploy functions so `submitQuizAttempt` exists.
 3. Create matching `quizzes/{quizId}` and `quizAnswerKeys/{quizId}` documents.
 4. Open `/de/quiz` or `/en/quiz` and submit with a signed-in user.
+
+## Serbian PDF source
+
+`functions/scripts/health-quiz-sr.tsv` contains the extracted Serbian questions from `Kviz pitanja i odgovori.pdf`.
+Use `node functions/scripts/import-serbian-health-quiz.cjs --dry-run` to validate the extracted set.
+
+The import script writes `daily-health-knowledge-sr` as a draft quiz by default so it can be reviewed before publishing.

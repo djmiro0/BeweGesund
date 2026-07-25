@@ -8,7 +8,11 @@ import styles from "./BadRequest.module.css";
 
 const fadeIn: Variants = {
   hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 export default function BadRequestPage() {
@@ -28,7 +32,11 @@ export default function BadRequestPage() {
         }}
       >
         <div className={styles.heroMedia} aria-hidden="true">
-          <motion.div className={styles.orbit} animate={{ rotate: 360 }} transition={{ duration: 28, repeat: Infinity, ease: "linear" }} />
+          <motion.div
+            className={styles.orbit}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+          />
           <motion.div
             className={styles.pulseLine}
             animate={{ scaleX: [0.65, 1, 0.65], opacity: [0.48, 1, 0.48] }}

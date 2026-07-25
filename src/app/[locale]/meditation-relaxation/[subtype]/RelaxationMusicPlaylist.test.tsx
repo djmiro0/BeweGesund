@@ -10,7 +10,9 @@ vi.mock("../../courses/[slug]/ProtectedMuxPlayer", () => ({
   default: (props: Record<string, unknown>) => {
     playerProps.latest = props;
 
-    return <div data-testid="protected-player" data-paused={String(props.paused)} />;
+    return (
+      <div data-testid="protected-player" data-paused={String(props.paused)} />
+    );
   },
 }));
 
@@ -98,7 +100,10 @@ describe("RelaxationMusicPlaylist", () => {
 
     fireEvent.click(screen.getByTestId("music-play-all"));
 
-    expect(screen.getByTestId("protected-player")).toHaveAttribute("data-paused", "false");
+    expect(screen.getByTestId("protected-player")).toHaveAttribute(
+      "data-paused",
+      "false",
+    );
     expect(playerProps.latest).toMatchObject({
       autoPlay: true,
       paused: false,
@@ -108,7 +113,10 @@ describe("RelaxationMusicPlaylist", () => {
 
     fireEvent.click(screen.getByTestId("music-play-all"));
 
-    expect(screen.getByTestId("protected-player")).toHaveAttribute("data-paused", "true");
+    expect(screen.getByTestId("protected-player")).toHaveAttribute(
+      "data-paused",
+      "true",
+    );
     expect(playerProps.latest).toMatchObject({
       autoPlay: false,
       paused: true,

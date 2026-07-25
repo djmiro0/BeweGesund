@@ -23,7 +23,8 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) =>
     ({
       brand: "Bewegesund",
-      tagline: "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
+      tagline:
+        "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
       navigationTitle: "Navigation",
       legalTitle: "Legal",
       contactTitle: "Contact",
@@ -56,10 +57,21 @@ describe("Footer", () => {
     render(<Footer />);
 
     expect(screen.getByTestId("site-footer")).toBeInTheDocument();
-    expect(screen.getByTestId("footer-brand-link")).toHaveAttribute("href", "/en");
-    expect(screen.getByTestId("footer-brand-icon")).toHaveAttribute("src", "/logo.png");
-    expect(screen.getByTestId("footer-contact-cta")).toHaveAttribute("href", "/en/contact");
-    expect(screen.getByTestId("footer-contact-cta")).toHaveTextContent("Open Contact");
+    expect(screen.getByTestId("footer-brand-link")).toHaveAttribute(
+      "href",
+      "/en",
+    );
+    expect(screen.getByTestId("footer-brand-icon")).toHaveAttribute(
+      "src",
+      "/logo.png",
+    );
+    expect(screen.getByTestId("footer-contact-cta")).toHaveAttribute(
+      "href",
+      "/en/contact",
+    );
+    expect(screen.getByTestId("footer-contact-cta")).toHaveTextContent(
+      "Open Contact",
+    );
   });
 
   it("keeps navigation, legal links, and contact metadata accessible", () => {
@@ -67,8 +79,14 @@ describe("Footer", () => {
 
     expect(screen.getAllByTestId("footer-navigation-link")).toHaveLength(7);
     expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(3);
-    expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("Online by appointment");
-    expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent("German and English");
-    expect(screen.getByTestId("footer-bottom")).toHaveTextContent("© 2026 Bewegesund. All rights reserved.");
+    expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent(
+      "Online by appointment",
+    );
+    expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent(
+      "German and English",
+    );
+    expect(screen.getByTestId("footer-bottom")).toHaveTextContent(
+      "© 2026 Bewegesund. All rights reserved.",
+    );
   });
 });

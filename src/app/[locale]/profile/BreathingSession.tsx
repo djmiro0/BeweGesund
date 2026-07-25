@@ -31,7 +31,8 @@ const copy = {
     remind: "Jede Stunde erinnern",
     stopReminder: "Erinnerung ausschalten",
     notificationTitle: "Zeit für 60 Sekunden Atmung",
-    notificationBody: "Öffne Bewegesund und nimm dir einen kurzen ruhigen Moment.",
+    notificationBody:
+      "Öffne Bewegesund und nimm dir einen kurzen ruhigen Moment.",
   },
   en: {
     start: "Start",
@@ -63,7 +64,10 @@ function vibrate(pattern: number | number[]) {
   }
 }
 
-export default function BreathingSession({ locale, triggerLabel }: BreathingSessionProps) {
+export default function BreathingSession({
+  locale,
+  triggerLabel,
+}: BreathingSessionProps) {
   const labels = locale === "de" ? copy.de : copy.en;
   const [isOpen, setIsOpen] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
@@ -112,14 +116,22 @@ export default function BreathingSession({ locale, triggerLabel }: BreathingSess
   useEffect(() => {
     if (!reminderEnabled) return undefined;
 
-    const intervalId = window.setInterval(() => {
-      if (typeof Notification === "undefined" || Notification.permission !== "granted") {
-        vibrate([80, 40, 80]);
-        return;
-      }
+    const intervalId = window.setInterval(
+      () => {
+        if (
+          typeof Notification === "undefined" ||
+          Notification.permission !== "granted"
+        ) {
+          vibrate([80, 40, 80]);
+          return;
+        }
 
-      new Notification(labels.notificationTitle, { body: labels.notificationBody });
-    }, 60 * 60 * 1000);
+        new Notification(labels.notificationTitle, {
+          body: labels.notificationBody,
+        });
+      },
+      60 * 60 * 1000,
+    );
 
     return () => window.clearInterval(intervalId);
   }, [labels.notificationBody, labels.notificationTitle, reminderEnabled]);
@@ -137,7 +149,10 @@ export default function BreathingSession({ locale, triggerLabel }: BreathingSess
   };
 
   const enableReminder = async () => {
-    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+    if (
+      typeof Notification !== "undefined" &&
+      Notification.permission === "default"
+    ) {
       await Notification.requestPermission();
     }
 
@@ -152,13 +167,22 @@ export default function BreathingSession({ locale, triggerLabel }: BreathingSess
 
   return (
     <>
-      <button type="button" className={styles.breathCircle} onClick={openSession}>
+      <button
+        type="button"
+        className={styles.breathCircle}
+        onClick={openSession}
+      >
         <span>{triggerLabel}</span>
       </button>
 
       {isOpen ? (
         <div className={styles.breathModalOverlay}>
-          <section className={styles.breathModal} role="dialog" aria-modal="true" aria-labelledby="breath-session-title">
+          <section
+            className={styles.breathModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="breath-session-title"
+          >
             <button
               type="button"
               className={styles.breathClose}
@@ -171,20 +195,35 @@ export default function BreathingSession({ locale, triggerLabel }: BreathingSess
               <X size={20} />
             </button>
             <p className={styles.panelEyebrow}>{labels.title}</p>
-            <div className={`${styles.breathFocusCircle} ${isRunning ? styles.breathFocusCircleRunning : ""}`}>
-              <span id="breath-session-title">{isRunning ? labels[phase.key] : labels.start}</span>
+            <div
+              className={`${styles.breathFocusCircle} ${isRunning ? styles.breathFocusCircleRunning : ""}`}
+            >
+              <span id="breath-session-title">
+                {isRunning ? labels[phase.key] : labels.start}
+              </span>
               <strong>{remaining}s</strong>
             </div>
-            <p className={styles.breathElapsed}>{formatSessionTime(elapsed)} / {formatSessionTime(SESSION_SECONDS)}</p>
+            <p className={styles.breathElapsed}>
+              {formatSessionTime(elapsed)} /{" "}
+              {formatSessionTime(SESSION_SECONDS)}
+            </p>
             {!isRunning && remaining === SESSION_SECONDS ? (
-              <button type="button" className={styles.breathStartButton} onClick={startSession}>
+              <button
+                type="button"
+                className={styles.breathStartButton}
+                onClick={startSession}
+              >
                 <Play size={18} />
                 {labels.start}
               </button>
             ) : null}
             {!isRunning && remaining === 0 ? (
               <div className={styles.breathReminderPanel}>
-                <p>{reminderEnabled ? labels.reminderOn : labels.reminderQuestion}</p>
+                <p>
+                  {reminderEnabled
+                    ? labels.reminderOn
+                    : labels.reminderQuestion}
+                </p>
                 {reminderEnabled ? (
                   <button type="button" onClick={disableReminder}>
                     <BellOff size={18} />

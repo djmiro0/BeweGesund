@@ -20,21 +20,28 @@ export function normalizeAppPreferences(
   value: Record<string, unknown> | undefined,
   locale: string,
 ): AppPreferences {
-  const language = value?.language === "english" || value?.language === "german"
-    ? value.language
-    : locale === "en" ? "english" : "german";
-  const theme = value?.theme === "light" || value?.theme === "dark" || value?.theme === "system"
-    ? value.theme
-    : defaultAppPreferences.theme;
+  const language =
+    value?.language === "english" || value?.language === "german"
+      ? value.language
+      : locale === "en"
+        ? "english"
+        : "german";
+  const theme =
+    value?.theme === "light" ||
+    value?.theme === "dark" ||
+    value?.theme === "system"
+      ? value.theme
+      : defaultAppPreferences.theme;
   const units = value?.units === "imperial" ? "imperial" : "metric";
 
   return {
     language,
     theme,
     units,
-    videoAutoplay: typeof value?.videoAutoplay === "boolean"
-      ? value.videoAutoplay
-      : defaultAppPreferences.videoAutoplay,
+    videoAutoplay:
+      typeof value?.videoAutoplay === "boolean"
+        ? value.videoAutoplay
+        : defaultAppPreferences.videoAutoplay,
   };
 }
 

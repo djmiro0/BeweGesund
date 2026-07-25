@@ -7,63 +7,63 @@ import { useTranslations } from "next-intl";
 import styles from "./HeroSection.module.css";
 
 export default function HeroSection({ openAuth }: { openAuth?: () => void }) {
-    const t = useTranslations("home.hero");
+  const t = useTranslations("home.hero");
 
-    return (
-        <section className={styles.hero}>
-            <div className={styles.mediaLayer} aria-hidden="true">
-                <Image
-                    src="/training.jpg"
-                    alt=""
-                    fill
-                    priority
-                    sizes="100vw"
-                    className={styles.heroImage}
-                />
-            </div>
-            <div className={styles.blend} aria-hidden="true" />
-            <motion.div
-                className={styles.content}
-                initial={{ opacity: 0, y: 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-            >
-                <motion.div
-                    className={styles.brandMark}
-                    initial={{ opacity: 0, scale: 0.94 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.15, duration: 0.5 }}
-                >
-                    <CircleCheck size={15} />
-                    {t("eyebrow")}
-                </motion.div>
-                <h1>{t("title")}</h1>
-                <p>{t("subtitle")}</p>
-                <div className={styles.actions}>
-                    <motion.button
-                        type="button"
-                        onClick={openAuth}
-                        className={styles.cta}
-                        whileHover={{ y: -3, scale: 1.015 }}
-                        whileTap={{ scale: 0.98 }}
-                    >
-                        <span>{t("cta")}</span>
-                        <ArrowRight size={18} />
-                    </motion.button>
-                    <a className={styles.textLink} href="#programme">
-                        {t("secondaryCta")}
-                    </a>
-                </div>
-            </motion.div>
-            <motion.div
-                className={styles.mediaCaption}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            >
-                <span>01</span>
-                <p>{t("imageCaption")}</p>
-            </motion.div>
-        </section>
-    );
+  return (
+    <section className={styles.hero}>
+      <div className={styles.mediaLayer} aria-hidden="true">
+        <Image
+          src="/training.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className={styles.heroImage}
+        />
+      </div>
+      <div className={styles.blend} aria-hidden="true" />
+      <motion.div
+        className={styles.content}
+        initial={{ opacity: 0, y: 28 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <motion.div
+          className={styles.brandMark}
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.5 }}
+        >
+          <CircleCheck size={15} />
+          {t("eyebrow")}
+        </motion.div>
+        <h1>{t("title")}</h1>
+        <p>{t("subtitle")}</p>
+        <div className={styles.actions}>
+          <motion.button
+            type="button"
+            onClick={openAuth}
+            className={styles.cta}
+            whileHover={{ y: -3, scale: 1.015 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <span>{t("cta")}</span>
+            <ArrowRight size={18} />
+          </motion.button>
+          <a className={styles.textLink} href="#programme">
+            {t("secondaryCta")}
+          </a>
+        </div>
+      </motion.div>
+      <motion.div
+        className={styles.mediaCaption}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.5, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <span>01</span>
+        <p>{t("imageCaption")}</p>
+      </motion.div>
+    </section>
+  );
 }

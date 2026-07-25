@@ -20,11 +20,17 @@ describe("HeroSection", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "MOVE TOWARD A HEALTHIER BODY",
     );
-    expect(screen.getByText("Online movement and rehabilitation support.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /get started/i })).toBeInTheDocument();
+    expect(
+      screen.getByText("Online movement and rehabilitation support."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /get started/i }),
+    ).toBeInTheDocument();
 
     // The new design depends on the training photo as its visual anchor.
-    expect(document.querySelector('img[src="/training.jpg"]')).toBeInTheDocument();
+    expect(
+      document.querySelector('img[src="/training.jpg"]'),
+    ).toBeInTheDocument();
   });
 
   it("opens authentication from the primary CTA", async () => {

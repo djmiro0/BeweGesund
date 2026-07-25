@@ -10,17 +10,23 @@ interface ContactPageClientProps {
   bookingUrl: string | null;
 }
 
-export default function ContactPageClient({ bookingUrl }: ContactPageClientProps) {
+export default function ContactPageClient({
+  bookingUrl,
+}: ContactPageClientProps) {
   const t = useTranslations("contactPage");
   const locale = useLocale();
   const { user, profile } = useAuth();
-  const [name, setName] = useState(profile?.displayName ?? user?.displayName ?? "");
+  const [name, setName] = useState(
+    profile?.displayName ?? user?.displayName ?? "",
+  );
   const [email, setEmail] = useState(user?.email ?? profile?.email ?? "");
   const [phone, setPhone] = useState("");
   const [topic, setTopic] = useState("consultation");
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "sending" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -34,21 +40,38 @@ export default function ContactPageClient({ bookingUrl }: ContactPageClientProps
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, phone, topic, message, locale, website }),
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          topic,
+          message,
+          locale,
+          website,
+        }),
       });
-      const payload = (await response.json()) as { code?: string; error?: string };
+      const payload = (await response.json()) as {
+        code?: string;
+        error?: string;
+      };
 
       if (!response.ok) {
-        throw new Error(payload.code === "CONTACT_NOT_CONFIGURED" ? "not-configured" : "delivery");
+        throw new Error(
+          payload.code === "CONTACT_NOT_CONFIGURED"
+            ? "not-configured"
+            : "delivery",
+        );
       }
 
       setMessage("");
       setStatus("success");
     } catch (error) {
       setStatus("error");
-      setErrorMessage(error instanceof Error && error.message === "not-configured"
-        ? t("form.notConfigured")
-        : t("form.error"));
+      setErrorMessage(
+        error instanceof Error && error.message === "not-configured"
+          ? t("form.notConfigured")
+          : t("form.error"),
+      );
     }
   };
 
@@ -62,7 +85,10 @@ export default function ContactPageClient({ bookingUrl }: ContactPageClientProps
         </header>
 
         <div className={styles.grid}>
-          <form className={styles.form} onSubmit={(event) => void handleSubmit(event)}>
+          <form
+            className={styles.form}
+            onSubmit={(event) => void handleSubmit(event)}
+          >
             <div className={styles.formHeader}>
               <Mail size={22} />
               <div>
@@ -74,20 +100,42 @@ export default function ContactPageClient({ bookingUrl }: ContactPageClientProps
             <div className={styles.fieldGrid}>
               <label>
                 <span>{t("form.name")}</span>
-                <input value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={120} />
+                <input
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  required
+                  minLength={2}
+                  maxLength={120}
+                />
               </label>
               <label>
                 <span>{t("form.email")}</span>
-                <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} required maxLength={254} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                  maxLength={254}
+                />
               </label>
               <label>
                 <span>{t("form.phone")}</span>
-                <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} maxLength={60} />
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  maxLength={60}
+                />
               </label>
               <label>
                 <span>{t("form.topic")}</span>
-                <select value={topic} onChange={(event) => setTopic(event.target.value)}>
-                  <option value="consultation">{t("form.topics.consultation")}</option>
+                <select
+                  value={topic}
+                  onChange={(event) => setTopic(event.target.value)}
+                >
+                  <option value="consultation">
+                    {t("form.topics.consultation")}
+                  </option>
                   <option value="courses">{t("form.topics.courses")}</option>
                   <option value="business">{t("form.topics.business")}</option>
                   <option value="other">{t("form.topics.other")}</option>
@@ -117,8 +165,16 @@ export default function ContactPageClient({ bookingUrl }: ContactPageClientProps
               />
             </label>
 
-            {status === "success" ? <p className={styles.success} role="status">{t("form.success")}</p> : null}
-            {status === "error" ? <p className={styles.error} role="alert">{errorMessage}</p> : null}
+            {status === "success" ? (
+              <p className={styles.success} role="status">
+                {t("form.success")}
+              </p>
+            ) : null}
+            {status === "error" ? (
+              <p className={styles.error} role="alert">
+                {errorMessage}
+              </p>
+            ) : null}
 
             <button type="submit" disabled={status === "sending"}>
               <Send size={17} />
@@ -142,12 +198,14 @@ export default function ContactPageClient({ bookingUrl }: ContactPageClientProps
             </div>
 
             <div className={styles.infoList}>
-              {(t.raw("cards") as Array<{ title: string; body: string }>).map((card) => (
-                <article key={card.title}>
-                  <h3>{card.title}</h3>
-                  <p>{card.body}</p>
-                </article>
-              ))}
+              {(t.raw("cards") as Array<{ title: string; body: string }>).map(
+                (card) => (
+                  <article key={card.title}>
+                    <h3>{card.title}</h3>
+                    <p>{card.body}</p>
+                  </article>
+                ),
+              )}
             </div>
           </aside>
         </div>

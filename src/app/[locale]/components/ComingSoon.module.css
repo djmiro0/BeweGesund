@@ -9,7 +9,13 @@
   overflow: hidden;
   padding-top: 4rem;
   background:
-    linear-gradient(90deg, var(--coming-bg) 0%, rgba(var(--coming-bg-rgb), 0.94) 40%, rgba(var(--coming-bg-rgb), 0.58) 62%, rgba(var(--coming-bg-rgb), 0.16) 100%),
+    linear-gradient(
+      90deg,
+      var(--coming-bg) 0%,
+      rgba(var(--coming-bg-rgb), 0.94) 40%,
+      rgba(var(--coming-bg-rgb), 0.58) 62%,
+      rgba(var(--coming-bg-rgb), 0.16) 100%
+    ),
     url("../../../../public/bewegesund-background.png") center / cover;
   color: var(--coming-text);
 }
@@ -30,7 +36,8 @@
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
   gap: clamp(2rem, 6vw, 6rem);
   align-items: end;
-  padding: clamp(6.5rem, 10vw, 9rem) clamp(1.25rem, 6vw, 6rem) clamp(2rem, 5vw, 4rem);
+  padding: clamp(6.5rem, 10vw, 9rem) clamp(1.25rem, 6vw, 6rem)
+    clamp(2rem, 5vw, 4rem);
 }
 
 .hero::before {
@@ -108,8 +115,8 @@
   cursor: pointer;
   padding: 0.92rem 1.15rem;
   transition:
-          background 0.24s var(--transition),
-          transform 0.24s var(--transition);
+    background 0.24s var(--transition),
+    transform 0.24s var(--transition);
 }
 
 .primaryButton:hover {
@@ -161,7 +168,12 @@
   left: 8%;
   height: 1px;
   transform-origin: center;
-  background: linear-gradient(90deg, transparent, var(--page-warm), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--page-warm),
+    transparent
+  );
 }
 
 .statusRail {
@@ -193,7 +205,12 @@
 @media (max-width: 900px) {
   .comingSoon {
     background:
-      linear-gradient(180deg, rgba(var(--coming-bg-rgb), 0.18) 0%, rgba(var(--coming-bg-rgb), 0.72) 52%, var(--coming-bg) 88%),
+      linear-gradient(
+        180deg,
+        rgba(var(--coming-bg-rgb), 0.18) 0%,
+        rgba(var(--coming-bg-rgb), 0.72) 52%,
+        var(--coming-bg) 88%
+      ),
       url("../../../../public/bewegesund-background.png") center / cover;
   }
 
@@ -247,6 +264,5 @@
   }
   .title {
     font-size: 2rem;
-
   }
 }

@@ -4,17 +4,29 @@
   min-height: 100vh;
   padding: 7.5rem 1.25rem 4rem;
   background:
-          radial-gradient(circle at 12% 10%, rgba(var(--page-accent-rgb), 0.12), transparent 20%),
-          radial-gradient(circle at 88% 14%, rgba(var(--page-olive-rgb), 0.14), transparent 18%),
-          linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
+    radial-gradient(
+      circle at 12% 10%,
+      rgba(var(--page-accent-rgb), 0.12),
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at 88% 14%,
+      rgba(var(--page-olive-rgb), 0.14),
+      transparent 18%
+    ),
+    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
 }
 
 .glow {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    linear-gradient(120deg, transparent 0%, rgba(var(--accent-rgb), 0.08) 48%, transparent 100%);
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(var(--accent-rgb), 0.08) 48%,
+    transparent 100%
+  );
   opacity: 0.65;
 }
 
@@ -72,10 +84,16 @@
   border-radius: 2rem;
   border: 1px solid var(--border-soft);
   background:
-    linear-gradient(180deg, rgba(var(--foreground-rgb), 0.04), rgba(var(--foreground-rgb), 0.02)),
+    linear-gradient(
+      180deg,
+      rgba(var(--foreground-rgb), 0.04),
+      rgba(var(--foreground-rgb), 0.02)
+    ),
     var(--surface-1);
   box-shadow: 0 24px 80px var(--shadow-color);
-  transition: transform 0.3s var(--transition), border-color 0.3s var(--transition);
+  transition:
+    transform 0.3s var(--transition),
+    border-color 0.3s var(--transition);
 }
 
 .storyPanel {
@@ -90,7 +108,11 @@
   top: 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.6), transparent 70%);
+  background: linear-gradient(
+    90deg,
+    rgba(var(--accent-rgb), 0.6),
+    transparent 70%
+  );
 }
 
 .storyPanel:hover,

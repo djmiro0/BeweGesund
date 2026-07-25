@@ -13,32 +13,41 @@ const firebaseConfig = {
   apiKey: "AIzaSyAGZdUbOC9A-cW9TifDGHjsy9AryU89Oh8",
   authDomain: "sandrin-app.firebaseapp.com",
   projectId: "sandrin-app",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "sandrin-app.firebasestorage.app",
+  storageBucket:
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ||
+    "sandrin-app.firebasestorage.app",
   messagingSenderId: "515361979527",
   appId: "1:515361979527:web:fd4b07d82562e464c44c22",
-  measurementId: "G-N0KCWR4M5Q"
+  measurementId: "G-N0KCWR4M5Q",
 };
 
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const app =
+  getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const appCheckSiteKey = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_SITE_KEY;
-const appCheckEnabled = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED === "true";
-const appCheckDebugToken = process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN;
-const isLocalAppCheckHost = typeof window !== "undefined"
-  && ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
-const appCheckDebugTokenValue = isLocalAppCheckHost && appCheckDebugToken === "..."
-  ? true
-  : appCheckDebugToken;
-const shouldInitializeAppCheck = appCheckEnabled
-  && appCheckSiteKey
-  && (!isLocalAppCheckHost || appCheckDebugTokenValue);
+const appCheckEnabled =
+  process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_ENABLED === "true";
+const appCheckDebugToken =
+  process.env.NEXT_PUBLIC_FIREBASE_APPCHECK_DEBUG_TOKEN;
+const isLocalAppCheckHost =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+const appCheckDebugTokenValue =
+  isLocalAppCheckHost && appCheckDebugToken === "..."
+    ? true
+    : appCheckDebugToken;
+const shouldInitializeAppCheck =
+  appCheckEnabled &&
+  appCheckSiteKey &&
+  (!isLocalAppCheckHost || appCheckDebugTokenValue);
 
 if (
-  typeof window !== "undefined"
-  && shouldInitializeAppCheck
-  && !window.__BEWEGESUND_APP_CHECK_INITIALIZED__
+  typeof window !== "undefined" &&
+  shouldInitializeAppCheck &&
+  !window.__BEWEGESUND_APP_CHECK_INITIALIZED__
 ) {
   if (appCheckDebugTokenValue) {
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = appCheckDebugTokenValue === "true" ? true : appCheckDebugTokenValue;
+    self.FIREBASE_APPCHECK_DEBUG_TOKEN =
+      appCheckDebugTokenValue === "true" ? true : appCheckDebugTokenValue;
   }
 
   initializeAppCheck(app, {

@@ -6,7 +6,10 @@ function isAuthorized(value: string, expected: string) {
   const actualBuffer = Buffer.from(value);
   const expectedBuffer = Buffer.from(expected);
 
-  return actualBuffer.length === expectedBuffer.length && timingSafeEqual(actualBuffer, expectedBuffer);
+  return (
+    actualBuffer.length === expectedBuffer.length &&
+    timingSafeEqual(actualBuffer, expectedBuffer)
+  );
 }
 
 export async function POST(request: Request) {
@@ -15,25 +18,38 @@ export async function POST(request: Request) {
   const adminToken = process.env.MUX_ADMIN_UPLOAD_TOKEN;
 
   if (!tokenId || !tokenSecret || !adminToken) {
-    return NextResponse.json({ error: "Mux credentials are not configured." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Mux credentials are not configured." },
+      { status: 500 },
+    );
   }
 
   const authorization = request.headers.get("authorization") ?? "";
   if (!isAuthorized(authorization, `Bearer ${adminToken}`)) {
-    return NextResponse.json({ error: "Not allowed to create uploads." }, { status: 403 });
+    return NextResponse.json(
+      { error: "Not allowed to create uploads." },
+      { status: 403 },
+    );
   }
 
   const configuredOrigin = process.env.NEXT_PUBLIC_SITE_URL;
   if (!configuredOrigin) {
-    return NextResponse.json({ error: "The production site URL is not configured." }, { status: 500 });
+    return NextResponse.json(
+      { error: "The production site URL is not configured." },
+      { status: 500 },
+    );
   }
 
   const origin = request.headers.get("origin");
   if (origin && new URL(origin).origin !== new URL(configuredOrigin).origin) {
-    return NextResponse.json({ error: "Upload origin is not allowed." }, { status: 403 });
+    return NextResponse.json(
+      { error: "Upload origin is not allowed." },
+      { status: 403 },
+    );
   }
 
-  const clientAddress = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const clientAddress =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const rateLimit = consumeRateLimit(`mux-upload:${clientAddress}`, 5, 60_000);
   if (!rateLimit.allowed) {
     return NextResponse.json(
@@ -45,7 +61,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const credentials = Buffer.from(`${tokenId}:${tokenSecret}`).toString("base64");
+  const credentials = Buffer.from(`${tokenId}:${tokenSecret}`).toString(
+    "base64",
+  );
 
   const response = await fetch("https://api.mux.com/video/v1/uploads", {
     method: "POST",

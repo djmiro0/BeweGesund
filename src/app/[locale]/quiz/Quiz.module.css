@@ -10,16 +10,44 @@
   --quiz-muted: var(--ui-muted);
   --quiz-dim: var(--ui-dim);
   --quiz-accent: var(--page-green);
-  --quiz-accent-strong: color-mix(in srgb, var(--page-green) 78%, var(--page-base));
-  --quiz-accent-shade: color-mix(in srgb, var(--page-green) 70%, var(--page-olive));
+  --quiz-accent-strong: color-mix(
+    in srgb,
+    var(--page-green) 78%,
+    var(--page-base)
+  );
+  --quiz-accent-shade: color-mix(
+    in srgb,
+    var(--page-green) 70%,
+    var(--page-olive)
+  );
   --quiz-action-text: var(--shell-bg);
   --quiz-danger: var(--page-accent);
   --quiz-dialog-bg: var(--ui-bg-alt);
-  --quiz-avatar-start: color-mix(in srgb, var(--page-green) 24%, var(--shell-bg));
-  --quiz-avatar-end: color-mix(in srgb, var(--page-warm) 40%, var(--shell-surface));
-  --quiz-rank-gold: linear-gradient(135deg, var(--page-warm), var(--page-olive));
-  --quiz-rank-silver: linear-gradient(135deg, var(--page-soft), var(--page-warm));
-  --quiz-rank-bronze: linear-gradient(135deg, var(--page-accent), var(--page-olive));
+  --quiz-avatar-start: color-mix(
+    in srgb,
+    var(--page-green) 24%,
+    var(--shell-bg)
+  );
+  --quiz-avatar-end: color-mix(
+    in srgb,
+    var(--page-warm) 40%,
+    var(--shell-surface)
+  );
+  --quiz-rank-gold: linear-gradient(
+    135deg,
+    var(--page-warm),
+    var(--page-olive)
+  );
+  --quiz-rank-silver: linear-gradient(
+    135deg,
+    var(--page-soft),
+    var(--page-warm)
+  );
+  --quiz-rank-bronze: linear-gradient(
+    135deg,
+    var(--page-accent),
+    var(--page-olive)
+  );
   min-height: 100svh;
   max-width: 1280px;
   margin: 0 auto;
@@ -47,9 +75,22 @@
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 70% 4%, rgba(var(--page-green-rgb), 0.16), transparent 24rem),
-    radial-gradient(circle at 20% 38%, rgba(var(--page-warm-rgb), 0.16), transparent 24rem),
-    linear-gradient(180deg, var(--quiz-bg-deep) 0%, var(--quiz-bg-mid) 48%, var(--quiz-bg-low) 100%);
+    radial-gradient(
+      circle at 70% 4%,
+      rgba(var(--page-green-rgb), 0.16),
+      transparent 24rem
+    ),
+    radial-gradient(
+      circle at 20% 38%,
+      rgba(var(--page-warm-rgb), 0.16),
+      transparent 24rem
+    ),
+    linear-gradient(
+      180deg,
+      var(--quiz-bg-deep) 0%,
+      var(--quiz-bg-mid) 48%,
+      var(--quiz-bg-low) 100%
+    );
   content: "";
 }
 
@@ -170,8 +211,11 @@
 .leaderboardPanel,
 .statsRail {
   border: 1px solid rgba(var(--quiz-border-rgb), 0.16);
-  background:
-    linear-gradient(145deg, rgba(var(--quiz-panel-rgb), 0.9), rgba(var(--quiz-panel-deep-rgb), 0.96));
+  background: linear-gradient(
+    145deg,
+    rgba(var(--quiz-panel-rgb), 0.9),
+    rgba(var(--quiz-panel-deep-rgb), 0.96)
+  );
   box-shadow: 0 22px 70px rgba(var(--shell-bg-rgb), 0.34);
 }
 
@@ -179,7 +223,10 @@
   position: relative;
   display: grid;
   min-height: 302px;
-  grid-template-columns: minmax(22rem, 0.95fr) minmax(18rem, 0.95fr) minmax(15rem, 0.56fr);
+  grid-template-columns: minmax(22rem, 0.95fr) minmax(18rem, 0.95fr) minmax(
+      15rem,
+      0.56fr
+    );
   gap: clamp(1rem, 3vw, 1.75rem);
   align-items: center;
   overflow: hidden;
@@ -192,8 +239,18 @@
   inset: -26% 17% -30% 36%;
   background:
     radial-gradient(circle, rgba(var(--page-green-rgb), 0.25), transparent 44%),
-    linear-gradient(112deg, transparent 42%, rgba(var(--page-green-rgb), 0.9) 42.4%, transparent 43.2%),
-    linear-gradient(13deg, transparent 55%, rgba(var(--page-green-rgb), 0.9) 55.4%, transparent 56.1%);
+    linear-gradient(
+      112deg,
+      transparent 42%,
+      rgba(var(--page-green-rgb), 0.9) 42.4%,
+      transparent 43.2%
+    ),
+    linear-gradient(
+      13deg,
+      transparent 55%,
+      rgba(var(--page-green-rgb), 0.9) 55.4%,
+      transparent 56.1%
+    );
   opacity: 0.7;
   content: "";
 }
@@ -261,7 +318,11 @@
   gap: 0.7rem;
   border: 0;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--quiz-accent-strong), var(--quiz-accent-shade));
+  background: linear-gradient(
+    135deg,
+    var(--quiz-accent-strong),
+    var(--quiz-accent-shade)
+  );
   color: var(--quiz-action-text);
   cursor: pointer;
   font: inherit;
@@ -296,7 +357,13 @@
   object-fit: cover;
   object-position: 78% center;
   filter: saturate(0.95) contrast(1.08);
-  mask-image: linear-gradient(90deg, transparent 0%, black 18%, black 80%, transparent 100%);
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    black 18%,
+    black 80%,
+    transparent 100%
+  );
 }
 
 .heroCard {
@@ -555,7 +622,11 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--quiz-accent-strong), var(--quiz-accent-shade));
+  background: linear-gradient(
+    90deg,
+    var(--quiz-accent-strong),
+    var(--quiz-accent-shade)
+  );
   transition: width 0.35s var(--transition);
 }
 
@@ -775,8 +846,16 @@
   border: 1px solid rgba(var(--page-green-rgb), 0.24);
   border-radius: 12px;
   background:
-    radial-gradient(circle at 8% 0%, rgba(var(--page-green-rgb), 0.18), transparent 15rem),
-    linear-gradient(145deg, rgba(var(--quiz-panel-deep-rgb), 0.72), rgba(var(--quiz-panel-rgb), 0.42));
+    radial-gradient(
+      circle at 8% 0%,
+      rgba(var(--page-green-rgb), 0.18),
+      transparent 15rem
+    ),
+    linear-gradient(
+      145deg,
+      rgba(var(--quiz-panel-deep-rgb), 0.72),
+      rgba(var(--quiz-panel-rgb), 0.42)
+    );
   padding: clamp(1rem, 2.4vw, 1.35rem);
 }
 
@@ -785,8 +864,18 @@
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(115deg, transparent 0 52%, rgba(var(--page-green-rgb), 0.12) 52.4%, transparent 53%),
-    linear-gradient(22deg, transparent 0 70%, rgba(var(--page-warm-rgb), 0.11) 70.4%, transparent 71%);
+    linear-gradient(
+      115deg,
+      transparent 0 52%,
+      rgba(var(--page-green-rgb), 0.12) 52.4%,
+      transparent 53%
+    ),
+    linear-gradient(
+      22deg,
+      transparent 0 70%,
+      rgba(var(--page-warm-rgb), 0.11) 70.4%,
+      transparent 71%
+    );
   content: "";
 }
 
@@ -854,8 +943,11 @@
   justify-content: center;
   border: 1px solid rgba(var(--quiz-border-rgb), 0.12);
   border-radius: 12px;
-  background:
-    linear-gradient(145deg, rgba(var(--quiz-text-rgb), 0.1), rgba(var(--quiz-text-rgb), 0.045));
+  background: linear-gradient(
+    145deg,
+    rgba(var(--quiz-text-rgb), 0.1),
+    rgba(var(--quiz-text-rgb), 0.045)
+  );
   color: var(--quiz-heading);
   font-size: 0.82rem;
   font-weight: 900;
@@ -870,7 +962,11 @@
   overflow: hidden;
   border-color: rgba(var(--page-green-rgb), 0.5);
   background:
-    radial-gradient(circle at 84% 20%, rgba(var(--shell-text-rgb), 0.2), transparent 4.6rem),
+    radial-gradient(
+      circle at 84% 20%,
+      rgba(var(--shell-text-rgb), 0.2),
+      transparent 4.6rem
+    ),
     linear-gradient(135deg, var(--quiz-accent-strong), var(--quiz-accent-shade));
   color: var(--quiz-action-text);
   font-size: clamp(1.15rem, 2.4vw, 1.7rem);
@@ -1046,7 +1142,11 @@
   border: 2px solid rgba(var(--page-green-rgb), 0.28);
   border-radius: 999px;
   background:
-    radial-gradient(circle at 35% 30%, rgba(var(--page-base-rgb), 0.35), transparent 24%),
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(var(--page-base-rgb), 0.35),
+      transparent 24%
+    ),
     linear-gradient(135deg, var(--quiz-avatar-start), var(--quiz-avatar-end));
   color: var(--quiz-heading);
   font-size: 0.9rem;
@@ -1206,7 +1306,10 @@
 
   .heroCard {
     grid-column: 1 / -1;
-    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(
+        0,
+        1fr
+      );
   }
 
   .heroCardIcon {

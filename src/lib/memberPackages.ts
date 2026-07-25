@@ -8,7 +8,9 @@ export const packageRank: Record<MemberPackage, number> = {
 };
 
 export function isMemberPackage(value: unknown): value is MemberPackage {
-  return typeof value === "string" && memberPackages.includes(value as MemberPackage);
+  return (
+    typeof value === "string" && memberPackages.includes(value as MemberPackage)
+  );
 }
 
 export function normalizeMemberPackage(value: unknown): MemberPackage {

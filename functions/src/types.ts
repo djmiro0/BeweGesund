@@ -1,4 +1,5 @@
-export type PremiumStatus = "free" | "trialing" | "active" | "past_due" | "canceled";
+export type PremiumStatus =
+  "free" | "trialing" | "active" | "past_due" | "canceled";
 export type MemberPackage = "basic" | "plus";
 
 export interface CompletionPayload {

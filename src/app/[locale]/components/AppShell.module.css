@@ -21,7 +21,11 @@
   border: 1px solid rgba(var(--page-ink-rgb), 0.12);
   border-radius: 999px;
   background:
-    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.96), rgba(var(--page-base-rgb), 0.92)),
+    linear-gradient(
+      180deg,
+      rgba(var(--page-soft-rgb), 0.96),
+      rgba(var(--page-base-rgb), 0.92)
+    ),
     var(--page-soft);
   box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.22);
   color: var(--page-ink);
@@ -178,7 +182,11 @@
   border: 1px solid rgba(var(--page-olive-rgb), 0.26);
   border-radius: 1rem;
   background:
-    linear-gradient(135deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-base-rgb), 0.96)),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-soft-rgb), 0.98),
+      rgba(var(--page-base-rgb), 0.96)
+    ),
     var(--page-soft);
   box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, 0.2);
   color: var(--page-ink);
@@ -188,7 +196,11 @@
 :global(:root[data-theme="dark"]) .cookieBanner {
   border-color: rgba(var(--page-olive-rgb), 0.34);
   background:
-    linear-gradient(135deg, rgba(var(--shell-surface-rgb), 0.98), rgba(var(--shell-bg-alt-rgb), 0.96)),
+    linear-gradient(
+      135deg,
+      rgba(var(--shell-surface-rgb), 0.98),
+      rgba(var(--shell-bg-alt-rgb), 0.96)
+    ),
     var(--shell-bg-alt);
   color: var(--shell-text);
 }
@@ -221,7 +233,9 @@
   line-height: 1.45;
 }
 
-:global(:root[data-theme="dark"]) .cookieBannerCopy p:not(.cookieBannerEyebrow) {
+:global(:root[data-theme="dark"])
+  .cookieBannerCopy
+  p:not(.cookieBannerEyebrow) {
   color: var(--shell-text-muted);
 }
 

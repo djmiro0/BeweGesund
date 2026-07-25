@@ -36,8 +36,7 @@ export default function BannerSection() {
     return () => clearInterval(timer);
   }, [banners.length]);
 
-  const nextBanner = () =>
-    setCurrent((prev) => (prev + 1) % banners.length);
+  const nextBanner = () => setCurrent((prev) => (prev + 1) % banners.length);
   const prevBanner = () =>
     setCurrent((prev) => (prev - 1 + banners.length) % banners.length);
 
@@ -70,7 +69,11 @@ export default function BannerSection() {
                 className={styles.textBox}
                 initial={{ opacity: 0, y: 22 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.16, duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  delay: 0.16,
+                  duration: 0.58,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
               >
                 <h2>{t(`${activeBanner.key}.title`)}</h2>
                 <p>{t(`${activeBanner.key}.subtitle`)}</p>

@@ -45,7 +45,11 @@ function getBaseUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
   const vercelPreviewUrl = process.env.VERCEL_URL;
-  const url = configuredUrl ?? vercelProductionUrl ?? vercelPreviewUrl ?? "https://sbewegesund.com";
+  const url =
+    configuredUrl ??
+    vercelProductionUrl ??
+    vercelPreviewUrl ??
+    "https://sbewegesund.com";
   const cleanUrl = url.endsWith("/") ? url.slice(0, -1) : url;
 
   return cleanUrl.startsWith("http") ? cleanUrl : `https://${cleanUrl}`;

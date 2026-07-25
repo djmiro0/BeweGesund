@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getBlogPosts, getCourses, getMeditationRelaxationItems } from "@/lib/contentful";
+import {
+  getBlogPosts,
+  getCourses,
+  getMeditationRelaxationItems,
+} from "@/lib/contentful";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -10,12 +14,14 @@ export async function GET(request: Request) {
     getMeditationRelaxationItems(locale),
   ]);
 
-  const liveCourseIds = Array.from(new Set(
-    courses
-      .filter((course) => course.isLive)
-      .flatMap((course) => [course.id, course.slug, course.subcategoryKey])
-      .filter(Boolean),
-  ));
+  const liveCourseIds = Array.from(
+    new Set(
+      courses
+        .filter((course) => course.isLive)
+        .flatMap((course) => [course.id, course.slug, course.subcategoryKey])
+        .filter(Boolean),
+    ),
+  );
 
   const workouts = courses
     .filter((course) => course.hasVideo)
@@ -43,5 +49,11 @@ export async function GET(request: Request) {
 
   const recentMeditations = meditationItems.slice(0, 3);
 
-  return NextResponse.json({ liveCourseIds, workouts, recentPosts, meditationItems, recentMeditations });
+  return NextResponse.json({
+    liveCourseIds,
+    workouts,
+    recentPosts,
+    meditationItems,
+    recentMeditations,
+  });
 }
