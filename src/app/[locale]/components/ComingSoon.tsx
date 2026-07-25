@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   ArrowRight,
   CircleCheck,
@@ -29,6 +30,16 @@ export default function ComingSoon({ openAuth }: ComingSoonProps) {
 
   return (
     <main className={styles.comingSoon}>
+      <div className={styles.backgroundMedia} aria-hidden="true">
+        <Image
+          src="/bewegesund-background.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className={styles.backgroundImage}
+        />
+      </div>
       <motion.section
         className={styles.hero}
         initial="hidden"
