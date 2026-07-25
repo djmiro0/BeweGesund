@@ -63,9 +63,12 @@ The function:
 3. Create matching `quizzes/{quizId}` and `quizAnswerKeys/{quizId}` documents.
 4. Open `/de/quiz` or `/en/quiz` and submit with a signed-in user.
 
-## Serbian PDF source
+## PDF source
 
-`functions/scripts/health-quiz-sr.tsv` contains the extracted Serbian questions from `Kviz pitanja i odgovori.pdf`.
-Use `node functions/scripts/import-serbian-health-quiz.cjs --dry-run` to validate the extracted set.
+`functions/scripts/health-quiz-pdf-source-sr.tsv` contains the extracted Serbian source questions from `Kviz pitanja i odgovori.pdf`.
 
-The import script writes `daily-health-knowledge-sr` as a draft quiz by default so it can be reviewed before publishing.
+Do not import this source file directly into app-facing quizzes. User-visible quiz documents must be localized:
+
+- German users should receive a quiz document with `locale: "de"`.
+- English users should receive a quiz document with `locale: "en"`.
+- The app filters active quiz documents by the current locale before selecting random questions.
