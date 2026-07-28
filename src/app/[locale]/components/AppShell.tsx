@@ -3,6 +3,7 @@
 import Header from "@/app/components/Header/Header";
 import Footer from "@/app/components/Footer/Footer";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { signOut } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
@@ -141,7 +142,18 @@ export function ShellFrame({
   children: React.ReactNode;
   locale: string;
 }) {
-  const { user, profile, loading, isAuthOpen, openAuth, closeAuth } = useAuth();
+  const {
+    user,
+    profile,
+    loading,
+    isAuthOpen,
+    isCheckoutRedirecting,
+    openAuth,
+    closeAuth,
+    beginCheckoutRedirect,
+    cancelCheckoutRedirect,
+  } = useAuth();
+  const paymentT = useTranslations("paymentRequired");
   const pathname = usePathname();
   const isAuthActionRoute = pathname.startsWith(`/${locale}/auth/action`);
   const isGoogleUser =
@@ -176,6 +188,10 @@ export function ShellFrame({
     return <LoadingScreen />;
   }
 
+  if (isCheckoutRedirecting) {
+    return <LoadingScreen text={paymentT("processing")} />;
+  }
+
   const showComingSoon = isComingSoonEnabled();
 
   if (!user && !isAuthActionRoute && showComingSoon) {
@@ -189,7 +205,12 @@ export function ShellFrame({
           launchMode={showComingSoon}
         />
         <ComingSoon openAuth={openAuth} />
-        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={closeAuth}
+          onCheckoutRedirectStart={beginCheckoutRedirect}
+          onCheckoutRedirectError={cancelCheckoutRedirect}
+        />
         <NavigationFeedback />
         <CookieConsentBanner locale={locale} />
       </>
@@ -209,7 +230,13 @@ export function ShellFrame({
           profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
           openAuth={openAuth}
         />
-        <AuthModal isOpen onClose={closeAuth} requiresProfileSetup />
+        <AuthModal
+          isOpen
+          onClose={closeAuth}
+          requiresProfileSetup
+          onCheckoutRedirectStart={beginCheckoutRedirect}
+          onCheckoutRedirectError={cancelCheckoutRedirect}
+        />
         <NavigationFeedback />
         <CookieConsentBanner locale={locale} />
       </>
@@ -229,7 +256,12 @@ export function ShellFrame({
           profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
           openAuth={openAuth}
         />
-        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={closeAuth}
+          onCheckoutRedirectStart={beginCheckoutRedirect}
+          onCheckoutRedirectError={cancelCheckoutRedirect}
+        />
         <NavigationFeedback />
         <main className={styles.main}>
           <PaymentRequired locale={locale} />
@@ -256,6 +288,8 @@ export function ShellFrame({
         isOpen={isAuthOpen || requiresProfileSetup}
         onClose={closeAuth}
         requiresProfileSetup={requiresProfileSetup}
+        onCheckoutRedirectStart={beginCheckoutRedirect}
+        onCheckoutRedirectError={cancelCheckoutRedirect}
       />
       <NavigationFeedback />
       <main className={styles.main}>{children}</main>

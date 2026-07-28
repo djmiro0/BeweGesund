@@ -36,8 +36,11 @@ const mocks = vi.hoisted(() => ({
     },
     loading: false,
     isAuthOpen: false,
+    isCheckoutRedirecting: false,
     openAuth: vi.fn(),
     closeAuth: vi.fn(),
+    beginCheckoutRedirect: vi.fn(),
+    cancelCheckoutRedirect: vi.fn(),
   },
 }));
 
@@ -59,7 +62,12 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => (key === "loading" ? "Loading" : key),
+  useTranslations: () => (key: string) =>
+    key === "loading"
+      ? "Loading"
+      : key === "processing"
+        ? "Opening Stripe"
+        : key,
 }));
 
 vi.mock("./AuthProvider", () => ({
@@ -107,6 +115,7 @@ describe("ShellFrame launch routing", () => {
     mocks.auth.profile = null;
     mocks.auth.appPreferences = { theme: "system" };
     mocks.auth.loading = false;
+    mocks.auth.isCheckoutRedirecting = false;
     mocks.callable.mockReset();
     mocks.callable.mockResolvedValue({ data: { ok: true } });
     mocks.httpsCallable.mockReset();
@@ -224,6 +233,20 @@ describe("ShellFrame launch routing", () => {
       "data-launch-mode",
       "false",
     );
+  });
+
+  it("shows a full loading screen while Stripe checkout is opening", () => {
+    mocks.auth.isCheckoutRedirecting = true;
+
+    render(
+      <ShellFrame locale="de">
+        <div data-testid="page-content" />
+      </ShellFrame>,
+    );
+
+    expect(screen.getByText("Opening Stripe")).toBeInTheDocument();
+    expect(screen.queryByTestId("auth-modal")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("page-content")).not.toBeInTheDocument();
   });
 
   it("renders the application for authenticated users", () => {

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { httpsCallable } from "firebase/functions";
 import { LockKeyhole, PlayCircle } from "lucide-react";
+import { functions } from "../../../../../firebase.config";
 import {
   usePlaybackReward,
   type ContentRewardTarget,
@@ -16,6 +18,7 @@ interface ProtectedMuxPlayerProps {
   locale: string;
   poster?: string | null;
   title: string;
+  trainerId?: string;
   autoPlay?: boolean;
   paused?: boolean;
   reward?: Omit<ContentRewardTarget, "labels" | "points">;
@@ -75,6 +78,7 @@ export default function ProtectedMuxPlayer({
   locale,
   poster,
   title,
+  trainerId,
   autoPlay = false,
   paused = false,
   reward,
@@ -91,6 +95,8 @@ export default function ProtectedMuxPlayer({
     number | undefined
   >(reward?.durationSeconds);
   const playerRef = useRef<HTMLElement | null>(null);
+  const qualifiedViewRecordedRef = useRef(false);
+  const watchedSecondsRef = useRef(0);
   const fallbackStyle = poster
     ? {
         backgroundImage: `linear-gradient(135deg, rgba(11, 18, 32, 0.78), rgba(155, 43, 66, 0.68)), url(${poster})`,
@@ -174,6 +180,66 @@ export default function ProtectedMuxPlayer({
     rewardTarget,
     isPlaying && Boolean(playbackToken) && !paused,
   );
+
+  useEffect(() => {
+    qualifiedViewRecordedRef.current = false;
+    watchedSecondsRef.current = 0;
+  }, [playbackId]);
+
+  useEffect(() => {
+    if (!user || !playbackId || !playbackToken || !isPlaying || paused)
+      return undefined;
+
+    const durationSeconds = mediaDurationSeconds;
+    const requiredSeconds = durationSeconds
+      ? Math.max(1, Math.min(30, Math.ceil(durationSeconds * 0.25)))
+      : 30;
+    const contentId =
+      reward?.contentId ??
+      `${contentType === "course" ? "course" : "relaxation"}_${locale}_${courseSlug}`;
+
+    const intervalId = window.setInterval(() => {
+      if (
+        document.visibilityState !== "visible" ||
+        qualifiedViewRecordedRef.current
+      )
+        return;
+
+      watchedSecondsRef.current += 1;
+      if (watchedSecondsRef.current < requiredSeconds) return;
+
+      qualifiedViewRecordedRef.current = true;
+      const recordQualifiedVideoView = httpsCallable(
+        functions,
+        "recordQualifiedVideoView",
+      );
+      void recordQualifiedVideoView({
+        contentId,
+        contentType:
+          contentType === "course"
+            ? ("course" as const)
+            : ("relaxation" as const),
+        playbackId,
+        watchedSeconds: watchedSecondsRef.current,
+        durationSeconds,
+      }).catch(() => {
+        qualifiedViewRecordedRef.current = false;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [
+    contentType,
+    courseSlug,
+    isPlaying,
+    locale,
+    mediaDurationSeconds,
+    paused,
+    playbackId,
+    playbackToken,
+    reward?.contentId,
+    user,
+  ]);
 
   useEffect(() => {
     const player = playerRef.current;
@@ -272,7 +338,13 @@ export default function ProtectedMuxPlayer({
       playback-id={playbackId}
       playback-token={playbackToken}
       poster={poster ?? undefined}
+      metadata-video-id={
+        reward?.contentId ??
+        `${contentType === "course" ? "course" : "relaxation"}_${locale}_${courseSlug}`
+      }
       metadata-video-title={title}
+      metadata-viewer-user-id={user.uid}
+      metadata-custom-1={trainerId}
       stream-type="on-demand"
       auto-play={
         autoPlay ? "true" : appPreferences.videoAutoplay ? "muted" : undefined

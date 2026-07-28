@@ -401,6 +401,7 @@ export default async function CourseDetailPage({
           locale={locale}
           poster={course.posterImage}
           title={courseTitle}
+          trainerId={course.coach}
           reward={rewardTarget}
           messages={{
             videoPending: t("player.videoPending"),

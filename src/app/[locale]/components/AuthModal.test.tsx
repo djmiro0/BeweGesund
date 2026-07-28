@@ -361,6 +361,8 @@ describe("AuthModal Google sign-in", () => {
   it("opens checkout after email registration and anamnesis", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
+    const onCheckoutRedirectStart = vi.fn();
+    const onCheckoutRedirectError = vi.fn();
     mocks.createUserWithEmailAndPassword.mockResolvedValue({
       user: {
         uid: "email-user",
@@ -374,7 +376,14 @@ describe("AuthModal Google sign-in", () => {
     mocks.setDoc.mockResolvedValue(undefined);
     mocks.signOut.mockResolvedValue(undefined);
 
-    render(<AuthModal isOpen onClose={onClose} />);
+    render(
+      <AuthModal
+        isOpen
+        onClose={onClose}
+        onCheckoutRedirectStart={onCheckoutRedirectStart}
+        onCheckoutRedirectError={onCheckoutRedirectError}
+      />,
+    );
     await user.click(screen.getByRole("button", { name: "Create an account" }));
 
     await user.type(screen.getByPlaceholderText("First name"), "New");
@@ -423,6 +432,8 @@ describe("AuthModal Google sign-in", () => {
     );
 
     expect(mocks.signOut).not.toHaveBeenCalled();
+    expect(onCheckoutRedirectStart).toHaveBeenCalledOnce();
+    expect(onCheckoutRedirectError).not.toHaveBeenCalled();
     expect(mocks.callable).toHaveBeenCalledWith({
       locale: "en",
       memberPackage: "basic",

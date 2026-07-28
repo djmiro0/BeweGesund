@@ -32,10 +32,10 @@ export default function ComingSoon({ openAuth }: ComingSoonProps) {
     <main className={styles.comingSoon}>
       <div className={styles.backgroundMedia} aria-hidden="true">
         <Image
-          src="/bewegesund-background.png"
+          src="/bewegesund-background.webp"
           alt=""
           fill
-          priority
+          preload
           sizes="100vw"
           className={styles.backgroundImage}
         />

@@ -170,6 +170,7 @@ export default async function MeditationRelaxationDetailPage({
           locale={locale}
           poster={item.posterImage}
           title={item.title}
+          trainerId={item.coach}
           reward={rewardTarget}
           messages={{
             videoPending: t("player.videoPending"),

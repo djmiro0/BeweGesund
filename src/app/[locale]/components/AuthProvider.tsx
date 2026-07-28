@@ -23,8 +23,11 @@ interface AuthContextValue {
   profile: UserProfileData | null;
   appPreferences: AppPreferences;
   isAuthOpen: boolean;
+  isCheckoutRedirecting: boolean;
   openAuth: () => void;
   closeAuth: () => void;
+  beginCheckoutRedirect: () => void;
+  cancelCheckoutRedirect: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -38,6 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     defaultAppPreferences,
   );
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isCheckoutRedirecting, setIsCheckoutRedirecting] = useState(false);
 
   useEffect(() => {
     let unsubscribeProfile: (() => void) | undefined;
@@ -100,10 +104,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       profile,
       appPreferences,
       isAuthOpen,
+      isCheckoutRedirecting,
       openAuth: () => setIsAuthOpen(true),
       closeAuth: () => setIsAuthOpen(false),
+      beginCheckoutRedirect: () => setIsCheckoutRedirecting(true),
+      cancelCheckoutRedirect: () => setIsCheckoutRedirecting(false),
     }),
-    [user, loading, memberPackage, profile, appPreferences, isAuthOpen],
+    [
+      user,
+      loading,
+      memberPackage,
+      profile,
+      appPreferences,
+      isAuthOpen,
+      isCheckoutRedirecting,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

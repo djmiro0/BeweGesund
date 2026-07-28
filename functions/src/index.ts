@@ -2,7 +2,7 @@ import { HttpsError, onCall, onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { logger } from "firebase-functions";
 import { getAuth } from "firebase-admin/auth";
-import { randomBytes } from "crypto";
+import { createHash, randomBytes } from "crypto";
 import Stripe from "stripe";
 import {
   db,
@@ -26,7 +26,10 @@ import {
   stripeSecretKey,
   stripeWebhookSecret,
 } from "./config";
-import { validateSubmittedQuizSet } from "./quizAttempt";
+import {
+  QuizAttemptValidationError,
+  validateSubmittedQuizSet,
+} from "./quizAttempt";
 import type {
   CompletionPayload,
   CheckQuizAnswerPayload,
@@ -35,6 +38,7 @@ import type {
   ContentRewardType,
   MemberPackage,
   PremiumStatus,
+  QualifiedVideoViewPayload,
   QuizAnswerPayload,
   QuizAttemptPayload,
   RewardClaimPayload,
@@ -56,7 +60,11 @@ const MIN_QUIZ_QUESTION_SECONDS = 30;
 const CONTENT_PROGRESS_COLLECTION = "contentProgress";
 const DAILY_REWARDS_COLLECTION = "dailyRewards";
 const POINTS_LEDGER_COLLECTION = "pointsLedger";
+const VIDEO_ANALYTICS_COLLECTION = "videoAnalytics";
+const QUALIFIED_VIDEO_VIEWS_COLLECTION = "qualifiedVideoViews";
 const MAX_ENGAGEMENT_SECONDS_PER_UPDATE = 30;
+const QUALIFIED_VIEW_SECONDS = 30;
+const QUALIFIED_VIEW_DURATION_RATIO = 0.25;
 const MONTHLY_POINTS_FIELDS = ["monthlyPoints", "monthlyScore"];
 type StripeClient = InstanceType<typeof Stripe>;
 type StripeSubscription = Awaited<
@@ -299,6 +307,24 @@ function getRewardState(
 
 function getContentProgressRef(uid: string, contentId: string) {
   return userRef(uid).collection(CONTENT_PROGRESS_COLLECTION).doc(contentId);
+}
+
+function getQualifiedViewRequiredSeconds(durationSeconds?: number) {
+  if (!durationSeconds) return QUALIFIED_VIEW_SECONDS;
+
+  return Math.max(
+    1,
+    Math.min(
+      QUALIFIED_VIEW_SECONDS,
+      Math.ceil(durationSeconds * QUALIFIED_VIEW_DURATION_RATIO),
+    ),
+  );
+}
+
+function qualifiedViewId(uid: string, contentId: string, date: string) {
+  return createHash("sha256")
+    .update(`${uid}:${contentId}:${date}`)
+    .digest("hex");
 }
 
 function buildUserPointIncrements(points: number) {
@@ -1141,6 +1167,100 @@ export const updateContentEngagement = onCall(
   },
 );
 
+export const recordQualifiedVideoView = onCall(
+  appCheckCallableOptions,
+  async (request) => {
+    const uid = requireAuth(request.auth);
+    const payload = request.data as QualifiedVideoViewPayload;
+    const contentId = requireStringId(payload.contentId, "contentId");
+    const contentType = requireContentType(payload.contentType);
+    const playbackId = requireStringId(payload.playbackId, "playbackId");
+
+    if (contentType !== "course" && contentType !== "relaxation") {
+      throw new HttpsError(
+        "invalid-argument",
+        "Only video content can record a qualified view.",
+      );
+    }
+
+    const watchedSeconds =
+      typeof payload.watchedSeconds === "number" &&
+      Number.isFinite(payload.watchedSeconds)
+        ? Math.max(0, Math.floor(payload.watchedSeconds))
+        : 0;
+    const durationSeconds =
+      typeof payload.durationSeconds === "number" &&
+      Number.isFinite(payload.durationSeconds)
+        ? Math.max(1, Math.floor(payload.durationSeconds))
+        : undefined;
+    const requiredSeconds =
+      getQualifiedViewRequiredSeconds(durationSeconds);
+
+    if (watchedSeconds < requiredSeconds) {
+      throw new HttpsError(
+        "failed-precondition",
+        "The video has not been watched long enough.",
+      );
+    }
+
+    await assertContentExists(contentId, contentType);
+
+    const date = todayIsoDate();
+    const viewId = qualifiedViewId(uid, contentId, date);
+    const viewRef = db
+      .collection(QUALIFIED_VIDEO_VIEWS_COLLECTION)
+      .doc(viewId);
+    const analyticsRef = db
+      .collection(VIDEO_ANALYTICS_COLLECTION)
+      .doc(contentId);
+
+    return db.runTransaction(async (transaction) => {
+      const existingView = await transaction.get(viewRef);
+
+      if (existingView.exists) {
+        return {
+          ok: true,
+          qualified: true,
+          counted: false,
+          viewId,
+        };
+      }
+
+      transaction.create(viewRef, {
+        userId: uid,
+        contentId,
+        contentType,
+        playbackId,
+        date,
+        watchedSeconds,
+        durationSeconds: durationSeconds ?? null,
+        requiredSeconds,
+        qualificationPolicy: "DAILY_UNIQUE_25_PERCENT_OR_30_SECONDS_V1",
+        qualifiedAt: serverTimestamp(),
+      });
+      transaction.set(
+        analyticsRef,
+        {
+          contentId,
+          contentType,
+          playbackId,
+          qualifiedViews: increment(1),
+          lastQualifiedViewAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+
+      return {
+        ok: true,
+        qualified: true,
+        counted: true,
+        viewId,
+      };
+    });
+  },
+);
+
 export const claimContentReward = onCall(
   appCheckCallableOptions,
   async (request) => {
@@ -1477,18 +1597,20 @@ export const submitQuizAttempt = onCall(
         DAILY_QUIZ_QUESTION_COUNT,
         questions.length,
       );
-      if (answers.length !== expectedQuestionCount) {
-        throw new HttpsError(
-          "invalid-argument",
-          `Quiz attempt must contain ${expectedQuestionCount} answers.`,
+      let submittedQuestionIds: Set<string>;
+      try {
+        submittedQuestionIds = validateSubmittedQuizSet(
+          questions,
+          answers,
+          expectedQuestionCount,
         );
-      }
+      } catch (error) {
+        if (error instanceof QuizAttemptValidationError) {
+          throw new HttpsError("invalid-argument", error.message);
+        }
 
-      const submittedQuestionIds = validateSubmittedQuizSet(
-        questions,
-        answers,
-        expectedQuestionCount,
-      );
+        throw error;
+      }
       const submittedByQuestion = new Map(
         answers.map((answer) => [answer.questionId, answer]),
       );

@@ -26,6 +26,14 @@ export interface ContentRewardClaimPayload {
   contentType?: ContentRewardType;
 }
 
+export interface QualifiedVideoViewPayload {
+  contentId?: string;
+  contentType?: "course" | "relaxation";
+  playbackId?: string;
+  watchedSeconds?: number;
+  durationSeconds?: number;
+}
+
 export interface StripeCheckoutPayload {
   locale?: "de" | "en";
   memberPackage?: MemberPackage;

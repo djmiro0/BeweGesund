@@ -123,6 +123,7 @@ export default function RelaxationMusicPlaylist({
               locale={locale}
               poster={activeVideo.posterImage}
               title={activeVideo.title}
+              trainerId={activeVideo.coach}
               autoPlay={isSequencePlaying}
               paused={!isSequencePlaying}
               onEnded={isSequencePlaying ? () => playNext(false) : undefined}

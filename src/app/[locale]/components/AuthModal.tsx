@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import { auth, db, functions } from "../../../../firebase.config";
+import {useEffect, useState} from "react";
+import {useLocale, useTranslations} from "next-intl";
+import {auth, db, functions} from "../../../../firebase.config";
 import {
+  type AuthError,
   createUserWithEmailAndPassword,
   deleteUser,
   GoogleAuthProvider,
@@ -12,34 +13,21 @@ import {
   signOut,
   updateProfile,
   type User,
-  type AuthError,
 } from "firebase/auth";
-import {
-  deleteDoc,
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
-import { httpsCallable } from "firebase/functions";
-import {
-  ArrowLeft,
-  Check,
-  Eye,
-  EyeOff,
-  LoaderCircle,
-  Mail,
-  X,
-} from "lucide-react";
-import type { MemberPackage } from "@/data";
-import { memberPackages } from "@/lib/memberPackages";
-import { getAuthUserPhotoURL, type UserGender } from "@/lib/userProfile";
+import {deleteDoc, doc, getDoc, serverTimestamp, setDoc,} from "firebase/firestore";
+import {httpsCallable} from "firebase/functions";
+import {ArrowLeft, Check, Eye, EyeOff, LoaderCircle, Mail, X,} from "lucide-react";
+import type {MemberPackage} from "@/data";
+import {memberPackages} from "@/lib/memberPackages";
+import {getAuthUserPhotoURL, type UserGender} from "@/lib/userProfile";
 import authTheme from "./AuthTheme.module.css";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   requiresProfileSetup?: boolean;
+  onCheckoutRedirectStart?: () => void;
+  onCheckoutRedirectError?: () => void;
 }
 
 interface CreateUserProfilePayload {
@@ -222,11 +210,9 @@ function toggleMultiSelect(
     return current.includes(value) ? [] : [value];
   }
 
-  const next = current.includes(value)
-    ? current.filter((item) => item !== value)
-    : [...current.filter((item) => item !== exclusiveValue), value];
-
-  return next;
+  return current.includes(value)
+      ? current.filter((item) => item !== value)
+      : [...current.filter((item) => item !== exclusiveValue), value];
 }
 
 async function saveUserProfile(uid: string, payload: CreateUserProfilePayload) {
@@ -276,6 +262,8 @@ export default function AuthModal({
   isOpen,
   onClose,
   requiresProfileSetup = false,
+  onCheckoutRedirectStart,
+  onCheckoutRedirectError,
 }: AuthModalProps) {
   const t = useTranslations("auth");
   const packageT = useTranslations("packages");
@@ -707,6 +695,7 @@ export default function AuthModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    let checkoutRedirectStarted = false;
     setIsSubmitting(true);
     setErrorMessage("");
     setAuthErrorAction(null);
@@ -742,6 +731,9 @@ export default function AuthModal({
           setErrorMessage(`${t("errorPrefix")} ${t("healthConsentRequired")}`);
           return;
         }
+
+        onCheckoutRedirectStart?.();
+        checkoutRedirectStarted = true;
 
         if (isGoogleOnboarding) {
           const googleUser = auth.currentUser;
@@ -817,6 +809,7 @@ export default function AuthModal({
       resetForm();
       onClose();
     } catch (error: unknown) {
+      if (checkoutRedirectStarted) onCheckoutRedirectError?.();
       const isEmailAlreadyInUse = isEmailAlreadyInUseError(error);
 
       if (!isEmailAlreadyInUse) {
