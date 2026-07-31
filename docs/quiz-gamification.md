@@ -44,13 +44,14 @@ Private answer keys live in `quizAnswerKeys/{quizId}`. Firestore rules do not ex
 
 ## Submit flow
 
-The app reads published `quizzes` documents, opens a deterministic daily set of up to 5 questions, and sends selected answers to the callable function `submitQuizAttempt`.
+The app reads published `quizzes` documents, opens a random set of up to 5 questions, avoids recently used local combinations where possible, and sends selected answers to the callable function `submitQuizAttempt`.
 
 The function:
 
 - requires Firebase Auth and App Check
 - validates that the quiz is published and currently available
-- compares the daily answers against `quizAnswerKeys/{quizId}`
+- compares submitted answers against `quizAnswerKeys/{quizId}`
+- validates that the submitted question IDs and option IDs belong to the quiz
 - stores the result in `users/{uid}/quizAttempts/{quizId}_{YYYY-MM-DD}`
 - updates `quizLeaderboards/{monthlyPeriod}/entries/{uid}`
 - increments user `xp`, `points`, `weeklyScore`, and `monthlyScore`
@@ -61,3 +62,13 @@ The function:
 2. Deploy functions so `submitQuizAttempt` exists.
 3. Create matching `quizzes/{quizId}` and `quizAnswerKeys/{quizId}` documents.
 4. Open `/de/quiz` or `/en/quiz` and submit with a signed-in user.
+
+## PDF source
+
+`functions/scripts/health-quiz-pdf-source-sr.tsv` contains the extracted Serbian source questions from `Kviz pitanja i odgovori.pdf`.
+
+Do not import this source file directly into app-facing quizzes. User-visible quiz documents must be localized:
+
+- German users should receive a quiz document with `locale: "de"`.
+- English users should receive a quiz document with `locale: "en"`.
+- The app filters active quiz documents by the current locale before selecting random questions.

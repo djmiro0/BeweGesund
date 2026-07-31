@@ -2,7 +2,14 @@
 
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
-import { Clock, Pause, Play, ShieldCheck, SkipBack, SkipForward } from "lucide-react";
+import {
+  Clock,
+  Pause,
+  Play,
+  ShieldCheck,
+  SkipBack,
+  SkipForward,
+} from "lucide-react";
 import type { MeditationRelaxationItem } from "@/lib/contentful";
 import ProtectedMuxPlayer from "../../courses/[slug]/ProtectedMuxPlayer";
 import styles from "../Relaxation.module.css";
@@ -46,7 +53,10 @@ export default function RelaxationMusicPlaylist({
   copy,
   playerMessages,
 }: RelaxationMusicPlaylistProps) {
-  const playableVideos = useMemo(() => videos.filter((video) => video.muxPlaybackId), [videos]);
+  const playableVideos = useMemo(
+    () => videos.filter((video) => video.muxPlaybackId),
+    [videos],
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [isSequencePlaying, setIsSequencePlaying] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -69,33 +79,42 @@ export default function RelaxationMusicPlaylist({
     setActiveIndex(index);
   };
 
-  const playNext = useCallback((wrap = false) => {
-    setActiveIndex((currentIndex) => {
-      const nextIndex = currentIndex + 1;
+  const playNext = useCallback(
+    (wrap = false) => {
+      setActiveIndex((currentIndex) => {
+        const nextIndex = currentIndex + 1;
 
-      if (nextIndex >= playableVideos.length) {
-        if (wrap) return 0;
-        setIsSequencePlaying(false);
-        return currentIndex;
-      }
+        if (nextIndex >= playableVideos.length) {
+          if (wrap) return 0;
+          setIsSequencePlaying(false);
+          return currentIndex;
+        }
 
-      return nextIndex;
-    });
-  }, [playableVideos.length]);
+        return nextIndex;
+      });
+    },
+    [playableVideos.length],
+  );
 
   const playPrevious = () => {
-    setActiveIndex((currentIndex) => (
-      currentIndex <= 0 ? playableVideos.length - 1 : currentIndex - 1
-    ));
+    setActiveIndex((currentIndex) =>
+      currentIndex <= 0 ? playableVideos.length - 1 : currentIndex - 1,
+    );
   };
 
   if (!playableVideos.length) return null;
 
   return isExpanded ? (
-    <section className={`${styles.musicPlaylist} ${styles.musicPlaylistExpanded}`} aria-label={copy.title}>
+    <section
+      className={`${styles.musicPlaylist} ${styles.musicPlaylistExpanded}`}
+      aria-label={copy.title}
+    >
       <div className={styles.musicPlaylistLayout}>
         <div className={styles.musicPlaylistMain}>
-          <section className={styles.musicPlaylistPlayer} aria-label={activeVideo.title}>
+          <section
+            className={styles.musicPlaylistPlayer}
+            aria-label={activeVideo.title}
+          >
             <ProtectedMuxPlayer
               key={activeVideo.id}
               playbackId={activeVideo.muxPlaybackId}
@@ -104,6 +123,7 @@ export default function RelaxationMusicPlaylist({
               locale={locale}
               poster={activeVideo.posterImage}
               title={activeVideo.title}
+              trainerId={activeVideo.coach}
               autoPlay={isSequencePlaying}
               paused={!isSequencePlaying}
               onEnded={isSequencePlaying ? () => playNext(false) : undefined}
@@ -114,7 +134,11 @@ export default function RelaxationMusicPlaylist({
           </section>
 
           <div className={styles.musicPlaylistControls}>
-            <button type="button" onClick={playPrevious} data-testid="music-previous">
+            <button
+              type="button"
+              onClick={playPrevious}
+              data-testid="music-previous"
+            >
               <SkipBack size={18} />
               {copy.previous}
             </button>
@@ -122,12 +146,18 @@ export default function RelaxationMusicPlaylist({
               type="button"
               className={`${styles.musicPlaylistPrimaryControl} ${isSequencePlaying ? styles.musicPlaylistStopControl : ""}`}
               data-testid="music-play-all"
-              onClick={() => (isSequencePlaying ? stopSequence() : playFrom(activeIndex, true))}
+              onClick={() =>
+                isSequencePlaying ? stopSequence() : playFrom(activeIndex, true)
+              }
             >
               {isSequencePlaying ? <Pause size={18} /> : <Play size={18} />}
               {isSequencePlaying ? copy.stopAll : copy.playAll}
             </button>
-            <button type="button" onClick={() => playNext(true)} data-testid="music-next">
+            <button
+              type="button"
+              onClick={() => playNext(true)}
+              data-testid="music-next"
+            >
               <SkipForward size={18} />
               {copy.next}
             </button>
@@ -168,8 +198,14 @@ export default function RelaxationMusicPlaylist({
                     </span>
                   </span>
                 </span>
-                <span className={`${styles.musicQueueAction} ${isActive && isSequencePlaying ? styles.musicQueueActionPlaying : ""}`}>
-                  {isActive && isSequencePlaying ? <Pause size={16} /> : <Play size={16} />}
+                <span
+                  className={`${styles.musicQueueAction} ${isActive && isSequencePlaying ? styles.musicQueueActionPlaying : ""}`}
+                >
+                  {isActive && isSequencePlaying ? (
+                    <Pause size={16} />
+                  ) : (
+                    <Play size={16} />
+                  )}
                   {isActive && isSequencePlaying ? copy.playing : copy.play}
                 </span>
               </button>
@@ -179,7 +215,10 @@ export default function RelaxationMusicPlaylist({
       </div>
     </section>
   ) : (
-    <section className={`${styles.musicPlaylist} ${styles.musicPlaylistGrid}`} aria-label={copy.title}>
+    <section
+      className={`${styles.musicPlaylist} ${styles.musicPlaylistGrid}`}
+      aria-label={copy.title}
+    >
       <div className={styles.musicGridHeader}>
         <button
           type="button"
@@ -203,7 +242,12 @@ export default function RelaxationMusicPlaylist({
           >
             <span className={styles.musicVideoTilePoster}>
               {video.posterImage ? (
-                <Image src={video.posterImage} alt="" fill sizes="(max-width: 720px) 100vw, 33vw" />
+                <Image
+                  src={video.posterImage}
+                  alt=""
+                  fill
+                  sizes="(max-width: 720px) 100vw, 33vw"
+                />
               ) : (
                 <Play size={26} />
               )}

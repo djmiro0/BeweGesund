@@ -5,9 +5,22 @@
 
 .blogsPage {
   --blogs-bg:
-    radial-gradient(circle at 14% 10%, rgba(var(--page-accent-rgb), 0.14), transparent 21rem),
-    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.12), transparent 24rem),
-    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 46%, var(--page-cream-1) 100%);
+    radial-gradient(
+      circle at 14% 10%,
+      rgba(var(--page-accent-rgb), 0.14),
+      transparent 21rem
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(var(--page-olive-rgb), 0.12),
+      transparent 24rem
+    ),
+    linear-gradient(
+      180deg,
+      var(--page-cream-1) 0%,
+      var(--page-cream-2) 46%,
+      var(--page-cream-1) 100%
+    );
   --blogs-panel: rgba(var(--page-soft-rgb), 0.72);
   --blogs-panel-strong: rgba(var(--page-soft-rgb), 0.9);
   --blogs-border: var(--page-border);
@@ -25,8 +38,16 @@
 
 :global(:root[data-theme="dark"]) .blogsPage {
   --blogs-bg:
-    radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.2), transparent 21rem),
-    radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.2), transparent 24rem),
+    radial-gradient(
+      circle at 14% 10%,
+      rgba(17, 119, 139, 0.2),
+      transparent 21rem
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(27, 72, 101, 0.2),
+      transparent 24rem
+    ),
     linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
   --blogs-panel: rgba(255, 255, 255, 0.055);
   --blogs-panel-strong: rgba(255, 255, 255, 0.07);
@@ -71,7 +92,6 @@
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: 0;
-  text-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.32);
   text-transform: uppercase;
 }
 
@@ -320,7 +340,7 @@
 .readLink,
 .backLink {
   width: fit-content;
-  color: #b5d83d;
+  color: var(--tertiary);
   font-size: 0.68rem;
   font-weight: 950;
   margin-top: 0.82rem;
@@ -588,7 +608,11 @@
   border: 1px solid var(--ui-border);
   border-radius: 0.5rem;
   background:
-    radial-gradient(circle at 8% 10%, rgba(var(--page-olive-rgb), 0.15), transparent 12rem),
+    radial-gradient(
+      circle at 8% 10%,
+      rgba(var(--page-olive-rgb), 0.15),
+      transparent 12rem
+    ),
     var(--ui-bg-alt);
   padding: 1rem;
 }
@@ -864,10 +888,10 @@
   }
 
   .articleImageWrap {
-   max-width: 100%;
+    max-width: 100%;
   }
 
-  .postImageLink{
+  .postImageLink {
     max-width: 100%;
   }
 

@@ -26,8 +26,12 @@ interface RelaxationMusicPlayerProps {
 }
 
 function createAmbientSound() {
-  const AudioContextConstructor = window.AudioContext
-    || (window as Window & typeof globalThis & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+  const AudioContextConstructor =
+    window.AudioContext ||
+    (
+      window as Window &
+        typeof globalThis & { webkitAudioContext: typeof AudioContext }
+    ).webkitAudioContext;
   const audioContext = new AudioContextConstructor();
   const output = audioContext.createGain();
   const filter = audioContext.createBiquadFilter();
@@ -57,7 +61,9 @@ function createAmbientSound() {
   };
 }
 
-export default function RelaxationMusicPlayer({ copy }: RelaxationMusicPlayerProps) {
+export default function RelaxationMusicPlayer({
+  copy,
+}: RelaxationMusicPlayerProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [playAll, setPlayAll] = useState(false);
   const soundRef = useRef<ReturnType<typeof createAmbientSound> | null>(null);
@@ -92,13 +98,19 @@ export default function RelaxationMusicPlayer({ copy }: RelaxationMusicPlayerPro
     }, durationMs);
   };
 
-  useEffect(() => () => {
-    soundRef.current?.stop();
-    if (timerRef.current) window.clearTimeout(timerRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      soundRef.current?.stop();
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+    },
+    [],
+  );
 
   return (
-    <section className={styles.musicPlayer} aria-labelledby="relaxation-music-player">
+    <section
+      className={styles.musicPlayer}
+      aria-labelledby="relaxation-music-player"
+    >
       <div className={styles.sectionHeading}>
         <div>
           <p className={styles.eyebrow}>{copy.generated}</p>
@@ -119,17 +131,27 @@ export default function RelaxationMusicPlayer({ copy }: RelaxationMusicPlayerPro
           const isActive = activeIndex === index;
 
           return (
-            <article key={option.minutes} className={`${styles.musicTrack} ${isActive ? styles.musicTrackActive : ""}`}>
+            <article
+              key={option.minutes}
+              className={`${styles.musicTrack} ${isActive ? styles.musicTrackActive : ""}`}
+            >
               <div>
-                <span>{copy.session.replace("{minutes}", String(option.minutes))}</span>
+                <span>
+                  {copy.session.replace("{minutes}", String(option.minutes))}
+                </span>
                 <h3>{option.title}</h3>
                 <p>{option.description}</p>
               </div>
               <ul>
-                {option.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
+                {option.benefits.map((benefit) => (
+                  <li key={benefit}>{benefit}</li>
+                ))}
               </ul>
               <p className={styles.bestFor}>{option.bestFor}</p>
-              <button type="button" onClick={() => (isActive ? stop() : play(index))}>
+              <button
+                type="button"
+                onClick={() => (isActive ? stop() : play(index))}
+              >
                 {isActive ? <Pause size={16} /> : <Play size={16} />}
                 {isActive ? copy.pause : copy.play}
               </button>

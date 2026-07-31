@@ -34,7 +34,9 @@ function request(headers: Record<string, string> = {}) {
 
 describe("calendar join route", () => {
   beforeEach(() => {
-    mocks.verifyFirebaseIdToken.mockReset().mockResolvedValue({ uid: "user-1" });
+    mocks.verifyFirebaseIdToken
+      .mockReset()
+      .mockResolvedValue({ uid: "user-1" });
     mocks.getFirebaseUserAccess.mockReset().mockResolvedValue({
       memberPackage: "plus",
       subscriptionStatus: "active",
@@ -65,7 +67,9 @@ describe("calendar join route", () => {
   });
 
   it("identifies membership verification failures", async () => {
-    mocks.getFirebaseUserAccess.mockRejectedValue(new Error("Firestore unavailable"));
+    mocks.getFirebaseUserAccess.mockRejectedValue(
+      new Error("Firestore unavailable"),
+    );
 
     const response = await POST(request());
 

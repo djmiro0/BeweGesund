@@ -9,7 +9,10 @@ function base64UrlEncode(value: string | Buffer) {
 }
 
 function getMuxSigningPrivateKey() {
-  const privateKey = process.env.MUX_SIGNING_PRIVATE_KEY?.replace(/\\n/g, "\n").trim();
+  const privateKey = process.env.MUX_SIGNING_PRIVATE_KEY?.replace(
+    /\\n/g,
+    "\n",
+  ).trim();
 
   if (!privateKey || privateKey.includes("BEGIN")) {
     return privateKey;
@@ -23,11 +26,16 @@ function hasRealMuxSigningValue(value: string | undefined) {
 }
 
 export function hasMuxSigningConfig() {
-  return hasRealMuxSigningValue(process.env.MUX_SIGNING_KEY_ID) &&
-    hasRealMuxSigningValue(getMuxSigningPrivateKey());
+  return (
+    hasRealMuxSigningValue(process.env.MUX_SIGNING_KEY_ID) &&
+    hasRealMuxSigningValue(getMuxSigningPrivateKey())
+  );
 }
 
-export function createMuxPlaybackToken(playbackId: string, expiresInSeconds = 600) {
+export function createMuxPlaybackToken(
+  playbackId: string,
+  expiresInSeconds = 600,
+) {
   const keyId = process.env.MUX_SIGNING_KEY_ID;
   const privateKey = getMuxSigningPrivateKey();
 

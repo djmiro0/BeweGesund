@@ -40,7 +40,9 @@
   font-size: 1.6rem;
   cursor: pointer;
   opacity: 0.85;
-  transition: color var(--transition), transform var(--transition);
+  transition:
+    color var(--transition),
+    transform var(--transition);
 }
 
 .closeBtn:hover {
@@ -86,7 +88,6 @@
   transform: translateY(-3px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
-
 
 /* === Responsive tweaks === */
 @media (max-width: 480px) {

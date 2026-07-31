@@ -6,7 +6,13 @@ import { useTranslations } from "next-intl";
 import styles from "./AppShell.module.css";
 
 function isPlainLeftClick(event: MouseEvent) {
-  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+  return (
+    event.button === 0 &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  );
 }
 
 export default function NavigationFeedback() {
@@ -66,7 +72,12 @@ export default function NavigationFeedback() {
   if (!isNavigating) return null;
 
   return (
-    <div className={styles.navigationFeedback} role="status" aria-live="polite" aria-label={t("loading")}>
+    <div
+      className={styles.navigationFeedback}
+      role="status"
+      aria-live="polite"
+      aria-label={t("loading")}
+    >
       <div className={styles.navigationFeedbackPanel}>
         <div className={styles.navigationSpinner} aria-hidden="true" />
       </div>

@@ -3,7 +3,11 @@
 import { Download } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { isMobileDevice, isStandalonePwa, PWA_INSTALL_REQUEST_EVENT } from "@/lib/pwaInstall";
+import {
+  isMobileDevice,
+  isStandalonePwa,
+  PWA_INSTALL_REQUEST_EVENT,
+} from "@/lib/pwaInstall";
 import styles from "../Settings.module.css";
 
 export default function PwaInstallAction() {
@@ -33,7 +37,9 @@ export default function PwaInstallAction() {
       <button
         type="button"
         className={styles.installAppButton}
-        onClick={() => window.dispatchEvent(new Event(PWA_INSTALL_REQUEST_EVENT))}
+        onClick={() =>
+          window.dispatchEvent(new Event(PWA_INSTALL_REQUEST_EVENT))
+        }
       >
         <Download size={18} aria-hidden="true" />
         {t("installApp.action")}

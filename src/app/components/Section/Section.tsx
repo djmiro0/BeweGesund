@@ -37,7 +37,10 @@ const Section: React.FC<SectionProps> = ({ id, reverse }) => {
         <div className={style.sectionText}>
           <h2>{t(`${id}.title`)}</h2>
           <p>{t(`${id}.text`)}</p>
-          <Link className={style.joinBtn} href={`/${locale}/calendar?course=${id}`}>
+          <Link
+            className={style.joinBtn}
+            href={`/${locale}/calendar?course=${id}`}
+          >
             {t("join")}
           </Link>
         </div>

@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Brain, Clock, ImageIcon, Timer, Trophy } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Brain,
+  Clock,
+  ImageIcon,
+  Timer,
+  Trophy,
+} from "lucide-react";
 import { getBlogPost, getBlogPosts, type BlogPost } from "@/lib/contentful";
 import BackButton from "../../components/BackButton";
 import { ActiveReadingReward } from "../../components/ContentReward";
@@ -12,13 +20,17 @@ import styles from "../Blogs.module.css";
 function getRecommendedPost(currentPost: BlogPost, posts: BlogPost[]) {
   const candidates = posts.filter((post) => post.slug !== currentPost.slug);
 
-  return candidates
-    .map((post, index) => ({
-      post,
-      index,
-      sharedTags: post.tags.filter((tag) => currentPost.tags.includes(tag)).length,
-    }))
-    .sort((a, b) => b.sharedTags - a.sharedTags || a.index - b.index)[0]?.post ?? null;
+  return (
+    candidates
+      .map((post, index) => ({
+        post,
+        index,
+        sharedTags: post.tags.filter((tag) => currentPost.tags.includes(tag))
+          .length,
+      }))
+      .sort((a, b) => b.sharedTags - a.sharedTags || a.index - b.index)[0]
+      ?.post ?? null
+  );
 }
 
 export default async function BlogPostPage({
@@ -34,56 +46,60 @@ export default async function BlogPostPage({
 
   if (!post) notFound();
 
-  const labels = locale === "de"
-    ? {
-        back: "Zurück zu Blogs",
-        read: "Min. Lesezeit",
-        recommendedEyebrow: "Empfohlener nächster Artikel",
-        recommendedTitle: "Passend dazu weiterlesen",
-        recommendedRead: "Artikel öffnen",
-        quizEyebrow: "Wissen sammeln",
-        quizTitle: "Bereit für den Fitness-Quiz?",
-        quizDescription: "Aus Artikeln und allgemeinem Gesundheitswissen entstehen künftig Fragen für Punkte, Rangliste und den Monats-Champion.",
-        quizTime: "Schnelligkeit + Genauigkeit",
-        quizMonthly: "24h Monats-Challenge",
-        quizCta: "Quiz ansehen",
-      }
-    : {
-        back: "Back to blogs",
-        read: "min read",
-        recommendedEyebrow: "Recommended next article",
-        recommendedTitle: "Keep reading on this topic",
-        recommendedRead: "Open article",
-        quizEyebrow: "Build knowledge",
-        quizTitle: "Ready for the fitness quiz?",
-        quizDescription: "Articles and general wellness knowledge will feed future questions for points, rankings, and the monthly champion status.",
-        quizTime: "Speed + accuracy",
-        quizMonthly: "24h monthly challenge",
-        quizCta: "View quiz",
-      };
-  const rewardLabels = locale === "de"
-    ? {
-        title: "Artikel-Bonus",
-        locked: "Verfügbar in {time} aktiver Lesezeit.",
-        available: "Bonus verfügbar. Punkte werden gesammelt.",
-        claimed: "Abgeschlossen. Punkte gesammelt.",
-        dailyLimit: "Tägliches Limit erreicht.",
-        signIn: "Melde dich an, um Lesepunkte zu sammeln.",
-        xp: "+{points} XP",
-        claim: "Punkte sammeln",
-        claiming: "Sammeln...",
-      }
-    : {
-        title: "Article bonus",
-        locked: "Available in {time} of active reading.",
-        available: "Reward available. Collecting points.",
-        claimed: "Completed. Points collected.",
-        dailyLimit: "Daily limit reached.",
-        signIn: "Sign in to collect reading points.",
-        xp: "+{points} XP",
-        claim: "Collect points",
-        claiming: "Collecting...",
-      };
+  const labels =
+    locale === "de"
+      ? {
+          back: "Zurück zu Blogs",
+          read: "Min. Lesezeit",
+          recommendedEyebrow: "Empfohlener nächster Artikel",
+          recommendedTitle: "Passend dazu weiterlesen",
+          recommendedRead: "Artikel öffnen",
+          quizEyebrow: "Wissen sammeln",
+          quizTitle: "Bereit für den Fitness-Quiz?",
+          quizDescription:
+            "Aus Artikeln und allgemeinem Gesundheitswissen entstehen künftig Fragen für Punkte, Rangliste und den Monats-Champion.",
+          quizTime: "Schnelligkeit + Genauigkeit",
+          quizMonthly: "24h Monats-Challenge",
+          quizCta: "Quiz ansehen",
+        }
+      : {
+          back: "Back to blogs",
+          read: "min read",
+          recommendedEyebrow: "Recommended next article",
+          recommendedTitle: "Keep reading on this topic",
+          recommendedRead: "Open article",
+          quizEyebrow: "Build knowledge",
+          quizTitle: "Ready for the fitness quiz?",
+          quizDescription:
+            "Articles and general wellness knowledge will feed future questions for points, rankings, and the monthly champion status.",
+          quizTime: "Speed + accuracy",
+          quizMonthly: "24h monthly challenge",
+          quizCta: "View quiz",
+        };
+  const rewardLabels =
+    locale === "de"
+      ? {
+          title: "Artikel-Bonus",
+          locked: "Verfügbar in {time} aktiver Lesezeit.",
+          available: "Bonus verfügbar. Punkte werden gesammelt.",
+          claimed: "Abgeschlossen. Punkte gesammelt.",
+          dailyLimit: "Tägliches Limit erreicht.",
+          signIn: "Melde dich an, um Lesepunkte zu sammeln.",
+          xp: "+{points} XP",
+          claim: "Punkte sammeln",
+          claiming: "Sammeln...",
+        }
+      : {
+          title: "Article bonus",
+          locked: "Available in {time} of active reading.",
+          available: "Reward available. Collecting points.",
+          claimed: "Completed. Points collected.",
+          dailyLimit: "Daily limit reached.",
+          signIn: "Sign in to collect reading points.",
+          xp: "+{points} XP",
+          claim: "Collect points",
+          claiming: "Collecting...",
+        };
   const recommendedPost = getRecommendedPost(post, posts);
 
   return (
@@ -103,7 +119,9 @@ export default async function BlogPostPage({
             {post.readTimeMinutes} {labels.read}
           </span>
           <time dateTime={post.publishedAt}>
-            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(post.publishedAt))}
+            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(
+              new Date(post.publishedAt),
+            )}
           </time>
         </div>
       </header>
@@ -136,7 +154,9 @@ export default async function BlogPostPage({
         }}
       />
 
-      {post.tags.includes("selfcheck") ? <BlogSelfCheck locale={locale} /> : null}
+      {post.tags.includes("selfcheck") ? (
+        <BlogSelfCheck locale={locale} />
+      ) : null}
 
       <aside className={styles.quizCta} aria-labelledby="blog-quiz-title">
         <div className={styles.quizCtaMark} aria-hidden="true">
@@ -157,23 +177,35 @@ export default async function BlogPostPage({
             </span>
           </div>
         </div>
-        <Link href={`/${locale}/quiz?source=blog&slug=${post.slug}`} className={styles.readLink}>
+        <Link
+          href={`/${locale}/quiz?source=blog&slug=${post.slug}`}
+          className={styles.readLink}
+        >
           {labels.quizCta}
           <ArrowUpRight size={17} />
         </Link>
       </aside>
 
       {recommendedPost ? (
-        <aside className={styles.recommendedPost} aria-labelledby="recommended-blog-title">
+        <aside
+          className={styles.recommendedPost}
+          aria-labelledby="recommended-blog-title"
+        >
           <div className={styles.recommendedPostCopy}>
-            <p className={styles.recommendedEyebrow}>{labels.recommendedEyebrow}</p>
+            <p className={styles.recommendedEyebrow}>
+              {labels.recommendedEyebrow}
+            </p>
             <h2 id="recommended-blog-title" className={styles.recommendedTitle}>
               {labels.recommendedTitle}
             </h2>
             <h3 className={styles.recommendedPostTitle}>
-              <Link href={`/${locale}/blogs/${recommendedPost.slug}`}>{recommendedPost.title}</Link>
+              <Link href={`/${locale}/blogs/${recommendedPost.slug}`}>
+                {recommendedPost.title}
+              </Link>
             </h3>
-            <p className={styles.recommendedExcerpt}>{recommendedPost.excerpt}</p>
+            <p className={styles.recommendedExcerpt}>
+              {recommendedPost.excerpt}
+            </p>
             <div className={styles.postMeta}>
               <span>{recommendedPost.author}</span>
               <span>
@@ -181,12 +213,18 @@ export default async function BlogPostPage({
                 {recommendedPost.readTimeMinutes} {labels.read}
               </span>
             </div>
-            <Link href={`/${locale}/blogs/${recommendedPost.slug}`} className={styles.readLink}>
+            <Link
+              href={`/${locale}/blogs/${recommendedPost.slug}`}
+              className={styles.readLink}
+            >
               {labels.recommendedRead}
               <ArrowUpRight size={17} />
             </Link>
           </div>
-          <Link href={`/${locale}/blogs/${recommendedPost.slug}`} className={styles.recommendedImageLink}>
+          <Link
+            href={`/${locale}/blogs/${recommendedPost.slug}`}
+            className={styles.recommendedImageLink}
+          >
             {recommendedPost.featuredImage ? (
               <Image
                 src={recommendedPost.featuredImage}

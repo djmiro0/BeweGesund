@@ -48,16 +48,17 @@ describe("BillingActions", () => {
     const user = userEvent.setup();
     mocks.callable.mockResolvedValue({ data: {} });
 
-    render(
-      <BillingActions
-        {...labels}
-        subscriptionStatus="free"
-      />,
-    );
+    render(<BillingActions {...labels} subscriptionStatus="free" />);
     await user.click(screen.getByRole("button", { name: "Choose Plus" }));
 
-    expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "createStripeCheckoutSession");
-    expect(mocks.callable).toHaveBeenCalledWith({ locale: "en", memberPackage: "plus" });
+    expect(mocks.httpsCallable).toHaveBeenCalledWith(
+      {},
+      "createStripeCheckoutSession",
+    );
+    expect(mocks.callable).toHaveBeenCalledWith({
+      locale: "en",
+      memberPackage: "plus",
+    });
     expect(screen.getByRole("alert")).toHaveTextContent("Billing failed");
   });
 
@@ -93,15 +94,13 @@ describe("BillingActions", () => {
     const user = userEvent.setup();
     mocks.callable.mockResolvedValue({ data: {} });
 
-    render(
-      <BillingActions
-        {...labels}
-        subscriptionStatus="active"
-      />,
-    );
+    render(<BillingActions {...labels} subscriptionStatus="active" />);
     await user.click(screen.getByRole("button", { name: "Manage billing" }));
 
-    expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "createStripeCustomerPortalSession");
+    expect(mocks.httpsCallable).toHaveBeenCalledWith(
+      {},
+      "createStripeCustomerPortalSession",
+    );
     expect(mocks.callable).toHaveBeenCalledWith({ locale: "en" });
   });
 
@@ -117,10 +116,15 @@ describe("BillingActions", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Manage billing" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Manage billing" }),
+    ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Upgrade to Plus" }));
 
-    expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "createStripeCustomerPortalSession");
+    expect(mocks.httpsCallable).toHaveBeenCalledWith(
+      {},
+      "createStripeCustomerPortalSession",
+    );
     expect(mocks.callable).toHaveBeenCalledWith({ locale: "en" });
   });
 
@@ -136,10 +140,15 @@ describe("BillingActions", () => {
       />,
     );
 
-    expect(screen.getByRole("button", { name: "Manage billing" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Manage billing" }),
+    ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Switch to Basic" }));
 
-    expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "createStripeCustomerPortalSession");
+    expect(mocks.httpsCallable).toHaveBeenCalledWith(
+      {},
+      "createStripeCustomerPortalSession",
+    );
     expect(mocks.callable).toHaveBeenCalledWith({ locale: "en" });
   });
 
@@ -148,15 +157,13 @@ describe("BillingActions", () => {
     mocks.callable.mockRejectedValue(new Error("App Check rejected"));
     vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    render(
-      <BillingActions
-        {...labels}
-        subscriptionStatus="free"
-      />,
-    );
+    render(<BillingActions {...labels} subscriptionStatus="free" />);
     await user.click(screen.getByRole("button", { name: "Choose Plus" }));
 
-    expect(mocks.httpsCallable).toHaveBeenCalledWith({}, "createStripeCheckoutSession");
+    expect(mocks.httpsCallable).toHaveBeenCalledWith(
+      {},
+      "createStripeCheckoutSession",
+    );
     expect(screen.getByRole("alert")).toHaveTextContent("Billing failed");
     expect(console.warn).toHaveBeenCalledWith(
       "Stripe billing session could not be opened.",

@@ -41,7 +41,12 @@
       rgba(var(--page-cream-1-rgb), 0.12) 68%,
       transparent 82%
     ),
-    linear-gradient(180deg, rgba(var(--page-cream-1-rgb), 0.08), transparent 60%, rgba(var(--shell-bg-rgb), 0.22));
+    linear-gradient(
+      180deg,
+      rgba(var(--page-cream-1-rgb), 0.08),
+      transparent 60%,
+      rgba(var(--shell-bg-rgb), 0.22)
+    );
 }
 
 .content {
@@ -205,7 +210,13 @@
 
   .blend {
     background:
-      linear-gradient(180deg, rgba(var(--shell-bg-rgb), 0.12) 0%, rgba(var(--shell-bg-rgb), 0.34) 38%, rgba(var(--shell-bg-rgb), 0.92) 82%, var(--shell-bg) 100%),
+      linear-gradient(
+        180deg,
+        rgba(var(--shell-bg-rgb), 0.12) 0%,
+        rgba(var(--shell-bg-rgb), 0.34) 38%,
+        rgba(var(--shell-bg-rgb), 0.92) 82%,
+        var(--shell-bg) 100%
+      ),
       linear-gradient(90deg, rgba(var(--shell-bg-rgb), 0.35), transparent 75%);
   }
 

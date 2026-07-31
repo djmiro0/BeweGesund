@@ -5,7 +5,11 @@
   border: 1px solid var(--page-border, var(--ui-border));
   border-radius: 0.8rem;
   background:
-    linear-gradient(135deg, rgba(var(--page-olive-rgb, 181, 216, 61), 0.12), transparent 50%),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-olive-rgb, 181, 216, 61), 0.12),
+      transparent 50%
+    ),
     var(--ui-bg-alt);
   color: var(--ui-text);
   padding: 0.85rem;

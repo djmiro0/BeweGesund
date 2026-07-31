@@ -1,7 +1,13 @@
 "use client";
 
 import { signOut } from "firebase/auth";
-import { collection, limit, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -24,7 +30,11 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { auth, db } from "../../../../firebase.config";
-import { emptyUserProfile, getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
+import {
+  emptyUserProfile,
+  getAuthUserPhotoURL,
+  getProfileFirstName,
+} from "@/lib/userProfile";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
 import BillingActions from "./BillingActions";
@@ -76,7 +86,14 @@ export default function ProfilePage() {
     }
 
     const entriesQuery = query(
-      collection(db, "leaderboards", "weekly", "regions", profile.regionKey, "entries"),
+      collection(
+        db,
+        "leaderboards",
+        "weekly",
+        "regions",
+        profile.regionKey,
+        "entries",
+      ),
       orderBy("score", "desc"),
       limit(20),
     );
@@ -86,13 +103,18 @@ export default function ProfilePage() {
       (snapshot) => {
         const entries = snapshot.docs.map((document) => {
           const data = document.data();
-          const displayName = typeof data.displayName === "string" && data.displayName.trim()
-            ? data.displayName.trim()
-            : t("values.notProvided");
-          const regionKey = typeof data.regionKey === "string" && data.regionKey.trim()
-            ? data.regionKey
-            : profile.regionKey ?? "";
-          const score = typeof data.score === "number" && Number.isFinite(data.score) ? data.score : 0;
+          const displayName =
+            typeof data.displayName === "string" && data.displayName.trim()
+              ? data.displayName.trim()
+              : t("values.notProvided");
+          const regionKey =
+            typeof data.regionKey === "string" && data.regionKey.trim()
+              ? data.regionKey
+              : (profile.regionKey ?? "");
+          const score =
+            typeof data.score === "number" && Number.isFinite(data.score)
+              ? data.score
+              : 0;
 
           return {
             userId: document.id,
@@ -120,7 +142,8 @@ export default function ProfilePage() {
     );
   }
 
-  const firstName = getProfileFirstName(profile, user.displayName) || t("values.notProvided");
+  const firstName =
+    getProfileFirstName(profile, user.displayName) || t("values.notProvided");
   const email = user.email || profile.email || t("values.notProvided");
   const avatar = getAuthUserPhotoURL(user) || profile.photoURL;
   const profileInitial = firstName.charAt(0).toUpperCase();
@@ -132,39 +155,55 @@ export default function ProfilePage() {
     });
   };
   const activeDesktopSection = openSection ?? "body";
-  const bmi = profile.heightCm && profile.weightKg
-    ? profile.weightKg / ((profile.heightCm / 100) * (profile.heightCm / 100))
-    : null;
+  const bmi =
+    profile.heightCm && profile.weightKg
+      ? profile.weightKg / ((profile.heightCm / 100) * (profile.heightCm / 100))
+      : null;
   const heightMeters = profile.heightCm ? profile.heightCm / 100 : null;
-  const recommendedWeightMin = heightMeters ? recommendedBmiMin * heightMeters * heightMeters : null;
-  const recommendedWeightMax = heightMeters ? recommendedBmiMax * heightMeters * heightMeters : null;
-  const flexibleWeightMax = recommendedWeightMax ? recommendedWeightMax * 1.1 : null;
-  const numberFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
-  const integerFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+  const recommendedWeightMin = heightMeters
+    ? recommendedBmiMin * heightMeters * heightMeters
+    : null;
+  const recommendedWeightMax = heightMeters
+    ? recommendedBmiMax * heightMeters * heightMeters
+    : null;
+  const flexibleWeightMax = recommendedWeightMax
+    ? recommendedWeightMax * 1.1
+    : null;
+  const numberFormatter = new Intl.NumberFormat(locale, {
+    maximumFractionDigits: 1,
+  });
+  const integerFormatter = new Intl.NumberFormat(locale, {
+    maximumFractionDigits: 0,
+  });
   const goalValue = profile.primaryGoalKey
     ? translatedGoalKeys.includes(profile.primaryGoalKey)
       ? t(`goals.${profile.primaryGoalKey}`)
       : profile.primaryGoalKey
     : t("values.notProvided");
 
-  const recommendedWeightValue = recommendedWeightMin && recommendedWeightMax
-    ? t("values.weightRange", {
-      min: numberFormatter.format(recommendedWeightMin),
-      max: numberFormatter.format(recommendedWeightMax),
-    })
-    : t("values.notProvided");
+  const recommendedWeightValue =
+    recommendedWeightMin && recommendedWeightMax
+      ? t("values.weightRange", {
+          min: numberFormatter.format(recommendedWeightMin),
+          max: numberFormatter.format(recommendedWeightMax),
+        })
+      : t("values.notProvided");
   const flexibleWeightValue = flexibleWeightMax
     ? t("values.weight", { count: numberFormatter.format(flexibleWeightMax) })
     : t("values.notProvided");
   const bodyDetails = [
     {
       label: t("details.weight"),
-      value: profile.weightKg ? t("values.weight", { count: profile.weightKg }) : t("values.notProvided"),
+      value: profile.weightKg
+        ? t("values.weight", { count: profile.weightKg })
+        : t("values.notProvided"),
       icon: Scale,
     },
     {
       label: t("details.height"),
-      value: profile.heightCm ? t("values.height", { count: profile.heightCm }) : t("values.notProvided"),
+      value: profile.heightCm
+        ? t("values.height", { count: profile.heightCm })
+        : t("values.notProvided"),
       icon: Ruler,
     },
     {
@@ -184,23 +223,31 @@ export default function ProfilePage() {
     },
     {
       label: t("details.age"),
-      value: profile.age ? t("values.age", { count: profile.age }) : t("values.notProvided"),
+      value: profile.age
+        ? t("values.age", { count: profile.age })
+        : t("values.notProvided"),
       icon: UserRound,
     },
     {
       label: t("details.gender"),
-      value: profile.gender ? t(`values.gender.${profile.gender}`) : t("values.notProvided"),
+      value: profile.gender
+        ? t(`values.gender.${profile.gender}`)
+        : t("values.notProvided"),
       icon: UserRound,
     },
     {
       label: t("details.occupation"),
-      value: profile.occupationKey ? t(`occupations.${profile.occupationKey}`) : t("values.notProvided"),
+      value: profile.occupationKey
+        ? t(`occupations.${profile.occupationKey}`)
+        : t("values.notProvided"),
       icon: PersonStanding,
     },
     {
       label: t("details.steps"),
       value: profile.averageStepsPerDay
-        ? t("values.steps", { count: integerFormatter.format(profile.averageStepsPerDay) })
+        ? t("values.steps", {
+            count: integerFormatter.format(profile.averageStepsPerDay),
+          })
         : t("values.notProvided"),
       icon: Activity,
     },
@@ -211,31 +258,63 @@ export default function ProfilePage() {
     },
     {
       label: t("details.package"),
-      value: profile.memberPackage ? packageT(profile.memberPackage) : t("values.notProvided"),
+      value: profile.memberPackage
+        ? packageT(profile.memberPackage)
+        : t("values.notProvided"),
       icon: Crown,
     },
   ];
   const currentBadgePoints = profile.points % pointsPerBadgeLevel;
   const pointsToNextBadge = pointsPerBadgeLevel - currentBadgePoints;
-  const badgeProgress = Math.min(100, Math.round((currentBadgePoints / pointsPerBadgeLevel) * 100));
-  const leaderboardEntries = profile.regionKey === leaderboardState.regionKey ? leaderboardState.entries : [];
-  const leaderboardLoading = Boolean(profile.regionKey && profile.regionKey !== leaderboardState.regionKey);
-  const leaderboardWithCurrentUser = leaderboardEntries.some((entry) => entry.userId === user.uid)
+  const badgeProgress = Math.min(
+    100,
+    Math.round((currentBadgePoints / pointsPerBadgeLevel) * 100),
+  );
+  const leaderboardEntries =
+    profile.regionKey === leaderboardState.regionKey
+      ? leaderboardState.entries
+      : [];
+  const leaderboardLoading = Boolean(
+    profile.regionKey && profile.regionKey !== leaderboardState.regionKey,
+  );
+  const leaderboardWithCurrentUser = leaderboardEntries.some(
+    (entry) => entry.userId === user.uid,
+  )
     ? leaderboardEntries
     : [
-      ...leaderboardEntries,
-      {
-        userId: user.uid,
-        displayName: firstName,
-        regionKey: profile.regionKey ?? "",
-        score: profile.weeklyScore,
-      },
-    ].sort((left, right) => right.score - left.score);
+        ...leaderboardEntries,
+        {
+          userId: user.uid,
+          displayName: firstName,
+          regionKey: profile.regionKey ?? "",
+          score: profile.weeklyScore,
+        },
+      ].sort((left, right) => right.score - left.score);
   const profileSections = [
-    { id: "body" as const, title: t("cards.body.title"), icon: Scale, cardClassName: styles.bodyCard },
-    { id: "health" as const, title: t("wearables.title"), icon: HeartPulse, cardClassName: styles.healthCard },
-    { id: "membership" as const, title: t("packageSelector.title"), icon: Crown, cardClassName: styles.packageCard },
-    { id: "badges" as const, title: t("cards.badges.title"), icon: Medal, cardClassName: styles.badgeCard },
+    {
+      id: "body" as const,
+      title: t("cards.body.title"),
+      icon: Scale,
+      cardClassName: styles.bodyCard,
+    },
+    {
+      id: "health" as const,
+      title: t("wearables.title"),
+      icon: HeartPulse,
+      cardClassName: styles.healthCard,
+    },
+    {
+      id: "membership" as const,
+      title: t("packageSelector.title"),
+      icon: Crown,
+      cardClassName: styles.packageCard,
+    },
+    {
+      id: "badges" as const,
+      title: t("cards.badges.title"),
+      icon: Medal,
+      cardClassName: styles.badgeCard,
+    },
   ];
 
   const renderBodyContent = () => (
@@ -351,7 +430,9 @@ export default function ProfilePage() {
       <div className={styles.leaderboardGlow} aria-hidden="true" />
       <div className={styles.leaderboardHeader}>
         <div>
-          <p className={styles.leaderboardEyebrow}>{t("leaderboard.eyebrow")}</p>
+          <p className={styles.leaderboardEyebrow}>
+            {t("leaderboard.eyebrow")}
+          </p>
           <h2>{t("leaderboard.title")}</h2>
           <p>{t("leaderboard.description")}</p>
         </div>
@@ -365,7 +446,9 @@ export default function ProfilePage() {
           <span>{t("leaderboard.competitor")}</span>
           <span>{t("leaderboard.points")}</span>
         </div>
-        {profile.regionKey && !leaderboardLoading && leaderboardWithCurrentUser.length === 0 ? (
+        {profile.regionKey &&
+        !leaderboardLoading &&
+        leaderboardWithCurrentUser.length === 0 ? (
           <p className={styles.leaderboardState}>{t("leaderboard.empty")}</p>
         ) : null}
         {!profile.regionKey ? (
@@ -374,28 +457,36 @@ export default function ProfilePage() {
         {leaderboardLoading ? (
           <p className={styles.leaderboardState}>{t("leaderboard.loading")}</p>
         ) : null}
-        {!leaderboardLoading && profile.regionKey ? leaderboardWithCurrentUser.map((entry, index) => (
-          <div
-            key={entry.userId}
-            className={`${styles.leaderboardRow} ${entry.userId === user.uid ? styles.currentUserRow : ""}`}
-          >
-            <span className={`${styles.rank} ${index < 3 ? styles[`rank${index + 1}`] : ""}`}>
-              {index + 1}
-            </span>
-            <span className={styles.competitor}>
-              <strong>
-                {entry.displayName}
-                {index < 3 ? <Crown size={14} aria-label={t("leaderboard.champion")} /> : null}
-              </strong>
-              <small>
-                {entry.userId === user.uid
-                  ? t("leaderboard.you")
-                  : authT(`regions.${entry.regionKey}`)}
-              </small>
-            </span>
-            <strong className={styles.points}>{integerFormatter.format(entry.score)}</strong>
-          </div>
-        )) : null}
+        {!leaderboardLoading && profile.regionKey
+          ? leaderboardWithCurrentUser.map((entry, index) => (
+              <div
+                key={entry.userId}
+                className={`${styles.leaderboardRow} ${entry.userId === user.uid ? styles.currentUserRow : ""}`}
+              >
+                <span
+                  className={`${styles.rank} ${index < 3 ? styles[`rank${index + 1}`] : ""}`}
+                >
+                  {index + 1}
+                </span>
+                <span className={styles.competitor}>
+                  <strong>
+                    {entry.displayName}
+                    {index < 3 ? (
+                      <Crown size={14} aria-label={t("leaderboard.champion")} />
+                    ) : null}
+                  </strong>
+                  <small>
+                    {entry.userId === user.uid
+                      ? t("leaderboard.you")
+                      : authT(`regions.${entry.regionKey}`)}
+                  </small>
+                </span>
+                <strong className={styles.points}>
+                  {integerFormatter.format(entry.score)}
+                </strong>
+              </div>
+            ))
+          : null}
       </div>
       <p className={styles.leaderboardNote}>{t("leaderboard.note")}</p>
     </motion.section>
@@ -470,11 +561,17 @@ export default function ProfilePage() {
                   </button>
                 );
               })}
-              <Link href={`/${locale}/courses`} className={`${styles.desktopNavButton} ${styles.trainingCard}`}>
+              <Link
+                href={`/${locale}/courses`}
+                className={`${styles.desktopNavButton} ${styles.trainingCard}`}
+              >
                 <span>{t("cards.training.title")}</span>
                 <Dumbbell size={24} aria-hidden="true" />
               </Link>
-              <Link href={`/${locale}/meditation-relaxation`} className={`${styles.desktopNavButton} ${styles.calmCard}`}>
+              <Link
+                href={`/${locale}/meditation-relaxation`}
+                className={`${styles.desktopNavButton} ${styles.calmCard}`}
+              >
                 <span>{t("cards.calm.title")}</span>
                 <Wind size={24} aria-hidden="true" />
               </Link>
@@ -484,12 +581,20 @@ export default function ProfilePage() {
           <div className={styles.desktopDetail}>
             <section
               className={`${styles.desktopPanel} ${
-                profileSections.find((section) => section.id === activeDesktopSection)?.cardClassName ?? ""
+                profileSections.find(
+                  (section) => section.id === activeDesktopSection,
+                )?.cardClassName ?? ""
               }`}
             >
               <div className={styles.desktopPanelHeader}>
                 <p className={styles.panelEyebrow}>{t("eyebrow")}</p>
-                <h2>{profileSections.find((section) => section.id === activeDesktopSection)?.title}</h2>
+                <h2>
+                  {
+                    profileSections.find(
+                      (section) => section.id === activeDesktopSection,
+                    )?.title
+                  }
+                </h2>
               </div>
               {renderActiveDesktopContent()}
             </section>
@@ -499,109 +604,119 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.mobileProfileFlow}>
-        <motion.header className={styles.mobileHeader} variants={fadeUp}>
-          <ProfileAvatar
-            userId={user.uid}
-            photoUrl={avatar}
-            initial={profileInitial}
-            className={styles.avatar}
-            ariaLabel={t("avatarAlt", { name: firstName })}
-          />
-          <div className={styles.identityText}>
-            <p className={styles.eyebrow}>{t("eyebrow")}</p>
-            <h1 className={styles.title}>{firstName}</h1>
-            <p className={styles.email}>{email}</p>
-          </div>
-          <ProfileSettingsAccess
-            locale={locale}
-            openLabel={t("settings.open")}
-          />
-        </motion.header>
+          <motion.header className={styles.mobileHeader} variants={fadeUp}>
+            <ProfileAvatar
+              userId={user.uid}
+              photoUrl={avatar}
+              initial={profileInitial}
+              className={styles.avatar}
+              ariaLabel={t("avatarAlt", { name: firstName })}
+            />
+            <div className={styles.identityText}>
+              <p className={styles.eyebrow}>{t("eyebrow")}</p>
+              <h1 className={styles.title}>{firstName}</h1>
+              <p className={styles.email}>{email}</p>
+            </div>
+            <ProfileSettingsAccess
+              locale={locale}
+              openLabel={t("settings.open")}
+            />
+          </motion.header>
 
-        <motion.details
+          <motion.details
             className={`${styles.mobileCard} ${styles.bodyCard}`}
             variants={fadeUp}
             open={openSection === "body"}
-            onToggle={(event) => handleSectionToggle("body", event.currentTarget.open)}
-        >
-          <summary className={styles.cardSummary}>
-            <span>{t("cards.body.title")}</span>
-            <Scale size={34} />
-            <ChevronDown className={styles.chevron} size={20} />
-          </summary>
-          {renderBodyContent()}
-        </motion.details>
+            onToggle={(event) =>
+              handleSectionToggle("body", event.currentTarget.open)
+            }
+          >
+            <summary className={styles.cardSummary}>
+              <span>{t("cards.body.title")}</span>
+              <Scale size={34} />
+              <ChevronDown className={styles.chevron} size={20} />
+            </summary>
+            {renderBodyContent()}
+          </motion.details>
 
-        <motion.details
-          className={`${styles.mobileCard} ${styles.healthCard}`}
-          variants={fadeUp}
-          open={openSection === "health"}
-          onToggle={(event) => handleSectionToggle("health", event.currentTarget.open)}
-        >
-          <summary className={styles.cardSummary}>
-            <span>{t("wearables.title")}</span>
-            <HeartPulse size={30} />
-            <ChevronDown className={styles.chevron} size={19} />
-          </summary>
-          <div className={styles.expandedBlock}>
-            <WearableIntegration locale={locale} />
-          </div>
-        </motion.details>
-        <motion.details
+          <motion.details
+            className={`${styles.mobileCard} ${styles.healthCard}`}
+            variants={fadeUp}
+            open={openSection === "health"}
+            onToggle={(event) =>
+              handleSectionToggle("health", event.currentTarget.open)
+            }
+          >
+            <summary className={styles.cardSummary}>
+              <span>{t("wearables.title")}</span>
+              <HeartPulse size={30} />
+              <ChevronDown className={styles.chevron} size={19} />
+            </summary>
+            <div className={styles.expandedBlock}>
+              <WearableIntegration locale={locale} />
+            </div>
+          </motion.details>
+          <motion.details
             className={`${styles.mobileCard} ${styles.packageCard}`}
             variants={fadeUp}
             open={openSection === "membership"}
-            onToggle={(event) => handleSectionToggle("membership", event.currentTarget.open)}
-        >
-          <summary className={styles.cardSummary}>
-            <span>{t("packageSelector.title")}</span>
-            <Crown size={30} />
-            <ChevronDown className={styles.chevron} size={19} />
-          </summary>
-          {renderMembershipContent()}
-        </motion.details>
-
-        <div className={styles.twoColumnRow}>
-          <motion.div
-            className={`${styles.mobileCard} ${styles.trainingCard} ${styles.linkCard}`}
-            variants={fadeUp}
+            onToggle={(event) =>
+              handleSectionToggle("membership", event.currentTarget.open)
+            }
           >
-            <Link href={`/${locale}/courses`} className={styles.cardSummary}>
-              <span>{t("cards.training.title")}</span>
-              <Dumbbell size={30} />
-            </Link>
-          </motion.div>
+            <summary className={styles.cardSummary}>
+              <span>{t("packageSelector.title")}</span>
+              <Crown size={30} />
+              <ChevronDown className={styles.chevron} size={19} />
+            </summary>
+            {renderMembershipContent()}
+          </motion.details>
 
-          <motion.div
-            className={`${styles.mobileCard} ${styles.calmCard} ${styles.linkCard}`}
+          <div className={styles.twoColumnRow}>
+            <motion.div
+              className={`${styles.mobileCard} ${styles.trainingCard} ${styles.linkCard}`}
+              variants={fadeUp}
+            >
+              <Link href={`/${locale}/courses`} className={styles.cardSummary}>
+                <span>{t("cards.training.title")}</span>
+                <Dumbbell size={30} />
+              </Link>
+            </motion.div>
+
+            <motion.div
+              className={`${styles.mobileCard} ${styles.calmCard} ${styles.linkCard}`}
+              variants={fadeUp}
+            >
+              <Link
+                href={`/${locale}/meditation-relaxation`}
+                className={styles.cardSummary}
+              >
+                <span>{t("cards.calm.title")}</span>
+                <Wind size={30} />
+              </Link>
+            </motion.div>
+          </div>
+
+          <motion.details
+            className={`${styles.mobileCard} ${styles.badgeCard}`}
             variants={fadeUp}
+            open={openSection === "badges"}
+            onToggle={(event) =>
+              handleSectionToggle("badges", event.currentTarget.open)
+            }
           >
-            <Link href={`/${locale}/meditation-relaxation`} className={styles.cardSummary}>
-              <span>{t("cards.calm.title")}</span>
-              <Wind size={30} />
-            </Link>
-          </motion.div>
-        </div>
-
-        <motion.details
-          className={`${styles.mobileCard} ${styles.badgeCard}`}
-          variants={fadeUp}
-          open={openSection === "badges"}
-          onToggle={(event) => handleSectionToggle("badges", event.currentTarget.open)}
-        >
             <summary className={styles.cardSummary}>
               <span>{t("cards.badges.title")}</span>
               <Medal size={30} />
               <ChevronDown className={styles.chevron} size={19} />
             </summary>
             {renderBadgesContent()}
-        </motion.details>
+          </motion.details>
 
-        {renderLeaderboard()}
-        {renderAccountPanel()}
+          {renderLeaderboard()}
+          {renderAccountPanel()}
         </div>
       </div>
-
     </motion.section>
   );
 }

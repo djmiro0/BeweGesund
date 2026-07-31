@@ -1,6 +1,14 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, HandHeart, PlayCircle, ShieldCheck, Sparkles, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  HandHeart,
+  PlayCircle,
+  ShieldCheck,
+  Sparkles,
+  UserRound,
+} from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getMeditationRelaxationItem } from "@/lib/contentful";
 import BackButton from "../../../components/BackButton";
@@ -31,40 +39,44 @@ export default async function MeditationRelaxationDetailPage({
     getMeditationRelaxationItem(locale, slug),
   ]);
 
-  if (!item || (item.subcategoryKey && item.subcategoryKey !== subtype)) notFound();
+  if (!item || (item.subcategoryKey && item.subcategoryKey !== subtype))
+    notFound();
 
   const isSelfMassage = subtype === "self-massage-stress-reduction";
   const instructionParagraphs = item.instructions
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
-  const rewardLabels = locale === "de"
-    ? {
-        title: "Entspannungs-Bonus",
-        locked: "Fortschritt {percent}% / 50%.",
-        available: "Bonus verfügbar. Punkte werden gesammelt.",
-        claimed: "Abgeschlossen. Punkte gesammelt.",
-        dailyLimit: "Tägliches Limit erreicht.",
-        signIn: "Melde dich an, um Punkte zu sammeln.",
-        xp: "+{points} XP",
-        claim: "Punkte sammeln",
-        claiming: "Sammeln...",
-      }
-    : {
-        title: "Relaxation bonus",
-        locked: "Progress {percent}% / 50%.",
-        available: "Reward available. Collecting points.",
-        claimed: "Completed. Points collected.",
-        dailyLimit: "Daily limit reached.",
-        signIn: "Sign in to collect points.",
-        xp: "+{points} XP",
-        claim: "Collect points",
-        claiming: "Collecting...",
-      };
+  const rewardLabels =
+    locale === "de"
+      ? {
+          title: "Entspannungs-Bonus",
+          locked: "Fortschritt {percent}% / 50%.",
+          available: "Bonus verfügbar. Punkte werden gesammelt.",
+          claimed: "Abgeschlossen. Punkte gesammelt.",
+          dailyLimit: "Tägliches Limit erreicht.",
+          signIn: "Melde dich an, um Punkte zu sammeln.",
+          xp: "+{points} XP",
+          claim: "Punkte sammeln",
+          claiming: "Sammeln...",
+        }
+      : {
+          title: "Relaxation bonus",
+          locked: "Progress {percent}% / 50%.",
+          available: "Reward available. Collecting points.",
+          claimed: "Completed. Points collected.",
+          dailyLimit: "Daily limit reached.",
+          signIn: "Sign in to collect points.",
+          xp: "+{points} XP",
+          claim: "Collect points",
+          claiming: "Collecting...",
+        };
   const rewardTarget = {
     contentId: `relaxation_${locale}_${item.slug}`,
     contentType: "relaxation" as const,
-    durationSeconds: item.durationMinutes ? item.durationMinutes * 60 : undefined,
+    durationSeconds: item.durationMinutes
+      ? item.durationMinutes * 60
+      : undefined,
     points: 30,
     labels: rewardLabels,
   };
@@ -82,7 +94,9 @@ export default async function MeditationRelaxationDetailPage({
 
         <header className={blogStyles.articleHeader}>
           <h1 className={blogStyles.articleTitle}>{item.title}</h1>
-          {item.description ? <p className={blogStyles.articleExcerpt}>{item.description}</p> : null}
+          {item.description ? (
+            <p className={blogStyles.articleExcerpt}>{item.description}</p>
+          ) : null}
           <div className={blogStyles.postMeta}>
             {item.coach ? (
               <span>
@@ -129,7 +143,9 @@ export default async function MeditationRelaxationDetailPage({
         {instructionParagraphs.length ? (
           <div className={blogStyles.articleBody}>
             <h2>{t("detail.instructionsTitle")}</h2>
-            {instructionParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            {instructionParagraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
         ) : null}
       </article>
@@ -138,7 +154,10 @@ export default async function MeditationRelaxationDetailPage({
 
   return (
     <main className={styles.page}>
-      <BackButton href={`/${locale}/meditation-relaxation/${subtype}`} className={styles.backLink}>
+      <BackButton
+        href={`/${locale}/meditation-relaxation/${subtype}`}
+        className={styles.backLink}
+      >
         <ArrowLeft size={17} />
         {t("subtype.back")}
       </BackButton>
@@ -151,6 +170,7 @@ export default async function MeditationRelaxationDetailPage({
           locale={locale}
           poster={item.posterImage}
           title={item.title}
+          trainerId={item.coach}
           reward={rewardTarget}
           messages={{
             videoPending: t("player.videoPending"),
@@ -177,7 +197,9 @@ export default async function MeditationRelaxationDetailPage({
           {instructionParagraphs.length ? (
             <div className={styles.instructions}>
               <h2>{t("detail.instructionsTitle")}</h2>
-              {instructionParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              {instructionParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
             </div>
           ) : null}
         </article>
@@ -186,7 +208,9 @@ export default async function MeditationRelaxationDetailPage({
           <ContentRewardPanel target={rewardTarget} />
           <span>
             <PlayCircle size={15} />
-            {item.muxPlaybackId ? t("detail.videoAvailable") : t("player.videoPending")}
+            {item.muxPlaybackId
+              ? t("detail.videoAvailable")
+              : t("player.videoPending")}
           </span>
           {item.durationMinutes ? (
             <span>

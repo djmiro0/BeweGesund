@@ -12,7 +12,8 @@ const selfCheckCopy = {
   de: {
     eyebrow: "Selbsttest",
     title: "Kurzer Check-in",
-    intro: "Wähle die Aussagen aus, die heute auf dich zutreffen. Das Ergebnis bleibt nur auf deinem Gerät.",
+    intro:
+      "Wähle die Aussagen aus, die heute auf dich zutreffen. Das Ergebnis bleibt nur auf deinem Gerät.",
     options: [
       "Ich fühle mich gerade angespannt oder innerlich unruhig.",
       "Ich hatte heute wenig bewusste Pausen.",
@@ -31,7 +32,8 @@ const selfCheckCopy = {
   en: {
     eyebrow: "Self-check",
     title: "Quick check-in",
-    intro: "Select the statements that fit today. The result stays on your device.",
+    intro:
+      "Select the statements that fit today. The result stays on your device.",
     options: [
       "I feel tense or internally restless right now.",
       "I had few conscious breaks today.",
@@ -72,7 +74,10 @@ export default function BlogSelfCheck({ locale }: BlogSelfCheckProps) {
   };
 
   return (
-    <section className={styles.selfCheck} aria-labelledby="blog-self-check-title">
+    <section
+      className={styles.selfCheck}
+      aria-labelledby="blog-self-check-title"
+    >
       <p className={styles.selfCheckEyebrow}>{copy.eyebrow}</p>
       <h2 id="blog-self-check-title">{copy.title}</h2>
       <p>{copy.intro}</p>

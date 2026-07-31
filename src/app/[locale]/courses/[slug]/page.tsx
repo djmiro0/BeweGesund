@@ -1,9 +1,20 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, Dumbbell, PlayCircle, ShieldCheck, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  Dumbbell,
+  PlayCircle,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { memberCourses, type MemberCourseDefinition } from "@/data";
-import { getCourseDetail, getCourses, type CourseSummary } from "@/lib/contentful";
+import {
+  getCourseDetail,
+  getCourses,
+  type CourseSummary,
+} from "@/lib/contentful";
 import BackButton from "../../components/BackButton";
 import { ContentRewardPanel } from "../../components/ContentReward";
 import ProtectedMuxPlayer from "./ProtectedMuxPlayer";
@@ -66,26 +77,47 @@ function durationTextToSeconds(duration: string) {
   if (!match) return undefined;
 
   const minutes = Number(match[1].replace(",", "."));
-  return Number.isFinite(minutes) && minutes > 0 ? Math.round(minutes * 60) : undefined;
+  return Number.isFinite(minutes) && minutes > 0
+    ? Math.round(minutes * 60)
+    : undefined;
 }
 
-function getSubtypeVideos(courses: CourseSummary[], subtype: MemberCourseDefinition, categorySlug: string) {
-  const categorySubtypes = memberCourses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+function getSubtypeVideos(
+  courses: CourseSummary[],
+  subtype: MemberCourseDefinition,
+  categorySlug: string,
+) {
+  const categorySubtypes = memberCourses.filter(
+    (course) => canonicalCategory(course.categoryKey) === categorySlug,
+  );
   const subtypeIds = new Set(categorySubtypes.map((course) => course.id));
   const plannedOnlyIds = new Set(memberCourses.map((course) => course.id));
   const categoryItems = courses.filter(
-    (course) => canonicalCategory(course.categoryKey) === categorySlug && !(plannedOnlyIds.has(course.id) && !course.hasVideo),
+    (course) =>
+      canonicalCategory(course.categoryKey) === categorySlug &&
+      !(plannedOnlyIds.has(course.id) && !course.hasVideo),
   );
-  const directMatches = categoryItems.filter((course) => course.subcategoryKey === subtype.id || course.slug === subtype.id);
+  const directMatches = categoryItems.filter(
+    (course) =>
+      course.subcategoryKey === subtype.id || course.slug === subtype.id,
+  );
   const isFallbackSubtype = categorySubtypes[0]?.id === subtype.id;
 
   if (!isFallbackSubtype) return directMatches;
 
   const fallbackMatches = categoryItems.filter(
-    (course) => course.subcategoryKey === "" || !subtypeIds.has(course.subcategoryKey),
+    (course) =>
+      course.subcategoryKey === "" || !subtypeIds.has(course.subcategoryKey),
   );
 
-  return Array.from(new Map([...directMatches, ...fallbackMatches].map((course) => [course.id, course])).values());
+  return Array.from(
+    new Map(
+      [...directMatches, ...fallbackMatches].map((course) => [
+        course.id,
+        course,
+      ]),
+    ).values(),
+  );
 }
 
 export default async function CourseDetailPage({
@@ -102,12 +134,17 @@ export default async function CourseDetailPage({
 
   if (categorySlugs.has(categorySlug)) {
     const courses = await getCourses(locale);
-    const subtypes = memberCourses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+    const subtypes = memberCourses.filter(
+      (course) => canonicalCategory(course.categoryKey) === categorySlug,
+    );
     const subtypeCards = subtypes.map((subtype) => {
       const videos = getSubtypeVideos(courses, subtype, categorySlug);
-      const availableVideoCount = videos.filter((video) => video.hasVideo).length;
+      const availableVideoCount = videos.filter(
+        (video) => video.hasVideo,
+      ).length;
       const liveVideoCount = videos.filter((video) => video.isLive).length;
-      const plannedTrainingCount = subtype.plannedTrainingCount ?? videos.length;
+      const plannedTrainingCount =
+        subtype.plannedTrainingCount ?? videos.length;
 
       return {
         subtype,
@@ -120,11 +157,14 @@ export default async function CourseDetailPage({
 
     const getCourseNote = (course: MemberCourseDefinition) => {
       if (!course.noteKey) return "";
-      if (translatedNoteKeys.has(course.noteKey)) return coursesT(`courseTypes.notes.${course.noteKey}`);
+      if (translatedNoteKeys.has(course.noteKey))
+        return coursesT(`courseTypes.notes.${course.noteKey}`);
       return course.noteKey;
     };
 
-    const categoryItems = courses.filter((course) => canonicalCategory(course.categoryKey) === categorySlug);
+    const categoryItems = courses.filter(
+      (course) => canonicalCategory(course.categoryKey) === categorySlug,
+    );
 
     if (!subtypeCards.length && !categoryItems.length) notFound();
 
@@ -142,29 +182,49 @@ export default async function CourseDetailPage({
                 <Dumbbell size={15} />
                 {coursesT("courseTypes.meta.live")}
               </div>
-              <h1 className={coursesStyles.title}>{coursesT(`courseTypes.categories.${categorySlug}.title`)}</h1>
-              <p className={coursesStyles.intro}>{coursesT(`courseTypes.categories.${categorySlug}.description`)}</p>
+              <h1 className={coursesStyles.title}>
+                {coursesT(`courseTypes.categories.${categorySlug}.title`)}
+              </h1>
+              <p className={coursesStyles.intro}>
+                {coursesT(`courseTypes.categories.${categorySlug}.description`)}
+              </p>
             </div>
           </header>
 
           <div className={coursesStyles.subtypeList}>
             {categoryItems.map((course) => (
-              <Link key={course.id} href={`/${locale}/courses/${course.slug}`} className={coursesStyles.courseCard}>
+              <Link
+                key={course.id}
+                href={`/${locale}/courses/${course.slug}`}
+                className={coursesStyles.courseCard}
+              >
                 {course.isLive ? (
-                  <span className={coursesStyles.liveBadge}>{coursesT("courseTypes.meta.live")}</span>
+                  <span className={coursesStyles.liveBadge}>
+                    {coursesT("courseTypes.meta.live")}
+                  </span>
                 ) : null}
                 <div>
                   <h2 className={coursesStyles.courseTitle}>{course.title}</h2>
                   {course.description ? (
-                    <p className={coursesStyles.courseDescription}>{course.description}</p>
+                    <p className={coursesStyles.courseDescription}>
+                      {course.description}
+                    </p>
                   ) : null}
                 </div>
                 <div className={coursesStyles.courseMeta}>
                   {course.durationMinutes ? (
-                    <span>{coursesT("courseTypes.meta.duration", { count: course.durationMinutes })}</span>
+                    <span>
+                      {coursesT("courseTypes.meta.duration", {
+                        count: course.durationMinutes,
+                      })}
+                    </span>
                   ) : null}
                   {course.coach ? (
-                    <span>{coursesT("courseTypes.meta.coach", { name: course.coach })}</span>
+                    <span>
+                      {coursesT("courseTypes.meta.coach", {
+                        name: course.coach,
+                      })}
+                    </span>
                   ) : null}
                   <span>{packages(course.packageRequired)}</span>
                 </div>
@@ -188,56 +248,90 @@ export default async function CourseDetailPage({
               <Dumbbell size={15} />
               {coursesT("weeklyUnlock.label")}
             </div>
-            <h1 className={coursesStyles.title}>{coursesT(`courseTypes.categories.${categorySlug}.title`)}</h1>
-            <p className={coursesStyles.intro}>{coursesT(`courseTypes.categories.${categorySlug}.description`)}</p>
+            <h1 className={coursesStyles.title}>
+              {coursesT(`courseTypes.categories.${categorySlug}.title`)}
+            </h1>
+            <p className={coursesStyles.intro}>
+              {coursesT(`courseTypes.categories.${categorySlug}.description`)}
+            </p>
           </div>
         </header>
 
         <div className={coursesStyles.subtypeList}>
-          {subtypeCards.map(({ subtype, videos, availableVideoCount, liveVideoCount }) => {
-            const courseNote = getCourseNote(subtype);
-            const hasNewVideo = videos.some((video) => video.hasVideo && isNewlyPublished(video.publishedAt));
-            const cardContent = (
-              <>
-                {liveVideoCount ? (
-                  <span className={coursesStyles.liveBadge}>{coursesT("courseTypes.meta.live")}</span>
-                ) : hasNewVideo ? (
-                  <span className={coursesStyles.videoBadge}>{coursesT("courseTypes.meta.newThisWeek")}</span>
-                ) : null}
-                <div>
-                  <h2 className={coursesStyles.courseTitle}>{courseT(subtype.id)}</h2>
-                  {courseNote || subtype.coach ? (
-                    <p className={coursesStyles.courseDescription}>
-                      {courseNote}
-                      {courseNote && subtype.coach ? " · " : ""}
-                      {subtype.coach ? coursesT("courseTypes.meta.coach", { name: subtype.coach }) : null}
-                    </p>
-                  ) : null}
-                </div>
-                <div className={coursesStyles.courseMeta}>
-                  <span>{coursesT("courseTypes.meta.videoCount", { count: availableVideoCount })}</span>
-                  {subtype.durationMinutes ? (
-                    <span>{coursesT("courseTypes.meta.duration", { count: subtype.durationMinutes })}</span>
-                  ) : null}
-                  <span>{packages(subtype.packageRequired)}</span>
-                </div>
-              </>
-            );
-
-            if (!videos.length) {
-              return (
-                <article key={subtype.id} className={`${coursesStyles.courseCard} ${coursesStyles.courseCardUnavailable}`}>
-                  {cardContent}
-                </article>
+          {subtypeCards.map(
+            ({ subtype, videos, availableVideoCount, liveVideoCount }) => {
+              const courseNote = getCourseNote(subtype);
+              const hasNewVideo = videos.some(
+                (video) =>
+                  video.hasVideo && isNewlyPublished(video.publishedAt),
               );
-            }
+              const cardContent = (
+                <>
+                  {liveVideoCount ? (
+                    <span className={coursesStyles.liveBadge}>
+                      {coursesT("courseTypes.meta.live")}
+                    </span>
+                  ) : hasNewVideo ? (
+                    <span className={coursesStyles.videoBadge}>
+                      {coursesT("courseTypes.meta.newThisWeek")}
+                    </span>
+                  ) : null}
+                  <div>
+                    <h2 className={coursesStyles.courseTitle}>
+                      {courseT(subtype.id)}
+                    </h2>
+                    {courseNote || subtype.coach ? (
+                      <p className={coursesStyles.courseDescription}>
+                        {courseNote}
+                        {courseNote && subtype.coach ? " · " : ""}
+                        {subtype.coach
+                          ? coursesT("courseTypes.meta.coach", {
+                              name: subtype.coach,
+                            })
+                          : null}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className={coursesStyles.courseMeta}>
+                    <span>
+                      {coursesT("courseTypes.meta.videoCount", {
+                        count: availableVideoCount,
+                      })}
+                    </span>
+                    {subtype.durationMinutes ? (
+                      <span>
+                        {coursesT("courseTypes.meta.duration", {
+                          count: subtype.durationMinutes,
+                        })}
+                      </span>
+                    ) : null}
+                    <span>{packages(subtype.packageRequired)}</span>
+                  </div>
+                </>
+              );
 
-            return (
-              <Link key={subtype.id} href={`/${locale}/courses/${categorySlug}/${subtype.id}`} className={coursesStyles.courseCard}>
-                {cardContent}
-              </Link>
-            );
-          })}
+              if (!videos.length) {
+                return (
+                  <article
+                    key={subtype.id}
+                    className={`${coursesStyles.courseCard} ${coursesStyles.courseCardUnavailable}`}
+                  >
+                    {cardContent}
+                  </article>
+                );
+              }
+
+              return (
+                <Link
+                  key={subtype.id}
+                  href={`/${locale}/courses/${categorySlug}/${subtype.id}`}
+                  className={coursesStyles.courseCard}
+                >
+                  {cardContent}
+                </Link>
+              );
+            },
+          )}
         </div>
       </section>
     );
@@ -247,37 +341,44 @@ export default async function CourseDetailPage({
 
   if (!course) notFound();
 
-  const knownCourse = memberCourses.some((memberCourse) => memberCourse.id === course.id || memberCourse.id === course.slug);
-  const courseTitle = knownCourse && (course.title === course.id || course.title === course.slug)
-    ? courseT(course.slug)
-    : course.title;
+  const knownCourse = memberCourses.some(
+    (memberCourse) =>
+      memberCourse.id === course.id || memberCourse.id === course.slug,
+  );
+  const courseTitle =
+    knownCourse && (course.title === course.id || course.title === course.slug)
+      ? courseT(course.slug)
+      : course.title;
   const instructionParagraphs = course.exerciseInstructions
     .split(/\n{2,}/)
     .map((paragraph) => paragraph.trim())
     .filter(Boolean);
-  const rewardLabels = locale === "de"
-    ? {
-        title: "Kurs-Bonus",
-        locked: "Fortschritt {percent}% / 50%.",
-        available: "Bonus verfügbar. Punkte werden gesammelt.",
-        claimed: "Abgeschlossen. Punkte gesammelt.",
-        dailyLimit: "Tägliches Kurslimit erreicht. Du hast heute bereits Punkte aus zwei Kursen gesammelt.",
-        signIn: "Melde dich an, um Kurspunkte zu sammeln.",
-        xp: "+{points} XP",
-        claim: "Punkte sammeln",
-        claiming: "Sammeln...",
-      }
-    : {
-        title: "Course bonus",
-        locked: "Progress {percent}% / 50%.",
-        available: "Reward available. Collecting points.",
-        claimed: "Completed. Points collected.",
-        dailyLimit: "Daily course limit reached. You have already earned points from two courses today.",
-        signIn: "Sign in to collect course points.",
-        xp: "+{points} XP",
-        claim: "Collect points",
-        claiming: "Collecting...",
-      };
+  const rewardLabels =
+    locale === "de"
+      ? {
+          title: "Kurs-Bonus",
+          locked: "Fortschritt {percent}% / 50%.",
+          available: "Bonus verfügbar. Punkte werden gesammelt.",
+          claimed: "Abgeschlossen. Punkte gesammelt.",
+          dailyLimit:
+            "Tägliches Kurslimit erreicht. Du hast heute bereits Punkte aus zwei Kursen gesammelt.",
+          signIn: "Melde dich an, um Kurspunkte zu sammeln.",
+          xp: "+{points} XP",
+          claim: "Punkte sammeln",
+          claiming: "Sammeln...",
+        }
+      : {
+          title: "Course bonus",
+          locked: "Progress {percent}% / 50%.",
+          available: "Reward available. Collecting points.",
+          claimed: "Completed. Points collected.",
+          dailyLimit:
+            "Daily course limit reached. You have already earned points from two courses today.",
+          signIn: "Sign in to collect course points.",
+          xp: "+{points} XP",
+          claim: "Collect points",
+          claiming: "Collecting...",
+        };
   const rewardTarget = {
     contentId: `course_${locale}_${course.slug}`,
     contentType: "course" as const,
@@ -300,6 +401,7 @@ export default async function CourseDetailPage({
           locale={locale}
           poster={course.posterImage}
           title={courseTitle}
+          trainerId={course.coach}
           reward={rewardTarget}
           messages={{
             videoPending: t("player.videoPending"),
@@ -322,13 +424,17 @@ export default async function CourseDetailPage({
           <div className={styles.titleBlock}>
             <p className={styles.eyebrow}>{t("eyebrow")}</p>
             <h1 className={styles.title}>{courseTitle}</h1>
-            {course.description ? <p className={styles.description}>{course.description}</p> : null}
+            {course.description ? (
+              <p className={styles.description}>{course.description}</p>
+            ) : null}
           </div>
 
           {instructionParagraphs.length ? (
             <section className={styles.instructions}>
               <h2>{t("instructionsTitle")}</h2>
-              {instructionParagraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              {instructionParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
             </section>
           ) : null}
         </div>
@@ -337,7 +443,11 @@ export default async function CourseDetailPage({
           <ContentRewardPanel target={rewardTarget} />
           <div className={styles.metaItem}>
             <PlayCircle size={17} />
-            <span>{course.muxPlaybackId ? t("meta.videoAvailable") : t("meta.videoPending")}</span>
+            <span>
+              {course.muxPlaybackId
+                ? t("meta.videoAvailable")
+                : t("meta.videoPending")}
+            </span>
           </div>
           <div className={styles.metaItem}>
             <Clock size={17} />

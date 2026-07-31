@@ -1250,11 +1250,7 @@
             "No breath hold"
           ],
           "animation": "A glowing green circle slowly expands on the inhale and contracts on the exhale.",
-          "music": [
-            "Forest sounds",
-            "Birdsong",
-            "Light wind"
-          ]
+          "music": ["Forest sounds", "Birdsong", "Light wind"]
         },
         {
           "title": "Deep Relaxation",
@@ -1266,16 +1262,9 @@
             "Exhale: Breathe out gently through the nose or mouth for 5 seconds and let the belly naturally sink back down.",
             "Focus: Keep your attention on the smooth, wave-like movement of the belly."
           ],
-          "rhythm": [
-            "Inhale: 5 seconds",
-            "Exhale: 5 seconds"
-          ],
+          "rhythm": ["Inhale: 5 seconds", "Exhale: 5 seconds"],
           "animation": "Calm waves follow the breathing rhythm: rising on the inhale and lowering or receding on the exhale.",
-          "music": [
-            "Ocean waves",
-            "Rainforest",
-            "Piano"
-          ]
+          "music": ["Ocean waves", "Rainforest", "Piano"]
         },
         {
           "title": "Focus",
@@ -1295,11 +1284,7 @@
             "Hold: 4 seconds"
           ],
           "animation": "A glowing square whose sides or corners light up one after another during each 4-second phase.",
-          "music": [
-            "Ambient sounds",
-            "White noise",
-            "No music optional"
-          ]
+          "music": ["Ambient sounds", "White noise", "No music optional"]
         },
         {
           "title": "Before Bed",
@@ -1318,11 +1303,7 @@
             "Exhale: 8 seconds, through the mouth with sound"
           ],
           "animation": "Moon and stars with a glowing orb in the center that expands on the inhale, stays during the hold, and slowly contracts during the long exhale.",
-          "music": [
-            "Night nature sounds",
-            "Crickets",
-            "Quiet ambient music"
-          ],
+          "music": ["Night nature sounds", "Crickets", "Quiet ambient music"],
           "note": "Begin with 4 cycles. Over time, this can be extended to up to 5 minutes. Because of the long exhale, mild dizziness can occur at first; stop if it feels uncomfortable."
         },
         {
@@ -1543,8 +1524,16 @@
       "videoAutoplay": "Video autoplay"
     },
     "options": {
-      "gender": { "select": "Select gender", "female": "Female", "male": "Male" },
-      "fitness": { "beginner": "Beginner", "intermediate": "Intermediate", "advanced": "Advanced" },
+      "gender": {
+        "select": "Select gender",
+        "female": "Female",
+        "male": "Male"
+      },
+      "fitness": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
       "goals": {
         "loseWeight": "Lose weight",
         "buildMuscle": "Build muscle",
@@ -1553,14 +1542,28 @@
         "backPain": "Reduce back pain"
       },
       "location": { "gym": "Gym", "home": "Home", "outdoor": "Outdoor" },
-      "equipment": { "none": "No equipment", "dumbbells": "Dumbbells", "fullGym": "Full gym" },
-      "diet": { "normal": "Balanced", "vegetarian": "Vegetarian", "vegan": "Vegan", "keto": "Keto" },
+      "equipment": {
+        "none": "No equipment",
+        "dumbbells": "Dumbbells",
+        "fullGym": "Full gym"
+      },
+      "diet": {
+        "normal": "Balanced",
+        "vegetarian": "Vegetarian",
+        "vegan": "Vegan",
+        "keto": "Keto"
+      },
       "language": { "english": "English", "german": "German" },
       "theme": { "light": "Light", "dark": "Dark", "system": "System setting" }
     },
     "days": {
-      "monday": "Mon", "tuesday": "Tue", "wednesday": "Wed", "thursday": "Thu",
-      "friday": "Fri", "saturday": "Sat", "sunday": "Sun"
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
     },
     "units": { "hours": "hrs", "seconds": "sec" },
     "gamification": {
@@ -1677,11 +1680,7 @@
     "description": "This request could not be processed. Go back home and start again from there.",
     "action": "Back to home",
     "status": "400",
-    "items": [
-      "Check the address",
-      "Open home",
-      "Choose a new path"
-    ]
+    "items": ["Check the address", "Open home", "Choose a new path"]
   },
   "consultationPage": {
     "title": "Personal Consultation",

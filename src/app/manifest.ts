@@ -5,7 +5,8 @@ export default function manifest(): MetadataRoute.Manifest {
     id: "/",
     name: "Bewegesund",
     short_name: "Bewegesund",
-    description: "Training, health guidance, and personal progress in one place.",
+    description:
+      "Training, health guidance, and personal progress in one place.",
     start_url: "/de",
     scope: "/",
     display: "standalone",

@@ -27,7 +27,9 @@ export async function POST(request: Request) {
   }
 
   const authorization = request.headers.get("authorization");
-  const idToken = authorization?.startsWith("Bearer ") ? authorization.slice("Bearer ".length) : "";
+  const idToken = authorization?.startsWith("Bearer ")
+    ? authorization.slice("Bearer ".length)
+    : "";
 
   if (!idToken) {
     return NextResponse.json(
@@ -50,12 +52,18 @@ export async function POST(request: Request) {
   const body = (await request.json().catch(() => ({}))) as PlaybackTokenRequest;
   const playbackId = body.playbackId?.trim();
   const courseSlug = body.courseSlug?.trim();
-  const contentType = body.contentType === "meditationRelaxation" ? "meditationRelaxation" : "course";
+  const contentType =
+    body.contentType === "meditationRelaxation"
+      ? "meditationRelaxation"
+      : "course";
   const locale = body.locale === "de" ? "de" : "en";
 
   if (!playbackId || !courseSlug) {
     return NextResponse.json(
-      { error: "playbackId and courseSlug are required.", code: "PLAYBACK_REQUEST_INVALID" },
+      {
+        error: "playbackId and courseSlug are required.",
+        code: "PLAYBACK_REQUEST_INVALID",
+      },
       { status: 400 },
     );
   }
@@ -81,21 +89,36 @@ export async function POST(request: Request) {
 
     if (!content || content.muxPlaybackId !== playbackId) {
       return NextResponse.json(
-        { error: "The requested video is not available.", code: "VIDEO_NOT_FOUND" },
+        {
+          error: "The requested video is not available.",
+          code: "VIDEO_NOT_FOUND",
+        },
         { status: 404 },
       );
     }
 
-    if (userAccess.subscriptionStatus !== "active" && userAccess.subscriptionStatus !== "trialing") {
+    if (
+      userAccess.subscriptionStatus !== "active" &&
+      userAccess.subscriptionStatus !== "trialing"
+    ) {
       return NextResponse.json(
-        { error: "An active membership is required.", code: "SUBSCRIPTION_REQUIRED" },
+        {
+          error: "An active membership is required.",
+          code: "SUBSCRIPTION_REQUIRED",
+        },
         { status: 403 },
       );
     }
 
-    if (packageRank[userAccess.memberPackage] < packageRank[content.packageRequired]) {
+    if (
+      packageRank[userAccess.memberPackage] <
+      packageRank[content.packageRequired]
+    ) {
       return NextResponse.json(
-        { error: "Your membership does not include this video.", code: "PACKAGE_REQUIRED" },
+        {
+          error: "Your membership does not include this video.",
+          code: "PACKAGE_REQUIRED",
+        },
         { status: 403 },
       );
     }
@@ -109,7 +132,10 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      { error: "Video access could not be verified.", code: "ACCESS_CHECK_FAILED" },
+      {
+        error: "Video access could not be verified.",
+        code: "ACCESS_CHECK_FAILED",
+      },
       { status: 503 },
     );
   }

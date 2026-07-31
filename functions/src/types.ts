@@ -1,4 +1,5 @@
-export type PremiumStatus = "free" | "trialing" | "active" | "past_due" | "canceled";
+export type PremiumStatus =
+  "free" | "trialing" | "active" | "past_due" | "canceled";
 export type MemberPackage = "basic" | "plus";
 
 export interface CompletionPayload {
@@ -23,6 +24,14 @@ export interface ContentEngagementPayload {
 export interface ContentRewardClaimPayload {
   contentId?: string;
   contentType?: ContentRewardType;
+}
+
+export interface QualifiedVideoViewPayload {
+  contentId?: string;
+  contentType?: "course" | "relaxation";
+  playbackId?: string;
+  watchedSeconds?: number;
+  durationSeconds?: number;
 }
 
 export interface StripeCheckoutPayload {

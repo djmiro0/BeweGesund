@@ -4,6 +4,7 @@ import ProtectedMuxPlayer from "./ProtectedMuxPlayer";
 
 const authState = vi.hoisted(() => ({
   user: {
+    uid: "user-1",
     getIdToken: vi.fn(async () => "firebase-token"),
   },
 }));
@@ -40,18 +41,27 @@ describe("ProtectedMuxPlayer", () => {
     authState.user.getIdToken.mockClear();
     pauseSpy.mockClear();
     playSpy.mockClear();
-    (HTMLElement.prototype as HTMLElement & { pause?: () => void }).pause = pauseSpy;
-    (HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }).play = playSpy;
-    vi.stubGlobal("fetch", vi.fn(async () => ({
-      ok: true,
-      json: async () => ({ playbackToken: "signed-token" }),
-    })));
+    (HTMLElement.prototype as HTMLElement & { pause?: () => void }).pause =
+      pauseSpy;
+    (
+      HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }
+    ).play = playSpy;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ playbackToken: "signed-token" }),
+      })),
+    );
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
-    delete (HTMLElement.prototype as HTMLElement & { pause?: () => void }).pause;
-    delete (HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }).play;
+    delete (HTMLElement.prototype as HTMLElement & { pause?: () => void })
+      .pause;
+    delete (
+      HTMLElement.prototype as HTMLElement & { play?: () => Promise<void> }
+    ).play;
   });
 
   it("pauses the mux player when paused becomes true", async () => {
@@ -86,5 +96,33 @@ describe("ProtectedMuxPlayer", () => {
     );
 
     expect(pauseSpy).toHaveBeenCalled();
+  });
+
+  it("provides stable analytics metadata to Mux", async () => {
+    const { container } = render(
+      <ProtectedMuxPlayer
+        playbackId="playback-1"
+        courseSlug="course-1"
+        locale="en"
+        poster={null}
+        title="Morning workout"
+        trainerId="coach-1"
+        messages={messages}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector("mux-player")).toBeTruthy();
+    });
+
+    const player = container.querySelector("mux-player");
+    expect(player?.getAttribute("metadata-video-id")).toBe(
+      "course_en_course-1",
+    );
+    expect(player?.getAttribute("metadata-video-title")).toBe(
+      "Morning workout",
+    );
+    expect(player?.getAttribute("metadata-viewer-user-id")).toBe("user-1");
+    expect(player?.getAttribute("metadata-custom-1")).toBe("coach-1");
   });
 });

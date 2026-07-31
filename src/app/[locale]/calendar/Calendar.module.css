@@ -1,8 +1,21 @@
 .calendarContainer {
   --calendar-bg:
-    radial-gradient(circle at 14% 10%, rgba(var(--page-accent-rgb), 0.14), transparent 21rem),
-    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.12), transparent 24rem),
-    linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 46%, var(--page-cream-1) 100%);
+    radial-gradient(
+      circle at 14% 10%,
+      rgba(var(--page-accent-rgb), 0.14),
+      transparent 21rem
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(var(--page-olive-rgb), 0.12),
+      transparent 24rem
+    ),
+    linear-gradient(
+      180deg,
+      var(--page-cream-1) 0%,
+      var(--page-cream-2) 46%,
+      var(--page-cream-1) 100%
+    );
   --calendar-surface: rgba(var(--page-soft-rgb), 0.72);
   --calendar-surface-strong: rgba(var(--page-soft-rgb), 0.9);
   --calendar-card: rgba(var(--page-soft-rgb), 0.66);
@@ -30,8 +43,16 @@
 
 :global(:root[data-theme="dark"]) .calendarContainer {
   --calendar-bg:
-    radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.22), transparent 21rem),
-    radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.22), transparent 24rem),
+    radial-gradient(
+      circle at 14% 10%,
+      rgba(17, 119, 139, 0.22),
+      transparent 21rem
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(27, 72, 101, 0.22),
+      transparent 24rem
+    ),
     linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
   --calendar-surface: rgba(255, 255, 255, 0.055);
   --calendar-surface-strong: rgba(255, 255, 255, 0.07);
@@ -84,7 +105,6 @@
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: 0;
-  text-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.32);
   text-transform: uppercase;
 }
 

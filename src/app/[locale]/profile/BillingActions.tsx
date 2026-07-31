@@ -54,11 +54,16 @@ type PendingBillingAction =
 
 function getBillingErrorDetails(error: unknown) {
   if (error && typeof error === "object") {
-    const maybeError = error as { code?: unknown; message?: unknown; details?: unknown };
+    const maybeError = error as {
+      code?: unknown;
+      message?: unknown;
+      details?: unknown;
+    };
 
     return {
       code: typeof maybeError.code === "string" ? maybeError.code : undefined,
-      message: typeof maybeError.message === "string" ? maybeError.message : undefined,
+      message:
+        typeof maybeError.message === "string" ? maybeError.message : undefined,
       details: maybeError.details,
     };
   }
@@ -89,17 +94,31 @@ export default function BillingActions({
   selectedLabel,
   statusLabel,
 }: BillingActionsProps) {
-  const [pendingAction, setPendingAction] = useState<PendingBillingAction>(null);
+  const [pendingAction, setPendingAction] =
+    useState<PendingBillingAction>(null);
   const [error, setError] = useState("");
-  const hasManagedSubscription = MANAGED_SUBSCRIPTION_STATUSES.has(subscriptionStatus);
+  const hasManagedSubscription =
+    MANAGED_SUBSCRIPTION_STATUSES.has(subscriptionStatus);
   const plans: BillingPlan[] = [
-    { id: "basic", name: basicName, price: basicPrice, checkoutLabel: basicCheckoutLabel },
-    { id: "plus", name: plusName, price: plusPrice, checkoutLabel: plusCheckoutLabel },
+    {
+      id: "basic",
+      name: basicName,
+      price: basicPrice,
+      checkoutLabel: basicCheckoutLabel,
+    },
+    {
+      id: "plus",
+      name: plusName,
+      price: plusPrice,
+      checkoutLabel: plusCheckoutLabel,
+    },
   ];
   const currentPlan = hasManagedSubscription
-    ? plans.find((plan) => plan.id === memberPackage) ?? plans[0]
+    ? (plans.find((plan) => plan.id === memberPackage) ?? plans[0])
     : null;
-  const currentStatusLabel = hasManagedSubscription ? activeLabel : selectedLabel;
+  const currentStatusLabel = hasManagedSubscription
+    ? activeLabel
+    : selectedLabel;
 
   const openBillingSession = async (
     action: "checkout" | "portal",
@@ -107,23 +126,26 @@ export default function BillingActions({
   ) => {
     if (pendingAction) return;
 
-    setPendingAction(action === "checkout"
-      ? { action, memberPackage: selectedPackage ?? "basic" }
-      : { action, memberPackage: selectedPackage });
+    setPendingAction(
+      action === "checkout"
+        ? { action, memberPackage: selectedPackage ?? "basic" }
+        : { action, memberPackage: selectedPackage },
+    );
     setError("");
 
     try {
-      const functionName = action === "checkout"
-        ? "createStripeCheckoutSession"
-        : "createStripeCustomerPortalSession";
+      const functionName =
+        action === "checkout"
+          ? "createStripeCheckoutSession"
+          : "createStripeCustomerPortalSession";
       const createSession = httpsCallable<
         { locale: string; memberPackage?: MemberPackage },
         BillingSessionResult
-      >(
-        functions,
-        functionName,
-      );
-      const payload = action === "checkout" && selectedPackage ? { locale, memberPackage: selectedPackage } : { locale };
+      >(functions, functionName);
+      const payload =
+        action === "checkout" && selectedPackage
+          ? { locale, memberPackage: selectedPackage }
+          : { locale };
       const result = await createSession(payload);
 
       if (!result.data.url) {
@@ -133,7 +155,10 @@ export default function BillingActions({
       window.location.assign(result.data.url);
     } catch (billingError) {
       if (process.env.NODE_ENV !== "production") {
-        console.warn("Stripe billing session could not be opened.", getBillingErrorDetails(billingError));
+        console.warn(
+          "Stripe billing session could not be opened.",
+          getBillingErrorDetails(billingError),
+        );
       }
 
       setError(errorLabel);
@@ -143,9 +168,11 @@ export default function BillingActions({
 
   const buttonContent = (label: string, isLoading: boolean) => (
     <>
-      {isLoading
-        ? <LoaderCircle className={styles.billingSpinner} size={17} />
-        : <CreditCard size={17} />}
+      {isLoading ? (
+        <LoaderCircle className={styles.billingSpinner} size={17} />
+      ) : (
+        <CreditCard size={17} />
+      )}
       {isLoading ? processingLabel : label}
     </>
   );
@@ -172,7 +199,9 @@ export default function BillingActions({
           const isButtonPending = pendingAction?.memberPackage === plan.id;
           const isDisabled = Boolean(pendingAction) || isCurrent;
           const actionLabel = hasManagedSubscription
-            ? plan.id === "plus" ? upgradeLabel : downgradeLabel
+            ? plan.id === "plus"
+              ? upgradeLabel
+              : downgradeLabel
             : plan.checkoutLabel;
           const actionMode = hasManagedSubscription ? "portal" : "checkout";
 
@@ -208,7 +237,9 @@ export default function BillingActions({
                     <CheckCircle2 size={17} />
                     {currentStatusLabel}
                   </>
-                ) : buttonContent(actionLabel, isButtonPending)}
+                ) : (
+                  buttonContent(actionLabel, isButtonPending)
+                )}
               </button>
             </article>
           );
@@ -221,13 +252,22 @@ export default function BillingActions({
           disabled={Boolean(pendingAction)}
           onClick={() => void openBillingSession("portal")}
         >
+          {pendingAction?.action === "portal" &&
+          !pendingAction.memberPackage ? (
+            <LoaderCircle className={styles.billingSpinner} size={17} />
+          ) : (
+            <Repeat2 size={17} />
+          )}
           {pendingAction?.action === "portal" && !pendingAction.memberPackage
-            ? <LoaderCircle className={styles.billingSpinner} size={17} />
-            : <Repeat2 size={17} />}
-          {pendingAction?.action === "portal" && !pendingAction.memberPackage ? processingLabel : manageLabel}
+            ? processingLabel
+            : manageLabel}
         </button>
       ) : null}
-      {error ? <p className={styles.billingError} role="alert">{error}</p> : null}
+      {error ? (
+        <p className={styles.billingError} role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

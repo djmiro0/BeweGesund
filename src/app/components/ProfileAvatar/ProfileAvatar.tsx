@@ -23,7 +23,9 @@ export default function ProfileAvatar({
   const [privatePhotoUrl, setPrivatePhotoUrl] = useState("");
   const [failedPhotoUrl, setFailedPhotoUrl] = useState("");
   const activePhotoUrl = photoUrl || privatePhotoUrl || "";
-  const showPhoto = Boolean(activePhotoUrl && activePhotoUrl !== failedPhotoUrl);
+  const showPhoto = Boolean(
+    activePhotoUrl && activePhotoUrl !== failedPhotoUrl,
+  );
 
   useEffect(() => {
     if (photoUrl) return;

@@ -14,7 +14,10 @@ interface PrivacySettingsProps {
   onChange: (data: PrivacySettingsData) => void;
 }
 
-export default function PrivacySettings({ data, onChange }: PrivacySettingsProps) {
+export default function PrivacySettings({
+  data,
+  onChange,
+}: PrivacySettingsProps) {
   const t = useTranslations("settings");
   const { user } = useAuth();
   const [passwordMessage, setPasswordMessage] = useState("");
@@ -41,18 +44,26 @@ export default function PrivacySettings({ data, onChange }: PrivacySettingsProps
           id="isPublicProfile"
           label={t("fields.publicProfile")}
           checked={data.isPublicProfile}
-          onChange={(checked) => onChange({ ...data, isPublicProfile: checked })}
+          onChange={(checked) =>
+            onChange({ ...data, isPublicProfile: checked })
+          }
         />
         <SettingsToggle
           id="showProgressPublicly"
           label={t("fields.showProgress")}
           checked={data.showProgressPublicly}
-          onChange={(checked) => onChange({ ...data, showProgressPublicly: checked })}
+          onChange={(checked) =>
+            onChange({ ...data, showProgressPublicly: checked })
+          }
         />
       </div>
 
       <div className={styles.accountActions}>
-        <button type="button" className={styles.secondaryButton} onClick={() => void handlePasswordReset()}>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={() => void handlePasswordReset()}
+        >
           {t("actions.changePassword")}
         </button>
         {passwordMessage ? <p role="status">{passwordMessage}</p> : null}

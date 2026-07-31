@@ -24,6 +24,7 @@ live billing.
    STRIPE_PLUS_PRICE_ID=price_...
    FUNCTIONS_BASE_URL=https://europe-west3-project-id.cloudfunctions.net
    ```
+
 4. Store the test secret key:
 
    ```bash

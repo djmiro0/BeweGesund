@@ -53,7 +53,11 @@ export default function MobileTabBar({ locale }: MobileTabBarProps) {
   ];
 
   return (
-    <nav className={styles.tabBar} aria-label={t("ariaLabel")} data-testid="mobile-tab-bar">
+    <nav
+      className={styles.tabBar}
+      aria-label={t("ariaLabel")}
+      data-testid="mobile-tab-bar"
+    >
       <div className={styles.tabRail}>
         {tabs.map((item) => {
           const Icon = item.icon;

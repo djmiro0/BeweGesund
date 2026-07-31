@@ -9,7 +9,12 @@ import {
 export type { AppLanguage, AppTheme, UnitSystem } from "@/lib/appPreferences";
 
 export type FitnessLevel = "beginner" | "intermediate" | "advanced";
-export type MainGoal = "lose-weight" | "build-muscle" | "improve-fitness" | "stay-healthy" | "backPain";
+export type MainGoal =
+  | "lose-weight"
+  | "build-muscle"
+  | "improve-fitness"
+  | "stay-healthy"
+  | "backPain";
 export type Gender = "female" | "male";
 export type TrainingLocation = "gym" | "home" | "outdoor";
 export type Equipment = "no-equipment" | "dumbbells" | "full-gym";
@@ -100,7 +105,15 @@ export interface UserSettings {
   app: AppSettingsData;
 }
 
-export const workoutDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+export const workoutDays = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
 
 export const defaultUserSettings: UserSettings = {
   profile: {
@@ -169,16 +182,20 @@ export const defaultUserSettings: UserSettings = {
   app: defaultAppPreferences,
 };
 
-type StoredSettings = Partial<Omit<UserSettings, "gamification" | "profile">> & {
+type StoredSettings = Partial<
+  Omit<UserSettings, "gamification" | "profile">
+> & {
   profile?: Partial<Pick<ProfileSettingsData, "username" | "fitnessLevel">>;
 };
 
 function isMainGoal(value: unknown): value is MainGoal {
-  return value === "lose-weight"
-    || value === "build-muscle"
-    || value === "improve-fitness"
-    || value === "stay-healthy"
-    || value === "backPain";
+  return (
+    value === "lose-weight" ||
+    value === "build-muscle" ||
+    value === "improve-fitness" ||
+    value === "stay-healthy" ||
+    value === "backPain"
+  );
 }
 
 export function settingsFromFirebase(
@@ -201,13 +218,16 @@ export function settingsFromFirebase(
     gender: profile.gender ?? "",
     height: profile.heightCm ?? 0,
     weight: profile.weightKg ?? 0,
-    mainGoal: isMainGoal(profile.primaryGoalKey) ? profile.primaryGoalKey : "stay-healthy",
+    mainGoal: isMainGoal(profile.primaryGoalKey)
+      ? profile.primaryGoalKey
+      : "stay-healthy",
   };
   settings.bodyProgress = {
     ...settings.bodyProgress,
     ...preferences.bodyProgress,
     currentWeight: profile.weightKg ?? 0,
-    stepGoal: preferences.bodyProgress?.stepGoal ?? profile.averageStepsPerDay ?? 0,
+    stepGoal:
+      preferences.bodyProgress?.stepGoal ?? profile.averageStepsPerDay ?? 0,
   };
   settings.workoutPreferences = {
     ...settings.workoutPreferences,
@@ -247,7 +267,9 @@ export function settingsFromFirebase(
 }
 
 export function profileUpdateFromSettings(settings: UserSettings) {
-  const [firstName = "", ...lastNameParts] = settings.profile.fullName.trim().split(/\s+/);
+  const [firstName = "", ...lastNameParts] = settings.profile.fullName
+    .trim()
+    .split(/\s+/);
 
   return {
     firstName,

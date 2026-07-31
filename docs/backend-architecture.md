@@ -66,6 +66,7 @@ These fields are owned by Cloud Functions only.
 - reward definition managed by admins/backend
 
 ### `/leaderboards/weekly`
+
 ### `/leaderboards/monthly`
 
 - aggregate metadata

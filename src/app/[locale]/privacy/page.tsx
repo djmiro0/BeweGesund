@@ -1,7 +1,11 @@
 import InfoPage from "@/app/components/InfoPage/InfoPage";
 import { getLegalProvider } from "@/lib/legal";
 
-export default async function DatenschutzPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function DatenschutzPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   const provider = getLegalProvider();
   const isGerman = locale === "de";
@@ -86,7 +90,11 @@ export default async function DatenschutzPage({ params }: { params: Promise<{ lo
   return (
     <InfoPage
       title={isGerman ? "Datenschutz" : "Privacy Policy"}
-      intro={isGerman ? "Informationen gemäß Art. 13 DSGVO." : "Information provided under GDPR Article 13."}
+      intro={
+        isGerman
+          ? "Informationen gemäß Art. 13 DSGVO."
+          : "Information provided under GDPR Article 13."
+      }
       sections={sections}
       note={isGerman ? "Stand: Juni 2026" : "Last updated: June 2026"}
     />

@@ -1,5 +1,10 @@
 import { BLOCKS, type Document } from "@contentful/rich-text-types";
-import { memberCourses, mockVideos, type MemberCourseDefinition, type MemberPackage } from "@/data";
+import {
+  memberCourses,
+  mockVideos,
+  type MemberCourseDefinition,
+  type MemberPackage,
+} from "@/data";
 
 export type ContentfulCalendarFormat = "training" | "seminar";
 
@@ -88,7 +93,8 @@ export interface CourseSummary {
   liveTrainingLink: string | null;
 }
 
-export type BlogTag = "nutrition" | "health" | "training" | "selfcheck" | "stress" | "motivation";
+export type BlogTag =
+  "nutrition" | "health" | "training" | "selfcheck" | "stress" | "motivation";
 
 export interface BlogPost {
   id: string;
@@ -153,12 +159,15 @@ type TrainingVideoFields = Partial<{
   slug: string;
   duration: string;
   level: string;
-  image: { sys?: { id?: string }; fields?: { file?: { url?: string } } } | string;
-  featuredImage: { sys?: { id?: string }; fields?: { file?: { url?: string } } } | string;
+  image:
+    { sys?: { id?: string }; fields?: { file?: { url?: string } } } | string;
+  featuredImage:
+    { sys?: { id?: string }; fields?: { file?: { url?: string } } } | string;
   muxPlaybackId: string;
 }>;
 
-type ContentfulAssetField = { sys?: { id?: string }; fields?: { file?: { url?: string } } } | string;
+type ContentfulAssetField =
+  { sys?: { id?: string }; fields?: { file?: { url?: string } } } | string;
 
 type BlogPostFields = Partial<{
   title: string;
@@ -231,7 +240,9 @@ const fallbackMeditationRelaxationContentTypes = [
 ];
 
 function hasContentfulConfig() {
-  return Boolean(process.env.CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_DELIVERY_TOKEN);
+  return Boolean(
+    process.env.CONTENTFUL_SPACE_ID && process.env.CONTENTFUL_DELIVERY_TOKEN,
+  );
 }
 
 function warnMissingContentfulConfig(contentType: string) {
@@ -296,14 +307,23 @@ async function fetchMeditationRelaxationEntries(
   locale: string,
   searchParams: Record<string, string> = {},
 ) {
-  const configuredContentType = process.env.CONTENTFUL_MEDITATION_RELAXATION_CONTENT_TYPE;
+  const configuredContentType =
+    process.env.CONTENTFUL_MEDITATION_RELAXATION_CONTENT_TYPE;
 
   if (configuredContentType) {
-    return fetchEntries<MeditationRelaxationFields>(configuredContentType, locale, searchParams);
+    return fetchEntries<MeditationRelaxationFields>(
+      configuredContentType,
+      locale,
+      searchParams,
+    );
   }
 
   for (const contentType of fallbackMeditationRelaxationContentTypes) {
-    const collection = await fetchEntries<MeditationRelaxationFields>(contentType, locale, searchParams);
+    const collection = await fetchEntries<MeditationRelaxationFields>(
+      contentType,
+      locale,
+      searchParams,
+    );
     if (collection?.items.length) return collection;
   }
 
@@ -314,7 +334,10 @@ function normalizeFormat(value: string | undefined): ContentfulCalendarFormat {
   return value === "seminar" ? "seminar" : "training";
 }
 
-function normalizeMemberPackage(value: string | undefined, fallback: MemberPackage = "basic"): MemberPackage {
+function normalizeMemberPackage(
+  value: string | undefined,
+  fallback: MemberPackage = "basic",
+): MemberPackage {
   return value === "plus" || value === "basic" ? value : fallback;
 }
 
@@ -354,7 +377,7 @@ function canonicalMeditationRelaxationSubcategory(value: unknown) {
     "gefuehrte-meditation": "guided-meditation",
     "gefuhrte-meditation": "guided-meditation",
     "musik-zur-entspannung": "relaxation-music",
-    "entspannungsmusik": "relaxation-music",
+    entspannungsmusik: "relaxation-music",
     "atmung-gegen-stress": "breathing-against-stress",
     "disanjem-protiv-stresa": "breathing-against-stress",
     "breathing-against-stress": "breathing-against-stress",
@@ -369,7 +392,7 @@ function canonicalMeditationRelaxationSubcategory(value: unknown) {
     bodyscan: "body-scan",
   };
 
-  return key ? aliases[key] ?? key : "";
+  return key ? (aliases[key] ?? key) : "";
 }
 
 function titleFromKey(value: string) {
@@ -383,7 +406,8 @@ function titleFromKey(value: string) {
 export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
   const [collection, courses] = await Promise.all([
     fetchEntries<CalendarEventFields>(
-      process.env.CONTENTFUL_CALENDAR_CONTENT_TYPE ?? defaultCalendarContentType,
+      process.env.CONTENTFUL_CALENDAR_CONTENT_TYPE ??
+        defaultCalendarContentType,
       locale,
       {
         order: "fields.startsAt",
@@ -407,32 +431,42 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
         durationMinutes: Number(item.fields.durationMinutes ?? 30),
         formatKey: normalizeFormat(item.fields.format),
         coach: item.fields.coach ?? "Sandra",
-        packageRequired: normalizeMemberPackage(item.fields.packageRequired, "plus"),
+        packageRequired: normalizeMemberPackage(
+          item.fields.packageRequired,
+          "plus",
+        ),
         muxPlaybackId: item.fields.muxPlaybackId ?? null,
-        isLive: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink),
+        isLive:
+          item.fields.live ??
+          item.fields.isLive ??
+          Boolean(item.fields.liveTrainingLink),
       } satisfies CalendarEvent;
     })
     .filter((event): event is CalendarEvent => event !== null);
 
   const courseReleases = courses
     .filter((course) => course.hasVideo && Boolean(course.publishedAt))
-    .map((course) => ({
-      id: `course-${course.id}`,
-      title: course.title,
-      description: course.description,
-      liveTrainingLink: `/${locale}/courses/${course.slug}`,
-      slug: course.slug,
-      startsAt: course.publishedAt,
-      durationMinutes: course.durationMinutes ?? 30,
-      formatKey: "training" as const,
-      coach: course.coach || "Sandra",
-      packageRequired: course.isLive ? "plus" : "basic",
-      muxPlaybackId: null,
-      isLive: course.isLive,
-    } satisfies CalendarEvent));
+    .map(
+      (course) =>
+        ({
+          id: `course-${course.id}`,
+          title: course.title,
+          description: course.description,
+          liveTrainingLink: `/${locale}/courses/${course.slug}`,
+          slug: course.slug,
+          startsAt: course.publishedAt,
+          durationMinutes: course.durationMinutes ?? 30,
+          formatKey: "training" as const,
+          coach: course.coach || "Sandra",
+          packageRequired: course.isLive ? "plus" : "basic",
+          muxPlaybackId: null,
+          isLive: course.isLive,
+        }) satisfies CalendarEvent,
+    );
 
-  const events = [...calendarEvents, ...courseReleases]
-    .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+  const events = [...calendarEvents, ...courseReleases].sort(
+    (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+  );
 
   const days = new Map<string, CalendarDay>();
 
@@ -446,18 +480,25 @@ export async function getCalendarDays(locale: string): Promise<CalendarDay[]> {
   return Array.from(days.values());
 }
 
-function normalizeImage(image: ContentfulAssetField | undefined, assetUrls: Map<string, string>) {
+function normalizeImage(
+  image: ContentfulAssetField | undefined,
+  assetUrls: Map<string, string>,
+) {
   if (!image) return "";
   if (typeof image === "string") return image;
 
   const linkedAssetId = image.sys?.id;
-  const url = image.fields?.file?.url ?? (linkedAssetId ? assetUrls.get(linkedAssetId) : undefined);
+  const url =
+    image.fields?.file?.url ??
+    (linkedAssetId ? assetUrls.get(linkedAssetId) : undefined);
   if (!url) return "";
 
   return url.startsWith("//") ? `https:${url}` : url;
 }
 
-function buildAssetUrlMap<TFields>(collection: ContentfulCollection<TFields> | null) {
+function buildAssetUrlMap<TFields>(
+  collection: ContentfulCollection<TFields> | null,
+) {
   return new Map<string, string>(
     collection?.includes?.Asset?.flatMap((asset) =>
       asset.fields.file?.url ? [[asset.sys.id, asset.fields.file.url]] : [],
@@ -465,7 +506,9 @@ function buildAssetUrlMap<TFields>(collection: ContentfulCollection<TFields> | n
   );
 }
 
-function buildAssetMap<TFields>(collection: ContentfulCollection<TFields> | null) {
+function buildAssetMap<TFields>(
+  collection: ContentfulCollection<TFields> | null,
+) {
   return new Map(
     collection?.includes?.Asset?.map((asset) => [asset.sys.id, asset]) ?? [],
   );
@@ -488,24 +531,26 @@ function normalizeRichTextDocument(value: unknown): Document {
       .map<Document["content"][number]>((paragraph) => ({
         nodeType: BLOCKS.PARAGRAPH,
         data: {},
-        content: [{
-          nodeType: "text" as const,
-          value: paragraph,
-          marks: [],
-          data: {},
-        }],
+        content: [
+          {
+            nodeType: "text" as const,
+            value: paragraph,
+            marks: [],
+            data: {},
+          },
+        ],
       }));
 
     return createRichTextDocument(paragraphs);
   }
 
   if (
-    value
-    && typeof value === "object"
-    && "nodeType" in value
-    && value.nodeType === BLOCKS.DOCUMENT
-    && "content" in value
-    && Array.isArray(value.content)
+    value &&
+    typeof value === "object" &&
+    "nodeType" in value &&
+    value.nodeType === BLOCKS.DOCUMENT &&
+    "content" in value &&
+    Array.isArray(value.content)
   ) {
     return value as Document;
   }
@@ -534,11 +579,16 @@ function resolveRichTextAssets(
   };
 }
 
-function mergeAssetUrlMaps(primary: Map<string, string>, fallback: Map<string, string>) {
+function mergeAssetUrlMaps(
+  primary: Map<string, string>,
+  fallback: Map<string, string>,
+) {
   return new Map([...fallback, ...primary]);
 }
 
-export async function getTrainingVideos(locale: string): Promise<TrainingVideo[]> {
+export async function getTrainingVideos(
+  locale: string,
+): Promise<TrainingVideo[]> {
   const collection = await fetchEntries<TrainingVideoFields>(
     process.env.CONTENTFUL_VIDEO_CONTENT_TYPE ?? defaultVideoContentType,
     locale,
@@ -570,7 +620,10 @@ export async function getTrainingVideos(locale: string): Promise<TrainingVideo[]
       slug: item.fields.slug ?? item.sys.id,
       duration: item.fields.duration ?? "",
       level: item.fields.level ?? "",
-      image: normalizeImage(item.fields.image ?? item.fields.featuredImage, assetUrls),
+      image: normalizeImage(
+        item.fields.image ?? item.fields.featuredImage,
+        assetUrls,
+      ),
       muxPlaybackId: item.fields.muxPlaybackId ?? null,
     }))
     .filter((video) => video.image || video.muxPlaybackId);
@@ -593,13 +646,20 @@ function mapCourseDetail(
     coach: item.fields.coach ?? "",
     packageRequired: normalizeMemberPackage(
       item.fields.packageRequired,
-      item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink) ? "plus" : "basic",
+      (item.fields.live ??
+        item.fields.isLive ??
+        Boolean(item.fields.liveTrainingLink))
+        ? "plus"
+        : "basic",
     ),
     muxPlaybackId: item.fields.muxPlaybackId ?? null,
-    posterImage: normalizeImage(
-      item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
-      assetUrls,
-    ) || null,
+    posterImage:
+      normalizeImage(
+        item.fields.posterImage ??
+          item.fields.featuredImage ??
+          item.fields.image,
+        assetUrls,
+      ) || null,
   };
 }
 
@@ -611,10 +671,13 @@ function mapCourseSummary(
 
   const slug = item.fields.slug ?? item.sys.id;
   const tags = normalizeStringList(item.fields.tags);
-  const categoryKey = normalizeKey(item.fields.categoryKey ?? tags[0]) ?? "courses";
+  const categoryKey =
+    normalizeKey(item.fields.categoryKey ?? tags[0]) ?? "courses";
   const durationMinutes =
     item.fields.durationMinutes ??
-    (typeof item.fields.duration === "number" ? item.fields.duration : undefined);
+    (typeof item.fields.duration === "number"
+      ? item.fields.duration
+      : undefined);
 
   return {
     id: item.sys.id,
@@ -622,30 +685,48 @@ function mapCourseSummary(
     slug,
     description: item.fields.description ?? "",
     categoryKey,
-    categoryTitle: item.fields.categoryTitle ?? titleFromKey(tags[0] ?? categoryKey),
+    categoryTitle:
+      item.fields.categoryTitle ?? titleFromKey(tags[0] ?? categoryKey),
     categoryDescription: item.fields.categoryDescription ?? "",
     durationMinutes: durationMinutes ? Number(durationMinutes) : null,
-    unlocksPerWeek: item.fields.unlocksPerWeek ? Number(item.fields.unlocksPerWeek) : null,
+    unlocksPerWeek: item.fields.unlocksPerWeek
+      ? Number(item.fields.unlocksPerWeek)
+      : null,
     note: item.fields.note ?? "",
     coach: item.fields.coach ?? "",
     packageRequired: normalizeMemberPackage(
       item.fields.packageRequired,
-      item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink) ? "plus" : "basic",
+      (item.fields.live ??
+        item.fields.isLive ??
+        Boolean(item.fields.liveTrainingLink))
+        ? "plus"
+        : "basic",
     ),
-    subcategoryKey: canonicalMeditationRelaxationSubcategory(item.fields.subcategoryKey),
-    posterImage: normalizeImage(
-      item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
-      assetUrls,
-    ) || null,
+    subcategoryKey: canonicalMeditationRelaxationSubcategory(
+      item.fields.subcategoryKey,
+    ),
+    posterImage:
+      normalizeImage(
+        item.fields.posterImage ??
+          item.fields.featuredImage ??
+          item.fields.image,
+        assetUrls,
+      ) || null,
     order: Number(item.fields.order ?? 0),
     publishedAt: item.fields.publishedAt ?? "",
     hasVideo: Boolean(item.fields.muxPlaybackId),
-    isLive: item.fields.live ?? item.fields.isLive ?? Boolean(item.fields.liveTrainingLink),
+    isLive:
+      item.fields.live ??
+      item.fields.isLive ??
+      Boolean(item.fields.liveTrainingLink),
     liveTrainingLink: item.fields.liveTrainingLink ?? null,
   };
 }
 
-function mapMemberCourseSummary(course: MemberCourseDefinition, order: number): CourseSummary {
+function mapMemberCourseSummary(
+  course: MemberCourseDefinition,
+  order: number,
+): CourseSummary {
   return {
     id: course.id,
     title: course.id,
@@ -728,7 +809,10 @@ export async function getCourses(locale: string): Promise<CourseSummary[]> {
   return mergeCourseSummaries(contentfulCourses);
 }
 
-export async function getCourseDetail(locale: string, slug: string): Promise<CourseDetail | null> {
+export async function getCourseDetail(
+  locale: string,
+  slug: string,
+): Promise<CourseDetail | null> {
   const collection = await fetchEntries<CourseFields>(
     process.env.CONTENTFUL_COURSE_CONTENT_TYPE ?? defaultCourseContentType,
     locale,
@@ -742,17 +826,22 @@ export async function getCourseDetail(locale: string, slug: string): Promise<Cou
     return null;
   }
 
-  const fallbackCollection = locale === "en"
-    ? null
-    : await fetchEntries<CourseFields>(
-        process.env.CONTENTFUL_COURSE_CONTENT_TYPE ?? defaultCourseContentType,
-        "en",
-        {
-          "sys.id": collection.items[0].sys.id,
-          limit: "1",
-        },
-      );
-  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+  const fallbackCollection =
+    locale === "en"
+      ? null
+      : await fetchEntries<CourseFields>(
+          process.env.CONTENTFUL_COURSE_CONTENT_TYPE ??
+            defaultCourseContentType,
+          "en",
+          {
+            "sys.id": collection.items[0].sys.id,
+            limit: "1",
+          },
+        );
+  const assetUrls = mergeAssetUrlMaps(
+    buildAssetUrlMap(collection),
+    buildAssetUrlMap(fallbackCollection),
+  );
 
   return mapCourseDetail(collection.items[0], assetUrls);
 }
@@ -771,22 +860,29 @@ function mapMeditationRelaxationItem(
     slug: item.fields.slug ?? item.sys.id,
     description: item.fields.description ?? "",
     instructions: item.fields.instructions ?? "",
-    subcategoryKey: canonicalMeditationRelaxationSubcategory(item.fields.subcategoryKey),
+    subcategoryKey: canonicalMeditationRelaxationSubcategory(
+      item.fields.subcategoryKey,
+    ),
     durationMinutes: durationMinutes ? Number(durationMinutes) : null,
     level: item.fields.level ?? "",
     coach: item.fields.coach ?? "",
     packageRequired: normalizeMemberPackage(item.fields.packageRequired),
     muxPlaybackId: item.fields.muxPlaybackId ?? null,
-    posterImage: normalizeImage(
-      item.fields.posterImage ?? item.fields.featuredImage ?? item.fields.image,
-      assetUrls,
-    ) || null,
+    posterImage:
+      normalizeImage(
+        item.fields.posterImage ??
+          item.fields.featuredImage ??
+          item.fields.image,
+        assetUrls,
+      ) || null,
     order: Number(item.fields.order ?? 0),
     publishedAt: item.fields.publishedAt ?? "",
   };
 }
 
-export async function getMeditationRelaxationItems(locale: string): Promise<MeditationRelaxationItem[]> {
+export async function getMeditationRelaxationItems(
+  locale: string,
+): Promise<MeditationRelaxationItem[]> {
   const collection = await fetchMeditationRelaxationEntries(locale);
 
   if (!collection?.items.length) return [];
@@ -815,19 +911,30 @@ export async function getMeditationRelaxationItem(
 
   if (!collection?.items.length) return null;
 
-  const fallbackCollection = locale === "en"
-    ? null
-    : await fetchMeditationRelaxationEntries("en", {
-        "sys.id": collection.items[0].sys.id,
-        limit: "1",
-      });
-  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+  const fallbackCollection =
+    locale === "en"
+      ? null
+      : await fetchMeditationRelaxationEntries("en", {
+          "sys.id": collection.items[0].sys.id,
+          limit: "1",
+        });
+  const assetUrls = mergeAssetUrlMaps(
+    buildAssetUrlMap(collection),
+    buildAssetUrlMap(fallbackCollection),
+  );
 
   return mapMeditationRelaxationItem(collection.items[0], assetUrls);
 }
 
 function normalizeBlogTags(tags: string[] | undefined): BlogTag[] {
-  const validTags: BlogTag[] = ["nutrition", "health", "training", "selfcheck", "stress", "motivation"];
+  const validTags: BlogTag[] = [
+    "nutrition",
+    "health",
+    "training",
+    "selfcheck",
+    "stress",
+    "motivation",
+  ];
   const aliases: Record<string, BlogTag> = {
     selfchack: "selfcheck",
     selfcheck: "selfcheck",
@@ -841,7 +948,7 @@ function normalizeBlogTags(tags: string[] | undefined): BlogTag[] {
     new Set(
       (tags ?? [])
         .map((tag) => normalizeKey(tag))
-        .map((tag) => (tag ? aliases[tag] ?? tag : ""))
+        .map((tag) => (tag ? (aliases[tag] ?? tag) : ""))
         .filter((tag): tag is BlogTag => validTags.includes(tag as BlogTag)),
     ),
   );
@@ -866,7 +973,11 @@ function mapBlogPost(
     author: item.fields.author ?? "Bewegesund",
     readTimeMinutes: Number(item.fields.readTimeMinutes ?? 4),
     publishedAt: item.fields.publishedAt ?? new Date().toISOString(),
-    featuredImage: normalizeImage(item.fields.featuredImage ?? item.fields.image, assetUrls) || null,
+    featuredImage:
+      normalizeImage(
+        item.fields.featuredImage ?? item.fields.image,
+        assetUrls,
+      ) || null,
   };
 }
 
@@ -881,16 +992,20 @@ export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
 
   if (!collection?.items.length) return [];
 
-  const fallbackCollection = locale === "en"
-    ? null
-    : await fetchEntries<BlogPostFields>(
-        process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
-        "en",
-        {
-          order: "-fields.publishedAt",
-        },
-      );
-  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+  const fallbackCollection =
+    locale === "en"
+      ? null
+      : await fetchEntries<BlogPostFields>(
+          process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
+          "en",
+          {
+            order: "-fields.publishedAt",
+          },
+        );
+  const assetUrls = mergeAssetUrlMaps(
+    buildAssetUrlMap(collection),
+    buildAssetUrlMap(fallbackCollection),
+  );
   const richTextAssets = new Map([
     ...buildAssetMap(fallbackCollection),
     ...buildAssetMap(collection),
@@ -901,7 +1016,10 @@ export async function getBlogPosts(locale: string): Promise<BlogPost[]> {
     .filter((post): post is BlogPost => Boolean(post));
 }
 
-export async function getBlogPost(locale: string, slug: string): Promise<BlogPost | null> {
+export async function getBlogPost(
+  locale: string,
+  slug: string,
+): Promise<BlogPost | null> {
   const collection = await fetchEntries<BlogPostFields>(
     process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
     locale,
@@ -913,17 +1031,21 @@ export async function getBlogPost(locale: string, slug: string): Promise<BlogPos
 
   if (!collection?.items.length) return null;
 
-  const fallbackCollection = locale === "en"
-    ? null
-    : await fetchEntries<BlogPostFields>(
-        process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
-        "en",
-        {
-          "sys.id": collection.items[0].sys.id,
-          limit: "1",
-        },
-      );
-  const assetUrls = mergeAssetUrlMaps(buildAssetUrlMap(collection), buildAssetUrlMap(fallbackCollection));
+  const fallbackCollection =
+    locale === "en"
+      ? null
+      : await fetchEntries<BlogPostFields>(
+          process.env.CONTENTFUL_BLOG_CONTENT_TYPE ?? defaultBlogContentType,
+          "en",
+          {
+            "sys.id": collection.items[0].sys.id,
+            limit: "1",
+          },
+        );
+  const assetUrls = mergeAssetUrlMaps(
+    buildAssetUrlMap(collection),
+    buildAssetUrlMap(fallbackCollection),
+  );
   const richTextAssets = new Map([
     ...buildAssetMap(fallbackCollection),
     ...buildAssetMap(collection),

@@ -43,7 +43,9 @@ function request(body: Record<string, unknown>, token = "firebase-token") {
 
 describe("Mux playback token route", () => {
   beforeEach(() => {
-    mocks.verifyFirebaseIdToken.mockReset().mockResolvedValue({ uid: "user-1" });
+    mocks.verifyFirebaseIdToken
+      .mockReset()
+      .mockResolvedValue({ uid: "user-1" });
     mocks.getFirebaseUserAccess.mockReset().mockResolvedValue({
       memberPackage: "basic",
       subscriptionStatus: "active",
@@ -62,7 +64,9 @@ describe("Mux playback token route", () => {
   });
 
   it("requires Firebase authentication", async () => {
-    const response = await POST(request({ playbackId: "playback-1", courseSlug: "course-1" }, ""));
+    const response = await POST(
+      request({ playbackId: "playback-1", courseSlug: "course-1" }, ""),
+    );
 
     expect(response.status).toBe(401);
   });
@@ -74,7 +78,9 @@ describe("Mux playback token route", () => {
       packageRequired: "plus",
     });
 
-    const response = await POST(request({ playbackId: "playback-1", courseSlug: "course-1" }));
+    const response = await POST(
+      request({ playbackId: "playback-1", courseSlug: "course-1" }),
+    );
 
     expect(response.status).toBe(403);
     expect(mocks.createMuxPlaybackToken).not.toHaveBeenCalled();
@@ -86,36 +92,51 @@ describe("Mux playback token route", () => {
       subscriptionStatus: "free",
     });
 
-    const response = await POST(request({ playbackId: "playback-1", courseSlug: "course-1" }));
+    const response = await POST(
+      request({ playbackId: "playback-1", courseSlug: "course-1" }),
+    );
 
     expect(response.status).toBe(403);
     expect(mocks.createMuxPlaybackToken).not.toHaveBeenCalled();
   });
 
   it("signs only a matching, entitled course playback ID", async () => {
-    const response = await POST(request({
-      playbackId: "playback-1",
-      courseSlug: "course-1",
-      locale: "en",
-    }));
+    const response = await POST(
+      request({
+        playbackId: "playback-1",
+        courseSlug: "course-1",
+        locale: "en",
+      }),
+    );
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toMatchObject({ playbackToken: "signed-token" });
+    await expect(response.json()).resolves.toMatchObject({
+      playbackToken: "signed-token",
+    });
     expect(mocks.createMuxPlaybackToken).toHaveBeenCalledWith("playback-1");
   });
 
   it("signs only a matching meditation and relaxation playback ID", async () => {
-    const response = await POST(request({
-      playbackId: "meditation-playback-1",
-      courseSlug: "meditation-1",
-      contentType: "meditationRelaxation",
-      locale: "en",
-    }));
+    const response = await POST(
+      request({
+        playbackId: "meditation-playback-1",
+        courseSlug: "meditation-1",
+        contentType: "meditationRelaxation",
+        locale: "en",
+      }),
+    );
 
     expect(response.status).toBe(200);
-    await expect(response.json()).resolves.toMatchObject({ playbackToken: "signed-token" });
+    await expect(response.json()).resolves.toMatchObject({
+      playbackToken: "signed-token",
+    });
     expect(mocks.getCourseDetail).not.toHaveBeenCalled();
-    expect(mocks.getMeditationRelaxationItem).toHaveBeenCalledWith("en", "meditation-1");
-    expect(mocks.createMuxPlaybackToken).toHaveBeenCalledWith("meditation-playback-1");
+    expect(mocks.getMeditationRelaxationItem).toHaveBeenCalledWith(
+      "en",
+      "meditation-1",
+    );
+    expect(mocks.createMuxPlaybackToken).toHaveBeenCalledWith(
+      "meditation-playback-1",
+    );
   });
 });

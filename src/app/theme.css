@@ -10,13 +10,11 @@
   --secondary: #e23d4f;
   --tertiary: #88992d;
   --quaternary: #7ccbd3;
-  --accent-green: #c9ee27;
 
   --primary-rgb: 255, 255, 255;
   --secondary-rgb: 226, 61, 79;
   --tertiary-rgb: 136, 153, 45;
   --quaternary-rgb: 124, 203, 211;
-  --accent-green-rgb: 201, 238, 39;
 
   --page-ink: #0b1627;
   --page-ink-rgb: 11, 22, 39;
@@ -39,8 +37,8 @@
   --page-olive-rgb: var(--tertiary-rgb);
   --page-warm: var(--quaternary);
   --page-warm-rgb: var(--quaternary-rgb);
-  --page-green: var(--accent-green);
-  --page-green-rgb: var(--accent-green-rgb);
+  --page-green: var(--page-olive);
+  --page-green-rgb: var(--page-olive-rgb);
   --page-muted: rgba(var(--page-ink-rgb), 0.72);
   --page-border: rgba(var(--page-ink-rgb), 0.12);
   --page-border-soft: rgba(var(--page-ink-rgb), 0.08);
@@ -104,7 +102,7 @@
   --ui-warm-soft: rgba(var(--page-warm-rgb), 0.18);
   --ui-olive: #586a17;
   --ui-olive-soft: rgba(var(--page-olive-rgb), 0.16);
-  --ui-green: #5d700f;
+  --ui-green: var(--page-green);
   --ui-green-soft: rgba(var(--page-green-rgb), 0.18);
   --ui-link: #8a2431;
   --ui-link-hover: var(--foreground);
@@ -115,13 +113,29 @@
   --accent-soft-rgb: var(--quaternary-rgb);
   --navy-rgb: var(--shell-bg-rgb);
 
-  --gradient1: linear-gradient(135deg, var(--shell-bg) 0%, var(--shell-bg-alt) 100%);
+  --gradient1: linear-gradient(
+    135deg,
+    var(--shell-bg) 0%,
+    var(--shell-bg-alt) 100%
+  );
   --gradient2:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
     linear-gradient(160deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
   --gradient-hero:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(var(--accent-soft-rgb), 0.12), transparent 20%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 85% 18%,
+      rgba(var(--accent-soft-rgb), 0.12),
+      transparent 20%
+    ),
     linear-gradient(180deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
 
   --button-primary-bg: var(--highlight);
@@ -145,8 +159,8 @@
   --page-olive-rgb: 165, 180, 74;
   --page-warm: #8bd8e2;
   --page-warm-rgb: 139, 216, 226;
-  --page-green: var(--accent-green);
-  --page-green-rgb: var(--accent-green-rgb);
+  --page-green: var(--page-olive);
+  --page-green-rgb: var(--page-olive-rgb);
   --page-ink: #f7f1e6;
   --page-ink-rgb: 247, 241, 230;
   --page-soft: #111f34;
@@ -217,13 +231,29 @@
   --ui-link-hover: var(--foreground);
   --ui-image-bg: rgba(var(--foreground-rgb), 0.08);
 
-  --gradient1: linear-gradient(135deg, var(--shell-bg) 0%, var(--shell-bg-alt) 100%);
+  --gradient1: linear-gradient(
+    135deg,
+    var(--shell-bg) 0%,
+    var(--shell-bg-alt) 100%
+  );
   --gradient2:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
     linear-gradient(160deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
   --gradient-hero:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(var(--accent-soft-rgb), 0.12), transparent 20%),
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-rgb), 0.18),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 85% 18%,
+      rgba(var(--accent-soft-rgb), 0.12),
+      transparent 20%
+    ),
     linear-gradient(180deg, var(--shell-bg-alt) 0%, var(--shell-bg) 100%);
 
   color-scheme: dark;

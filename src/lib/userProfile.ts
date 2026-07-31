@@ -4,7 +4,8 @@ import { normalizeMemberPackage } from "@/lib/memberPackages";
 export type OccupationKey = "sedentary" | "standing" | "physical";
 export type AnamnesisStatus = "pending" | "completed" | "review-required";
 export type UserGender = "female" | "male";
-export type SubscriptionStatus = "free" | "trialing" | "active" | "past_due" | "canceled";
+export type SubscriptionStatus =
+  "free" | "trialing" | "active" | "past_due" | "canceled";
 const subscriptionStatuses = new Set<SubscriptionStatus>([
   "free",
   "trialing",
@@ -88,12 +89,15 @@ function optionalNumber(value: unknown) {
 }
 
 function stringArray(value: unknown) {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string")
+    : [];
 }
 
 function normalizeSubscriptionStatus(value: unknown): SubscriptionStatus {
-  return typeof value === "string" && subscriptionStatuses.has(value as SubscriptionStatus)
-    ? value as SubscriptionStatus
+  return typeof value === "string" &&
+    subscriptionStatuses.has(value as SubscriptionStatus)
+    ? (value as SubscriptionStatus)
     : "free";
 }
 
@@ -106,14 +110,19 @@ function ageFromLegacyDateOfBirth(value: unknown) {
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDifference = today.getMonth() - birthDate.getMonth();
-  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < birthDate.getDate())
+  ) {
     age -= 1;
   }
 
   return age >= 1 && age <= 120 ? age : null;
 }
 
-export function normalizeUserProfile(data: Record<string, unknown> | undefined): UserProfileData {
+export function normalizeUserProfile(
+  data: Record<string, unknown> | undefined,
+): UserProfileData {
   if (!data) return emptyUserProfile;
 
   const occupationKey = data.occupationKey;
@@ -125,11 +134,14 @@ export function normalizeUserProfile(data: Record<string, unknown> | undefined):
     displayName: optionalString(data.displayName),
     photoURL: optionalString(data.photoURL),
     age: optionalNumber(data.age) ?? ageFromLegacyDateOfBirth(data.dateOfBirth),
-    gender: data.gender === "female" || data.gender === "male" ? data.gender : null,
+    gender:
+      data.gender === "female" || data.gender === "male" ? data.gender : null,
     heightCm: optionalNumber(data.heightCm),
     weightKg: optionalNumber(data.weightKg),
     occupationKey:
-      occupationKey === "sedentary" || occupationKey === "standing" || occupationKey === "physical"
+      occupationKey === "sedentary" ||
+      occupationKey === "standing" ||
+      occupationKey === "physical"
         ? occupationKey
         : null,
     regionKey: optionalString(data.regionKey),
@@ -140,11 +152,15 @@ export function normalizeUserProfile(data: Record<string, unknown> | undefined):
     startedCourseIds: stringArray(data.startedCourseIds),
     completedCourseIds: stringArray(data.completedCourseIds),
     recommendedCourseIds: stringArray(data.recommendedCourseIds),
-    anamnesis: data.anamnesis && typeof data.anamnesis === "object" && !Array.isArray(data.anamnesis)
-      ? data.anamnesis as Record<string, unknown>
-      : null,
+    anamnesis:
+      data.anamnesis &&
+      typeof data.anamnesis === "object" &&
+      !Array.isArray(data.anamnesis)
+        ? (data.anamnesis as Record<string, unknown>)
+        : null,
     anamnesisStatusKey:
-      anamnesisStatusKey === "completed" || anamnesisStatusKey === "review-required"
+      anamnesisStatusKey === "completed" ||
+      anamnesisStatusKey === "review-required"
         ? anamnesisStatusKey
         : "pending",
     xp: optionalNumber(data.xp) ?? 0,
@@ -160,24 +176,33 @@ export function normalizeUserProfile(data: Record<string, unknown> | undefined):
   };
 }
 
-export function getProfileFirstName(profile: UserProfileData, fallback?: string | null) {
-  return profile.firstName
-    ?? profile.displayName?.trim().split(/\s+/)[0]
-    ?? fallback?.trim().split(/\s+/)[0]
-    ?? "";
+export function getProfileFirstName(
+  profile: UserProfileData,
+  fallback?: string | null,
+) {
+  return (
+    profile.firstName ??
+    profile.displayName?.trim().split(/\s+/)[0] ??
+    fallback?.trim().split(/\s+/)[0] ??
+    ""
+  );
 }
 
 export function getAuthUserPhotoURL(
-  user: {
-    photoURL?: string | null;
-    providerData?: Array<{ photoURL?: string | null }>;
-  } | null | undefined,
+  user:
+    | {
+        photoURL?: string | null;
+        providerData?: Array<{ photoURL?: string | null }>;
+      }
+    | null
+    | undefined,
 ) {
   const authPhotoURL = optionalString(user?.photoURL);
   if (authPhotoURL) return authPhotoURL;
 
-  return user?.providerData
-    ?.map((provider) => optionalString(provider.photoURL))
-    .find((photoURL): photoURL is string => Boolean(photoURL))
-    ?? null;
+  return (
+    user?.providerData
+      ?.map((provider) => optionalString(provider.photoURL))
+      .find((photoURL): photoURL is string => Boolean(photoURL)) ?? null
+  );
 }

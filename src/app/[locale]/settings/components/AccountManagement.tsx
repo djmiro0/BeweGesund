@@ -29,7 +29,10 @@ export default function AccountManagement() {
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
-  const usesGoogleProvider = user?.providerData?.some((provider) => provider.providerId === "google.com") ?? false;
+  const usesGoogleProvider =
+    user?.providerData?.some(
+      (provider) => provider.providerId === "google.com",
+    ) ?? false;
 
   const closeDialog = () => {
     setIsDeleteOpen(false);
@@ -48,7 +51,9 @@ export default function AccountManagement() {
       case "auth/requires-recent-login":
         return t("errors.recentLogin");
       case "failed-precondition":
-        return message.toLowerCase().includes("recent sign-in") ? t("errors.recentLogin") : t("errors.generic");
+        return message.toLowerCase().includes("recent sign-in")
+          ? t("errors.recentLogin")
+          : t("errors.generic");
       case "permission-denied":
       case "firestore/permission-denied":
         return t("errors.permissionDenied");
@@ -69,7 +74,12 @@ export default function AccountManagement() {
   };
 
   const handleDeleteProfile = async () => {
-    if (!user || isDeleting || (!usesGoogleProvider && (!user.email || !deletePassword))) return;
+    if (
+      !user ||
+      isDeleting ||
+      (!usesGoogleProvider && (!user.email || !deletePassword))
+    )
+      return;
 
     setIsDeleting(true);
     setDeleteError("");
@@ -78,7 +88,10 @@ export default function AccountManagement() {
       if (usesGoogleProvider) {
         await reauthenticateWithPopup(user, new GoogleAuthProvider());
       } else if (user.email) {
-        const credential = EmailAuthProvider.credential(user.email, deletePassword);
+        const credential = EmailAuthProvider.credential(
+          user.email,
+          deletePassword,
+        );
         await reauthenticateWithCredential(user, credential);
       }
 
@@ -103,7 +116,10 @@ export default function AccountManagement() {
 
   return (
     <>
-      <section className={`${styles.accountManagement} ${styles.passwordManagement}`} data-testid="settings-password-management">
+      <section
+        className={`${styles.accountManagement} ${styles.passwordManagement}`}
+        data-testid="settings-password-management"
+      >
         <div className={styles.accountManagementCopy}>
           <span className={styles.accountIcon}>
             <KeyRound size={21} />
@@ -112,16 +128,27 @@ export default function AccountManagement() {
             <p className={styles.eyebrow}>{passwordT("eyebrow")}</p>
             <h2>{passwordT("title")}</h2>
             <p>{passwordT("description")}</p>
-            {passwordMessage ? <p className={styles.accountStatus} role="status">{passwordMessage}</p> : null}
+            {passwordMessage ? (
+              <p className={styles.accountStatus} role="status">
+                {passwordMessage}
+              </p>
+            ) : null}
           </div>
         </div>
-        <button type="button" className={styles.secondaryButton} onClick={() => void handlePasswordReset()}>
+        <button
+          type="button"
+          className={styles.secondaryButton}
+          onClick={() => void handlePasswordReset()}
+        >
           <KeyRound size={17} />
           {passwordT("open")}
         </button>
       </section>
 
-      <section className={styles.accountManagement} data-testid="settings-account-management">
+      <section
+        className={styles.accountManagement}
+        data-testid="settings-account-management"
+      >
         <div className={styles.accountManagementCopy}>
           <span className={styles.accountIcon}>
             <AlertTriangle size={21} />
@@ -132,7 +159,11 @@ export default function AccountManagement() {
             <p>{t("description")}</p>
           </div>
         </div>
-        <button type="button" className={styles.dangerButton} onClick={() => setIsDeleteOpen(true)}>
+        <button
+          type="button"
+          className={styles.dangerButton}
+          onClick={() => setIsDeleteOpen(true)}
+        >
           <Trash2 size={17} />
           {t("open")}
         </button>
@@ -140,15 +171,27 @@ export default function AccountManagement() {
 
       {isDeleteOpen ? (
         <div className={styles.modalOverlay}>
-          <div className={styles.deleteModal} role="dialog" aria-modal="true" aria-labelledby="settings-delete-title">
-            <button type="button" className={styles.modalClose} aria-label={t("cancel")} onClick={closeDialog}>
+          <div
+            className={styles.deleteModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="settings-delete-title"
+          >
+            <button
+              type="button"
+              className={styles.modalClose}
+              aria-label={t("cancel")}
+              onClick={closeDialog}
+            >
               <X size={18} />
             </button>
             <span className={styles.modalIcon}>
               <AlertTriangle size={24} />
             </span>
             <p className={styles.eyebrow}>{t("confirmEyebrow")}</p>
-            <h2  className={styles.deleteTitle} id="settings-delete-title">{t("confirmTitle")}</h2>
+            <h2 className={styles.deleteTitle} id="settings-delete-title">
+              {t("confirmTitle")}
+            </h2>
             <p className={styles.modalText}>
               {usesGoogleProvider ? t("googleConfirmText") : t("confirmText")}
             </p>
@@ -164,18 +207,30 @@ export default function AccountManagement() {
                 />
               </label>
             ) : null}
-            {deleteError ? <p className={styles.deleteError}>{deleteError}</p> : null}
+            {deleteError ? (
+              <p className={styles.deleteError}>{deleteError}</p>
+            ) : null}
             <div className={styles.modalActions}>
-              <button type="button" className={styles.cancelButton} onClick={closeDialog}>
+              <button
+                type="button"
+                className={styles.cancelButton}
+                onClick={closeDialog}
+              >
                 {t("cancel")}
               </button>
               <button
                 type="button"
                 className={styles.confirmDeleteButton}
-                disabled={(!usesGoogleProvider && !deletePassword) || isDeleting}
+                disabled={
+                  (!usesGoogleProvider && !deletePassword) || isDeleting
+                }
                 onClick={() => void handleDeleteProfile()}
               >
-                {isDeleting ? t("deleting") : usesGoogleProvider ? t("googleConfirm") : t("confirm")}
+                {isDeleting
+                  ? t("deleting")
+                  : usesGoogleProvider
+                    ? t("googleConfirm")
+                    : t("confirm")}
               </button>
             </div>
           </div>

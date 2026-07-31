@@ -15,12 +15,13 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => ({
-    title: "Add a before photo",
-    later: "Remind me later",
-    disable: "Do not remind me again",
-    upload: "Add photo now",
-  })[key] ?? key,
+  useTranslations: () => (key: string) =>
+    ({
+      title: "Add a before photo",
+      later: "Remind me later",
+      disable: "Do not remind me again",
+      upload: "Add photo now",
+    })[key] ?? key,
 }));
 
 vi.mock("../../../../firebase.config", () => ({
@@ -30,21 +31,26 @@ vi.mock("../../../../firebase.config", () => ({
 
 vi.mock("firebase/firestore", () => ({
   doc: vi.fn((...segments: string[]) => segments.join("/")),
-  onSnapshot: vi.fn((_reference, onNext: (snapshot: {
-    exists: () => boolean;
-    data: () => Record<string, unknown>;
-  }) => void) => {
-    onNext({
-      exists: () => true,
-      data: () => ({
-        progressPhotos: {
-          reminderEnabled: true,
-          beforeUploadedAt: "",
-        },
-      }),
-    });
-    return vi.fn();
-  }),
+  onSnapshot: vi.fn(
+    (
+      _reference,
+      onNext: (snapshot: {
+        exists: () => boolean;
+        data: () => Record<string, unknown>;
+      }) => void,
+    ) => {
+      onNext({
+        exists: () => true,
+        data: () => ({
+          progressPhotos: {
+            reminderEnabled: true,
+            beforeUploadedAt: "",
+          },
+        }),
+      });
+      return vi.fn();
+    },
+  ),
   setDoc: mocks.setDoc,
 }));
 
@@ -67,20 +73,26 @@ describe("ProgressPhotoReminder", () => {
   it("shows the reminder for a new account without a before photo", async () => {
     render(<ProgressPhotoReminder />);
 
-    expect(await screen.findByRole("dialog")).toHaveTextContent("Add a before photo");
+    expect(await screen.findByRole("dialog")).toHaveTextContent(
+      "Add a before photo",
+    );
   });
 
   it("stores the permanent opt-out choice", async () => {
     const user = userEvent.setup();
     render(<ProgressPhotoReminder />);
 
-    await user.click(await screen.findByRole("button", { name: "Do not remind me again" }));
+    await user.click(
+      await screen.findByRole("button", { name: "Do not remind me again" }),
+    );
 
-    await waitFor(() => expect(mocks.setDoc).toHaveBeenCalledWith(
-      expect.stringContaining("settings/preferences"),
-      { progressPhotos: { reminderEnabled: false } },
-      { merge: true },
-    ));
+    await waitFor(() =>
+      expect(mocks.setDoc).toHaveBeenCalledWith(
+        expect.stringContaining("settings/preferences"),
+        { progressPhotos: { reminderEnabled: false } },
+        { merge: true },
+      ),
+    );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
@@ -88,9 +100,13 @@ describe("ProgressPhotoReminder", () => {
     const user = userEvent.setup();
     render(<ProgressPhotoReminder />);
 
-    await user.click(await screen.findByRole("button", { name: "Remind me later" }));
+    await user.click(
+      await screen.findByRole("button", { name: "Remind me later" }),
+    );
 
-    expect(sessionStorage.getItem("progress-photo-reminder:user-1")).toBe("dismissed");
+    expect(sessionStorage.getItem("progress-photo-reminder:user-1")).toBe(
+      "dismissed",
+    );
     expect(mocks.setDoc).not.toHaveBeenCalled();
   });
 });

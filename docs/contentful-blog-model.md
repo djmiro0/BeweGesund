@@ -4,17 +4,17 @@ Create a content type with API identifier `blogPost`.
 
 ## Fields
 
-| Field name | Field ID | Type | Required | Notes |
-| --- | --- | --- | --- | --- |
-| Title | `title` | Short text | Yes | Article headline. Localize this field. |
-| Slug | `slug` | Short text | Yes | URL slug, for example `how-to-sleep-better`. Keep unique per locale. |
-| Excerpt | `excerpt` | Long text | Yes | Short teaser shown on the Blogs page. Localize this field. |
-| Body | `body` | Rich text | Yes | Full article content. Enable headings, lists, links, quotes, tables, and embedded media. Localize this field. |
-| Tags | `tags` | Short text list | Yes | Use only English keys: `nutrition`, `health`, `training`. |
-| Author | `author` | Short text | No | Defaults to `Bewegesund` if empty. |
-| Read time minutes | `readTimeMinutes` | Integer | No | Defaults to 4 if empty. |
-| Published at | `publishedAt` | Date and time | Yes | Used for sorting newest first. |
-| Featured image | `featuredImage` | Media | No | Image shown in the index and article page. Defaults to a local image if empty. |
+| Field name        | Field ID          | Type            | Required | Notes                                                                                                         |
+| ----------------- | ----------------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| Title             | `title`           | Short text      | Yes      | Article headline. Localize this field.                                                                        |
+| Slug              | `slug`            | Short text      | Yes      | URL slug, for example `how-to-sleep-better`. Keep unique per locale.                                          |
+| Excerpt           | `excerpt`         | Long text       | Yes      | Short teaser shown on the Blogs page. Localize this field.                                                    |
+| Body              | `body`            | Rich text       | Yes      | Full article content. Enable headings, lists, links, quotes, tables, and embedded media. Localize this field. |
+| Tags              | `tags`            | Short text list | Yes      | Use only English keys: `nutrition`, `health`, `training`.                                                     |
+| Author            | `author`          | Short text      | No       | Defaults to `Bewegesund` if empty.                                                                            |
+| Read time minutes | `readTimeMinutes` | Integer         | No       | Defaults to 4 if empty.                                                                                       |
+| Published at      | `publishedAt`     | Date and time   | Yes      | Used for sorting newest first.                                                                                |
+| Featured image    | `featuredImage`   | Media           | No       | Image shown in the index and article page. Defaults to a local image if empty.                                |
 
 ## Tags
 

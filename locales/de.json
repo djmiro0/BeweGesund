@@ -1250,11 +1250,7 @@
             "Keine Atempause, kein Luftanhalten"
           ],
           "animation": "Ein leuchtender grüner Kreis, der sich beim Einatmen langsam ausdehnt und beim Ausatmen wieder zusammenzieht.",
-          "music": [
-            "Waldgeräusche",
-            "Vogelgezwitscher",
-            "Leichter Wind"
-          ]
+          "music": ["Waldgeräusche", "Vogelgezwitscher", "Leichter Wind"]
         },
         {
           "title": "Tiefe Entspannung",
@@ -1266,16 +1262,9 @@
             "Ausatmen: Atme entspannt für 5 Sekunden durch die Nase oder den Mund aus und lass den Bauch dabei ganz natürlich wieder absinken.",
             "Fokus: Halte deine Aufmerksamkeit auf der gleichmäßigen, wellenartigen Bewegung deines Bauches."
           ],
-          "rhythm": [
-            "Einatmen: 5 Sekunden",
-            "Ausatmen: 5 Sekunden"
-          ],
+          "rhythm": ["Einatmen: 5 Sekunden", "Ausatmen: 5 Sekunden"],
           "animation": "Ruhige Wellen, die dem Rhythmus der Atmung folgen: Sie steigen beim Einatmen an und senken oder ziehen sich beim Ausatmen zurück.",
-          "music": [
-            "Ozeanwellen",
-            "Regenwald",
-            "Klavier"
-          ]
+          "music": ["Ozeanwellen", "Regenwald", "Klavier"]
         },
         {
           "title": "Fokus",
@@ -1295,11 +1284,7 @@
             "Anhalten: 4 Sekunden"
           ],
           "animation": "Ein leuchtendes Quadrat, dessen Seiten oder Ecken nacheinander aufleuchten, während die jeweilige 4-sekündige Phase läuft.",
-          "music": [
-            "Ambient-Klänge",
-            "Weißes Rauschen",
-            "Keine Musik optional"
-          ]
+          "music": ["Ambient-Klänge", "Weißes Rauschen", "Keine Musik optional"]
         },
         {
           "title": "Vor dem Schlafengehen",
@@ -1543,8 +1528,16 @@
       "videoAutoplay": "Videos automatisch starten"
     },
     "options": {
-      "gender": { "select": "Geschlecht auswählen", "female": "Weiblich", "male": "Männlich" },
-      "fitness": { "beginner": "Anfänger", "intermediate": "Fortgeschritten", "advanced": "Erfahren" },
+      "gender": {
+        "select": "Geschlecht auswählen",
+        "female": "Weiblich",
+        "male": "Männlich"
+      },
+      "fitness": {
+        "beginner": "Anfänger",
+        "intermediate": "Fortgeschritten",
+        "advanced": "Erfahren"
+      },
       "goals": {
         "loseWeight": "Gewicht reduzieren",
         "buildMuscle": "Muskeln aufbauen",
@@ -1552,15 +1545,37 @@
         "stayHealthy": "Gesund bleiben",
         "backPain": "Rückenschmerzen reduzieren"
       },
-      "location": { "gym": "Fitnessstudio", "home": "Zu Hause", "outdoor": "Draußen" },
-      "equipment": { "none": "Keine Ausrüstung", "dumbbells": "Kurzhanteln", "fullGym": "Komplettes Studio" },
-      "diet": { "normal": "Ausgewogen", "vegetarian": "Vegetarisch", "vegan": "Vegan", "keto": "Keto" },
+      "location": {
+        "gym": "Fitnessstudio",
+        "home": "Zu Hause",
+        "outdoor": "Draußen"
+      },
+      "equipment": {
+        "none": "Keine Ausrüstung",
+        "dumbbells": "Kurzhanteln",
+        "fullGym": "Komplettes Studio"
+      },
+      "diet": {
+        "normal": "Ausgewogen",
+        "vegetarian": "Vegetarisch",
+        "vegan": "Vegan",
+        "keto": "Keto"
+      },
       "language": { "english": "Englisch", "german": "Deutsch" },
-      "theme": { "light": "Hell", "dark": "Dunkel", "system": "Systemeinstellung" }
+      "theme": {
+        "light": "Hell",
+        "dark": "Dunkel",
+        "system": "Systemeinstellung"
+      }
     },
     "days": {
-      "monday": "Mo", "tuesday": "Di", "wednesday": "Mi", "thursday": "Do",
-      "friday": "Fr", "saturday": "Sa", "sunday": "So"
+      "monday": "Mo",
+      "tuesday": "Di",
+      "wednesday": "Mi",
+      "thursday": "Do",
+      "friday": "Fr",
+      "saturday": "Sa",
+      "sunday": "So"
     },
     "units": { "hours": "Std.", "seconds": "Sek." },
     "gamification": {
@@ -1677,11 +1692,7 @@
     "description": "Diese Anfrage konnte nicht verarbeitet werden. Kehre zur Startseite zurück und starte von dort neu.",
     "action": "Zur Startseite",
     "status": "400",
-    "items": [
-      "Adresse prüfen",
-      "Startseite öffnen",
-      "Navigation neu wählen"
-    ]
+    "items": ["Adresse prüfen", "Startseite öffnen", "Navigation neu wählen"]
   },
   "consultationPage": {
     "title": "Persönliche Beratung",

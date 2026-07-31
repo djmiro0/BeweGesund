@@ -4,7 +4,11 @@
   --info-glow-a: rgba(var(--page-accent-rgb), 0.16);
   --info-glow-b: rgba(var(--page-olive-rgb), 0.14);
   --info-surface-border: var(--page-border-soft);
-  --info-surface-bg: linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.72), rgba(var(--page-soft-rgb), 0.46));
+  --info-surface-bg: linear-gradient(
+    180deg,
+    rgba(var(--page-soft-rgb), 0.72),
+    rgba(var(--page-soft-rgb), 0.46)
+  );
   --info-surface-shadow: rgba(83, 57, 20, 0.14);
   --info-eyebrow: var(--page-accent);
   --info-title: var(--page-ink);
@@ -13,11 +17,19 @@
   --info-cta-text: var(--page-base);
   --info-cta-hover: var(--page-accent);
   --info-card-border: var(--page-border-soft);
-  --info-card-bg: linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.78), rgba(var(--page-soft-alt-rgb), 0.5));
+  --info-card-bg: linear-gradient(
+    180deg,
+    rgba(var(--page-soft-rgb), 0.78),
+    rgba(var(--page-soft-alt-rgb), 0.5)
+  );
   --info-card-title: var(--page-olive);
   --info-card-text: rgba(var(--page-ink-rgb), 0.88);
   --info-note-border: rgba(var(--page-accent-rgb), 0.18);
-  --info-note-bg: linear-gradient(180deg, rgba(var(--page-accent-rgb), 0.08), rgba(var(--page-soft-rgb), 0.34));
+  --info-note-bg: linear-gradient(
+    180deg,
+    rgba(var(--page-accent-rgb), 0.08),
+    rgba(var(--page-soft-rgb), 0.34)
+  );
   --info-note-text: rgba(var(--page-ink-rgb), 0.88);
   position: relative;
   overflow: hidden;
@@ -35,7 +47,11 @@
   --info-glow-a: rgba(var(--page-accent-rgb), 0.16);
   --info-glow-b: rgba(var(--page-olive-rgb), 0.14);
   --info-surface-border: var(--shell-border);
-  --info-surface-bg: linear-gradient(180deg, rgba(var(--shell-text-rgb), 0.05), rgba(var(--shell-text-rgb), 0.02));
+  --info-surface-bg: linear-gradient(
+    180deg,
+    rgba(var(--shell-text-rgb), 0.05),
+    rgba(var(--shell-text-rgb), 0.02)
+  );
   --info-surface-shadow: rgba(8, 7, 5, 0.22);
   --info-eyebrow: var(--page-warm);
   --info-title: var(--shell-text);
@@ -44,11 +60,19 @@
   --info-cta-text: var(--shell-bg);
   --info-cta-hover: var(--page-accent);
   --info-card-border: var(--shell-border);
-  --info-card-bg: linear-gradient(180deg, rgba(var(--shell-text-rgb), 0.06), rgba(var(--shell-text-rgb), 0.025));
+  --info-card-bg: linear-gradient(
+    180deg,
+    rgba(var(--shell-text-rgb), 0.06),
+    rgba(var(--shell-text-rgb), 0.025)
+  );
   --info-card-title: var(--page-warm);
   --info-card-text: rgba(var(--shell-text-rgb), 0.88);
   --info-note-border: rgba(var(--page-accent-rgb), 0.18);
-  --info-note-bg: linear-gradient(180deg, rgba(var(--page-accent-rgb), 0.08), rgba(var(--shell-text-rgb), 0.03));
+  --info-note-bg: linear-gradient(
+    180deg,
+    rgba(var(--page-accent-rgb), 0.08),
+    rgba(var(--shell-text-rgb), 0.03)
+  );
   --info-note-text: rgba(var(--shell-text-rgb), 0.88);
 }
 
@@ -112,7 +136,10 @@
   font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  transition: transform 0.28s var(--transition), background 0.28s var(--transition), color 0.28s var(--transition);
+  transition:
+    transform 0.28s var(--transition),
+    background 0.28s var(--transition),
+    color 0.28s var(--transition);
 }
 
 .cta:hover {
@@ -133,7 +160,10 @@
   background: var(--info-card-bg);
   padding: 1.7rem;
   box-shadow: 0 20px 60px var(--info-surface-shadow);
-  transition: transform 0.35s var(--transition), box-shadow 0.35s var(--transition), border-color 0.35s var(--transition);
+  transition:
+    transform 0.35s var(--transition),
+    box-shadow 0.35s var(--transition),
+    border-color 0.35s var(--transition);
 }
 
 .card:hover {

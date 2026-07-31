@@ -18,7 +18,10 @@ interface CourseModalProps {
   onClose: () => void;
 }
 
-export const CourseModal: React.FC<CourseModalProps> = ({ course, onClose }) => {
+export const CourseModal: React.FC<CourseModalProps> = ({
+  course,
+  onClose,
+}) => {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div

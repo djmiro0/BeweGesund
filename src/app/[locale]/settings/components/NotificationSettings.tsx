@@ -10,9 +10,15 @@ interface NotificationSettingsProps {
   onChange: (data: NotificationSettingsData) => void;
 }
 
-export default function NotificationSettings({ data, onChange }: NotificationSettingsProps) {
+export default function NotificationSettings({
+  data,
+  onChange,
+}: NotificationSettingsProps) {
   const t = useTranslations("settings");
-  const notificationFields: Array<{ key: keyof NotificationSettingsData; label: string }> = [
+  const notificationFields: Array<{
+    key: keyof NotificationSettingsData;
+    label: string;
+  }> = [
     { key: "workoutReminders", label: t("fields.workoutReminders") },
     { key: "mealReminders", label: t("fields.mealReminders") },
     { key: "waterReminders", label: t("fields.waterReminders") },

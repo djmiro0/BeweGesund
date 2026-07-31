@@ -5,13 +5,39 @@
   --coming-text-rgb: var(--page-ink-rgb);
   --coming-muted: var(--page-muted);
   --coming-panel: rgba(var(--page-cream-1-rgb), 0.72);
+  position: relative;
   min-height: 100svh;
   overflow: hidden;
   padding-top: 4rem;
-  background:
-    linear-gradient(90deg, var(--coming-bg) 0%, rgba(var(--coming-bg-rgb), 0.94) 40%, rgba(var(--coming-bg-rgb), 0.58) 62%, rgba(var(--coming-bg-rgb), 0.16) 100%),
-    url("../../../../public/bewegesund-background.png") center / cover;
+  background: var(--coming-bg);
   color: var(--coming-text);
+}
+
+.comingSoon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--coming-bg) 0%,
+    rgba(var(--coming-bg-rgb), 0.94) 40%,
+    rgba(var(--coming-bg-rgb), 0.58) 62%,
+    rgba(var(--coming-bg-rgb), 0.16) 100%
+  );
+}
+
+.backgroundMedia {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.backgroundImage {
+  object-fit: cover;
+  object-position: center;
 }
 
 :global(:root[data-theme="dark"]) .comingSoon {
@@ -25,12 +51,14 @@
 
 .hero {
   position: relative;
+  z-index: 1;
   display: grid;
   min-height: calc(100svh - 4rem);
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
   gap: clamp(2rem, 6vw, 6rem);
   align-items: end;
-  padding: clamp(6.5rem, 10vw, 9rem) clamp(1.25rem, 6vw, 6rem) clamp(2rem, 5vw, 4rem);
+  padding: clamp(6.5rem, 10vw, 9rem) clamp(1.25rem, 6vw, 6rem)
+    clamp(2rem, 5vw, 4rem);
 }
 
 .hero::before {
@@ -108,8 +136,8 @@
   cursor: pointer;
   padding: 0.92rem 1.15rem;
   transition:
-          background 0.24s var(--transition),
-          transform 0.24s var(--transition);
+    background 0.24s var(--transition),
+    transform 0.24s var(--transition);
 }
 
 .primaryButton:hover {
@@ -161,7 +189,12 @@
   left: 8%;
   height: 1px;
   transform-origin: center;
-  background: linear-gradient(90deg, transparent, var(--page-warm), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--page-warm),
+    transparent
+  );
 }
 
 .statusRail {
@@ -191,10 +224,23 @@
 }
 
 @media (max-width: 900px) {
-  .comingSoon {
-    background:
-      linear-gradient(180deg, rgba(var(--coming-bg-rgb), 0.18) 0%, rgba(var(--coming-bg-rgb), 0.72) 52%, var(--coming-bg) 88%),
-      url("../../../../public/bewegesund-background.png") center / cover;
+  .comingSoon::after {
+    background: linear-gradient(
+      180deg,
+      rgba(var(--coming-bg-rgb), 0.06) 0%,
+      rgba(var(--coming-bg-rgb), 0.42) 46%,
+      rgba(var(--coming-bg-rgb), 0.94) 82%,
+      var(--coming-bg) 100%
+    );
+  }
+
+  .backgroundMedia {
+    height: min(54svh, 35rem);
+    opacity: 0.72;
+  }
+
+  .backgroundImage {
+    object-position: right center;
   }
 
   .hero {
@@ -247,6 +293,5 @@
   }
   .title {
     font-size: 2rem;
-
   }
 }

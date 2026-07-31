@@ -24,7 +24,8 @@ function isIosDevice() {
 
 export default function PwaInstallPrompt() {
   const t = useTranslations("pwaInstall");
-  const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
+  const [installEvent, setInstallEvent] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [showIosInstructions, setShowIosInstructions] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -70,7 +71,10 @@ export default function PwaInstallPrompt() {
       if (iosPromptTimer !== undefined) window.clearTimeout(iosPromptTimer);
       window.removeEventListener("beforeinstallprompt", handleInstallPrompt);
       window.removeEventListener("appinstalled", handleInstalled);
-      window.removeEventListener(PWA_INSTALL_REQUEST_EVENT, handleInstallRequest);
+      window.removeEventListener(
+        PWA_INSTALL_REQUEST_EVENT,
+        handleInstallRequest,
+      );
     };
   }, []);
 
@@ -105,11 +109,22 @@ export default function PwaInstallPrompt() {
             aria-modal="true"
             aria-labelledby="pwa-install-title"
           >
-            <button type="button" className={styles.closeButton} aria-label={t("close")} onClick={dismiss}>
+            <button
+              type="button"
+              className={styles.closeButton}
+              aria-label={t("close")}
+              onClick={dismiss}
+            >
               <X size={18} />
             </button>
 
-            <Image className={styles.appIcon} src="/icon-192.png" alt="" width={64} height={64} />
+            <Image
+              className={styles.appIcon}
+              src="/icon-192.png"
+              alt=""
+              width={64}
+              height={64}
+            />
             <p className={styles.eyebrow}>{t("eyebrow")}</p>
             <h2 id="pwa-install-title">{t("title")}</h2>
             <p className={styles.description}>
@@ -130,16 +145,28 @@ export default function PwaInstallPrompt() {
             ) : null}
 
             {installEvent ? (
-              <button type="button" className={styles.installButton} onClick={() => void install()}>
+              <button
+                type="button"
+                className={styles.installButton}
+                onClick={() => void install()}
+              >
                 <Download size={18} aria-hidden="true" />
                 {t("install")}
               </button>
             ) : (
-              <button type="button" className={styles.installButton} onClick={dismiss}>
+              <button
+                type="button"
+                className={styles.installButton}
+                onClick={dismiss}
+              >
                 {t("understood")}
               </button>
             )}
-            <button type="button" className={styles.laterButton} onClick={dismiss}>
+            <button
+              type="button"
+              className={styles.laterButton}
+              onClick={dismiss}
+            >
               {t("later")}
             </button>
           </section>

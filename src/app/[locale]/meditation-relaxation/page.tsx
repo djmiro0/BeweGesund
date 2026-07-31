@@ -18,7 +18,10 @@ export default async function MeditationRelaxationPage({
 }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "relaxation" });
-  const categories = t.raw("categories") as Array<{ title: string; description: string }>;
+  const categories = t.raw("categories") as Array<{
+    title: string;
+    description: string;
+  }>;
 
   return (
     <main className={styles.page}>
@@ -33,7 +36,8 @@ export default async function MeditationRelaxationPage({
       <section className={styles.categoryGrid} aria-label={t("categoryAria")}>
         {categories.map((category, index) => {
           const Icon = categoryIcons[index] ?? Sparkles;
-          const subcategoryKey = relaxationSubcategoryKeys[index] ?? relaxationSubcategoryKeys[0];
+          const subcategoryKey =
+            relaxationSubcategoryKeys[index] ?? relaxationSubcategoryKeys[0];
 
           return (
             <Link

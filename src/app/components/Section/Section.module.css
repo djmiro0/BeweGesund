@@ -45,12 +45,13 @@
   background: rgba(var(--foreground-rgb), 0.08);
   box-shadow: 0 4px 20px var(--shadow-color);
   backdrop-filter: blur(8px);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition);
 }
 
 .image {
-    border-radius: 16px;
-
+  border-radius: 16px;
 }
 
 .sectionImage:hover {

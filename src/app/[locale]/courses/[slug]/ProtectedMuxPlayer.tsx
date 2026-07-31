@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { httpsCallable } from "firebase/functions";
 import { LockKeyhole, PlayCircle } from "lucide-react";
-import { usePlaybackReward, type ContentRewardTarget } from "../../components/ContentReward";
+import { functions } from "../../../../../firebase.config";
+import {
+  usePlaybackReward,
+  type ContentRewardTarget,
+} from "../../components/ContentReward";
 import { useAuth } from "../../components/AuthProvider";
 import styles from "./CourseDetail.module.css";
 
@@ -13,6 +18,7 @@ interface ProtectedMuxPlayerProps {
   locale: string;
   poster?: string | null;
   title: string;
+  trainerId?: string;
   autoPlay?: boolean;
   paused?: boolean;
   reward?: Omit<ContentRewardTarget, "labels" | "points">;
@@ -34,20 +40,33 @@ interface ProtectedMuxPlayerProps {
   };
 }
 
-function getPlaybackErrorMessage(errorCode: string | undefined, messages: ProtectedMuxPlayerProps["messages"]) {
-  if (errorCode === "MUX_SIGNING_NOT_CONFIGURED") return messages.signingMissing;
-  if (errorCode === "AUTH_REQUIRED" || errorCode === "INVALID_AUTH_TOKEN") return messages.authError;
-  if (errorCode === "SUBSCRIPTION_REQUIRED") return messages.subscriptionRequired;
+function getPlaybackErrorMessage(
+  errorCode: string | undefined,
+  messages: ProtectedMuxPlayerProps["messages"],
+) {
+  if (errorCode === "MUX_SIGNING_NOT_CONFIGURED")
+    return messages.signingMissing;
+  if (errorCode === "AUTH_REQUIRED" || errorCode === "INVALID_AUTH_TOKEN")
+    return messages.authError;
+  if (errorCode === "SUBSCRIPTION_REQUIRED")
+    return messages.subscriptionRequired;
   if (errorCode === "PACKAGE_REQUIRED") return messages.packageRequired;
-  if (errorCode === "VIDEO_NOT_FOUND" || errorCode === "PLAYBACK_REQUEST_INVALID") return messages.videoNotFound;
+  if (
+    errorCode === "VIDEO_NOT_FOUND" ||
+    errorCode === "PLAYBACK_REQUEST_INVALID"
+  )
+    return messages.videoNotFound;
   if (errorCode === "ACCESS_CHECK_FAILED") return messages.accessCheckFailed;
   if (errorCode === "RATE_LIMITED") return messages.rateLimited;
   return messages.tokenError;
 }
 
 function getPlayerDurationSeconds(player: HTMLElement | null) {
-  const duration = (player as (HTMLElement & { duration?: number }) | null)?.duration;
-  return typeof duration === "number" && Number.isFinite(duration) && duration > 0
+  const duration = (player as (HTMLElement & { duration?: number }) | null)
+    ?.duration;
+  return typeof duration === "number" &&
+    Number.isFinite(duration) &&
+    duration > 0
     ? Math.round(duration)
     : undefined;
 }
@@ -59,6 +78,7 @@ export default function ProtectedMuxPlayer({
   locale,
   poster,
   title,
+  trainerId,
   autoPlay = false,
   paused = false,
   reward,
@@ -71,8 +91,12 @@ export default function ProtectedMuxPlayer({
   const [playbackToken, setPlaybackToken] = useState("");
   const [error, setError] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [mediaDurationSeconds, setMediaDurationSeconds] = useState<number | undefined>(reward?.durationSeconds);
+  const [mediaDurationSeconds, setMediaDurationSeconds] = useState<
+    number | undefined
+  >(reward?.durationSeconds);
   const playerRef = useRef<HTMLElement | null>(null);
+  const qualifiedViewRecordedRef = useRef(false);
+  const watchedSecondsRef = useRef(0);
   const fallbackStyle = poster
     ? {
         backgroundImage: `linear-gradient(135deg, rgba(11, 18, 32, 0.78), rgba(155, 43, 66, 0.68)), url(${poster})`,
@@ -129,7 +153,11 @@ export default function ProtectedMuxPlayer({
         if (!cancelled) setPlaybackToken(payload.playbackToken);
       } catch (tokenError) {
         if (!cancelled) {
-          setError(tokenError instanceof Error ? tokenError.message : messages.tokenError);
+          setError(
+            tokenError instanceof Error
+              ? tokenError.message
+              : messages.tokenError,
+          );
         }
       }
     }
@@ -148,14 +176,79 @@ export default function ProtectedMuxPlayer({
       }
     : null;
 
-  usePlaybackReward(rewardTarget, isPlaying && Boolean(playbackToken) && !paused);
+  usePlaybackReward(
+    rewardTarget,
+    isPlaying && Boolean(playbackToken) && !paused,
+  );
+
+  useEffect(() => {
+    qualifiedViewRecordedRef.current = false;
+    watchedSecondsRef.current = 0;
+  }, [playbackId]);
+
+  useEffect(() => {
+    if (!user || !playbackId || !playbackToken || !isPlaying || paused)
+      return undefined;
+
+    const durationSeconds = mediaDurationSeconds;
+    const requiredSeconds = durationSeconds
+      ? Math.max(1, Math.min(30, Math.ceil(durationSeconds * 0.25)))
+      : 30;
+    const contentId =
+      reward?.contentId ??
+      `${contentType === "course" ? "course" : "relaxation"}_${locale}_${courseSlug}`;
+
+    const intervalId = window.setInterval(() => {
+      if (
+        document.visibilityState !== "visible" ||
+        qualifiedViewRecordedRef.current
+      )
+        return;
+
+      watchedSecondsRef.current += 1;
+      if (watchedSecondsRef.current < requiredSeconds) return;
+
+      qualifiedViewRecordedRef.current = true;
+      const recordQualifiedVideoView = httpsCallable(
+        functions,
+        "recordQualifiedVideoView",
+      );
+      void recordQualifiedVideoView({
+        contentId,
+        contentType:
+          contentType === "course"
+            ? ("course" as const)
+            : ("relaxation" as const),
+        playbackId,
+        watchedSeconds: watchedSecondsRef.current,
+        durationSeconds,
+      }).catch(() => {
+        qualifiedViewRecordedRef.current = false;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [
+    contentType,
+    courseSlug,
+    isPlaying,
+    locale,
+    mediaDurationSeconds,
+    paused,
+    playbackId,
+    playbackToken,
+    reward?.contentId,
+    user,
+  ]);
 
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
 
     const syncDuration = () => {
-      setMediaDurationSeconds((current) => current ?? getPlayerDurationSeconds(player));
+      setMediaDurationSeconds(
+        (current) => current ?? getPlayerDurationSeconds(player),
+      );
     };
     const handleEnded = () => {
       setIsPlaying(false);
@@ -190,14 +283,16 @@ export default function ProtectedMuxPlayer({
   useEffect(() => {
     if (!autoPlay || !playbackToken) return;
 
-    const player = playerRef.current as (HTMLElement & { play?: () => Promise<void> }) | null;
+    const player = playerRef.current as
+      (HTMLElement & { play?: () => Promise<void> }) | null;
     void player?.play?.().catch(() => undefined);
   }, [autoPlay, playbackId, playbackToken]);
 
   useEffect(() => {
     if (!paused) return;
 
-    const player = playerRef.current as (HTMLElement & { pause?: () => void }) | null;
+    const player = playerRef.current as
+      (HTMLElement & { pause?: () => void }) | null;
     player?.pause?.();
   }, [paused, playbackId]);
 
@@ -243,9 +338,17 @@ export default function ProtectedMuxPlayer({
       playback-id={playbackId}
       playback-token={playbackToken}
       poster={poster ?? undefined}
+      metadata-video-id={
+        reward?.contentId ??
+        `${contentType === "course" ? "course" : "relaxation"}_${locale}_${courseSlug}`
+      }
       metadata-video-title={title}
+      metadata-viewer-user-id={user.uid}
+      metadata-custom-1={trainerId}
       stream-type="on-demand"
-      auto-play={autoPlay ? "true" : appPreferences.videoAutoplay ? "muted" : undefined}
+      auto-play={
+        autoPlay ? "true" : appPreferences.videoAutoplay ? "muted" : undefined
+      }
       style={{ width: "100%", height: "100%" }}
     />
   );

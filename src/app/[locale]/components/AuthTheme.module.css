@@ -61,7 +61,11 @@
 .panel {
   color: var(--auth-text);
   background:
-    radial-gradient(circle at top, rgba(var(--accent-rgb), 0.14), transparent 34%),
+    radial-gradient(
+      circle at top,
+      rgba(var(--accent-rgb), 0.14),
+      transparent 34%
+    ),
     linear-gradient(180deg, var(--auth-panel), var(--auth-panel-alt));
   box-shadow: 0 30px 80px var(--auth-shadow);
 }

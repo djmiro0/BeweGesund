@@ -17,16 +17,33 @@
   border: 1px solid rgba(var(--shell-text-rgb), 0.12);
   border-radius: 1.1rem;
   background:
-    radial-gradient(circle at 16% 0%, rgba(var(--page-accent-rgb), 0.28), transparent 19rem),
-    radial-gradient(circle at 86% 18%, rgba(var(--page-warm-rgb), 0.2), transparent 16rem),
-    linear-gradient(135deg, var(--shell-bg-alt) 0%, var(--shell-bg) 62%, rgba(var(--shell-surface-rgb), 0.96) 100%);
+    radial-gradient(
+      circle at 16% 0%,
+      rgba(var(--page-accent-rgb), 0.28),
+      transparent 19rem
+    ),
+    radial-gradient(
+      circle at 86% 18%,
+      rgba(var(--page-warm-rgb), 0.2),
+      transparent 16rem
+    ),
+    linear-gradient(
+      135deg,
+      var(--shell-bg-alt) 0%,
+      var(--shell-bg) 62%,
+      rgba(var(--shell-surface-rgb), 0.96) 100%
+    );
 }
 
 .categoryBlock {
   border: 1px solid var(--page-border);
   border-radius: 0.9rem;
   background:
-    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.96), rgba(var(--page-soft-alt-rgb), 0.9)),
+    linear-gradient(
+      180deg,
+      rgba(var(--page-soft-rgb), 0.96),
+      rgba(var(--page-soft-alt-rgb), 0.9)
+    ),
     var(--page-soft-alt);
   box-shadow: 0 0.7rem 1.6rem rgba(var(--shell-bg-rgb), 0.08);
 }
@@ -75,7 +92,11 @@
   border: 1px solid rgba(var(--shell-text-rgb), 0.13);
   border-radius: 0.85rem;
   background:
-    linear-gradient(145deg, rgba(var(--page-accent-rgb), 0.24), rgba(var(--shell-surface-rgb), 0.76)),
+    linear-gradient(
+      145deg,
+      rgba(var(--page-accent-rgb), 0.24),
+      rgba(var(--shell-surface-rgb), 0.76)
+    ),
     rgba(var(--shell-surface-rgb), 0.72);
 }
 
@@ -120,7 +141,10 @@
   border-bottom: 3px solid var(--secondary);
   color: inherit;
   text-decoration: none;
-  transition: transform 0.22s var(--transition), border-color 0.22s var(--transition), box-shadow 0.22s var(--transition);
+  transition:
+    transform 0.22s var(--transition),
+    border-color 0.22s var(--transition),
+    box-shadow 0.22s var(--transition);
 }
 
 a.categoryBlock:hover {
@@ -219,13 +243,24 @@ a.categoryBlock:hover {
   border: 1px solid var(--page-border-soft);
   border-radius: 1rem;
   background:
-    radial-gradient(circle at 100% 0%, rgba(var(--page-accent-rgb), 0.12), transparent 8rem),
-    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-soft-alt-rgb), 0.88)),
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(var(--page-accent-rgb), 0.12),
+      transparent 8rem
+    ),
+    linear-gradient(
+      180deg,
+      rgba(var(--page-soft-rgb), 0.98),
+      rgba(var(--page-soft-alt-rgb), 0.88)
+    ),
     var(--page-soft);
   padding: 1.05rem 0.9rem 0.9rem;
   color: inherit;
   text-decoration: none;
-  transition: transform 0.22s var(--transition), border-color 0.22s var(--transition), box-shadow 0.22s var(--transition);
+  transition:
+    transform 0.22s var(--transition),
+    border-color 0.22s var(--transition),
+    box-shadow 0.22s var(--transition);
 }
 
 .courseCard::after {
@@ -235,7 +270,12 @@ a.categoryBlock:hover {
   bottom: 0;
   left: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--page-accent), var(--page-warm), rgba(var(--shell-surface-rgb), 0.96));
+  background: linear-gradient(
+    90deg,
+    var(--page-accent),
+    var(--page-warm),
+    rgba(var(--shell-surface-rgb), 0.96)
+  );
   pointer-events: none;
 }
 
@@ -259,8 +299,16 @@ a.categoryBlock:hover {
   border-radius: 0.78rem;
   border: 1px solid rgba(var(--page-ink-rgb), 0.08);
   background:
-    radial-gradient(circle at 28% 20%, rgba(var(--secondary-rgb), 0.26), transparent 7rem),
-    linear-gradient(135deg, rgba(var(--shell-bg-rgb), 0.94), rgba(var(--page-accent-rgb), 0.38));
+    radial-gradient(
+      circle at 28% 20%,
+      rgba(var(--secondary-rgb), 0.26),
+      transparent 7rem
+    ),
+    linear-gradient(
+      135deg,
+      rgba(var(--shell-bg-rgb), 0.94),
+      rgba(var(--page-accent-rgb), 0.38)
+    );
   color: rgba(255, 255, 255, 0.88);
   display: flex;
   align-items: center;
@@ -287,8 +335,11 @@ a.categoryBlock:hover {
   z-index: 1;
   border: 1px solid rgba(var(--secondary-rgb), 0.24);
   border-radius: 999px;
-  background:
-    linear-gradient(135deg, rgba(var(--secondary-rgb), 0.96), rgba(var(--quaternary-rgb), 0.92));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--secondary-rgb), 0.96),
+    rgba(var(--quaternary-rgb), 0.92)
+  );
   box-shadow: 0 0.45rem 1rem rgba(var(--secondary-rgb), 0.22);
   padding: 0.3rem 0.5rem;
   color: #ffffff;
@@ -385,8 +436,16 @@ a.categoryBlock:hover {
 
 .overviewSection {
   --overview-bg:
-    radial-gradient(circle at 14% 10%, rgba(var(--page-warm-rgb), 0.2), transparent 21rem),
-    radial-gradient(circle at 88% 18%, rgba(var(--page-olive-rgb), 0.13), transparent 24rem),
+    radial-gradient(
+      circle at 14% 10%,
+      rgba(var(--page-warm-rgb), 0.2),
+      transparent 21rem
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(var(--page-olive-rgb), 0.13),
+      transparent 24rem
+    ),
     linear-gradient(180deg, var(--page-cream-1) 0%, var(--page-cream-2) 100%);
   --overview-text: var(--page-ink);
   --overview-muted: var(--page-muted);
@@ -403,8 +462,16 @@ a.categoryBlock:hover {
 
 :global(:root[data-theme="dark"]) .overviewSection {
   --overview-bg:
-    radial-gradient(circle at 14% 10%, rgba(17, 119, 139, 0.26), transparent 21rem),
-    radial-gradient(circle at 88% 18%, rgba(27, 72, 101, 0.24), transparent 24rem),
+    radial-gradient(
+      circle at 14% 10%,
+      rgba(17, 119, 139, 0.26),
+      transparent 21rem
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(27, 72, 101, 0.24),
+      transparent 24rem
+    ),
     linear-gradient(180deg, #02111f 0%, #041321 46%, #020913 100%);
   --overview-text: #f8fafc;
   --overview-muted: rgba(255, 255, 255, 0.72);
@@ -452,7 +519,6 @@ a.categoryBlock:hover {
   font-weight: 950;
   letter-spacing: 0;
   line-height: 0.95;
-  text-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.32);
 }
 
 .overviewSection .intro {
@@ -468,7 +534,11 @@ a.categoryBlock:hover {
   padding: 0.9rem 1rem;
   border-color: var(--overview-panel-border);
   background:
-    linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.08), transparent 62%),
+    linear-gradient(
+      135deg,
+      rgba(var(--page-accent-rgb), 0.08),
+      transparent 62%
+    ),
     var(--overview-panel);
   box-shadow: 0 0.9rem 2rem var(--overview-panel-shadow);
   backdrop-filter: blur(18px);
@@ -504,6 +574,7 @@ a.categoryBlock:hover {
 
 .overviewSection .categoryBlock {
   --category-accent: #6ee7b7;
+  --category-edge-size: 3px;
   --category-glow: rgba(110, 231, 183, 0.25);
   --category-image: none;
   position: relative;
@@ -513,15 +584,25 @@ a.categoryBlock:hover {
   min-height: 0;
   padding: clamp(1rem, 1.35vw, 1.32rem);
   justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-bottom: 3px solid var(--category-accent);
+  border: 0;
   border-radius: 1.08rem;
   background:
-    linear-gradient(90deg, rgba(3, 14, 26, 0.94) 0%, rgba(4, 18, 31, 0.62) 46%, rgba(4, 18, 31, 0.12) 100%),
-    linear-gradient(180deg, rgba(2, 11, 20, 0.06) 0%, rgba(2, 11, 20, 0.94) 100%),
+    linear-gradient(
+      90deg,
+      rgba(3, 14, 26, 0.94) 0%,
+      rgba(4, 18, 31, 0.62) 46%,
+      rgba(4, 18, 31, 0.12) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(2, 11, 20, 0.06) 0%,
+      rgba(2, 11, 20, 0.94) 100%
+    ),
     var(--category-image) center / cover no-repeat,
     #061522;
   box-shadow:
+    inset 0 calc(0px - var(--category-edge-size)) 0 var(--category-accent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.13),
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 0.9rem 2rem rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.03);
@@ -544,14 +625,16 @@ a.categoryBlock:hover {
   inset: 0;
   z-index: -2;
   background: rgba(1, 8, 15, 0.2);
-  transition: background 0.22s var(--transition), transform 0.22s var(--transition);
+  transition:
+    background 0.22s var(--transition),
+    transform 0.22s var(--transition);
 }
 
 .overviewSection a.categoryBlock:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.2);
-  border-bottom-color: var(--category-accent);
   box-shadow:
+    inset 0 calc(0px - var(--category-edge-size)) 0 var(--category-accent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 1.05rem 2.35rem rgba(0, 0, 0, 0.28),
     0 0 1.4rem var(--category-glow);
@@ -573,9 +656,14 @@ a.categoryBlock:hover {
   border: 1px solid color-mix(in srgb, var(--category-accent) 44%, transparent);
   border-radius: 0.82rem;
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--category-accent) 30%, transparent), rgba(255, 255, 255, 0.05)),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--category-accent) 30%, transparent),
+      rgba(255, 255, 255, 0.05)
+    ),
     rgba(0, 0, 0, 0.2);
-  box-shadow: 0 0.75rem 1.4rem color-mix(in srgb, var(--category-glow) 72%, transparent);
+  box-shadow: 0 0.75rem 1.4rem
+    color-mix(in srgb, var(--category-glow) 72%, transparent);
   color: var(--category-accent);
 }
 
@@ -613,7 +701,11 @@ a.categoryBlock:hover {
 .overviewSection .subtypePills span {
   max-width: 100%;
   overflow: hidden;
-  border-color: color-mix(in srgb, var(--category-accent) 70%, rgba(255, 255, 255, 0.18));
+  border-color: color-mix(
+    in srgb,
+    var(--category-accent) 70%,
+    rgba(255, 255, 255, 0.18)
+  );
   border-radius: 0.36rem;
   background: rgba(1, 9, 17, 0.48);
   padding: 0.36rem 0.42rem;
@@ -646,13 +738,24 @@ a.categoryBlock:hover {
   color: #ffffff;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
-  transition: transform 0.22s var(--transition), border-color 0.22s var(--transition), background 0.22s var(--transition);
+  transition:
+    transform 0.22s var(--transition),
+    border-color 0.22s var(--transition),
+    background 0.22s var(--transition);
 }
 
 .overviewSection a.categoryBlock:hover .categoryArrow {
   transform: translateX(4px);
-  border-color: color-mix(in srgb, var(--category-accent) 64%, rgba(255, 255, 255, 0.3));
-  background: color-mix(in srgb, var(--category-accent) 16%, rgba(255, 255, 255, 0.05));
+  border-color: color-mix(
+    in srgb,
+    var(--category-accent) 64%,
+    rgba(255, 255, 255, 0.3)
+  );
+  background: color-mix(
+    in srgb,
+    var(--category-accent) 16%,
+    rgba(255, 255, 255, 0.05)
+  );
 }
 
 .overviewSection .memberCallout {
@@ -817,10 +920,10 @@ a.categoryBlock:hover {
   }
 
   .overviewSection .categoryBlock {
+    --category-edge-size: 2px;
     min-height: 0;
     padding: 0.72rem;
     border-radius: 0.88rem;
-    border-bottom-width: 2px;
   }
 
   .overviewSection .categoryHead {

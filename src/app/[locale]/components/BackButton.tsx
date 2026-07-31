@@ -13,12 +13,18 @@ interface BackButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 function shouldUseBrowserBack(event: MouseEvent<HTMLAnchorElement>) {
   if (event.defaultPrevented) return false;
   if (event.button !== 0) return false;
-  if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return false;
+  if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
+    return false;
 
   return true;
 }
 
-export default function BackButton({ href, children, onClick, ...props }: BackButtonProps) {
+export default function BackButton({
+  href,
+  children,
+  onClick,
+  ...props
+}: BackButtonProps) {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
 

@@ -1,13 +1,21 @@
 .tabBar {
   --tab-surface:
-    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.9), rgba(var(--page-base-rgb), 0.86)),
+    linear-gradient(
+      180deg,
+      rgba(var(--page-soft-rgb), 0.9),
+      rgba(var(--page-base-rgb), 0.86)
+    ),
     rgba(var(--page-soft-rgb), 0.92);
   --tab-border: var(--page-border);
   --tab-text: var(--page-muted);
   --tab-text-active: var(--page-ink);
   --tab-icon-bg: rgba(var(--page-ink-rgb), 0.06);
   --tab-active-bg: rgba(var(--page-ink-rgb), 0.08);
-  --tab-action-bg: linear-gradient(135deg, var(--page-accent), var(--page-warm));
+  --tab-action-bg: linear-gradient(
+    135deg,
+    var(--page-accent),
+    var(--page-warm)
+  );
   --tab-action-text: var(--shell-bg);
   --tab-shadow: rgba(83, 57, 20, 0.26);
   --tab-lift-glow: rgba(var(--page-accent-rgb), 0.16);
@@ -24,14 +32,22 @@
 
 :global(:root[data-theme="dark"]) .tabBar {
   --tab-surface:
-    linear-gradient(180deg, rgba(var(--shell-surface-rgb), 0.9), rgba(var(--shell-bg-rgb), 0.94)),
+    linear-gradient(
+      180deg,
+      rgba(var(--shell-surface-rgb), 0.9),
+      rgba(var(--shell-bg-rgb), 0.94)
+    ),
     rgba(var(--shell-bg-rgb), 0.9);
   --tab-border: var(--shell-border);
   --tab-text: var(--shell-text-muted);
   --tab-text-active: var(--shell-text);
   --tab-icon-bg: rgba(var(--shell-text-rgb), 0.08);
   --tab-active-bg: rgba(var(--shell-text-rgb), 0.1);
-  --tab-action-bg: linear-gradient(135deg, var(--page-accent), var(--page-warm));
+  --tab-action-bg: linear-gradient(
+    135deg,
+    var(--page-accent),
+    var(--page-warm)
+  );
   --tab-action-text: var(--shell-bg);
   --tab-shadow: rgba(0, 0, 0, 0.48);
   --tab-lift-glow: rgba(var(--page-warm-rgb), 0.14);
@@ -64,7 +80,11 @@
   inset: -0.55rem 0.85rem auto;
   height: 1.2rem;
   border-radius: 999px;
-  background: radial-gradient(ellipse at center, var(--tab-lift-glow), transparent 68%);
+  background: radial-gradient(
+    ellipse at center,
+    var(--tab-lift-glow),
+    transparent 68%
+  );
   pointer-events: none;
 }
 
@@ -74,7 +94,12 @@
   inset: 0.45rem 35% auto;
   height: 1px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--tab-top-glow), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--tab-top-glow),
+    transparent
+  );
 }
 
 .tabItem {
@@ -112,7 +137,9 @@
   justify-content: center;
   border-radius: 999px;
   background: transparent;
-  transition: background 0.24s var(--transition), color 0.24s var(--transition);
+  transition:
+    background 0.24s var(--transition),
+    color 0.24s var(--transition);
 }
 
 .tabItemActive .tabIcon {
@@ -157,6 +184,16 @@
     transform 0.24s var(--transition);
 }
 
+.centerAction::before {
+  content: "";
+  position: absolute;
+  inset: -0.42rem;
+  z-index: -1;
+  border: 1px solid rgba(var(--page-accent-rgb), 0.22);
+  border-radius: inherit;
+  opacity: 0.68;
+}
+
 .centerAction:hover {
   box-shadow:
     0 18px 38px rgba(var(--page-accent-rgb), 0.34),
@@ -169,6 +206,12 @@
     0 18px 38px rgba(var(--page-accent-rgb), 0.36),
     0 0 0 0.42rem rgba(var(--page-accent-rgb), 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.centerActionActive::before {
+  border-color: rgba(var(--page-accent-rgb), 0.38);
+  opacity: 1;
+  animation: calendarBreath 3.2s var(--transition) infinite;
 }
 
 .actionLayer {
@@ -188,7 +231,11 @@
 
 .actionSheet {
   --sheet-surface:
-    linear-gradient(180deg, rgba(var(--page-soft-rgb), 0.98), rgba(var(--page-base-rgb), 0.94)),
+    linear-gradient(
+      180deg,
+      rgba(var(--page-soft-rgb), 0.98),
+      rgba(var(--page-base-rgb), 0.94)
+    ),
     var(--page-soft);
   --sheet-border: var(--page-border);
   --sheet-text: var(--page-ink);
@@ -212,7 +259,11 @@
 
 :global(:root[data-theme="dark"]) .actionSheet {
   --sheet-surface:
-    linear-gradient(180deg, rgba(var(--shell-surface-rgb), 0.96), rgba(var(--shell-bg-rgb), 0.96)),
+    linear-gradient(
+      180deg,
+      rgba(var(--shell-surface-rgb), 0.96),
+      rgba(var(--shell-bg-rgb), 0.96)
+    ),
     var(--shell-bg);
   --sheet-border: var(--shell-border);
   --sheet-text: var(--shell-text);
@@ -280,7 +331,9 @@
   gap: 0.55rem;
   padding: 0.72rem;
   text-decoration: none;
-  transition: transform 0.24s var(--transition), border-color 0.24s var(--transition);
+  transition:
+    transform 0.24s var(--transition),
+    border-color 0.24s var(--transition);
 }
 
 .quickAction:hover {
@@ -296,7 +349,11 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(var(--page-accent-rgb), 0.18), rgba(var(--page-warm-rgb), 0.22));
+  background: linear-gradient(
+    135deg,
+    rgba(var(--page-accent-rgb), 0.18),
+    rgba(var(--page-warm-rgb), 0.22)
+  );
   color: var(--page-accent);
 }
 
@@ -408,6 +465,19 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes calendarBreath {
+  0%,
+  100% {
+    opacity: 0.46;
+    transform: scale(0.94);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
   }
 }
 

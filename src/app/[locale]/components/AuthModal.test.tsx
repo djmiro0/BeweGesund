@@ -4,18 +4,18 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import AuthModal from "./AuthModal";
 
 const mocks = vi.hoisted(() => ({
-    callable: vi.fn(),
-    createUserWithEmailAndPassword: vi.fn(),
-    getDoc: vi.fn(),
-    httpsCallable: vi.fn(),
-    sendPasswordResetEmail: vi.fn(),
-    sendEmailVerification: vi.fn(),
-    signInWithEmailAndPassword: vi.fn(),
-    signInWithPopup: vi.fn(),
-    signOut: vi.fn(),
-    locationAssign: vi.fn(),
-    updateProfile: vi.fn(),
-    setDoc: vi.fn(),
+  callable: vi.fn(),
+  createUserWithEmailAndPassword: vi.fn(),
+  getDoc: vi.fn(),
+  httpsCallable: vi.fn(),
+  sendPasswordResetEmail: vi.fn(),
+  sendEmailVerification: vi.fn(),
+  signInWithEmailAndPassword: vi.fn(),
+  signInWithPopup: vi.fn(),
+  signOut: vi.fn(),
+  locationAssign: vi.fn(),
+  updateProfile: vi.fn(),
+  setDoc: vi.fn(),
 }));
 
 vi.mock("next-intl", () => ({
@@ -35,18 +35,22 @@ vi.mock("next-intl", () => ({
         submitSignIn: "Sign In",
         forgotPassword: "Forgot your password?",
         resetTitle: "Reset password",
-        resetSupportText: "Enter the email address for your account. Password reset works for email-password accounts. If you created your account with Google, use Continue with Google instead.",
+        resetSupportText:
+          "Enter the email address for your account. Password reset works for email-password accounts. If you created your account with Google, use Continue with Google instead.",
         sendResetLink: "Send reset link",
         backToSignIn: "Back to sign in",
         resetEmailRequired: "Enter your email address first.",
-        resetEmailSent: "If this email uses password sign-in, reset instructions were sent. Check your spam folder too. If you created the account with Google, use Continue with Google instead.",
-        verificationSent: "Account created. Check your inbox and spam folder, then verify the email address before signing in. If the link is not clickable, copy and paste it into your browser.",
+        resetEmailSent:
+          "If this email uses password sign-in, reset instructions were sent. Check your spam folder too. If you created the account with Google, use Continue with Google instead.",
+        verificationSent:
+          "Account created. Check your inbox and spam folder, then verify the email address before signing in. If the link is not clickable, copy and paste it into your browser.",
         switchToRegister: "Create an account",
         changeEmail: "Change email",
         signInWithThisEmail: "Sign in with this email",
         close: "Close",
         errorPrefix: "Sign in failed:",
-        invalidCredential: "We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.",
+        invalidCredential:
+          "We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.",
         emailInUse: "An account with this email already exists.",
         invalidEmail: "Please enter a valid email address.",
         "validation.signInEmail": "Enter your email address.",
@@ -95,9 +99,11 @@ vi.mock("next-intl", () => ({
         "validation.consent": "Accept the terms of use.",
         "validation.healthConsent": "Accept health data processing.",
         "validation.anamnesisGoals": "Select at least one main goal.",
-        "validation.anamnesisComplaints": "Select at least one complaint answer.",
+        "validation.anamnesisComplaints":
+          "Select at least one complaint answer.",
         "validation.fitnessLevel": "Select your current fitness level.",
-        "validation.movementRestrictions": "Select at least one movement restriction answer.",
+        "validation.movementRestrictions":
+          "Select at least one movement restriction answer.",
         "validation.stressLevel": "Select your daily stress level.",
         "validation.sleepDisturbance": "Select a sleep or restlessness answer.",
         "validation.contraindications": "Select a health restriction answer.",
@@ -117,11 +123,11 @@ vi.mock("../../../../firebase.config", () => ({
 }));
 
 vi.mock("firebase/auth", () => ({
-    GoogleAuthProvider: class {
-        setCustomParameters() {}
-    },
-    createUserWithEmailAndPassword: mocks.createUserWithEmailAndPassword,
-    deleteUser: vi.fn(() => Promise.resolve()),
+  GoogleAuthProvider: class {
+    setCustomParameters() {}
+  },
+  createUserWithEmailAndPassword: mocks.createUserWithEmailAndPassword,
+  deleteUser: vi.fn(() => Promise.resolve()),
   sendEmailVerification: mocks.sendEmailVerification,
   sendPasswordResetEmail: mocks.sendPasswordResetEmail,
   signInWithEmailAndPassword: mocks.signInWithEmailAndPassword,
@@ -153,7 +159,9 @@ describe("AuthModal Google sign-in", () => {
     });
     mocks.getDoc.mockReset();
     mocks.callable.mockReset();
-    mocks.callable.mockResolvedValue({ data: { url: "https://checkout.example/session" } });
+    mocks.callable.mockResolvedValue({
+      data: { url: "https://checkout.example/session" },
+    });
     mocks.createUserWithEmailAndPassword.mockReset();
     mocks.httpsCallable.mockReset();
     mocks.httpsCallable.mockReturnValue(mocks.callable);
@@ -170,7 +178,9 @@ describe("AuthModal Google sign-in", () => {
   it("offers Google sign-in beside email sign-in", () => {
     render(<AuthModal isOpen onClose={vi.fn()} />);
 
-    expect(screen.getByRole("button", { name: "Continue with Google" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Continue with Google" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("or use email")).toBeInTheDocument();
   });
 
@@ -180,7 +190,9 @@ describe("AuthModal Google sign-in", () => {
     render(<AuthModal isOpen onClose={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Create an account" }));
 
-    expect(screen.getByRole("heading", { name: "registerTitle" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "registerTitle" }),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/reCAPTCHA/i)).not.toBeInTheDocument();
   });
 
@@ -190,7 +202,9 @@ describe("AuthModal Google sign-in", () => {
     render(<AuthModal isOpen onClose={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(screen.getByText("Complete these items to continue:")).toBeInTheDocument();
+    expect(
+      screen.getByText("Complete these items to continue:"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Enter your email address.")).toBeInTheDocument();
     expect(screen.getByText("Enter your password.")).toBeInTheDocument();
     expect(mocks.signInWithEmailAndPassword).not.toHaveBeenCalled();
@@ -204,21 +218,34 @@ describe("AuthModal Google sign-in", () => {
     await user.type(screen.getByLabelText("Password"), "secret");
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(screen.getByText("Complete these items to continue:")).toBeInTheDocument();
-    expect(screen.getByText("Please enter a valid email address.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Complete these items to continue:"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Please enter a valid email address."),
+    ).toBeInTheDocument();
     expect(mocks.signInWithEmailAndPassword).not.toHaveBeenCalled();
   });
 
   it("shows the Firebase sign-in failure reason", async () => {
     const user = userEvent.setup();
-    mocks.signInWithEmailAndPassword.mockRejectedValue({ code: "auth/invalid-credential" });
+    mocks.signInWithEmailAndPassword.mockRejectedValue({
+      code: "auth/invalid-credential",
+    });
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
-    await user.type(screen.getByLabelText("Email address"), "member@example.com");
+    await user.type(
+      screen.getByLabelText("Email address"),
+      "member@example.com",
+    );
     await user.type(screen.getByLabelText("Password"), "wrong-password");
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(await screen.findByText("Sign in failed: We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.")).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        "Sign in failed: We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("shows account help when Firebase reports invalid login credentials", async () => {
@@ -234,11 +261,18 @@ describe("AuthModal Google sign-in", () => {
     });
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
-    await user.type(screen.getByLabelText("Email address"), "missing@example.com");
+    await user.type(
+      screen.getByLabelText("Email address"),
+      "missing@example.com",
+    );
     await user.type(screen.getByLabelText("Password"), "password");
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(await screen.findByText("Sign in failed: We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.")).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        "Sign in failed: We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("explains Google accounts in password reset feedback", async () => {
@@ -246,25 +280,42 @@ describe("AuthModal Google sign-in", () => {
     mocks.sendPasswordResetEmail.mockResolvedValue(undefined);
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "Forgot your password?" }));
+    await user.click(
+      screen.getByRole("button", { name: "Forgot your password?" }),
+    );
 
-    expect(screen.getByText("Enter the email address for your account. Password reset works for email-password accounts. If you created your account with Google, use Continue with Google instead.")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Enter the email address for your account. Password reset works for email-password accounts. If you created your account with Google, use Continue with Google instead.",
+      ),
+    ).toBeInTheDocument();
 
-    await user.type(screen.getByLabelText("Email address"), "google-member@example.com");
+    await user.type(
+      screen.getByLabelText("Email address"),
+      "google-member@example.com",
+    );
     await user.click(screen.getByRole("button", { name: "Send reset link" }));
 
     expect(mocks.sendPasswordResetEmail).toHaveBeenCalled();
-    expect(await screen.findByText("If this email uses password sign-in, reset instructions were sent. Check your spam folder too. If you created the account with Google, use Continue with Google instead.")).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        "If this email uses password sign-in, reset instructions were sent. Check your spam folder too. If you created the account with Google, use Continue with Google instead.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("shows reset email feedback when password reset is submitted empty", async () => {
     const user = userEvent.setup();
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "Forgot your password?" }));
+    await user.click(
+      screen.getByRole("button", { name: "Forgot your password?" }),
+    );
     await user.click(screen.getByRole("button", { name: "Send reset link" }));
 
-    expect(screen.getByText("Enter your email address first.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Enter your email address first."),
+    ).toBeInTheDocument();
     expect(mocks.sendPasswordResetEmail).not.toHaveBeenCalled();
   });
 
@@ -278,7 +329,9 @@ describe("AuthModal Google sign-in", () => {
     await user.click(screen.getByRole("button", { name: "Show password" }));
 
     expect(passwordInput).toHaveAttribute("type", "text");
-    expect(screen.getByRole("button", { name: "Hide password" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Hide password" }),
+    ).toBeInTheDocument();
   });
 
   it("explains missing registration fields only after submit is attempted", async () => {
@@ -287,12 +340,20 @@ describe("AuthModal Google sign-in", () => {
     render(<AuthModal isOpen onClose={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Create an account" }));
 
-    expect(screen.queryByText("Complete these items to continue:")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Continue to anamnesis" })).toBeEnabled();
+    expect(
+      screen.queryByText("Complete these items to continue:"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Continue to anamnesis" }),
+    ).toBeEnabled();
 
-    await user.click(screen.getByRole("button", { name: "Continue to anamnesis" }));
+    await user.click(
+      screen.getByRole("button", { name: "Continue to anamnesis" }),
+    );
 
-    expect(screen.getByText("Complete these items to continue:")).toBeInTheDocument();
+    expect(
+      screen.getByText("Complete these items to continue:"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Enter your first name.")).toBeInTheDocument();
     expect(screen.getByText("Accept the terms of use.")).toBeInTheDocument();
   });
@@ -300,6 +361,8 @@ describe("AuthModal Google sign-in", () => {
   it("opens checkout after email registration and anamnesis", async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
+    const onCheckoutRedirectStart = vi.fn();
+    const onCheckoutRedirectError = vi.fn();
     mocks.createUserWithEmailAndPassword.mockResolvedValue({
       user: {
         uid: "email-user",
@@ -313,14 +376,27 @@ describe("AuthModal Google sign-in", () => {
     mocks.setDoc.mockResolvedValue(undefined);
     mocks.signOut.mockResolvedValue(undefined);
 
-    render(<AuthModal isOpen onClose={onClose} />);
+    render(
+      <AuthModal
+        isOpen
+        onClose={onClose}
+        onCheckoutRedirectStart={onCheckoutRedirectStart}
+        onCheckoutRedirectError={onCheckoutRedirectError}
+      />,
+    );
     await user.click(screen.getByRole("button", { name: "Create an account" }));
 
     await user.type(screen.getByPlaceholderText("First name"), "New");
     await user.type(screen.getByPlaceholderText("Last name"), "Member");
-    await user.type(screen.getByPlaceholderText("Email address"), "new@example.com");
+    await user.type(
+      screen.getByPlaceholderText("Email address"),
+      "new@example.com",
+    );
     await user.type(screen.getByPlaceholderText("Password"), "secret123");
-    await user.type(screen.getByPlaceholderText("Confirm password"), "secret123");
+    await user.type(
+      screen.getByPlaceholderText("Confirm password"),
+      "secret123",
+    );
 
     const numberFields = screen.getAllByRole("spinbutton");
     await user.type(numberFields[0], "170");
@@ -334,7 +410,9 @@ describe("AuthModal Google sign-in", () => {
     await user.click(checkboxes[0]);
     await user.click(checkboxes[1]);
 
-    await user.click(screen.getByRole("button", { name: "Continue to anamnesis" }));
+    await user.click(
+      screen.getByRole("button", { name: "Continue to anamnesis" }),
+    );
     await user.type(screen.getByRole("spinbutton"), "35");
 
     const anamnesisCheckboxes = screen.getAllByRole("checkbox");
@@ -349,12 +427,21 @@ describe("AuthModal Google sign-in", () => {
     await user.click(radios[4]);
     await user.click(radios[8]);
 
-    await user.click(screen.getByRole("button", { name: "Complete anamnesis" }));
+    await user.click(
+      screen.getByRole("button", { name: "Complete anamnesis" }),
+    );
 
     expect(mocks.signOut).not.toHaveBeenCalled();
-    expect(mocks.callable).toHaveBeenCalledWith({ locale: "en", memberPackage: "basic" });
+    expect(onCheckoutRedirectStart).toHaveBeenCalledOnce();
+    expect(onCheckoutRedirectError).not.toHaveBeenCalled();
+    expect(mocks.callable).toHaveBeenCalledWith({
+      locale: "en",
+      memberPackage: "basic",
+    });
     expect(onClose).not.toHaveBeenCalled();
-    expect(mocks.locationAssign).toHaveBeenCalledWith("https://checkout.example/session");
+    expect(mocks.locationAssign).toHaveBeenCalledWith(
+      "https://checkout.example/session",
+    );
   });
 
   it("signs in password users without requiring email verification", async () => {
@@ -370,7 +457,10 @@ describe("AuthModal Google sign-in", () => {
     });
 
     render(<AuthModal isOpen onClose={onClose} />);
-    await user.type(screen.getByLabelText("Email address"), "member@example.com");
+    await user.type(
+      screen.getByLabelText("Email address"),
+      "member@example.com",
+    );
     await user.type(screen.getByLabelText("Password"), "secret123");
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
@@ -385,7 +475,9 @@ describe("AuthModal Google sign-in", () => {
 
   it("lets the user change email or sign in when registration email already exists", async () => {
     const user = userEvent.setup();
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
     mocks.createUserWithEmailAndPassword.mockRejectedValue({
       customData: {
         _tokenResponse: {
@@ -401,9 +493,15 @@ describe("AuthModal Google sign-in", () => {
 
     await user.type(screen.getByPlaceholderText("First name"), "Existing");
     await user.type(screen.getByPlaceholderText("Last name"), "Member");
-    await user.type(screen.getByPlaceholderText("Email address"), "existing@example.com");
+    await user.type(
+      screen.getByPlaceholderText("Email address"),
+      "existing@example.com",
+    );
     await user.type(screen.getByPlaceholderText("Password"), "secret123");
-    await user.type(screen.getByPlaceholderText("Confirm password"), "secret123");
+    await user.type(
+      screen.getByPlaceholderText("Confirm password"),
+      "secret123",
+    );
 
     const numberFields = screen.getAllByRole("spinbutton");
     await user.type(numberFields[0], "170");
@@ -416,7 +514,9 @@ describe("AuthModal Google sign-in", () => {
     const accountCheckboxes = screen.getAllByRole("checkbox");
     await user.click(accountCheckboxes[0]);
     await user.click(accountCheckboxes[1]);
-    await user.click(screen.getByRole("button", { name: "Continue to anamnesis" }));
+    await user.click(
+      screen.getByRole("button", { name: "Continue to anamnesis" }),
+    );
 
     await user.type(screen.getByRole("spinbutton"), "35");
     const anamnesisCheckboxes = screen.getAllByRole("checkbox");
@@ -431,24 +531,48 @@ describe("AuthModal Google sign-in", () => {
     await user.click(radios[4]);
     await user.click(radios[8]);
 
-    await user.click(screen.getByRole("button", { name: "Complete anamnesis" }));
+    await user.click(
+      screen.getByRole("button", { name: "Complete anamnesis" }),
+    );
 
-    expect(await screen.findByText("Sign in failed: An account with this email already exists.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Change email" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Sign in with this email" })).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        "Sign in failed: An account with this email already exists.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Change email" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Sign in with this email" }),
+    ).toBeInTheDocument();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
 
     await user.click(screen.getByRole("button", { name: "Change email" }));
-    expect(screen.getByPlaceholderText("Email address")).toHaveValue("existing@example.com");
-    expect(screen.getByRole("button", { name: "Continue to anamnesis" })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Email address")).toHaveValue(
+      "existing@example.com",
+    );
+    expect(
+      screen.getByRole("button", { name: "Continue to anamnesis" }),
+    ).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Continue to anamnesis" }));
-    await user.click(screen.getByRole("button", { name: "Complete anamnesis" }));
+    await user.click(
+      screen.getByRole("button", { name: "Continue to anamnesis" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Complete anamnesis" }),
+    );
     await screen.findByRole("button", { name: "Sign in with this email" });
-    await user.click(screen.getByRole("button", { name: "Sign in with this email" }));
+    await user.click(
+      screen.getByRole("button", { name: "Sign in with this email" }),
+    );
 
-    expect(screen.getByRole("heading", { name: "Member Sign In" })).toBeInTheDocument();
-    expect(screen.getByLabelText("Email address")).toHaveValue("existing@example.com");
+    expect(
+      screen.getByRole("heading", { name: "Member Sign In" }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Email address")).toHaveValue(
+      "existing@example.com",
+    );
     consoleErrorSpy.mockRestore();
   });
 
@@ -466,7 +590,9 @@ describe("AuthModal Google sign-in", () => {
     mocks.getDoc.mockResolvedValue({ exists: () => true });
 
     render(<AuthModal isOpen onClose={onClose} />);
-    await user.click(screen.getByRole("button", { name: "Continue with Google" }));
+    await user.click(
+      screen.getByRole("button", { name: "Continue with Google" }),
+    );
 
     expect(mocks.signInWithPopup).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -485,12 +611,20 @@ describe("AuthModal Google sign-in", () => {
     mocks.getDoc.mockResolvedValue({ exists: () => false });
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "Continue with Google" }));
+    await user.click(
+      screen.getByRole("button", { name: "Continue with Google" }),
+    );
 
-    expect(screen.getByRole("heading", { name: "Complete your profile" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Complete your profile" }),
+    ).toBeInTheDocument();
     expect(screen.getByDisplayValue("New")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Member")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Continue to anamnesis" })).toBeEnabled();
-    expect(screen.queryByText("Complete these items to continue:")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Continue to anamnesis" }),
+    ).toBeEnabled();
+    expect(
+      screen.queryByText("Complete these items to continue:"),
+    ).not.toBeInTheDocument();
   });
 });

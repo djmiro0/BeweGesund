@@ -8,8 +8,16 @@
   justify-content: center;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 42%, rgba(var(--page-warm-rgb), 0.16), transparent 16rem),
-    radial-gradient(circle at 18% 12%, rgba(var(--page-accent-rgb), 0.12), transparent 18rem),
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(var(--page-warm-rgb), 0.16),
+      transparent 16rem
+    ),
+    radial-gradient(
+      circle at 18% 12%,
+      rgba(var(--page-accent-rgb), 0.12),
+      transparent 18rem
+    ),
     linear-gradient(180deg, var(--shell-bg-alt), var(--shell-bg));
   color: var(--media-text);
 }

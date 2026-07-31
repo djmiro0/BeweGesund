@@ -40,16 +40,20 @@ describe("contact route", () => {
     const response = await POST(contactRequest());
 
     expect(response.status).toBe(503);
-    await expect(response.json()).resolves.toMatchObject({ code: "CONTACT_NOT_CONFIGURED" });
+    await expect(response.json()).resolves.toMatchObject({
+      code: "CONTACT_NOT_CONFIGURED",
+    });
   });
 
   it("sends a validated request through Resend", async () => {
     vi.stubEnv("RESEND_API_KEY", "re_test");
     vi.stubEnv("CONTACT_EMAIL_FROM", "BeweGesund <kontakt@example.com>");
     vi.stubEnv("CONTACT_EMAIL_TO", "info@example.com");
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ id: "email-1" }), { status: 200 }),
-    );
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(
+        new Response(JSON.stringify({ id: "email-1" }), { status: 200 }),
+      );
 
     const response = await POST(contactRequest());
 
@@ -67,9 +71,11 @@ describe("contact route", () => {
     vi.stubEnv("RESEND_API_KEY", "re_test");
     vi.stubEnv("CONTACT_EMAIL_FROM", "BeweGesund <kontakt@example.com>");
     vi.stubEnv("CONTACT_EMAIL_TO", "");
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ id: "email-1" }), { status: 200 }),
-    );
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(
+        new Response(JSON.stringify({ id: "email-1" }), { status: 200 }),
+      );
 
     await POST(contactRequest());
 
@@ -115,7 +121,9 @@ describe("contact route", () => {
     vi.stubEnv("CONTACT_EMAIL_TO", "info@example.com");
     vi.spyOn(console, "error").mockImplementation(() => {});
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ message: "Domain is not verified" }), { status: 403 }),
+      new Response(JSON.stringify({ message: "Domain is not verified" }), {
+        status: 403,
+      }),
     );
 
     const response = await POST(contactRequest());

@@ -24,15 +24,19 @@ function escapeHtml(value: string) {
 }
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
-    || request.headers.get("x-real-ip")
-    || "unknown";
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
   const rateLimit = consumeRateLimit(`contact:${ip}`, 5, 15 * 60_000);
 
   if (!rateLimit.allowed) {
     return NextResponse.json(
       { error: "Too many contact requests." },
-      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
     );
   }
 
@@ -50,16 +54,19 @@ export async function POST(request: Request) {
   const locale = body.locale === "en" ? "en" : "de";
 
   if (
-    name.length < 2
-    || name.length > 120
-    || !EMAIL_PATTERN.test(email)
-    || email.length > 254
-    || phone.length > 60
-    || !allowedTopics.has(topic)
-    || message.length < 10
-    || message.length > 5000
+    name.length < 2 ||
+    name.length > 120 ||
+    !EMAIL_PATTERN.test(email) ||
+    email.length > 254 ||
+    phone.length > 60 ||
+    !allowedTopics.has(topic) ||
+    message.length < 10 ||
+    message.length > 5000
   ) {
-    return NextResponse.json({ error: "Invalid contact request." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid contact request." },
+      { status: 400 },
+    );
   }
 
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -68,7 +75,10 @@ export async function POST(request: Request) {
 
   if (!apiKey || !from) {
     return NextResponse.json(
-      { error: "Contact delivery is not configured.", code: "CONTACT_NOT_CONFIGURED" },
+      {
+        error: "Contact delivery is not configured.",
+        code: "CONTACT_NOT_CONFIGURED",
+      },
       { status: 503 },
     );
   }
@@ -108,7 +118,10 @@ export async function POST(request: Request) {
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "");
-    const deliveryError = { error: "Contact delivery failed.", code: "CONTACT_DELIVERY_FAILED" };
+    const deliveryError = {
+      error: "Contact delivery failed.",
+      code: "CONTACT_DELIVERY_FAILED",
+    };
     console.error("Contact delivery failed through Resend.", {
       status: response.status,
       statusText: response.statusText,

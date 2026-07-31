@@ -62,7 +62,12 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
   );
 
   const selectedDay = useMemo(
-    () => daysByDate.get(selectedDate) ?? { id: selectedDate, date: selectedDate, entries: [] },
+    () =>
+      daysByDate.get(selectedDate) ?? {
+        id: selectedDate,
+        date: selectedDate,
+        entries: [],
+      },
     [daysByDate, selectedDate],
   );
 
@@ -116,7 +121,10 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
         },
         body: JSON.stringify({ eventId, locale }),
       });
-      const payload = (await response.json()) as { url?: string; error?: string };
+      const payload = (await response.json()) as {
+        url?: string;
+        error?: string;
+      };
 
       if (!response.ok || !payload.url) {
         throw new Error(payload.error || "Join failed");
@@ -124,7 +132,11 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
 
       window.location.assign(payload.url);
     } catch (error) {
-      setJoinError(error instanceof Error && error.message !== "Join failed" ? error.message : t("joinError"));
+      setJoinError(
+        error instanceof Error && error.message !== "Join failed"
+          ? error.message
+          : t("joinError"),
+      );
       setJoiningEventId("");
     }
   };
@@ -161,12 +173,19 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
         </div>
         <div className={styles.planCard}>
           <span className={styles.planLabel}>{t("memberPackage")}</span>
-          <strong className={styles.planValue}>{packageT(memberPackage)}</strong>
+          <strong className={styles.planValue}>
+            {packageT(memberPackage)}
+          </strong>
           <p className={styles.planHint}>{t("packageHint")}</p>
         </div>
       </motion.div>
 
-      <motion.div className={styles.dayRail} role="tablist" aria-label={t("daySelectorLabel")} variants={fadeUp}>
+      <motion.div
+        className={styles.dayRail}
+        role="tablist"
+        aria-label={t("daySelectorLabel")}
+        variants={fadeUp}
+      >
         <motion.button
           type="button"
           className={styles.dayArrow}
@@ -179,33 +198,39 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
         </motion.button>
 
         <div className={styles.dayStrip}>
-        {visibleDateKeys.map((dateKey) => {
-          const day = daysByDate.get(dateKey) ?? { id: dateKey, date: dateKey, entries: [] };
-          const isActive = dateKey === selectedDate;
-          return (
-            <motion.button
-              key={day.id}
-              type="button"
-              className={`${styles.dayButton} ${isActive ? styles.dayButtonActive : ""}`}
-              onClick={() => setSelectedDate(dateKey)}
-              aria-pressed={isActive}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.985 }}
-            >
-              {isActive ? (
-                <motion.span
-                  className={styles.dayActiveMark}
-                  layoutId="active-calendar-day"
-                  transition={{ type: "spring", stiffness: 520, damping: 36 }}
-                />
-              ) : null}
-              <span className={styles.dayButtonTop}>{dayFormatter.format(fromDateKey(day.date))}</span>
-              <span className={styles.dayButtonCount}>
-                {t("sessionCount", { count: day.entries.length })}
-              </span>
-            </motion.button>
-          );
-        })}
+          {visibleDateKeys.map((dateKey) => {
+            const day = daysByDate.get(dateKey) ?? {
+              id: dateKey,
+              date: dateKey,
+              entries: [],
+            };
+            const isActive = dateKey === selectedDate;
+            return (
+              <motion.button
+                key={day.id}
+                type="button"
+                className={`${styles.dayButton} ${isActive ? styles.dayButtonActive : ""}`}
+                onClick={() => setSelectedDate(dateKey)}
+                aria-pressed={isActive}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.985 }}
+              >
+                {isActive ? (
+                  <motion.span
+                    className={styles.dayActiveMark}
+                    layoutId="active-calendar-day"
+                    transition={{ type: "spring", stiffness: 520, damping: 36 }}
+                  />
+                ) : null}
+                <span className={styles.dayButtonTop}>
+                  {dayFormatter.format(fromDateKey(day.date))}
+                </span>
+                <span className={styles.dayButtonCount}>
+                  {t("sessionCount", { count: day.entries.length })}
+                </span>
+              </motion.button>
+            );
+          })}
         </div>
 
         <motion.button
@@ -271,14 +296,21 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
               }}
               tileContent={({ date, view }) => {
                 if (view !== "month") return null;
-                const eventCount = daysByDate.get(toDateKey(date))?.entries.length ?? 0;
+                const eventCount =
+                  daysByDate.get(toDateKey(date))?.entries.length ?? 0;
                 if (!eventCount) return null;
 
-                return <span className={styles.calendarEventCount}>{eventCount}</span>;
+                return (
+                  <span className={styles.calendarEventCount}>
+                    {eventCount}
+                  </span>
+                );
               }}
               tileClassName={({ date, view }) => {
                 if (view !== "month") return undefined;
-                return daysByDate.has(toDateKey(date)) ? styles.calendarHasEvents : undefined;
+                return daysByDate.has(toDateKey(date))
+                  ? styles.calendarHasEvents
+                  : undefined;
               }}
             />
           </motion.div>
@@ -290,7 +322,9 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
           <div>
             <p className={styles.panelLabel}>{t("selectedDay")}</p>
             <h3 className={styles.panelTitle}>
-              {selectedDay ? dateFormatter.format(fromDateKey(selectedDay.date)) : ""}
+              {selectedDay
+                ? dateFormatter.format(fromDateKey(selectedDay.date))
+                : ""}
             </h3>
           </div>
           <div className={styles.panelLegend}>
@@ -309,7 +343,8 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
           <div className={styles.sessionList}>
             {selectedDay.entries.map((entry) => {
               const included =
-                packageRank[memberPackage] >= packageRank[entry.packageRequired];
+                packageRank[memberPackage] >=
+                packageRank[entry.packageRequired];
               const canJoin = included && Boolean(entry.liveTrainingLink);
 
               return (
@@ -334,7 +369,9 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                     <div className={styles.sessionCopy}>
                       <div className={styles.sessionBadges}>
                         {entry.isLive ? (
-                          <span className={styles.liveBadge}>{t("liveBadge")}</span>
+                          <span className={styles.liveBadge}>
+                            {t("liveBadge")}
+                          </span>
                         ) : null}
                         <span className={styles.formatBadge}>
                           <Video size={14} />
@@ -346,7 +383,9 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                       </div>
                       <h4 className={styles.sessionTitle}>{entry.title}</h4>
                       {entry.description ? (
-                        <p className={styles.sessionDescription}>{entry.description}</p>
+                        <p className={styles.sessionDescription}>
+                          {entry.description}
+                        </p>
                       ) : null}
                       <div className={styles.sessionMeta}>
                         <span>{t("coach", { name: entry.coach })}</span>
@@ -357,7 +396,11 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                   </div>
 
                   <div className={styles.sessionAction}>
-                    <span className={included ? styles.statusIncluded : styles.statusLocked}>
+                    <span
+                      className={
+                        included ? styles.statusIncluded : styles.statusLocked
+                      }
+                    >
                       {included ? t("included") : t("upgradeRequired")}
                     </span>
                     {canJoin ? (
@@ -381,11 +424,15 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
                     )}
                     {!included ? (
                       <p className={styles.restrictionText}>
-                        {t("needsPackage", { package: packageT(entry.packageRequired) })}
+                        {t("needsPackage", {
+                          package: packageT(entry.packageRequired),
+                        })}
                       </p>
                     ) : (
                       <p className={styles.restrictionText}>
-                        {entry.liveTrainingLink ? t("includedHint") : t("missingLinkHint")}
+                        {entry.liveTrainingLink
+                          ? t("includedHint")
+                          : t("missingLinkHint")}
                       </p>
                     )}
                   </div>
@@ -399,7 +446,11 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
             <p>{t("emptyDescription")}</p>
           </div>
         )}
-        {joinError ? <p className={styles.restrictionText} role="alert">{joinError}</p> : null}
+        {joinError ? (
+          <p className={styles.restrictionText} role="alert">
+            {joinError}
+          </p>
+        ) : null}
       </motion.section>
     </motion.div>
   );
