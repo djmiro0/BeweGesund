@@ -260,9 +260,9 @@ async function dismissCookieBanner(page: Page) {
     name: /akzeptieren|accept/i,
   });
 
-  if (await acceptButton.isVisible().catch(() => false)) {
-    await acceptButton.click();
-  }
+  await acceptButton.waitFor({ state: "visible", timeout: 5_000 });
+  await acceptButton.click();
+  await expect(acceptButton).toBeHidden();
 }
 
 async function completeAccountStep(page: Page) {

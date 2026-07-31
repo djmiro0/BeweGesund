@@ -184,6 +184,16 @@
     transform 0.24s var(--transition);
 }
 
+.centerAction::before {
+  content: "";
+  position: absolute;
+  inset: -0.42rem;
+  z-index: -1;
+  border: 1px solid rgba(var(--page-accent-rgb), 0.22);
+  border-radius: inherit;
+  opacity: 0.68;
+}
+
 .centerAction:hover {
   box-shadow:
     0 18px 38px rgba(var(--page-accent-rgb), 0.34),
@@ -196,6 +206,12 @@
     0 18px 38px rgba(var(--page-accent-rgb), 0.36),
     0 0 0 0.42rem rgba(var(--page-accent-rgb), 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.centerActionActive::before {
+  border-color: rgba(var(--page-accent-rgb), 0.38);
+  opacity: 1;
+  animation: calendarBreath 3.2s var(--transition) infinite;
 }
 
 .actionLayer {
@@ -449,6 +465,19 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes calendarBreath {
+  0%,
+  100% {
+    opacity: 0.46;
+    transform: scale(0.94);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
   }
 }
 

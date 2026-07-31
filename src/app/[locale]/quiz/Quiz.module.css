@@ -1369,7 +1369,6 @@
     text-align: center;
   }
 
-
   .featureCard:not(:last-child),
   .statsRail div:not(:last-child) {
     border-right: 0;

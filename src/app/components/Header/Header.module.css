@@ -61,18 +61,36 @@
 
 .navLink {
   position: relative;
-  overflow: hidden;
+  isolation: isolate;
   border-radius: 999px;
   color: var(--shell-text);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.06em;
-  padding: 0.55rem 0.25rem;
+  padding: 0.62rem 0.7rem;
   text-transform: uppercase;
   opacity: 0.82;
   transition:
     color 0.18s ease,
     opacity 0.18s ease;
+}
+
+.navAura {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid rgba(var(--page-olive-rgb), 0.2);
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      circle at 24% 20%,
+      rgba(var(--page-warm-rgb), 0.2),
+      transparent 54%
+    ),
+    rgba(var(--page-olive-rgb), 0.1);
+  box-shadow:
+    0 8px 24px rgba(var(--page-olive-rgb), 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .navLink:hover,
@@ -82,6 +100,7 @@
 
 .navLink:hover {
   color: var(--page-olive);
+  transform: translateY(-1px);
 }
 
 .navLinkActive {
@@ -91,9 +110,9 @@
 
 .navUnderline {
   position: absolute;
-  right: 0.25rem;
-  bottom: 0.3rem;
-  left: 0.25rem;
+  right: 0.7rem;
+  bottom: 0.38rem;
+  left: 0.7rem;
   height: 1.5px;
   border-radius: 999px;
   background: var(--page-olive);
@@ -301,7 +320,7 @@
 
   position: fixed;
   inset: 4rem 0 0;
-  z-index: 20;
+  z-index: 59;
   cursor: default;
   border: 0;
   background: rgba(var(--shell-bg-rgb), 0.18);
@@ -324,60 +343,99 @@
   position: fixed;
   top: 4rem;
   right: 0;
-  left: 0;
-  z-index: 30;
-  border-bottom: 1px solid var(--shell-border);
+  bottom: 0;
+  z-index: 60;
+  width: min(100%, 34rem);
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-left: 1px solid var(--shell-border);
   background: linear-gradient(
-    180deg,
-    rgba(var(--shell-bg-rgb), 0.98),
-    rgba(var(--shell-bg-alt-rgb), 0.98)
+    145deg,
+    rgba(var(--shell-bg-rgb), 0.99),
+    rgba(var(--shell-bg-alt-rgb), 0.96)
   );
-  box-shadow: 0 18px 42px rgba(20, 16, 11, 0.24);
+  box-shadow: -28px 0 68px rgba(20, 16, 11, 0.22);
   color: var(--shell-text);
-  padding: 1rem 0.75rem;
+  padding: clamp(2.25rem, 7vh, 5rem) clamp(1.35rem, 6vw, 3.5rem) 2rem;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-0.85rem) scale(0.985);
-  transform-origin: top center;
+  transform: translateX(2.25rem);
+  transform-origin: right center;
   transition:
     opacity 0.3s var(--transition),
     transform 0.3s var(--transition);
   backdrop-filter: blur(24px);
 }
 
+.mobileMenuWatermark {
+  position: absolute;
+  top: clamp(4.5rem, 14vh, 8rem);
+  right: -7rem;
+  width: 21rem;
+  height: 21rem;
+  object-fit: contain;
+  opacity: 0.075;
+  pointer-events: none;
+  user-select: none;
+}
+
 .mobileMenuOpen {
   animation: mobileMenuIn 0.34s var(--transition);
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0) scale(1);
+  transform: translateX(0);
 }
 
 .mobileNav {
+  position: relative;
+  z-index: 1;
   display: flex;
-  max-width: 48rem;
   flex-direction: column;
-  gap: 0.5rem;
+  justify-content: center;
+  min-height: calc(100% - 2rem);
   margin: 0 auto;
 }
 
 .mobileNavLink {
+  display: flex;
+  min-height: 4.6rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   border: 0;
   border-bottom: 1px solid rgba(var(--shell-text-rgb), 0.12);
   border-radius: 0;
   background: transparent;
   color: rgba(var(--shell-text-rgb), 0.76);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  padding: 0.7rem 0.15rem;
+  font-size: clamp(1.45rem, 6vw, 2.5rem);
+  font-weight: 850;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  padding: 1rem 0.15rem;
   text-transform: uppercase;
-  transform: translateY(-0.45rem);
+  transform: translateX(1.25rem);
   opacity: 0;
   transition:
     background 0.24s var(--transition),
     border-color 0.24s var(--transition),
     color 0.24s var(--transition),
     transform 0.24s var(--transition);
+}
+
+.mobileNavLink svg {
+  flex: 0 0 auto;
+  color: var(--page-olive);
+  opacity: 0;
+  transform: translate(-0.5rem, 0.5rem);
+  transition:
+    opacity 0.24s var(--transition),
+    transform 0.24s var(--transition);
+}
+
+.mobileNavLink:hover svg,
+.mobileNavLinkActive svg {
+  opacity: 1;
+  transform: translate(0, 0);
 }
 
 .mobileMenuOpen .mobileNavLink {
@@ -406,8 +464,12 @@
 
 .mobileNavLinkActive {
   border-bottom-color: var(--page-olive);
-  background: rgba(var(--page-soft-alt-rgb), 0.36);
+  background: transparent;
   color: var(--shell-text);
+}
+
+.mobileNavLinkActive span {
+  color: var(--page-olive);
 }
 
 .mobileAuth {
@@ -463,22 +525,20 @@
 
 @keyframes mobileMenuIn {
   from {
-    clip-path: inset(0 0 100% 0 round 0 0 1.25rem 1.25rem);
     opacity: 0;
-    transform: translateY(-0.85rem) scale(0.985);
+    transform: translateX(2.25rem);
   }
 
   to {
-    clip-path: inset(0 0 0 0 round 0 0 1.25rem 1.25rem);
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0);
   }
 }
 
 @keyframes mobileMenuItemIn {
   from {
     opacity: 0;
-    transform: translateY(-0.45rem);
+    transform: translateX(1.25rem);
   }
 
   to {
@@ -566,8 +626,6 @@
 
   .navLink {
     font-size: 0.875rem;
-    padding-right: 0;
-    padding-left: 0;
   }
 
   .profileName {

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowUpRight, ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
 import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Header.module.css";
@@ -37,6 +38,23 @@ const Header: React.FC<HeaderProps> = ({
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMenuOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isMenuOpen]);
 
   const profileName =
     storedProfileName ||
@@ -155,6 +173,13 @@ const Header: React.FC<HeaderProps> = ({
                 aria-current={item.active ? "page" : undefined}
                 className={`${styles.navLink} ${item.active ? styles.navLinkActive : ""}`}
               >
+                {item.active ? (
+                  <motion.span
+                    layoutId="desktop-nav-aura"
+                    className={styles.navAura}
+                    transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                ) : null}
                 <span
                   className={`${styles.navUnderline} ${item.active ? styles.navUnderlineActive : ""}`}
                 />
@@ -230,8 +255,19 @@ const Header: React.FC<HeaderProps> = ({
       {navItems.length > 0 ? (
         <div
           data-testid="mobile-menu"
+          aria-hidden={!isMenuOpen}
+          inert={!isMenuOpen}
           className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ""}`}
         >
+          <Image
+            src="/logo.png"
+            alt=""
+            width={336}
+            height={336}
+            aria-hidden="true"
+            draggable={false}
+            className={styles.mobileMenuWatermark}
+          />
           <nav className={styles.mobileNav}>
             {navItems.map((item) => (
               <Link
@@ -241,7 +277,8 @@ const Header: React.FC<HeaderProps> = ({
                 aria-current={item.active ? "page" : undefined}
                 className={`${styles.mobileNavLink} ${item.active ? styles.mobileNavLinkActive : ""}`}
               >
-                {item.label}
+                <span>{item.label}</span>
+                <ArrowUpRight size={22} strokeWidth={1.7} aria-hidden="true" />
               </Link>
             ))}
 
