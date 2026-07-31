@@ -1,7 +1,7 @@
 "use client";
-import {useEffect, useState} from "react";
-import {useLocale, useTranslations} from "next-intl";
-import {auth, db, functions} from "../../../../firebase.config";
+import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { auth, db, functions } from "../../../../firebase.config";
 import {
   type AuthError,
   createUserWithEmailAndPassword,
@@ -14,12 +14,26 @@ import {
   updateProfile,
   type User,
 } from "firebase/auth";
-import {deleteDoc, doc, getDoc, serverTimestamp, setDoc,} from "firebase/firestore";
-import {httpsCallable} from "firebase/functions";
-import {ArrowLeft, Check, Eye, EyeOff, LoaderCircle, Mail, X,} from "lucide-react";
-import type {MemberPackage} from "@/data";
-import {memberPackages} from "@/lib/memberPackages";
-import {getAuthUserPhotoURL, type UserGender} from "@/lib/userProfile";
+import {
+  deleteDoc,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import {
+  ArrowLeft,
+  Check,
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  Mail,
+  X,
+} from "lucide-react";
+import type { MemberPackage } from "@/data";
+import { memberPackages } from "@/lib/memberPackages";
+import { getAuthUserPhotoURL, type UserGender } from "@/lib/userProfile";
 import authTheme from "./AuthTheme.module.css";
 
 interface AuthModalProps {
@@ -211,8 +225,8 @@ function toggleMultiSelect(
   }
 
   return current.includes(value)
-      ? current.filter((item) => item !== value)
-      : [...current.filter((item) => item !== exclusiveValue), value];
+    ? current.filter((item) => item !== value)
+    : [...current.filter((item) => item !== exclusiveValue), value];
 }
 
 async function saveUserProfile(uid: string, payload: CreateUserProfilePayload) {

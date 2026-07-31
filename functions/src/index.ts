@@ -1193,8 +1193,7 @@ export const recordQualifiedVideoView = onCall(
       Number.isFinite(payload.durationSeconds)
         ? Math.max(1, Math.floor(payload.durationSeconds))
         : undefined;
-    const requiredSeconds =
-      getQualifiedViewRequiredSeconds(durationSeconds);
+    const requiredSeconds = getQualifiedViewRequiredSeconds(durationSeconds);
 
     if (watchedSeconds < requiredSeconds) {
       throw new HttpsError(
@@ -1207,9 +1206,7 @@ export const recordQualifiedVideoView = onCall(
 
     const date = todayIsoDate();
     const viewId = qualifiedViewId(uid, contentId, date);
-    const viewRef = db
-      .collection(QUALIFIED_VIDEO_VIEWS_COLLECTION)
-      .doc(viewId);
+    const viewRef = db.collection(QUALIFIED_VIDEO_VIEWS_COLLECTION).doc(viewId);
     const analyticsRef = db
       .collection(VIDEO_ANALYTICS_COLLECTION)
       .doc(contentId);

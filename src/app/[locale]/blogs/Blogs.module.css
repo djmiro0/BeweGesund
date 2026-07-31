@@ -92,7 +92,6 @@
   font-weight: 950;
   line-height: 0.95;
   letter-spacing: 0;
-  text-shadow: 0 0.35rem 1.25rem rgba(0, 0, 0, 0.32);
   text-transform: uppercase;
 }
 
@@ -341,7 +340,7 @@
 .readLink,
 .backLink {
   width: fit-content;
-  color: #b5d83d;
+  color: var(--tertiary);
   font-size: 0.68rem;
   font-weight: 950;
   margin-top: 0.82rem;
