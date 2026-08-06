@@ -2,7 +2,7 @@
   display: grid;
   gap: 1rem;
   min-height: 100svh;
-  max-width: 1080px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 6.2rem 0.85rem 2.5rem;
   color: var(--ui-text);

@@ -15,6 +15,7 @@ import CookieConsentBanner from "./CookieConsentBanner";
 import LoadingScreen from "./LoadingScreen";
 import MobileTabBar from "./MobileTabBar";
 import NavigationFeedback from "./NavigationFeedback";
+import PageMediaGate from "./PageMediaGate";
 import PaymentRequired from "./PaymentRequired";
 import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
@@ -196,7 +197,7 @@ export function ShellFrame({
 
   if (!user && !isAuthActionRoute && showComingSoon) {
     return (
-      <>
+      <PageMediaGate contentKey="coming-soon">
         <PwaInstallPrompt />
         <Header
           locale={locale}
@@ -213,13 +214,13 @@ export function ShellFrame({
         />
         <NavigationFeedback />
         <CookieConsentBanner locale={locale} />
-      </>
+      </PageMediaGate>
     );
   }
 
   if (requiresProfileSetup) {
     return (
-      <>
+      <PageMediaGate contentKey="profile-setup">
         <PwaInstallPrompt />
         <Header
           locale={locale}
@@ -239,13 +240,13 @@ export function ShellFrame({
         />
         <NavigationFeedback />
         <CookieConsentBanner locale={locale} />
-      </>
+      </PageMediaGate>
     );
   }
 
   if (requiresPayment) {
     return (
-      <>
+      <PageMediaGate contentKey="payment-required">
         <PwaInstallPrompt />
         <Header
           locale={locale}
@@ -268,12 +269,12 @@ export function ShellFrame({
         </main>
         <Footer />
         <CookieConsentBanner locale={locale} />
-      </>
+      </PageMediaGate>
     );
   }
 
   return (
-    <>
+    <PageMediaGate contentKey={user?.uid ?? "public"}>
       <PwaInstallPrompt />
       <Header
         locale={locale}
@@ -296,7 +297,7 @@ export function ShellFrame({
       <MobileTabBar locale={locale} />
       <Footer />
       <CookieConsentBanner locale={locale} />
-    </>
+    </PageMediaGate>
   );
 }
 

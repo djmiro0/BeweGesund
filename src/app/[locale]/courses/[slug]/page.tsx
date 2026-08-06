@@ -24,6 +24,7 @@ import coursesStyles from "../Courses.module.css";
 const categorySlugs = new Set([
   "reha",
   "healthy-living",
+  "quick-workouts",
   "overweight",
   "intensive",
   "pre-post-birth",

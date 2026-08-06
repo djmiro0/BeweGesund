@@ -6,6 +6,8 @@
 }
 
 :root {
+  --content-max-width: 67.5rem;
+
   --primary: #ffffff;
   --secondary: #e23d4f;
   --tertiary: #88992d;

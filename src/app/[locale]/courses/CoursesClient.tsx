@@ -14,6 +14,7 @@ import {
   Leaf,
   Salad,
   ShieldCheck,
+  Timer,
   Video,
 } from "lucide-react";
 import type { CSSProperties } from "react";
@@ -40,6 +41,7 @@ const stagger = {
 const categoryOrder = [
   "reha",
   "healthy-living",
+  "quick-workouts",
   "overweight",
   "intensive",
   "pre-post-birth",
@@ -59,6 +61,8 @@ const categoryAliases: Record<string, CategoryId> = {
   "healthy-living": "healthy-living",
   "lebe-gesund": "healthy-living",
   "lebe-gesund-kursevi": "healthy-living",
+  "quick-workouts": "quick-workouts",
+  kurztraining: "quick-workouts",
   overweight: "overweight",
   "weight-reduction": "overweight",
   "weight-loss": "overweight",
@@ -88,6 +92,7 @@ const categoryAliases: Record<string, CategoryId> = {
 const categoryIcons: Record<CategoryId, typeof HeartPulse> = {
   reha: HeartPulse,
   "healthy-living": Leaf,
+  "quick-workouts": Timer,
   overweight: Salad,
   intensive: Flame,
   "pre-post-birth": Baby,
@@ -120,6 +125,13 @@ const categoryVisuals: Partial<
     glow: "rgba(181, 216, 61, 0.32)",
     image:
       "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=82&w=1200",
+    pillLimit: 2,
+  },
+  "quick-workouts": {
+    accent: "#f97316",
+    glow: "rgba(249, 115, 22, 0.3)",
+    image:
+      "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&q=82&w=1200",
     pillLimit: 2,
   },
   overweight: {
@@ -213,7 +225,10 @@ export default function CoursesClient({
     );
     return (
       Boolean(categoryVisuals[group.id]) &&
-      (hasSubtypes || group.courses.length > 0 || group.id.includes("seminars"))
+      (hasSubtypes ||
+        group.courses.length > 0 ||
+        group.id === "quick-workouts" ||
+        group.id.includes("seminars"))
     );
   });
 

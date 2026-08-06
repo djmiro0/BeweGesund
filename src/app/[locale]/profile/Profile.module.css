@@ -1627,7 +1627,7 @@
   }
 
   .shell {
-    width: min(100%, 1240px);
+    width: min(100%, var(--content-max-width));
     display: block;
   }
 

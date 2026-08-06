@@ -51,7 +51,7 @@
   flex-direction: column;
   gap: 0.85rem;
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
 }
 

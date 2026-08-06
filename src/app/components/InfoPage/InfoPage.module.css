@@ -77,7 +77,7 @@
 }
 
 .pageInner {
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
 }
 

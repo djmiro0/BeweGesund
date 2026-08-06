@@ -212,7 +212,7 @@ export const memberCourses: MemberCourseDefinition[] = [
   },
   {
     id: "heart-gymnastics",
-    categoryKey: "healthy-living",
+    categoryKey: "reha",
     durationMinutes: 25,
     unlocksPerWeek: 1,
     packageRequired: "basic",
@@ -298,6 +298,7 @@ export const memberCourseCategories: MemberCourseCategory[] = [
       "reha-general",
       "osteoporosis-training",
       "arthritis-training",
+      "heart-gymnastics",
     ],
   },
   {
@@ -307,9 +308,9 @@ export const memberCourseCategories: MemberCourseCategory[] = [
       "morning-gymnastics-gentle",
       "evening-gymnastics",
       "pilates-beginners",
-      "heart-gymnastics",
     ],
   },
+  { id: "quick-workouts", courseIds: [] },
   {
     id: "overweight",
     courseIds: ["weight-loss-program", "nutrition-principles"],
