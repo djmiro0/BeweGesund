@@ -19,6 +19,7 @@
     "@contentful/rich-text-types": "^17.2.7",
     "@swc/helpers": "0.5.23",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "firebase": "^12.4.0",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.552.0",

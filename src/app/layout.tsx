@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import ConsentAwareAnalytics from "./components/ConsentAwareAnalytics";
 import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
 import "./[locale]/globals.css";
@@ -39,6 +40,7 @@ export default function RootLayout({
         {children}
         <ServiceWorkerRegistration />
         <ConsentAwareAnalytics />
+        <SpeedInsights />
       </body>
     </html>
   );
