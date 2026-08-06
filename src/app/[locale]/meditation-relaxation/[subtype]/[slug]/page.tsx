@@ -83,10 +83,10 @@ export default async function MeditationRelaxationDetailPage({
 
   if (isSelfMassage) {
     return (
-      <article className={blogStyles.articlePage}>
+      <article className={`${blogStyles.articlePage} ${styles.subpage}`}>
         <BackButton
           href={`/${locale}/meditation-relaxation/${subtype}`}
-          className={blogStyles.backLink}
+          className={styles.backLink}
         >
           <ArrowLeft size={17} />
           {t("subtype.back")}
@@ -153,7 +153,7 @@ export default async function MeditationRelaxationDetailPage({
   }
 
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${styles.subpage}`}>
       <BackButton
         href={`/${locale}/meditation-relaxation/${subtype}`}
         className={styles.backLink}

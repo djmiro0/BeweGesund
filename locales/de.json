@@ -21,6 +21,10 @@
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
     "language": "Sprache",
+    "languageEyebrow": "Spracheinstellungen",
+    "languageTitle": "Sprache wählen",
+    "languageSelected": "Ausgewählt",
+    "closeLanguage": "Sprachmenü schließen",
     "lightMode": "Hell",
     "darkMode": "Dunkel",
     "themeLight": "Zum hellen Modus wechseln",
@@ -518,6 +522,10 @@
         "healthy-living": {
           "title": "Lebe Gesund",
           "description": "Mehr Energie, bessere Gewohnheiten und ein gesunder Alltag."
+        },
+        "quick-workouts": {
+          "title": "Kurz & intensiv",
+          "description": "Schnelle, intensive Workouts von 5 bis 15 Minuten."
         },
         "overweight": {
           "title": "Übergewichts",

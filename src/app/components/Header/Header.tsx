@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowUpRight, ChevronDown, Menu, Moon, Sun, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  Check,
+  ChevronDown,
+  Languages,
+  Menu,
+  Moon,
+  Sun,
+  X,
+} from "lucide-react";
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
 import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Header.module.css";
@@ -25,6 +34,11 @@ interface HeaderProps {
   launchMode?: boolean;
 }
 
+const LANGUAGE_OPTIONS = [
+  { code: "de", shortLabel: "DE", name: "Deutsch" },
+  { code: "en", shortLabel: "EN", name: "English" },
+];
+
 const Header: React.FC<HeaderProps> = ({
   locale,
   user,
@@ -38,23 +52,57 @@ const Header: React.FC<HeaderProps> = ({
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const languageSwitcherRef = useRef<HTMLDivElement>(null);
+  const languageTriggerRef = useRef<HTMLButtonElement>(null);
+  const activeLanguageOptionRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!isMenuOpen) return;
+    if (!isMenuOpen && !isLanguageOpen) return;
 
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setIsMenuOpen(false);
+      if (event.key !== "Escape") return;
+
+      setIsMenuOpen(false);
+      setIsLanguageOpen(false);
+      languageTriggerRef.current?.focus();
     };
 
-    document.body.style.overflow = "hidden";
+    const isSmallScreen =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 767px)").matches;
+
+    if (isMenuOpen || isSmallScreen) {
+      document.body.style.overflow = "hidden";
+    }
     window.addEventListener("keydown", closeOnEscape);
 
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [isMenuOpen]);
+  }, [isLanguageOpen, isMenuOpen]);
+
+  useEffect(() => {
+    if (!isLanguageOpen) return;
+
+    const focusFrame = window.requestAnimationFrame(() => {
+      activeLanguageOptionRef.current?.focus();
+    });
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!languageSwitcherRef.current?.contains(event.target as Node)) {
+        setIsLanguageOpen(false);
+      }
+    };
+
+    document.addEventListener("click", closeOnOutsideClick);
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener("click", closeOnOutsideClick);
+    };
+  }, [isLanguageOpen]);
 
   const profileName =
     storedProfileName ||
@@ -116,11 +164,45 @@ const Header: React.FC<HeaderProps> = ({
         ];
 
   const handleLanguageChange = (nextLocale: string) => {
-    if (nextLocale === locale) return;
+    setIsLanguageOpen(false);
+    if (nextLocale === locale) {
+      languageTriggerRef.current?.focus();
+      return;
+    }
 
     const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
     setIsMenuOpen(false);
     router.push(newPath);
+  };
+
+  const handleLanguageKeyDown = (
+    event: React.KeyboardEvent<HTMLDivElement>,
+  ) => {
+    if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
+      return;
+    }
+
+    const options = Array.from(
+      languageSwitcherRef.current?.querySelectorAll<HTMLButtonElement>(
+        '[role="option"]',
+      ) ?? [],
+    );
+    if (options.length === 0) return;
+
+    event.preventDefault();
+    const currentIndex = options.indexOf(
+      document.activeElement as HTMLButtonElement,
+    );
+    const nextIndex =
+      event.key === "Home"
+        ? 0
+        : event.key === "End"
+          ? options.length - 1
+          : event.key === "ArrowDown"
+            ? (currentIndex + 1) % options.length
+            : (currentIndex - 1 + options.length) % options.length;
+
+    options[nextIndex]?.focus();
   };
 
   const profileLink = user ? (
@@ -190,19 +272,116 @@ const Header: React.FC<HeaderProps> = ({
         ) : null}
 
         <div className={styles.actions}>
-          <label className={styles.languageSelectWrap}>
-            <span className={styles.visuallyHidden}>{t("language")}</span>
-            <select
-              value={locale}
-              onChange={(event) => handleLanguageChange(event.target.value)}
-              className={styles.languageSelect}
+          <div
+            ref={languageSwitcherRef}
+            className={styles.languageSwitcher}
+            onKeyDown={handleLanguageKeyDown}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setIsLanguageOpen(false);
+              }
+            }}
+          >
+            <button
+              ref={languageTriggerRef}
+              type="button"
+              className={`${styles.languageTrigger} ${isLanguageOpen ? styles.languageTriggerOpen : ""}`}
               aria-label={t("language")}
+              aria-haspopup="dialog"
+              aria-expanded={isLanguageOpen}
+              aria-controls="language-chooser"
+              onClick={() => {
+                setIsMenuOpen(false);
+                setIsLanguageOpen((open) => !open);
+              }}
             >
-              <option value="de">DE</option>
-              <option value="en">EN</option>
-            </select>
-            <ChevronDown size={14} aria-hidden="true" />
-          </label>
+              <span className={styles.languageOrb} aria-hidden="true">
+                <Languages size={14} strokeWidth={2} />
+              </span>
+              <span>{locale.toUpperCase()}</span>
+              <ChevronDown
+                size={14}
+                aria-hidden="true"
+                className={styles.languageChevron}
+              />
+            </button>
+
+            {isLanguageOpen ? (
+              <div
+                id="language-chooser"
+                role="dialog"
+                aria-labelledby="language-chooser-title"
+                className={styles.languagePanel}
+              >
+                <Image
+                  src="/logo.png"
+                  alt=""
+                  width={336}
+                  height={336}
+                  aria-hidden="true"
+                  draggable={false}
+                  className={styles.languagePanelWatermark}
+                />
+                <div className={styles.languagePanelIntro}>
+                  <div>
+                    <span>{t("languageEyebrow")}</span>
+                    <p id="language-chooser-title">{t("languageTitle")}</p>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label={t("closeLanguage")}
+                    className={styles.languagePanelClose}
+                    onClick={() => {
+                      setIsLanguageOpen(false);
+                      languageTriggerRef.current?.focus();
+                    }}
+                  >
+                    <X size={16} aria-hidden="true" />
+                  </button>
+                </div>
+
+                <div
+                  role="listbox"
+                  aria-labelledby="language-chooser-title"
+                  className={styles.languageOptions}
+                >
+                  {LANGUAGE_OPTIONS.map((language) => {
+                    const isActive = language.code === locale;
+
+                    return (
+                      <button
+                        key={language.code}
+                        ref={isActive ? activeLanguageOptionRef : undefined}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        aria-label={`${language.name} (${language.shortLabel})`}
+                        className={`${styles.languageOption} ${isActive ? styles.languageOptionActive : ""}`}
+                        onClick={() => handleLanguageChange(language.code)}
+                      >
+                        <span className={styles.languageOptionCopy}>
+                          <strong>{language.name}</strong>
+                          <span>{language.shortLabel}</span>
+                        </span>
+                        <span className={styles.languageOptionState}>
+                          {isActive ? (
+                            <>
+                              <Check size={16} aria-hidden="true" />
+                              <span className={styles.visuallyHidden}>
+                                {t("languageSelected")}
+                              </span>
+                            </>
+                          ) : (
+                            <ArrowUpRight size={16} aria-hidden="true" />
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+          </div>
 
           <button
             type="button"
@@ -230,7 +409,10 @@ const Header: React.FC<HeaderProps> = ({
           {navItems.length > 0 ? (
             <button
               type="button"
-              onClick={() => setIsMenuOpen((open) => !open)}
+              onClick={() => {
+                setIsLanguageOpen(false);
+                setIsMenuOpen((open) => !open);
+              }}
               data-testid="mobile-menu-trigger"
               aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
               aria-expanded={isMenuOpen}
@@ -241,6 +423,19 @@ const Header: React.FC<HeaderProps> = ({
           ) : null}
         </div>
       </header>
+
+      {isLanguageOpen ? (
+        <button
+          type="button"
+          aria-label={t("closeLanguage")}
+          data-testid="language-menu-backdrop"
+          className={styles.languageBackdrop}
+          onClick={() => {
+            setIsLanguageOpen(false);
+            languageTriggerRef.current?.focus();
+          }}
+        />
+      ) : null}
 
       {isMenuOpen ? (
         <button

@@ -7,7 +7,7 @@
 
 .hero {
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin: 0 auto 1.4rem;
   padding: 1rem;
   display: grid;
@@ -125,7 +125,7 @@
 
 .categoryGrid {
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -228,7 +228,7 @@ a.categoryBlock:hover {
 
 .subtypeList {
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -430,7 +430,7 @@ a.categoryBlock:hover {
 
 .memberCallout {
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin: 1rem auto 0;
 }
 
@@ -483,7 +483,7 @@ a.categoryBlock:hover {
 }
 
 .overviewSection .overviewHero {
-  max-width: 90rem;
+  max-width: var(--content-max-width);
   margin-bottom: 1.45rem;
   padding: 0;
   display: flex;
@@ -561,7 +561,7 @@ a.categoryBlock:hover {
 }
 
 .overviewSection .categoryGrid {
-  max-width: 90rem;
+  max-width: var(--content-max-width);
   align-items: stretch;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-auto-rows: 13.9rem;
@@ -759,7 +759,7 @@ a.categoryBlock:hover {
 }
 
 .overviewSection .memberCallout {
-  max-width: 90rem;
+  max-width: var(--content-max-width);
 }
 
 .overviewSection .emptyCategory {

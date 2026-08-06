@@ -1,0 +1,27 @@
+.mediaGate,
+.content {
+  min-height: 100svh;
+}
+
+.content {
+  opacity: 1;
+  transition: opacity 0.18s var(--transition);
+}
+
+.contentPending {
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.loadingOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    transition: none;
+  }
+}

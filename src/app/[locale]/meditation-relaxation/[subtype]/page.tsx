@@ -152,13 +152,13 @@ export default async function MeditationRelaxationSubtypePage({
     <main
       className={
         isSelfMassage
-          ? blogStyles.blogsPage
-          : `${styles.page} ${isBlogAlignedSubtype ? styles.blogAlignedPage : ""}`
+          ? `${blogStyles.blogsPage} ${styles.subpage}`
+          : `${styles.page} ${styles.subpage} ${isBlogAlignedSubtype ? styles.blogAlignedPage : ""}`
       }
     >
       <BackButton
         href={`/${locale}/meditation-relaxation`}
-        className={isSelfMassage ? blogStyles.backLink : styles.backLink}
+        className={styles.backLink}
       >
         <ArrowLeft size={17} />
         {t("subtype.back")}

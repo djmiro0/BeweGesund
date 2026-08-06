@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -19,6 +19,10 @@ vi.mock("next-intl", () => ({
       openMenu: "Open menu",
       closeMenu: "Close menu",
       language: "Language",
+      languageEyebrow: "Language settings",
+      languageTitle: "Choose your language",
+      languageSelected: "Selected",
+      closeLanguage: "Close language menu",
       profileFallback: "Member",
       profileLink: "Profile",
       profileAvatarAlt: `Avatar ${values?.name ?? ""}`,
@@ -112,13 +116,43 @@ describe("Header", () => {
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
   });
 
-  it("uses a language dropdown and keeps the current path when changing locale", async () => {
+  it("uses a language chooser and keeps the current path when changing locale", async () => {
     const user = userEvent.setup();
     render(<Header locale="en" />);
 
-    await user.selectOptions(screen.getByLabelText("Language"), "de");
+    const trigger = screen.getByRole("button", { name: "Language" });
+    await user.click(trigger);
+
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("dialog", { name: "Choose your language" }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("option", { name: "Deutsch (DE)" }));
 
     expect(push).toHaveBeenCalledWith("/de");
+  });
+
+  it("supports keyboard navigation and Escape dismissal in the language chooser", async () => {
+    const user = userEvent.setup();
+    render(<Header locale="en" />);
+
+    const trigger = screen.getByRole("button", { name: "Language" });
+    await user.click(trigger);
+
+    const englishOption = screen.getByRole("option", {
+      name: "English (EN)",
+    });
+    const germanOption = screen.getByRole("option", { name: "Deutsch (DE)" });
+
+    await waitFor(() => expect(englishOption).toHaveFocus());
+    await user.keyboard("{ArrowDown}");
+    expect(germanOption).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("uses a compact icon control for light and dark mode", async () => {

@@ -4,6 +4,7 @@ Use the semantic `--ui-*` tokens for new page and content components.
 
 ## Default Page Tokens
 
+- `--content-max-width`: shared `1080px` maximum for page-level content
 - `--ui-bg`: page background
 - `--ui-bg-alt`: subtle alternate background
 - `--ui-surface`: content surface

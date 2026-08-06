@@ -21,6 +21,10 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "language": "Language",
+    "languageEyebrow": "Language settings",
+    "languageTitle": "Choose language",
+    "languageSelected": "Selected",
+    "closeLanguage": "Close language menu",
     "lightMode": "Light",
     "darkMode": "Dark",
     "themeLight": "Switch to light mode",
@@ -518,6 +522,10 @@
         "healthy-living": {
           "title": "Lebe Gesund",
           "description": "More energy, better habits, and a healthier everyday life."
+        },
+        "quick-workouts": {
+          "title": "Short & Intense",
+          "description": "Fast, intensive workouts lasting 5 to 15 minutes."
         },
         "overweight": {
           "title": "Overweight",

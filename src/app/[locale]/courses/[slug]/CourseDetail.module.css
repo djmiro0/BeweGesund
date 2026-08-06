@@ -24,9 +24,9 @@
   align-items: center;
   gap: 0.45rem;
   width: fit-content;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin-bottom: 5px;
-  margin-left: -0.42rem;
+  margin-left: max(0px, calc((100% - var(--content-max-width)) / 2));
   border: 1px solid transparent;
   border-radius: 999px;
   background: transparent;
@@ -34,7 +34,7 @@
   color: var(--page-accent);
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.84rem;
+  font-size: 0.68rem;
   font-weight: 950;
   padding: 0.42rem 0.62rem;
   text-decoration: none;
@@ -59,7 +59,7 @@
 
 .videoPanel {
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   aspect-ratio: 16 / 9;
   margin: 0 auto;
   overflow: hidden;
@@ -96,7 +96,7 @@
 
 .contentGrid {
   width: 100%;
-  max-width: 1180px;
+  max-width: var(--content-max-width);
   margin: 1rem auto 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 18rem;
