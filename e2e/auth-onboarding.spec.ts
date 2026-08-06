@@ -284,9 +284,12 @@ async function completeAccountStep(page: Page) {
   await numberFields.nth(0).fill("170");
   await numberFields.nth(1).fill("70");
 
-  const selects = page.getByRole("combobox");
-  await selects.nth(1).selectOption("female");
-  await selects.nth(3).selectOption("berlin");
+  await page
+    .getByRole("combobox", { name: /geschlecht/i })
+    .selectOption("female");
+  await page
+    .getByRole("combobox", { name: /bundesland/i })
+    .selectOption("berlin");
 
   await page.getByLabel(/nutzungsbedingungen/i).check();
   await page.getByLabel(/verarbeitung/i).check();
