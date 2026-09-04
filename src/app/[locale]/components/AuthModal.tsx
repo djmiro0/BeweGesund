@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { auth, db, functions } from "../../../../firebase.config";
 import {
@@ -324,6 +324,8 @@ export default function AuthModal({
     useState(false);
   const [hasAttemptedProfileSubmit, setHasAttemptedProfileSubmit] =
     useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const lastActiveElementRef = useRef<HTMLElement | null>(null);
   const isRegister = view === "register";
   const isForgotPassword = view === "forgotPassword";
   const isGoogleOnboarding = view === "googleOnboarding";
@@ -564,7 +566,7 @@ export default function AuthModal({
     roles: ["member"],
   });
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setEmail("");
     setPassword("");
     setConfirmPassword("");
@@ -596,7 +598,7 @@ export default function AuthModal({
     setIsConfirmPasswordVisible(false);
     setHasAttemptedSignInSubmit(false);
     setHasAttemptedProfileSubmit(false);
-  };
+  }, []);
 
   const getAuthActionSettings = () => ({
     url: `${getSiteOrigin()}/${locale}`,
@@ -637,14 +639,97 @@ export default function AuthModal({
     setView("forgotPassword");
   };
 
-  const handleClose = async () => {
+  const handleClose = useCallback(async () => {
     if (isGoogleOnboarding) {
       await signOut(auth).catch(() => undefined);
       resetForm();
       setView("signIn");
     }
     onClose();
-  };
+  }, [isGoogleOnboarding, onClose, resetForm]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      lastActiveElementRef.current?.focus();
+      lastActiveElementRef.current = null;
+      return undefined;
+    }
+
+    const panel = panelRef.current;
+    if (!panel) return undefined;
+
+    if (!panel.contains(document.activeElement)) {
+      lastActiveElementRef.current =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
+    }
+    const previousOverflow = document.body.style.overflow;
+    const focusTarget = isTermsOpen
+      ? panel.querySelector<HTMLElement>("[data-auth-terms-dialog]")
+      : panel;
+    focusTarget?.focus();
+    const focusableSelector = [
+      "a[href]",
+      "button:not([disabled])",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(",");
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (isTermsOpen) {
+          setIsTermsOpen(false);
+        } else {
+          void handleClose();
+        }
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusScope = isTermsOpen
+        ? panel.querySelector<HTMLElement>("[data-auth-terms-dialog]")
+        : panel;
+      const focusableElements = Array.from(
+        focusScope?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
+      ).filter(
+        (element) =>
+          !element.hasAttribute("hidden") && element.offsetParent !== null,
+      );
+
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        focusScope?.focus();
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      if (
+        event.shiftKey &&
+        (document.activeElement === firstElement ||
+          document.activeElement === focusScope)
+      ) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleClose, isOpen, isTermsOpen]);
 
   const handleGoogleSignIn = async () => {
     if (isSubmitting) return;
@@ -887,7 +972,7 @@ export default function AuthModal({
         type="button"
         onClick={onToggleVisibility}
         aria-label={isVisible ? t("hidePassword") : t("showPassword")}
-        className="absolute right-3 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.08)] hover:text-[var(--text-light)] focus:outline-none focus:ring-2 focus:ring-[var(--border-strong)]"
+        className="absolute right-1.5 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.08)] hover:text-[var(--text-light)] focus:outline-none focus:ring-2 focus:ring-[var(--border-strong)]"
       >
         {isVisible ? <Eye size={18} /> : <EyeOff size={18} />}
       </button>
@@ -966,12 +1051,17 @@ export default function AuthModal({
       className={`${authTheme.scope} ${authTheme.overlay} fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md p-4`}
     >
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="auth-modal-title"
+        tabIndex={-1}
         className={`${authTheme.panel} relative max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[2rem] border border-[var(--border-soft)] p-6 sm:p-8`}
       >
         <button
           onClick={() => void handleClose()}
           aria-label={t("close")}
-          className="absolute right-4 top-4 rounded-full border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.05)] p-2 text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.1)] hover:text-[var(--text-light)]"
+          className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-[var(--border-soft)] bg-[rgba(var(--foreground-rgb),0.05)] text-[var(--text-dim)] transition hover:bg-[rgba(var(--foreground-rgb),0.1)] hover:text-[var(--text-light)]"
         >
           <X size={18} />
         </button>
@@ -979,7 +1069,10 @@ export default function AuthModal({
           <div className="mb-3 inline-flex rounded-full border border-[rgba(var(--accent-rgb),0.25)] bg-[rgba(var(--accent-rgb),0.1)] px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-[var(--highlight-soft)]">
             Bewegesund
           </div>
-          <h2 className="text-3xl font-black italic uppercase text-[var(--text-light)]">
+          <h2
+            id="auth-modal-title"
+            className="text-3xl font-black italic uppercase text-[var(--text-light)]"
+          >
             {isForgotPassword
               ? t("resetTitle")
               : isAnamnesisStep
@@ -1001,6 +1094,41 @@ export default function AuthModal({
                     ? t("registerSupportText")
                     : t("supportText")}
           </p>
+          {isProfileSetup ? (
+            <div
+              className="mt-5"
+              role="progressbar"
+              aria-label={t("progress.label")}
+              aria-valuemin={1}
+              aria-valuemax={2}
+              aria-valuenow={isAnamnesisStep ? 2 : 1}
+            >
+              <div className="mb-2 flex flex-col items-start gap-1 text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--text-dim)] sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:text-xs sm:tracking-[0.12em]">
+                <span>
+                  {t("progress.step", {
+                    current: isAnamnesisStep ? 2 : 1,
+                    total: 2,
+                  })}
+                </span>
+                <span className="text-[var(--highlight-soft)] sm:text-right">
+                  {isAnamnesisStep
+                    ? t("progress.anamnesis")
+                    : t("progress.account")}
+                </span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-[rgba(var(--foreground-rgb),0.1)]">
+                <span
+                  className="block h-full rounded-full bg-[var(--secondary)] transition-[width] duration-300"
+                  style={{ width: isAnamnesisStep ? "100%" : "50%" }}
+                />
+              </div>
+              {isAnamnesisStep ? (
+                <p className="mb-0 mt-2 text-xs leading-5 text-[var(--text-dim)]">
+                  {t("progress.paymentNext")}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
         </div>
         {isForgotPassword ? (
           <form onSubmit={handlePasswordReset} noValidate className="space-y-4">
@@ -1364,7 +1492,7 @@ export default function AuthModal({
                       <button
                         type="button"
                         onClick={() => setIsTermsOpen(true)}
-                        className="font-black text-[var(--highlight-soft)] underline underline-offset-4 hover:text-[var(--text-light)]"
+                        className="inline-flex min-h-11 items-center font-black text-[var(--highlight-soft)] underline underline-offset-4 hover:text-[var(--text-light)]"
                       >
                         {t("terms.link")}
                       </button>
@@ -1554,7 +1682,7 @@ export default function AuthModal({
               <button
                 type="button"
                 onClick={openPasswordReset}
-                className="mt-4 w-full text-sm font-bold text-[var(--highlight-soft)] transition hover:text-[var(--text-light)]"
+                className="mt-3 flex min-h-11 w-full items-center justify-center text-sm font-bold text-[var(--highlight-soft)] transition hover:text-[var(--text-light)]"
               >
                 {t("forgotPassword")}
               </button>
@@ -1566,7 +1694,7 @@ export default function AuthModal({
                   resetForm();
                   setView(isRegister ? "signIn" : "register");
                 }}
-                className="mt-3 w-full text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
+                className="mt-1 flex min-h-11 w-full items-center justify-center text-sm text-[var(--text-dim)] transition hover:text-[var(--text-light)]"
               >
                 {isRegister ? t("switchToSignIn") : t("switchToRegister")}
               </button>
@@ -1578,17 +1706,25 @@ export default function AuthModal({
             className={`${authTheme.overlay} fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm`}
           >
             <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="auth-terms-title"
+              tabIndex={-1}
+              data-auth-terms-dialog
               className={`${authTheme.panel} relative max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-[1.5rem] border border-[var(--border-soft)] p-6`}
             >
               <button
                 type="button"
                 onClick={() => setIsTermsOpen(false)}
                 aria-label={t("close")}
-                className="absolute right-4 top-4 rounded-full border border-[var(--border-soft)] p-2 text-[var(--text-dim)] hover:text-[var(--text-light)]"
+                className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-[var(--border-soft)] text-[var(--text-dim)] hover:text-[var(--text-light)]"
               >
                 <X size={18} />
               </button>
-              <h3 className="pr-10 text-2xl font-black italic uppercase text-[var(--text-light)]">
+              <h3
+                id="auth-terms-title"
+                className="pr-10 text-2xl font-black italic uppercase text-[var(--text-light)]"
+              >
                 {t("terms.title")}
               </h3>
               <p className="mt-3 text-sm leading-6 text-[var(--text-dim)]">

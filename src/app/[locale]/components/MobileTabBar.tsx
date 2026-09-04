@@ -26,14 +26,14 @@ export default function MobileTabBar({ locale }: MobileTabBarProps) {
       href: `/${locale}/courses`,
       label: t("tabs.courses"),
       icon: Dumbbell,
-      active: pathname === `/${locale}/courses`,
+      active: pathname.startsWith(`/${locale}/courses`),
     },
     {
       key: "calendar",
       href: `/${locale}/calendar`,
       label: t("tabs.calendar"),
       icon: CalendarDays,
-      active: pathname === `/${locale}/calendar`,
+      active: pathname.startsWith(`/${locale}/calendar`),
       center: true,
     },
     {

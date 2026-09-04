@@ -288,6 +288,14 @@
   line-height: 1;
 }
 
+.billingStatusBand small {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--page-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
 .billingStatusBand > span {
   display: inline-flex;
   min-height: 2rem;
@@ -301,22 +309,6 @@
   letter-spacing: 0.1em;
   padding: 0.35rem 0.6rem;
   text-transform: uppercase;
-}
-
-.billingOverview {
-  display: inline-flex;
-  width: fit-content;
-  gap: 0.35rem;
-  align-items: center;
-  color: var(--page-muted);
-  font-size: 0.7rem;
-  font-weight: 850;
-  text-transform: uppercase;
-}
-
-.billingOverview strong {
-  color: var(--page-ink);
-  text-transform: capitalize;
 }
 
 .billingPlanGrid {
@@ -346,11 +338,6 @@
   border-color: rgba(var(--secondary-rgb), 0.3);
 }
 
-.billingPlanCardCurrent {
-  border-color: rgba(var(--page-ink-rgb), 0.18);
-  background: rgba(var(--page-soft-rgb), 0.82);
-}
-
 .billingPlanHeader {
   display: flex;
   gap: 0.75rem;
@@ -371,22 +358,6 @@
   color: var(--page-muted);
   font-size: 0.76rem;
   font-weight: 800;
-}
-
-.billingPlanBadge {
-  display: inline-flex;
-  flex: 0 0 auto;
-  gap: 0.35rem;
-  align-items: center;
-  border: 1px solid rgba(var(--secondary-rgb), 0.34);
-  border-radius: 999px;
-  background: rgba(var(--secondary-rgb), 0.12);
-  color: var(--page-ink);
-  font-size: 0.62rem;
-  font-weight: 950;
-  letter-spacing: 0.1em;
-  padding: 0.35rem 0.5rem;
-  text-transform: uppercase;
 }
 
 .billingPlanNote {
@@ -451,16 +422,9 @@
   pointer-events: none;
 }
 
-.billingButton:disabled:not(.billingButtonSelected) {
+.billingButton:disabled {
   cursor: wait;
   opacity: 0.62;
-}
-
-.billingButtonSelected {
-  border: 1px solid rgba(var(--secondary-rgb), 0.34);
-  background: rgba(var(--secondary-rgb), 0.12);
-  color: var(--page-ink);
-  cursor: not-allowed;
 }
 
 .billingSpinner {
@@ -714,20 +678,7 @@
   text-transform: uppercase;
 }
 
-.sectionIntro {
-  display: grid;
-  gap: 0.3rem;
-}
-
-.sectionIntro h2 {
-  margin: 0;
-  color: var(--page-ink);
-  font-size: 1.05rem;
-  font-weight: 950;
-  text-transform: uppercase;
-}
-
-.sectionIntro p:last-child {
+.membershipDescription {
   margin: 0;
   color: var(--page-muted);
   font-size: 0.78rem;
@@ -934,8 +885,8 @@
   right: 0.85rem;
   display: grid;
   place-items: center;
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: 1px solid rgba(var(--page-ink-rgb), 0.12);
   border-radius: 999px;
   background: rgba(var(--page-soft-rgb), 0.78);
@@ -1485,8 +1436,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: 1px solid var(--page-border-soft);
   border-radius: 999px;
   background: rgba(var(--page-soft-rgb), 0.68);

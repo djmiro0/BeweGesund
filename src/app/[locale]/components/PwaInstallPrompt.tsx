@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import styles from "./PwaInstallPrompt.module.css";
+import { useModalDialog } from "./useModalDialog";
 import {
   isMobileDevice,
   isStandalonePwa,
@@ -29,6 +30,7 @@ export default function PwaInstallPrompt() {
   const [showIosInstructions, setShowIosInstructions] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const dialogRef = useModalDialog<HTMLElement>(isOpen, () => setIsOpen(false));
 
   useEffect(() => {
     if (isStandalonePwa() || !isMobileDevice()) return;
@@ -104,10 +106,12 @@ export default function PwaInstallPrompt() {
       {isOpen ? (
         <div className={styles.overlay} data-testid="pwa-install-overlay">
           <section
+            ref={dialogRef}
             className={styles.modal}
             role="dialog"
             aria-modal="true"
             aria-labelledby="pwa-install-title"
+            tabIndex={-1}
           >
             <button
               type="button"

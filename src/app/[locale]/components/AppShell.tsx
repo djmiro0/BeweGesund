@@ -25,6 +25,7 @@ import { isComingSoonEnabled } from "@/lib/launchFlags";
 import styles from "./AppShell.module.css";
 
 const paidAccessRoutes = ["courses", "calendar", "consultation"];
+const APPLIED_THEME_KEY = "sbewegesund-applied-profile-theme";
 
 function isPaidAccessRoute(pathname: string, locale: string) {
   const localizedPath = `/${locale}`;
@@ -39,17 +40,16 @@ function isPaidAccessRoute(pathname: string, locale: string) {
 export function AppPreferenceEffects() {
   const { user, appPreferences } = useAuth();
   const { setThemePreference } = useTheme();
-  const lastAppliedThemeKey = useRef<string | null>(null);
 
   useEffect(() => {
     if (!user) {
-      lastAppliedThemeKey.current = null;
+      window.sessionStorage.removeItem(APPLIED_THEME_KEY);
       return;
     }
 
     const themeKey = `${user.uid}:${appPreferences.theme}`;
-    if (lastAppliedThemeKey.current !== themeKey) {
-      lastAppliedThemeKey.current = themeKey;
+    if (window.sessionStorage.getItem(APPLIED_THEME_KEY) !== themeKey) {
+      window.sessionStorage.setItem(APPLIED_THEME_KEY, themeKey);
       setThemePreference(appPreferences.theme);
     }
   }, [appPreferences.theme, setThemePreference, user]);

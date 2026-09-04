@@ -21,7 +21,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("next-intl", () => ({
   useLocale: () => "en",
   useTranslations: () => {
-    const translate = (key: string) =>
+    const translate = (key: string, values?: Record<string, number>) =>
       ({
         signInTitle: "Member Sign In",
         supportText: "Member access",
@@ -59,6 +59,12 @@ vi.mock("next-intl", () => ({
         googleOnboardingSupportText: "Add required profile details",
         completeProfile: "Complete profile",
         continueToAnamnesis: "Continue to anamnesis",
+        "progress.label": "Registration progress",
+        "progress.step": `Step ${values?.current} of ${values?.total}`,
+        "progress.account": "Account & membership",
+        "progress.anamnesis": "Health questionnaire",
+        "progress.paymentNext":
+          "Next: secure subscription payment with Stripe.",
         firstName: "First name",
         lastName: "Last name",
         age: "Age",
@@ -79,7 +85,7 @@ vi.mock("next-intl", () => ({
         healthConsentText: "Accept health consent",
         "anamnesis.title": "Anamnesis",
         "anamnesis.supportText": "Answer health questions",
-        "anamnesis.submit": "Complete anamnesis",
+        "anamnesis.submit": "Complete & continue to payment",
         "anamnesis.backToAccount": "Back to account details",
         "anamnesis.legalText": "I confirm anamnesis",
         "terms.link": "View terms",
@@ -184,12 +190,31 @@ describe("AuthModal Google sign-in", () => {
     expect(screen.getByText("or use email")).toBeInTheDocument();
   });
 
+  it("exposes modal semantics and closes on Escape", async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+
+    render(<AuthModal isOpen onClose={onClose} />);
+
+    expect(
+      screen.getByRole("dialog", { name: "Member Sign In" }),
+    ).toHaveAttribute("aria-modal", "true");
+
+    await user.keyboard("{Escape}");
+
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
   it("opens registration without reCAPTCHA copy", async () => {
     const user = userEvent.setup();
 
     render(<AuthModal isOpen onClose={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Create an account" }));
 
+    expect(
+      screen.getByRole("progressbar", { name: "Registration progress" }),
+    ).toHaveAttribute("aria-valuenow", "1");
+    expect(screen.getByText("Step 1 of 2")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "registerTitle" }),
     ).toBeInTheDocument();
@@ -428,7 +453,7 @@ describe("AuthModal Google sign-in", () => {
     await user.click(radios[8]);
 
     await user.click(
-      screen.getByRole("button", { name: "Complete anamnesis" }),
+      screen.getByRole("button", { name: "Complete & continue to payment" }),
     );
 
     expect(mocks.signOut).not.toHaveBeenCalled();
@@ -532,7 +557,7 @@ describe("AuthModal Google sign-in", () => {
     await user.click(radios[8]);
 
     await user.click(
-      screen.getByRole("button", { name: "Complete anamnesis" }),
+      screen.getByRole("button", { name: "Complete & continue to payment" }),
     );
 
     expect(
@@ -560,7 +585,7 @@ describe("AuthModal Google sign-in", () => {
       screen.getByRole("button", { name: "Continue to anamnesis" }),
     );
     await user.click(
-      screen.getByRole("button", { name: "Complete anamnesis" }),
+      screen.getByRole("button", { name: "Complete & continue to payment" }),
     );
     await screen.findByRole("button", { name: "Sign in with this email" });
     await user.click(

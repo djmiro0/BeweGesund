@@ -232,7 +232,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
     activeTab === "meditation-relaxation" ? meditationItems : [];
   const activeDashboardItems =
     activeTab === "meditation-relaxation" ? activeMeditations : activeCourses;
-  const recentWorkouts = workouts.slice(0, 8);
+  const recentWorkouts = workouts.slice(0, 4);
   const getMeditationHref = (item: DashboardMeditation) =>
     `/${locale}/meditation-relaxation/${item.subcategoryKey || "guided-meditation"}/${item.slug}`;
 
@@ -401,6 +401,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                   type="button"
                   className={`${styles.tabButton} ${tab.id === activeTab ? styles.tabButtonActive : ""}`}
                   onClick={() => setActiveTab(tab.id)}
+                  aria-pressed={tab.id === activeTab}
                   data-testid={`dashboard-workout-tab-${tab.id}`}
                 >
                   {tab.label}
@@ -652,7 +653,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 </Link>
               </div>
               <div className={styles.newsGrid}>
-                {recentPosts.map((post, index) => (
+                {recentPosts.slice(0, 4).map((post, index) => (
                   <motion.article
                     key={post.id}
                     className={styles.newsCard}
@@ -723,7 +724,7 @@ export default function Dashboard({ user }: { user: DashboardUser }) {
                 </Link>
               </div>
               <div className={styles.newsGrid}>
-                {recentMeditations.map((item, index) => (
+                {recentMeditations.slice(0, 4).map((item, index) => (
                   <motion.article
                     key={item.id}
                     className={styles.newsCard}

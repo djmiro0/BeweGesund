@@ -8,6 +8,7 @@ const baseURL =
 export default defineConfig({
   testDir: "./e2e",
   timeout: 30_000,
+  reporter: process.env.CI ? [["dot"], ["html", { open: "never" }]] : "list",
   expect: {
     timeout: 5_000,
   },

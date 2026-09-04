@@ -219,6 +219,13 @@
     "orUseEmail": "or use email",
     "completeProfile": "Complete profile",
     "continueToAnamnesis": "Continue to anamnesis",
+    "progress": {
+      "label": "Registration progress",
+      "step": "Step {current} of {total}",
+      "account": "Account & membership",
+      "anamnesis": "Health questionnaire",
+      "paymentNext": "Next: secure subscription payment with Stripe."
+    },
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
     "firstName": "First name",
@@ -291,7 +298,7 @@
     "anamnesis": {
       "title": "Anamnesis",
       "supportText": "Answer these questions before accessing the training areas. Later we will use this information for suitable recommendations.",
-      "submit": "Complete anamnesis",
+      "submit": "Complete & continue to payment",
       "backToAccount": "Back to account details",
       "goalsLabel": "What is your main goal?",
       "complaintsLabel": "Do you currently have acute or chronic physical complaints?",

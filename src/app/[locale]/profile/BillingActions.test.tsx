@@ -33,8 +33,6 @@ const labels = {
   currentLabel: "Current package",
   inactiveLabel: "No active package",
   activeLabel: "Active",
-  selectedLabel: "Selected",
-  statusLabel: "Subscription status",
 };
 
 describe("BillingActions", () => {
@@ -143,6 +141,11 @@ describe("BillingActions", () => {
     expect(
       screen.getByRole("button", { name: "Manage billing" }),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Active" }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Active")).toBeInTheDocument();
+    expect(screen.getAllByText("Plus")).toHaveLength(1);
     await user.click(screen.getByRole("button", { name: "Switch to Basic" }));
 
     expect(mocks.httpsCallable).toHaveBeenCalledWith(

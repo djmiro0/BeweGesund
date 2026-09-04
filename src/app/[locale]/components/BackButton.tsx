@@ -16,7 +16,13 @@ function shouldUseBrowserBack(event: MouseEvent<HTMLAnchorElement>) {
   if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey)
     return false;
 
-  return true;
+  if (!document.referrer) return false;
+
+  try {
+    return new URL(document.referrer).origin === window.location.origin;
+  } catch {
+    return false;
+  }
 }
 
 export default function BackButton({

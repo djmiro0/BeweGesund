@@ -20,6 +20,7 @@ import { packageRank } from "@/lib/memberPackages";
 import type { CalendarDay } from "@/lib/contentful";
 import { useAuth } from "../components/AuthProvider";
 import MemberAccessCallout from "../components/MemberAccessCallout";
+import { useModalDialog } from "../components/useModalDialog";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -55,6 +56,9 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [joiningEventId, setJoiningEventId] = useState("");
   const [joinError, setJoinError] = useState("");
+  const pickerModalRef = useModalDialog<HTMLDivElement>(isPickerOpen, () =>
+    setIsPickerOpen(false),
+  );
 
   const daysByDate = useMemo(
     () => new Map(days.map((day) => [day.date, day])),
@@ -182,7 +186,7 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
 
       <motion.div
         className={styles.dayRail}
-        role="tablist"
+        role="group"
         aria-label={t("daySelectorLabel")}
         variants={fadeUp}
       >
@@ -265,7 +269,12 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
           onClick={() => setIsPickerOpen(false)}
         >
           <motion.div
+            ref={pickerModalRef}
             className={styles.pickerModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="calendar-picker-title"
+            tabIndex={-1}
             initial={{ opacity: 0, y: 18, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
@@ -274,7 +283,9 @@ export default function CalendarClient({ days }: { days: CalendarDay[] }) {
             <div className={styles.pickerHeader}>
               <div>
                 <p className={styles.panelLabel}>{t("datePickerLabel")}</p>
-                <h3 className={styles.pickerTitle}>{t("datePickerTitle")}</h3>
+                <h3 id="calendar-picker-title" className={styles.pickerTitle}>
+                  {t("datePickerTitle")}
+                </h3>
               </div>
               <button
                 type="button"
