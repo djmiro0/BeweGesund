@@ -7,16 +7,16 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  ArrowUpRight,
   Check,
   ChevronDown,
+  ChevronRight,
   Languages,
-  Menu,
   Moon,
   Sun,
   X,
 } from "lucide-react";
 import { useTheme } from "@/app/[locale]/components/ThemeProvider";
+import { useModalDialog } from "@/app/[locale]/components/useModalDialog";
 import ProfileAvatar from "@/app/components/ProfileAvatar/ProfileAvatar";
 import styles from "./Header.module.css";
 
@@ -56,33 +56,26 @@ const Header: React.FC<HeaderProps> = ({
   const languageSwitcherRef = useRef<HTMLDivElement>(null);
   const languageTriggerRef = useRef<HTMLButtonElement>(null);
   const activeLanguageOptionRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useModalDialog<HTMLDivElement>(isMenuOpen, () =>
+    setIsMenuOpen(false),
+  );
 
   useEffect(() => {
-    if (!isMenuOpen && !isLanguageOpen) return;
+    if (!isLanguageOpen) return;
 
-    const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
 
-      setIsMenuOpen(false);
       setIsLanguageOpen(false);
       languageTriggerRef.current?.focus();
     };
 
-    const isSmallScreen =
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(max-width: 767px)").matches;
-
-    if (isMenuOpen || isSmallScreen) {
-      document.body.style.overflow = "hidden";
-    }
     window.addEventListener("keydown", closeOnEscape);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [isLanguageOpen, isMenuOpen]);
+  }, [isLanguageOpen]);
 
   useEffect(() => {
     if (!isLanguageOpen) return;
@@ -287,7 +280,7 @@ const Header: React.FC<HeaderProps> = ({
               type="button"
               className={`${styles.languageTrigger} ${isLanguageOpen ? styles.languageTriggerOpen : ""}`}
               aria-label={t("language")}
-              aria-haspopup="dialog"
+              aria-haspopup="listbox"
               aria-expanded={isLanguageOpen}
               aria-controls="language-chooser"
               onClick={() => {
@@ -313,20 +306,8 @@ const Header: React.FC<HeaderProps> = ({
                 aria-labelledby="language-chooser-title"
                 className={styles.languagePanel}
               >
-                <Image
-                  src="/logo.png"
-                  alt=""
-                  width={336}
-                  height={336}
-                  aria-hidden="true"
-                  draggable={false}
-                  className={styles.languagePanelWatermark}
-                />
                 <div className={styles.languagePanelIntro}>
-                  <div>
-                    <span>{t("languageEyebrow")}</span>
-                    <p id="language-chooser-title">{t("languageTitle")}</p>
-                  </div>
+                  <p id="language-chooser-title">{t("languageTitle")}</p>
                   <button
                     type="button"
                     aria-label={t("closeLanguage")}
@@ -371,9 +352,7 @@ const Header: React.FC<HeaderProps> = ({
                                 {t("languageSelected")}
                               </span>
                             </>
-                          ) : (
-                            <ArrowUpRight size={16} aria-hidden="true" />
-                          )}
+                          ) : null}
                         </span>
                       </button>
                     );
@@ -391,11 +370,10 @@ const Header: React.FC<HeaderProps> = ({
             title={theme === "light" ? t("themeDark") : t("themeLight")}
             className={`${styles.themeSwitch} ${theme === "dark" ? styles.themeSwitchDark : ""}`}
           >
-            {theme === "light" ? (
-              <Sun size={15} aria-hidden="true" />
-            ) : (
-              <Moon size={15} aria-hidden="true" />
-            )}
+            <span className={styles.themeIcon} aria-hidden="true">
+              <Sun className={styles.themeSun} size={17} />
+              <Moon className={styles.themeMoon} size={17} />
+            </span>
           </button>
 
           {user ? (
@@ -416,9 +394,13 @@ const Header: React.FC<HeaderProps> = ({
               data-testid="mobile-menu-trigger"
               aria-label={isMenuOpen ? t("closeMenu") : t("openMenu")}
               aria-expanded={isMenuOpen}
-              className={styles.menuButton}
+              className={`${styles.menuButton} ${isMenuOpen ? styles.menuButtonOpen : ""}`}
             >
-              {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
+              <span className={styles.menuIcon} aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
             </button>
           ) : null}
         </div>
@@ -449,20 +431,26 @@ const Header: React.FC<HeaderProps> = ({
 
       {navItems.length > 0 ? (
         <div
+          ref={mobileMenuRef}
           data-testid="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="mobile-menu-title"
           aria-hidden={!isMenuOpen}
           inert={!isMenuOpen}
+          tabIndex={-1}
           className={`${styles.mobileMenu} ${isMenuOpen ? styles.mobileMenuOpen : ""}`}
         >
-          <Image
-            src="/logo.png"
-            alt=""
-            width={336}
-            height={336}
-            aria-hidden="true"
-            draggable={false}
-            className={styles.mobileMenuWatermark}
-          />
+          <div className={styles.mobileMenuHeader}>
+            <p id="mobile-menu-title">{t("menuTitle")}</p>
+            <button
+              type="button"
+              aria-label={t("closeMenu")}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          </div>
           <nav className={styles.mobileNav}>
             {navItems.map((item) => (
               <Link
@@ -473,7 +461,7 @@ const Header: React.FC<HeaderProps> = ({
                 className={`${styles.mobileNavLink} ${item.active ? styles.mobileNavLinkActive : ""}`}
               >
                 <span>{item.label}</span>
-                <ArrowUpRight size={22} strokeWidth={1.7} aria-hidden="true" />
+                <ChevronRight size={18} aria-hidden="true" />
               </Link>
             ))}
 

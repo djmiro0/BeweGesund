@@ -156,6 +156,26 @@ function isEmailAlreadyInUseError(error: unknown) {
   );
 }
 
+function isInvalidCredentialError(error: unknown) {
+  const firebaseError = error as FirebaseErrorLike | undefined;
+  const invalidCredentialCodes = new Set([
+    "auth/invalid-credential",
+    "auth/invalid-login-credentials",
+    "auth/user-not-found",
+    "auth/wrong-password",
+  ]);
+  const messages = [
+    firebaseError?.message,
+    firebaseError?.error?.message,
+    firebaseError?.customData?._tokenResponse?.error?.message,
+  ].filter(Boolean);
+
+  return (
+    invalidCredentialCodes.has(firebaseError?.code ?? "") ||
+    messages.some((message) => message?.includes("INVALID_LOGIN_CREDENTIALS"))
+  );
+}
+
 type AuthView = "signIn" | "register" | "forgotPassword" | "googleOnboarding";
 type ProfileSetupStep = "account" | "anamnesis";
 type AuthErrorAction = "email-in-use" | null;
@@ -451,30 +471,18 @@ export default function AuthModal({
   const getFriendlyErrorMessage = (error: unknown) => {
     const firebaseError = error as (AuthError & FirebaseErrorLike) | undefined;
     const code = firebaseError?.code;
-    const messages = [
-      firebaseError?.message,
-      firebaseError?.error?.message,
-      firebaseError?.customData?._tokenResponse?.error?.message,
-    ].filter(Boolean);
 
     if (isEmailAlreadyInUseError(error)) {
       return t("emailInUse");
     }
 
-    if (
-      messages.some((message) => message?.includes("INVALID_LOGIN_CREDENTIALS"))
-    ) {
+    if (isInvalidCredentialError(error)) {
       return t("invalidCredential");
     }
 
     switch (code) {
       case "auth/operation-not-allowed":
         return t("providerDisabled");
-      case "auth/invalid-credential":
-      case "auth/invalid-login-credentials":
-      case "auth/user-not-found":
-      case "auth/wrong-password":
-        return t("invalidCredential");
       case "auth/weak-password":
         return t("weakPassword");
       case "auth/invalid-email":
@@ -910,8 +918,9 @@ export default function AuthModal({
     } catch (error: unknown) {
       if (checkoutRedirectStarted) onCheckoutRedirectError?.();
       const isEmailAlreadyInUse = isEmailAlreadyInUseError(error);
+      const isInvalidCredential = isInvalidCredentialError(error);
 
-      if (!isEmailAlreadyInUse) {
+      if (!isEmailAlreadyInUse && !isInvalidCredential) {
         console.error("Firebase authentication failed", {
           code: getFirebaseErrorCode(error),
           error,
