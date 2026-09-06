@@ -19,8 +19,8 @@ vi.mock("next-intl", () => ({
       signOut: "Sign out",
       openMenu: "Open menu",
       closeMenu: "Close menu",
+      menuTitle: "Menu",
       language: "Language",
-      languageEyebrow: "Language settings",
       languageTitle: "Choose your language",
       languageSelected: "Selected",
       closeLanguage: "Close language menu",
@@ -132,6 +132,7 @@ describe("Header", () => {
     await user.click(trigger);
 
     expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveAttribute("aria-haspopup", "listbox");
     expect(
       screen.getByRole("dialog", { name: "Choose your language" }),
     ).toBeInTheDocument();
@@ -160,6 +161,7 @@ describe("Header", () => {
     await user.keyboard("{Escape}");
     expect(trigger).toHaveFocus();
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).not.toHaveClass(styles.menuButtonOpen);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
@@ -170,6 +172,7 @@ describe("Header", () => {
     const themeButton = screen.getByTestId("theme-toggle");
 
     expect(themeButton).toHaveAccessibleName("Switch to dark mode");
+    expect(themeButton.querySelectorAll("svg")).toHaveLength(2);
 
     await user.click(themeButton);
 
@@ -196,9 +199,11 @@ describe("Header", () => {
     await user.click(trigger);
 
     expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveClass(styles.menuButtonOpen);
     expect(screen.getByTestId("mobile-menu")).toHaveClass(
       styles.mobileMenuOpen,
     );
+    expect(screen.getByRole("dialog", { name: "Menu" })).toBeInTheDocument();
     expect(screen.getByTestId("mobile-menu-backdrop")).toHaveClass(
       styles.mobileBackdrop,
     );
@@ -206,6 +211,7 @@ describe("Header", () => {
     await user.click(screen.getByTestId("mobile-menu-backdrop"));
 
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).not.toHaveClass(styles.menuButtonOpen);
     expect(
       screen.queryByTestId("mobile-menu-backdrop"),
     ).not.toBeInTheDocument();

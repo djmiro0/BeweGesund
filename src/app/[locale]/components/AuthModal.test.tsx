@@ -254,6 +254,9 @@ describe("AuthModal Google sign-in", () => {
 
   it("shows the Firebase sign-in failure reason", async () => {
     const user = userEvent.setup();
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     mocks.signInWithEmailAndPassword.mockRejectedValue({
       code: "auth/invalid-credential",
     });
@@ -271,6 +274,8 @@ describe("AuthModal Google sign-in", () => {
         "Sign in failed: We could not sign you in with these details. Check your email and password, create an account first, or use Continue with Google if you registered with Google.",
       ),
     ).toBeInTheDocument();
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 
   it("shows account help when Firebase reports invalid login credentials", async () => {
