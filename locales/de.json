@@ -219,6 +219,13 @@
     "orUseEmail": "oder mit E-Mail",
     "completeProfile": "Profil abschließen",
     "continueToAnamnesis": "Weiter zur Anamnese",
+    "progress": {
+      "label": "Registrierungsfortschritt",
+      "step": "Schritt {current} von {total}",
+      "account": "Konto & Mitgliedschaft",
+      "anamnesis": "Gesundheitsfragebogen",
+      "paymentNext": "Als Nächstes folgt die sichere Abo-Zahlung mit Stripe."
+    },
     "requiredLabel": "{label} *",
     "optionalLabel": "{label} (optional)",
     "firstName": "Vorname",
@@ -291,7 +298,7 @@
     "anamnesis": {
       "title": "Anamnese",
       "supportText": "Beantworte diese Fragen, bevor du Zugriff auf die Trainingsbereiche erhältst. Später nutzen wir diese Angaben für passende Empfehlungen.",
-      "submit": "Anamnese abschließen",
+      "submit": "Abschließen & weiter zur Zahlung",
       "backToAccount": "Zurück zu Kontoangaben",
       "goalsLabel": "Was ist dein Hauptziel?",
       "complaintsLabel": "Hast du aktuell akute oder chronische körperliche Beschwerden?",

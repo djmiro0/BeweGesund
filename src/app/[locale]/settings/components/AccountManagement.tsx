@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { auth, functions } from "../../../../../firebase.config";
 import { useAuth } from "../../components/AuthProvider";
+import { useModalDialog } from "../../components/useModalDialog";
 import styles from "../Settings.module.css";
 
 export default function AccountManagement() {
@@ -39,6 +40,10 @@ export default function AccountManagement() {
     setDeletePassword("");
     setDeleteError("");
   };
+  const deleteDialogRef = useModalDialog<HTMLDivElement>(
+    isDeleteOpen,
+    closeDialog,
+  );
 
   const getDeleteErrorMessage = (error: unknown) => {
     const code = (error as AuthError | undefined)?.code;
@@ -172,10 +177,12 @@ export default function AccountManagement() {
       {isDeleteOpen ? (
         <div className={styles.modalOverlay}>
           <div
+            ref={deleteDialogRef}
             className={styles.deleteModal}
             role="dialog"
             aria-modal="true"
             aria-labelledby="settings-delete-title"
+            tabIndex={-1}
           >
             <button
               type="button"

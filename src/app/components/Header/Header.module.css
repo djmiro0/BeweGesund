@@ -151,7 +151,7 @@
 .themeSwitch,
 .menuButton {
   display: flex;
-  height: 2.25rem;
+  height: 2.75rem;
   align-items: center;
   justify-content: center;
   border: 0;
@@ -350,8 +350,8 @@
 
 .languagePanelClose {
   display: grid;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.75rem;
+  height: 2.75rem;
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid rgba(var(--language-panel-text-rgb), 0.14);
@@ -486,12 +486,12 @@
 
 .themeSwitch {
   position: relative;
-  width: 2.25rem;
+  width: 2.75rem;
   padding: 0;
 }
 
 .menuButton {
-  width: 2.25rem;
+  width: 2.75rem;
 }
 
 .visuallyHidden {
@@ -897,7 +897,7 @@
   }
 
   .themeSwitch {
-    width: 2.25rem;
+    width: 2.75rem;
   }
 
   .signInButton {

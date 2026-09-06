@@ -323,7 +323,7 @@ test.describe("account onboarding and payment", () => {
     await completeAccountStep(page);
     await completeAnamnesisStep(page);
 
-    await page.getByRole("button", { name: /anamnese abschließen/i }).click();
+    await page.getByRole("button", { name: /weiter zur zahlung/i }).click();
     await expect
       .poll(() => events)
       .toContain("functions:createStripeCheckoutSession");

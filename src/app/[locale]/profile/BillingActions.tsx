@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, CreditCard, LoaderCircle, Repeat2 } from "lucide-react";
+import { CreditCard, LoaderCircle, Repeat2 } from "lucide-react";
 import { httpsCallable } from "firebase/functions";
 import { useState } from "react";
 import { functions } from "../../../../firebase.config";
@@ -32,8 +32,6 @@ interface BillingActionsProps {
   currentLabel: string;
   inactiveLabel: string;
   activeLabel: string;
-  selectedLabel: string;
-  statusLabel: string;
 }
 
 interface BillingSessionResult {
@@ -91,8 +89,6 @@ export default function BillingActions({
   currentLabel,
   inactiveLabel,
   activeLabel,
-  selectedLabel,
-  statusLabel,
 }: BillingActionsProps) {
   const [pendingAction, setPendingAction] =
     useState<PendingBillingAction>(null);
@@ -116,9 +112,9 @@ export default function BillingActions({
   const currentPlan = hasManagedSubscription
     ? (plans.find((plan) => plan.id === memberPackage) ?? plans[0])
     : null;
-  const currentStatusLabel = hasManagedSubscription
-    ? activeLabel
-    : selectedLabel;
+  const availablePlans = hasManagedSubscription
+    ? plans.filter((plan) => plan.id !== memberPackage)
+    : plans;
 
   const openBillingSession = async (
     action: "checkout" | "portal",
@@ -183,21 +179,15 @@ export default function BillingActions({
         <div>
           <p>{currentLabel}</p>
           <strong>{currentPlan?.name ?? inactiveLabel}</strong>
+          {currentPlan ? <small>{currentPlan.price}</small> : null}
         </div>
-        {currentPlan ? <span>{currentStatusLabel}</span> : null}
-      </div>
-
-      <div className={styles.billingOverview}>
-        <span>{statusLabel}</span>
-        <strong>{subscriptionStatus}</strong>
+        {currentPlan ? <span>{activeLabel}</span> : null}
       </div>
 
       <div className={styles.billingPlanGrid}>
-        {plans.map((plan) => {
-          const isCurrent = hasManagedSubscription && plan.id === memberPackage;
-          const isAvailableChange = hasManagedSubscription && !isCurrent;
+        {availablePlans.map((plan) => {
           const isButtonPending = pendingAction?.memberPackage === plan.id;
-          const isDisabled = Boolean(pendingAction) || isCurrent;
+          const isDisabled = Boolean(pendingAction);
           const actionLabel = hasManagedSubscription
             ? plan.id === "plus"
               ? upgradeLabel
@@ -206,40 +196,21 @@ export default function BillingActions({
           const actionMode = hasManagedSubscription ? "portal" : "checkout";
 
           return (
-            <article
-              key={plan.id}
-              className={`${styles.billingPlanCard} ${isCurrent ? styles.billingPlanCardCurrent : ""}`}
-            >
+            <article key={plan.id} className={styles.billingPlanCard}>
               <div className={styles.billingPlanHeader}>
                 <div>
                   <h3>{plan.name}</h3>
                   <p>{plan.price}</p>
                 </div>
-                {isCurrent ? (
-                  <span className={styles.billingPlanBadge}>
-                    <CheckCircle2 size={15} />
-                    {currentStatusLabel}
-                  </span>
-                ) : null}
               </div>
 
               <button
                 type="button"
-                className={`${styles.billingButton} ${isAvailableChange ? styles.billingButtonChange : ""} ${isCurrent ? styles.billingButtonSelected : ""}`}
+                className={`${styles.billingButton} ${hasManagedSubscription ? styles.billingButtonChange : ""}`}
                 disabled={isDisabled}
-                onClick={() => {
-                  if (isCurrent) return;
-                  void openBillingSession(actionMode, plan.id);
-                }}
+                onClick={() => void openBillingSession(actionMode, plan.id)}
               >
-                {isCurrent ? (
-                  <>
-                    <CheckCircle2 size={17} />
-                    {currentStatusLabel}
-                  </>
-                ) : (
-                  buttonContent(actionLabel, isButtonPending)
-                )}
+                {buttonContent(actionLabel, isButtonPending)}
               </button>
             </article>
           );

@@ -155,8 +155,8 @@
 
 .gameCloseButton {
   display: inline-grid;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.75rem;
+  height: 2.75rem;
   place-items: center;
   border: 1px solid rgba(var(--quiz-border-rgb), 0.16);
   border-radius: 999px;

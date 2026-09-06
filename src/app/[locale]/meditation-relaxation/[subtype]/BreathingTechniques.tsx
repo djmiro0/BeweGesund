@@ -3,6 +3,7 @@
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import { Info, Play, Volume2, VolumeX, Waves, Wind, X } from "lucide-react";
+import { useModalDialog } from "../../components/useModalDialog";
 import styles from "../Relaxation.module.css";
 
 interface BreathingTechnique {
@@ -350,6 +351,13 @@ export default function BreathingTechniques({
     setElapsedSessionSeconds(0);
     setIsSessionRunning(false);
   };
+  const infoDialogRef = useModalDialog<HTMLElement>(infoIndex !== null, () =>
+    setInfoIndex(null),
+  );
+  const sessionDialogRef = useModalDialog<HTMLDivElement>(
+    activeIndex !== null,
+    close,
+  );
 
   const open = (index: number) => {
     stopMusic();
@@ -422,20 +430,6 @@ export default function BreathingTechniques({
     },
     [],
   );
-
-  useEffect(() => {
-    if (activeIndex === null) return undefined;
-
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousHtmlOverflow;
-    };
-  }, [activeIndex]);
 
   useEffect(() => {
     if (activeIndex === null || !isSessionRunning) return undefined;
@@ -539,10 +533,12 @@ export default function BreathingTechniques({
           onClick={() => setInfoIndex(null)}
         >
           <article
+            ref={infoDialogRef}
             className={styles.breathingInfoPopup}
             role="dialog"
             aria-modal="true"
             aria-labelledby="breathing-info-popup-title"
+            tabIndex={-1}
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -567,10 +563,12 @@ export default function BreathingTechniques({
 
       {activeSection ? (
         <div
+          ref={sessionDialogRef}
           className={styles.breathingSessionOverlay}
           role="dialog"
           aria-modal="true"
           aria-labelledby="breathing-session-title"
+          tabIndex={-1}
         >
           <button
             type="button"

@@ -39,6 +39,7 @@ import {
   selectRandomQuizQuestions,
 } from "../../../lib/quizSelection";
 import { useAuth } from "../components/AuthProvider";
+import { useModalDialog } from "../components/useModalDialog";
 import styles from "./Quiz.module.css";
 
 interface PublicQuizOption {
@@ -401,6 +402,15 @@ export default function QuizClient({
   const [isExampleOpen, setIsExampleOpen] = useState(false);
   const [isStartDialogOpen, setIsStartDialogOpen] = useState(false);
   const [isGamePopupOpen, setIsGamePopupOpen] = useState(false);
+  const exampleDialogRef = useModalDialog<HTMLElement>(isExampleOpen, () =>
+    setIsExampleOpen(false),
+  );
+  const startDialogRef = useModalDialog<HTMLElement>(isStartDialogOpen, () =>
+    setIsStartDialogOpen(false),
+  );
+  const gameDialogRef = useModalDialog<HTMLElement>(isGamePopupOpen, () =>
+    setIsGamePopupOpen(false),
+  );
   const [result, setResult] = useState<QuizResult | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -651,17 +661,6 @@ export default function QuizClient({
     startQuizRound,
     user,
   ]);
-
-  useEffect(() => {
-    if (!isGamePopupOpen) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isGamePopupOpen]);
 
   const handleOpenStart = () => {
     if (!user) {
@@ -1319,10 +1318,12 @@ export default function QuizClient({
           onClick={() => setIsGamePopupOpen(false)}
         >
           <section
+            ref={gameDialogRef}
             className={styles.gameDialog}
             role="dialog"
             aria-modal="true"
             aria-labelledby="quiz-game-title"
+            tabIndex={-1}
             onClick={(event) => event.stopPropagation()}
           >
             <div className={styles.gameDialogHeader}>
@@ -1350,10 +1351,12 @@ export default function QuizClient({
           onClick={() => setIsStartDialogOpen(false)}
         >
           <section
+            ref={startDialogRef}
             className={styles.exampleDialog}
             role="dialog"
             aria-modal="true"
             aria-labelledby="quiz-start-title"
+            tabIndex={-1}
             onClick={(event) => event.stopPropagation()}
           >
             <div className={styles.exampleDialogHeader}>
@@ -1394,10 +1397,12 @@ export default function QuizClient({
           onClick={() => setIsExampleOpen(false)}
         >
           <section
+            ref={exampleDialogRef}
             className={styles.exampleDialog}
             role="dialog"
             aria-modal="true"
             aria-labelledby="quiz-example-title"
+            tabIndex={-1}
             onClick={(event) => event.stopPropagation()}
           >
             <div className={styles.exampleDialogHeader}>

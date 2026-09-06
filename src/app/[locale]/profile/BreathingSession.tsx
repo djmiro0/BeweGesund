@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Bell, BellOff, Play, X } from "lucide-react";
+import { useModalDialog } from "../components/useModalDialog";
 import styles from "./Profile.module.css";
 
 interface BreathingSessionProps {
@@ -76,6 +77,11 @@ export default function BreathingSession({
     if (typeof window === "undefined") return false;
     return window.localStorage.getItem(STORAGE_KEY) === "true";
   });
+  const closeSession = () => {
+    setIsOpen(false);
+    setIsRunning(false);
+  };
+  const dialogRef = useModalDialog<HTMLElement>(isOpen, closeSession);
 
   useEffect(() => {
     if (!isRunning) return undefined;
@@ -178,19 +184,18 @@ export default function BreathingSession({
       {isOpen ? (
         <div className={styles.breathModalOverlay}>
           <section
+            ref={dialogRef}
             className={styles.breathModal}
             role="dialog"
             aria-modal="true"
             aria-labelledby="breath-session-title"
+            tabIndex={-1}
           >
             <button
               type="button"
               className={styles.breathClose}
               aria-label={labels.close}
-              onClick={() => {
-                setIsOpen(false);
-                setIsRunning(false);
-              }}
+              onClick={closeSession}
             >
               <X size={20} />
             </button>

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { db, storage } from "../../../../firebase.config";
 import { useAuth } from "./AuthProvider";
 import styles from "./ProgressPhotoReminder.module.css";
+import { useModalDialog } from "./useModalDialog";
 
 const REMINDER_WINDOW_DAYS = 7;
 const MAX_PHOTO_SIZE = 5 * 1024 * 1024;
@@ -19,6 +20,20 @@ export default function ProgressPhotoReminder() {
   const [isOpen, setIsOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const dismissForSession = () => {
+    if (user) {
+      sessionStorage.setItem(
+        `progress-photo-reminder:${user.uid}`,
+        "dismissed",
+      );
+    }
+    setIsOpen(false);
+  };
+  const dialogRef = useModalDialog<HTMLElement>(
+    Boolean(user && isOpen),
+    dismissForSession,
+  );
 
   useEffect(() => {
     if (!user) {
@@ -61,11 +76,6 @@ export default function ProgressPhotoReminder() {
   }, [user]);
 
   if (!user || !isOpen) return null;
-
-  const dismissForSession = () => {
-    sessionStorage.setItem(`progress-photo-reminder:${user.uid}`, "dismissed");
-    setIsOpen(false);
-  };
 
   const disableReminder = async () => {
     setErrorMessage("");
@@ -127,10 +137,12 @@ export default function ProgressPhotoReminder() {
       data-testid="progress-photo-reminder-overlay"
     >
       <section
+        ref={dialogRef}
         className={styles.modal}
         role="dialog"
         aria-modal="true"
         aria-labelledby="progress-photo-reminder-title"
+        tabIndex={-1}
       >
         <button
           type="button"

@@ -351,11 +351,9 @@ export default function ProfilePage() {
 
   const renderMembershipContent = () => (
     <div className={styles.expandedBlock}>
-      <div className={styles.sectionIntro}>
-        <p className={styles.panelEyebrow}>{t("packageSelector.eyebrow")}</p>
-        <h2>{t("packageSelector.title")}</h2>
-        <p>{t("packageSelector.description")}</p>
-      </div>
+      <p className={styles.membershipDescription}>
+        {t("packageSelector.description")}
+      </p>
       <BillingActions
         locale={locale}
         memberPackage={profile.memberPackage}
@@ -374,8 +372,6 @@ export default function ProfilePage() {
         currentLabel={t("packageSelector.currentPackage")}
         inactiveLabel={t("packageSelector.inactive")}
         activeLabel={t("packageSelector.active")}
-        selectedLabel={t("packageSelector.selected")}
-        statusLabel={t("packageSelector.status")}
       />
       <p className={styles.packageHint}>{t("packageSelector.billingHint")}</p>
     </div>
@@ -587,7 +583,11 @@ export default function ProfilePage() {
               }`}
             >
               <div className={styles.desktopPanelHeader}>
-                <p className={styles.panelEyebrow}>{t("eyebrow")}</p>
+                <p className={styles.panelEyebrow}>
+                  {activeDesktopSection === "membership"
+                    ? t("packageSelector.eyebrow")
+                    : t("eyebrow")}
+                </p>
                 <h2>
                   {
                     profileSections.find(

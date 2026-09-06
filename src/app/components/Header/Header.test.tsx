@@ -5,7 +5,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import Header from "./Header";
 import styles from "./Header.module.css";
 
-const { push, toggleTheme } = vi.hoisted(() => ({
+const { navigation, push, toggleTheme } = vi.hoisted(() => ({
+  navigation: { pathname: "/en" },
   push: vi.fn(),
   toggleTheme: vi.fn(),
 }));
@@ -65,7 +66,7 @@ vi.mock("next/link", () => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/en",
+  usePathname: () => navigation.pathname,
   useRouter: () => ({ push }),
 }));
 
@@ -74,6 +75,12 @@ vi.mock("@/app/[locale]/components/ThemeProvider", () => ({
     theme: "light",
     toggleTheme,
   }),
+}));
+
+vi.mock("@/app/components/ProfileAvatar/ProfileAvatar", () => ({
+  default: ({ ariaLabel }: { ariaLabel: string }) => (
+    <span aria-label={ariaLabel} />
+  ),
 }));
 
 vi.mock("../../../../firebase.config", () => ({
@@ -86,6 +93,7 @@ vi.mock("firebase/auth", () => ({
 
 describe("Header", () => {
   beforeEach(() => {
+    navigation.pathname = "/en";
     push.mockClear();
     toggleTheme.mockClear();
   });
@@ -166,6 +174,18 @@ describe("Header", () => {
     await user.click(themeButton);
 
     expect(toggleTheme).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the parent section active on a course detail page", () => {
+    navigation.pathname = "/en/courses/reha-knee";
+
+    render(
+      <Header locale="en" user={{ uid: "member-1", displayName: "Member" }} />,
+    );
+
+    screen.getAllByRole("link", { name: "Courses" }).forEach((link) => {
+      expect(link).toHaveAttribute("aria-current", "page");
+    });
   });
 
   it("closes the mobile menu from the blurred page backdrop", async () => {

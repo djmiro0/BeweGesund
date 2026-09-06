@@ -130,7 +130,7 @@ const Header: React.FC<HeaderProps> = ({
                   key: "courses",
                   href: `/${locale}/courses`,
                   label: t("nav.courses"),
-                  active: pathname === `/${locale}/courses`,
+                  active: pathname.startsWith(`/${locale}/courses`),
                 },
               ]
             : []),
@@ -144,7 +144,7 @@ const Header: React.FC<HeaderProps> = ({
             key: "relaxation",
             href: `/${locale}/meditation-relaxation`,
             label: t("nav.relaxation"),
-            active: pathname === `/${locale}/meditation-relaxation`,
+            active: pathname.startsWith(`/${locale}/meditation-relaxation`),
           },
           {
             key: "blogs",

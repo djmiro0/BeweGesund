@@ -124,6 +124,7 @@ describe("ShellFrame launch routing", () => {
     mocks.signOut.mockResolvedValue(undefined);
     vi.unstubAllEnvs();
     window.localStorage.clear();
+    window.sessionStorage.clear();
     document.documentElement.removeAttribute("data-theme");
     Object.defineProperty(window, "matchMedia", {
       writable: true,
@@ -497,5 +498,54 @@ describe("ShellFrame launch routing", () => {
       expect(screen.getByTestId("theme-probe")).toHaveTextContent("dark"),
     );
     expect(window.localStorage.getItem("sbewegesund-theme")).toBe("dark");
+  });
+
+  it("preserves the selected theme when the locale shell remounts", async () => {
+    function ThemeProbe() {
+      const { theme, toggleTheme } = useTheme();
+
+      return (
+        <button type="button" data-testid="theme-probe" onClick={toggleTheme}>
+          {theme}
+        </button>
+      );
+    }
+
+    mocks.auth.user = {
+      uid: "user-1",
+      displayName: "Member",
+      photoURL: null,
+      providerData: [],
+    };
+    mocks.auth.appPreferences = { theme: "system" };
+
+    const view = render(
+      <ThemeProvider>
+        <AppPreferenceEffects />
+        <ThemeProbe />
+      </ThemeProvider>,
+    );
+
+    await waitFor(() =>
+      expect(
+        window.sessionStorage.getItem("sbewegesund-applied-profile-theme"),
+      ).toBe("user-1:system"),
+    );
+    fireEvent.click(screen.getByTestId("theme-probe"));
+    await waitFor(() =>
+      expect(window.localStorage.getItem("sbewegesund-theme")).toBe("dark"),
+    );
+
+    view.unmount();
+    render(
+      <ThemeProvider>
+        <AppPreferenceEffects />
+        <ThemeProbe />
+      </ThemeProvider>,
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("theme-probe")).toHaveTextContent("dark"),
+    );
   });
 });

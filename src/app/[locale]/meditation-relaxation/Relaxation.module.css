@@ -1056,8 +1056,8 @@
   top: 0.75rem;
   right: 0.75rem;
   display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   place-items: center;
   border: 1px solid rgba(var(--page-ink-rgb), 0.12);
   border-radius: 999px;
@@ -1437,8 +1437,8 @@
 .breathingIconToggle {
   position: relative;
   display: grid;
-  width: 2.65rem;
-  height: 2.65rem;
+  width: 2.75rem;
+  height: 2.75rem;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
