@@ -84,8 +84,8 @@ vi.mock("@/app/components/Header/Header", () => ({
   ),
 }));
 
-vi.mock("./ComingSoon", () => ({
-  default: () => <div data-testid="coming-soon" />,
+vi.mock("./LaunchPreview", () => ({
+  default: () => <div data-testid="launch-preview" />,
 }));
 
 vi.mock("./AuthModal", () => ({
@@ -105,7 +105,12 @@ vi.mock("./PwaInstallPrompt", () => ({
 }));
 
 vi.mock("@/app/components/Footer/Footer", () => ({
-  default: () => <div data-testid="footer" />,
+  default: ({ showNavigation = true }: { showNavigation?: boolean }) => (
+    <div
+      data-testid="footer"
+      data-show-navigation={showNavigation ? "true" : "false"}
+    />
+  ),
 }));
 
 describe("ShellFrame launch routing", () => {
@@ -148,10 +153,14 @@ describe("ShellFrame launch routing", () => {
         </ShellFrame>,
       );
 
-      expect(screen.getByTestId("coming-soon")).toBeInTheDocument();
+      expect(screen.getByTestId("launch-preview")).toBeInTheDocument();
       expect(screen.getByTestId("header")).toHaveAttribute(
         "data-launch-mode",
         "true",
+      );
+      expect(screen.getByTestId("footer")).toHaveAttribute(
+        "data-show-navigation",
+        "false",
       );
       expect(screen.queryByTestId("page-content")).not.toBeInTheDocument();
     },
@@ -167,12 +176,36 @@ describe("ShellFrame launch routing", () => {
     );
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
-    expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("launch-preview")).not.toBeInTheDocument();
     expect(screen.getByTestId("header")).toHaveAttribute(
       "data-launch-mode",
       "false",
     );
   });
+
+  it.each(["/de/contact", "/de/imprint", "/de/privacy", "/de/terms"])(
+    "keeps launch utility route %s accessible without product navigation",
+    (pathname) => {
+      mocks.pathname = pathname;
+
+      render(
+        <ShellFrame locale="de">
+          <div data-testid="page-content" />
+        </ShellFrame>,
+      );
+
+      expect(screen.getByTestId("page-content")).toBeInTheDocument();
+      expect(screen.getByTestId("header")).toHaveAttribute(
+        "data-launch-mode",
+        "true",
+      );
+      expect(screen.getByTestId("footer")).toHaveAttribute(
+        "data-show-navigation",
+        "false",
+      );
+      expect(screen.queryByTestId("mobile-tabs")).not.toBeInTheDocument();
+    },
+  );
 
   it("confirms successful Stripe checkout returns", async () => {
     window.history.replaceState(
@@ -229,7 +262,7 @@ describe("ShellFrame launch routing", () => {
     );
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
-    expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("launch-preview")).not.toBeInTheDocument();
     expect(screen.getByTestId("header")).toHaveAttribute(
       "data-launch-mode",
       "false",
@@ -266,7 +299,7 @@ describe("ShellFrame launch routing", () => {
     );
 
     expect(screen.getByTestId("page-content")).toBeInTheDocument();
-    expect(screen.queryByTestId("coming-soon")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("launch-preview")).not.toBeInTheDocument();
   });
 
   it("blocks the application for authenticated users without paid access", () => {

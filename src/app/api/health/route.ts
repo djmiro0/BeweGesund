@@ -12,6 +12,7 @@ export function GET() {
     contactDelivery: Boolean(
       process.env.RESEND_API_KEY && process.env.CONTACT_EMAIL_FROM,
     ),
+    newsletterContacts: Boolean(process.env.RESEND_CONTACTS_API_KEY),
     legalIdentity: Boolean(
       process.env.LEGAL_PROVIDER_NAME &&
       process.env.LEGAL_PROVIDER_ADDRESS &&

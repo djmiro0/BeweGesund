@@ -30,16 +30,83 @@
     "themeLight": "Switch to light mode",
     "themeDark": "Switch to dark mode"
   },
-  "comingSoon": {
-    "eyebrow": "BeweGesund",
-    "title": "Website under construction",
-    "description": "We are building a modern platform for movement, prevention, and guided digital training.",
-    "login": "Member sign in",
-    "phase": "Build phase",
-    "status": {
-      "concept": "The concept is ready",
-      "content": "Content is being finalized",
-      "access": "Public access is coming soon"
+  "launchPreview": {
+    "status": "Platform preview · Coming soon",
+    "hero": {
+      "title": "Your place for movement, knowledge, and better routines.",
+      "description": "Guided training, rehabilitation, nutrition, and mental balance — digital, personal, and made for everyday life.",
+      "explore": "Explore the preview",
+      "login": "Member sign in"
+    },
+    "offer": {
+      "eyebrow": "What awaits you",
+      "title": "Everything sustainable change needs.",
+      "locked": "Coming soon",
+      "pillars": [
+        {
+          "title": "Training & rehabilitation",
+          "description": "For your back, joints, and safe strength.",
+          "imageAlt": "Woman doing guided functional training"
+        },
+        {
+          "title": "Live support",
+          "description": "Personal, live, and easy to plan.",
+          "imageAlt": "Man following digital posture training at home"
+        },
+        {
+          "title": "Nutrition & knowledge",
+          "description": "Knowledge that works in everyday life.",
+          "imageAlt": "Freshly prepared balanced meal"
+        },
+        {
+          "title": "Relaxation & mental balance",
+          "description": "Breathing, meditation, and recovery.",
+          "imageAlt": "Woman practicing a calm breathing exercise"
+        }
+      ]
+    },
+    "experience": {
+      "eyebrow": "One system, not fragments",
+      "title": "Your health as a whole.",
+      "description": "Training, nutrition, and recovery — tailored to you in one place.",
+      "status": "The first programs are being prepared",
+      "imageAlt": "Woman doing mobility training with personal guidance"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "In short.",
+      "items": [
+        {
+          "question": "How does BeweGesund work?",
+          "answer": "After registering, you choose your membership plan and receive access to its workouts, programs, educational content, and relaxation offers. You manage your progress, appointments, and settings directly in your personal area."
+        },
+        {
+          "question": "Will there be a monthly subscription?",
+          "answer": "Yes. A Basic subscription for €9.99 per month and a Plus subscription for €12.99 per month are planned. Payments and membership management are handled securely through Stripe."
+        },
+        {
+          "question": "What is included in Basic and Plus?",
+          "answer": "Basic includes recorded workouts, programs, and health education. Plus also includes live workouts, live seminars, and extended formats."
+        },
+        {
+          "question": "Can I change or cancel my subscription later?",
+          "answer": "Yes. Your personal billing area lets you switch between Basic and Plus, manage your payment method, or cancel your subscription."
+        },
+        {
+          "question": "Is BeweGesund suitable for rehabilitation?",
+          "answer": "The platform will include safe, professionally guided movement and rehabilitation offers. It does not replace medical diagnosis, treatment, or individual clearance from a medical professional."
+        },
+        {
+          "question": "Where can I use the platform?",
+          "answer": "BeweGesund works in the browser on smartphones, tablets, and computers. You can also install it on your home screen and open it like an app."
+        }
+      ]
+    },
+    "final": {
+      "eyebrow": "We are nearly ready",
+      "title": "Soon, we move more.",
+      "description": "The platform remains protected while we complete the final preparation. Existing members can still sign in.",
+      "login": "Member sign in"
     }
   },
   "pwaInstall": {
@@ -1350,10 +1417,24 @@
     "brand": "Bewegesund",
     "tagline": "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
     "navigationTitle": "Navigation",
+    "followTitle": "Follow us",
     "legalTitle": "Legal",
     "contactTitle": "Contact",
     "contactCardText": "Questions about programs, consultation, or business cooperation? Use the contact page as your central starting point.",
     "contactCardButton": "Open Contact",
+    "newsletter": {
+      "eyebrow": "Newsletter",
+      "title": "Don't miss the launch.",
+      "text": "Launch date, new programs, and BeweGesund news — straight to your inbox.",
+      "emailLabel": "Email address",
+      "placeholder": "name@example.com",
+      "submit": "Get updates",
+      "submitting": "Signing you up",
+      "success": "You're on the list — we'll keep you updated.",
+      "error": "We couldn't sign you up. Please try again.",
+      "privacy": "By signing up, you'll receive BeweGesund news by email. Unsubscribe anytime. Details in our",
+      "privacyLink": "Privacy Policy"
+    },
     "links": {
       "home": "Home",
       "about": "About",
