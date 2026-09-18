@@ -62,6 +62,16 @@
           "title": "Entspannung & mentale Balance",
           "description": "Atmung, Meditation und Regeneration.",
           "imageAlt": "Frau bei einer ruhigen Atemübung"
+        },
+        {
+          "title": "Firmenfitness & BGM",
+          "description": "Bewegung und Gesundheit direkt im Unternehmen.",
+          "imageAlt": "Kolleginnen und Kollegen bei einer gemeinsamen Mobilitätseinheit im Büro"
+        },
+        {
+          "title": "Workshops & Seminare",
+          "description": "Praxisnahes Wissen für Alltag und Beruf.",
+          "imageAlt": "Gesundheitsexpertin bei einem interaktiven Bewegungsseminar"
         }
       ]
     },
