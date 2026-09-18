@@ -267,7 +267,9 @@ async function dismissCookieBanner(page: Page) {
 
 async function completeAccountStep(page: Page) {
   await dismissCookieBanner(page);
-  await page.getByRole("button", { name: /mitglieder-login/i }).click();
+  await page
+    .getByRole("button", { name: "Mitglieder-Login", exact: true })
+    .click();
   await page.getByRole("button", { name: /konto erstellen/i }).click();
 
   await page.getByPlaceholder("Vorname").fill("E2E");
@@ -348,9 +350,11 @@ test.describe("account onboarding and payment", () => {
     await returningPage.goto("/de");
     await dismissCookieBanner(returningPage);
     await returningPage
-      .getByRole("button", { name: /mitglieder-login/i })
+      .getByRole("button", { name: "Mitglieder-Login", exact: true })
       .click();
-    await returningPage.getByLabel(/e-mail-adresse/i).fill(firebaseUser.email);
+    await returningPage
+      .getByPlaceholder("E-Mail-Adresse", { exact: true })
+      .fill(firebaseUser.email);
     await returningPage.getByLabel(/^passwort$/i).fill(firebaseUser.password);
     await returningPage
       .locator("form")

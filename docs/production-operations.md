@@ -50,6 +50,9 @@ Keeping the keys separate avoids giving the email-delivery path broader access
 than it needs. For backwards compatibility, the newsletter falls back to
 `RESEND_API_KEY` when the dedicated key is not set.
 
+The complete signup, Broadcast, testing, and unsubscribe workflow is documented
+in [`docs/newsletter-operations.md`](./newsletter-operations.md).
+
 Consultation bookings default to `https://cal.eu/bewegesund`. Set
 `CONSULTATION_BOOKING_URL` only when the booking destination should be changed.
 

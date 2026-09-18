@@ -7,9 +7,13 @@ test.describe("pre-launch website", () => {
     await page.goto("/de");
 
     await expect(
-      page.getByRole("heading", { name: /website in vorbereitung/i }),
+      page.getByRole("heading", {
+        name: /dein ort für bewegung, wissen und neue routinen/i,
+      }),
     ).toBeVisible();
-    await expect(page.getByText(/öffentliche zugang folgt/i)).toBeVisible();
+    await expect(
+      page.getByText(/plattform-vorschau · coming soon/i),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: /programme/i })).toHaveCount(0);
   });
 
@@ -19,7 +23,9 @@ test.describe("pre-launch website", () => {
     await page.goto("/de/blogs");
 
     await expect(
-      page.getByRole("heading", { name: /website in vorbereitung/i }),
+      page.getByRole("heading", {
+        name: /dein ort für bewegung, wissen und neue routinen/i,
+      }),
     ).toBeVisible();
     await expect(page).toHaveURL(/\/de\/blogs$/);
   });
@@ -35,11 +41,15 @@ test.describe("pre-launch website", () => {
       initialTheme === "dark" ? "light" : "dark",
     );
 
-    await page.getByRole("button", { name: /mitglieder-login/i }).click();
+    await page
+      .getByRole("button", { name: "Mitglieder-Login", exact: true })
+      .click();
 
     await expect(
       page.getByRole("heading", { name: /mitglieder-login/i }),
     ).toBeVisible();
-    await expect(page.getByLabel(/e-mail-adresse/i)).toBeVisible();
+    await expect(
+      page.getByPlaceholder("E-Mail-Adresse", { exact: true }),
+    ).toBeVisible();
   });
 });

@@ -6,6 +6,7 @@
 }
 
 html {
+  position: relative;
   scroll-behavior: smooth;
   touch-action: manipulation;
 }
