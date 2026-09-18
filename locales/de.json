@@ -30,16 +30,83 @@
     "themeLight": "Zum hellen Modus wechseln",
     "themeDark": "Zum dunklen Modus wechseln"
   },
-  "comingSoon": {
-    "eyebrow": "BeweGesund",
-    "title": "Website in Vorbereitung",
-    "description": "Wir bauen gerade eine moderne Plattform für Bewegung, Prävention und digitale Trainingsbegleitung.",
-    "login": "Mitglieder-Login",
-    "phase": "Aufbauphase",
-    "status": {
-      "concept": "Das Konzept steht",
-      "content": "Inhalte werden finalisiert",
-      "access": "Der öffentliche Zugang folgt"
+  "launchPreview": {
+    "status": "Plattform-Vorschau · Coming soon",
+    "hero": {
+      "title": "Dein Ort für Bewegung, Wissen und neue Routinen.",
+      "description": "Geführtes Training, Rehabilitation, Ernährung und mentale Balance — digital, persönlich und alltagstauglich.",
+      "explore": "Vorschau entdecken",
+      "login": "Mitglieder-Login"
+    },
+    "offer": {
+      "eyebrow": "Das erwartet dich",
+      "title": "Alles, was nachhaltige Veränderung braucht.",
+      "locked": "Coming soon",
+      "pillars": [
+        {
+          "title": "Training & Rehabilitation",
+          "description": "Für Rücken, Gelenke und sichere Stärke.",
+          "imageAlt": "Frau beim geführten funktionellen Training"
+        },
+        {
+          "title": "Live-Begleitung",
+          "description": "Persönlich, live und planbar.",
+          "imageAlt": "Mann beim digitalen Haltungstraining zu Hause"
+        },
+        {
+          "title": "Ernährung & Wissen",
+          "description": "Wissen, das im Alltag funktioniert.",
+          "imageAlt": "Frisch vorbereitete ausgewogene Mahlzeit"
+        },
+        {
+          "title": "Entspannung & mentale Balance",
+          "description": "Atmung, Meditation und Regeneration.",
+          "imageAlt": "Frau bei einer ruhigen Atemübung"
+        }
+      ]
+    },
+    "experience": {
+      "eyebrow": "Ein System statt Einzelteile",
+      "title": "Deine Gesundheit als Ganzes.",
+      "description": "Training, Ernährung und Erholung — abgestimmt auf dich, an einem Ort.",
+      "status": "Die ersten Programme werden vorbereitet",
+      "imageAlt": "Frau beim Mobilitätstraining mit persönlicher Begleitung"
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Kurz erklärt.",
+      "items": [
+        {
+          "question": "Wie funktioniert BeweGesund?",
+          "answer": "Nach der Registrierung wählst du dein Mitgliedspaket und erhältst Zugriff auf die dazugehörigen Trainings, Programme, Wissensinhalte und Entspannungsangebote. Deinen Fortschritt, Termine und Einstellungen verwaltest du direkt in deinem persönlichen Bereich."
+        },
+        {
+          "question": "Wird es ein monatliches Abo geben?",
+          "answer": "Ja. Geplant sind ein Basic-Abo für 9,99 € pro Monat und ein Plus-Abo für 12,99 € pro Monat. Die Zahlung und Verwaltung der Mitgliedschaft erfolgen sicher über Stripe."
+        },
+        {
+          "question": "Was ist im Basic- und Plus-Abo enthalten?",
+          "answer": "Basic umfasst aufgezeichnete Trainings, Programme sowie Gesundheits- und Wissensinhalte. Plus enthält zusätzlich Live-Trainings, Live-Seminare und erweiterte Formate."
+        },
+        {
+          "question": "Kann ich mein Abo später ändern oder kündigen?",
+          "answer": "Ja. In deinem persönlichen Abrechnungsbereich kannst du zwischen Basic und Plus wechseln, deine Zahlungsmethode verwalten oder das Abo kündigen."
+        },
+        {
+          "question": "Ist BeweGesund auch für Rehabilitation geeignet?",
+          "answer": "Die Plattform wird sichere, fachlich geführte Bewegungs- und Reha-Angebote enthalten. Sie ersetzt jedoch keine medizinische Diagnose, Behandlung oder individuelle Freigabe durch medizinisches Fachpersonal."
+        },
+        {
+          "question": "Wo kann ich die Plattform nutzen?",
+          "answer": "BeweGesund funktioniert im Browser auf Smartphone, Tablet und Computer. Du kannst die Plattform außerdem auf deinem Startbildschirm installieren und wie eine App öffnen."
+        }
+      ]
+    },
+    "final": {
+      "eyebrow": "Wir sind bald bereit",
+      "title": "Bald bewegen wir mehr.",
+      "description": "Die Plattform bleibt während der finalen Vorbereitung geschützt. Bestehende Mitglieder können sich weiterhin anmelden.",
+      "login": "Zum Mitglieder-Login"
     }
   },
   "pwaInstall": {
@@ -1354,10 +1421,24 @@
     "brand": "Bewegesund",
     "tagline": "Bewegung, Rehabilitation und Bildung mit einem klareren Weg zu gesünderem Alltag.",
     "navigationTitle": "Navigation",
+    "followTitle": "Folge uns",
     "legalTitle": "Rechtliches",
     "contactTitle": "Kontakt",
     "contactCardText": "Fragen zu Programmen, Beratung oder geschäftlicher Zusammenarbeit? Nutze die Kontaktseite als zentralen Einstiegspunkt.",
     "contactCardButton": "Kontakt Öffnen",
+    "newsletter": {
+      "eyebrow": "Newsletter",
+      "title": "Nichts verpassen.",
+      "text": "Launch-Termin, neue Programme und BeweGesund-News — direkt in dein Postfach.",
+      "emailLabel": "E-Mail-Adresse",
+      "placeholder": "name@beispiel.de",
+      "submit": "Updates erhalten",
+      "submitting": "Wird angemeldet",
+      "success": "Du bist dabei — wir halten dich auf dem Laufenden.",
+      "error": "Die Anmeldung hat nicht funktioniert. Bitte versuche es erneut.",
+      "privacy": "Mit der Anmeldung erhältst du BeweGesund-News per E-Mail. Abmeldung jederzeit. Details im",
+      "privacyLink": "Datenschutz"
+    },
     "links": {
       "home": "Startseite",
       "about": "Über Uns",

@@ -10,7 +10,7 @@ import { httpsCallable } from "firebase/functions";
 import { auth, functions } from "../../../../firebase.config";
 import AuthModal from "./AuthModal";
 import { AuthProvider, useAuth } from "./AuthProvider";
-import ComingSoon from "./ComingSoon";
+import LaunchPreview from "./LaunchPreview";
 import CookieConsentBanner from "./CookieConsentBanner";
 import LoadingScreen from "./LoadingScreen";
 import MobileTabBar from "./MobileTabBar";
@@ -21,10 +21,11 @@ import PwaInstallPrompt from "./PwaInstallPrompt";
 import { ThemeProvider } from "./ThemeProvider";
 import { useTheme } from "./ThemeProvider";
 import { getAuthUserPhotoURL, getProfileFirstName } from "@/lib/userProfile";
-import { isComingSoonEnabled } from "@/lib/launchFlags";
+import { isLaunchPreviewEnabled } from "@/lib/launchFlags";
 import styles from "./AppShell.module.css";
 
 const paidAccessRoutes = ["courses", "calendar", "consultation"];
+const launchUtilityRoutes = ["contact", "imprint", "privacy", "terms"];
 const APPLIED_THEME_KEY = "sbewegesund-applied-profile-theme";
 
 function isPaidAccessRoute(pathname: string, locale: string) {
@@ -34,6 +35,12 @@ function isPaidAccessRoute(pathname: string, locale: string) {
     (route) =>
       pathname === `${localizedPath}/${route}` ||
       pathname.startsWith(`${localizedPath}/${route}/`),
+  );
+}
+
+function isLaunchUtilityRoute(pathname: string, locale: string) {
+  return launchUtilityRoutes.some(
+    (route) => pathname === `/${locale}/${route}`,
   );
 }
 
@@ -193,19 +200,30 @@ export function ShellFrame({
     return <LoadingScreen text={paymentT("processing")} />;
   }
 
-  const showComingSoon = isComingSoonEnabled();
+  const showLaunchPreview = isLaunchPreviewEnabled();
+  const showLaunchUtilityPage =
+    !user &&
+    !isAuthActionRoute &&
+    showLaunchPreview &&
+    isLaunchUtilityRoute(pathname, locale);
 
-  if (!user && !isAuthActionRoute && showComingSoon) {
+  if (
+    !user &&
+    !isAuthActionRoute &&
+    showLaunchPreview &&
+    !showLaunchUtilityPage
+  ) {
     return (
-      <PageMediaGate contentKey="coming-soon">
+      <PageMediaGate contentKey="launch-preview">
         <PwaInstallPrompt />
         <Header
           locale={locale}
           user={null}
           openAuth={openAuth}
-          launchMode={showComingSoon}
+          launchMode={showLaunchPreview}
         />
-        <ComingSoon openAuth={openAuth} />
+        <LaunchPreview openAuth={openAuth} />
+        <Footer showNavigation={false} />
         <AuthModal
           isOpen={isAuthOpen}
           onClose={closeAuth}
@@ -284,6 +302,7 @@ export function ShellFrame({
         }
         profilePhoto={getAuthUserPhotoURL(user) ?? profile?.photoURL}
         openAuth={openAuth}
+        launchMode={showLaunchUtilityPage}
       />
       <AuthModal
         isOpen={isAuthOpen || requiresProfileSetup}
@@ -294,8 +313,8 @@ export function ShellFrame({
       />
       <NavigationFeedback />
       <main className={styles.main}>{children}</main>
-      <MobileTabBar locale={locale} />
-      <Footer />
+      {!showLaunchUtilityPage && <MobileTabBar locale={locale} />}
+      <Footer showNavigation={!showLaunchUtilityPage} />
       <CookieConsentBanner locale={locale} />
     </PageMediaGate>
   );

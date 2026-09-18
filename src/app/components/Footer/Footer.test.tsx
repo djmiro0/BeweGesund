@@ -1,6 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type React from "react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import Footer from "./Footer";
 
 vi.mock("next/link", () => ({
@@ -26,11 +27,25 @@ vi.mock("next-intl", () => ({
       tagline:
         "Movement, rehabilitation, and education with a clearer path toward healthier everyday life.",
       navigationTitle: "Navigation",
+      followTitle: "Follow us",
       legalTitle: "Legal",
       contactTitle: "Contact",
       contactCardText:
         "Questions about programs, consultation, or business cooperation? Use the contact page as your central starting point.",
       contactCardButton: "Open Contact",
+      "newsletter.eyebrow": "Newsletter",
+      "newsletter.title": "Don't miss the launch.",
+      "newsletter.text":
+        "Launch date, new programs, and BeweGesund news — straight to your inbox.",
+      "newsletter.emailLabel": "Email address",
+      "newsletter.placeholder": "name@example.com",
+      "newsletter.submit": "Get updates",
+      "newsletter.submitting": "Signing you up",
+      "newsletter.success": "You're on the list — we'll keep you updated.",
+      "newsletter.error": "We couldn't sign you up. Please try again.",
+      "newsletter.privacy":
+        "By signing up, you'll receive BeweGesund news by email. Unsubscribe anytime. Details in our",
+      "newsletter.privacyLink": "Privacy Policy",
       "links.home": "Home",
       "links.about": "About",
       "links.programs": "Program",
@@ -53,6 +68,10 @@ vi.mock("next-intl", () => ({
 }));
 
 describe("Footer", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("renders the modern footer brand and contact CTA", () => {
     render(<Footer />);
 
@@ -79,6 +98,7 @@ describe("Footer", () => {
 
     expect(screen.getAllByTestId("footer-navigation-link")).toHaveLength(7);
     expect(screen.getAllByTestId("footer-legal-link")).toHaveLength(3);
+    expect(screen.getAllByTestId("footer-social-link")).toHaveLength(3);
     expect(screen.getByTestId("footer-contact-panel")).toHaveTextContent(
       "Online by appointment",
     );
@@ -88,5 +108,45 @@ describe("Footer", () => {
     expect(screen.getByTestId("footer-bottom")).toHaveTextContent(
       "© 2026 Bewegesund. All rights reserved.",
     );
+  });
+
+  it("can hide product navigation for the launch preview", () => {
+    render(<Footer showNavigation={false} />);
+
+    expect(screen.queryByText("Navigation")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("footer-navigation-link"),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Follow us")).toBeInTheDocument();
+  });
+
+  it("subscribes an email address to launch updates", async () => {
+    const user = userEvent.setup();
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(new Response(JSON.stringify({ ok: true })));
+    render(<Footer showNavigation={false} />);
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Email address" }),
+      "member@example.com",
+    );
+    await user.click(screen.getByRole("button", { name: /get updates/i }));
+
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith(
+        "/api/newsletter",
+        expect.objectContaining({ method: "POST" }),
+      );
+    });
+    expect(
+      await screen.findByText("You're on the list — we'll keep you updated."),
+    ).toBeInTheDocument();
+
+    const requestOptions = fetchSpy.mock.calls[0]?.[1] as RequestInit;
+    expect(JSON.parse(String(requestOptions.body))).toMatchObject({
+      email: "member@example.com",
+      website: "",
+    });
   });
 });

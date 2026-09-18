@@ -24,6 +24,21 @@ beforeEach(() => {
     configurable: true,
     value: localStorageMock,
   });
+
+  class IntersectionObserverMock implements IntersectionObserver {
+    readonly root = null;
+    readonly rootMargin = "0px";
+    readonly thresholds = [0];
+
+    disconnect() {}
+    observe() {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+    unobserve() {}
+  }
+
+  vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
 });
 
 afterEach(() => {
@@ -36,16 +51,19 @@ vi.mock("next/image", () => ({
     alt,
     fill,
     priority,
+    preload,
     sizes,
     ...props
   }: React.ImgHTMLAttributes<HTMLImageElement> & {
     src: string | { src: string };
     fill?: boolean;
     priority?: boolean;
+    preload?: boolean;
     sizes?: string;
   }) => {
     void fill;
     void priority;
+    void preload;
     void sizes;
 
     return React.createElement("img", {

@@ -19,7 +19,7 @@
 - Mux signing credentials and a mandatory admin upload token
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_COMING_SOON_ENABLED=false` when public pages should be visible
-- Resend API key, verified contact sender, recipient address, and optional HTTPS consultation booking URL
+- Resend send-only API key, separate Contacts API key, verified contact sender, recipient address, recommended newsletter topic, and optional HTTPS consultation booking URL
 - All `LEGAL_*` provider variables from `.env.example`
 - Stripe Basic and Plus Price IDs, secret key, webhook signing secret, and Customer Portal configuration
 
@@ -27,8 +27,10 @@ For contact delivery, configure these variables in the deployment provider:
 
 ```env
 RESEND_API_KEY=...
+RESEND_CONTACTS_API_KEY=...
 CONTACT_EMAIL_FROM=BeweGesund <kontakt@your-verified-domain.example>
 CONTACT_EMAIL_TO=info@bewegesund.de
+RESEND_NEWSLETTER_TOPIC_ID=...
 ```
 
 `CONTACT_EMAIL_FROM` must use a sender domain verified in Resend. This does not
@@ -36,6 +38,20 @@ move the mailbox to Resend; the recipient can still be an IONOS mailbox through
 `CONTACT_EMAIL_TO`. `CONTACT_EMAIL_TO` is optional in code and defaults to
 `info@bewegesund.de`, but setting it explicitly makes production configuration
 easier to audit.
+
+The footer newsletter stores subscribers as Resend Contacts. Create a public
+newsletter Topic for launch and product updates, then set its ID as
+`RESEND_NEWSLETTER_TOPIC_ID` so broadcasts and unsubscribe preferences remain
+scoped to those updates. The form also works without a Topic ID by subscribing
+the address globally, but the Topic configuration is recommended for production.
+`RESEND_API_KEY` may remain send-only for the contact form. The newsletter uses
+`RESEND_CONTACTS_API_KEY`, which must be allowed to read and write Contacts.
+Keeping the keys separate avoids giving the email-delivery path broader access
+than it needs. For backwards compatibility, the newsletter falls back to
+`RESEND_API_KEY` when the dedicated key is not set.
+
+The complete signup, Broadcast, testing, and unsubscribe workflow is documented
+in [`docs/newsletter-operations.md`](./newsletter-operations.md).
 
 Consultation bookings default to `https://cal.eu/bewegesund`. Set
 `CONSULTATION_BOOKING_URL` only when the booking destination should be changed.

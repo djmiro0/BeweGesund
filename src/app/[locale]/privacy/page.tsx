@@ -25,7 +25,11 @@ export default async function DatenschutzPage({
         },
         {
           title: "Dienstleister und Empfänger",
-          body: "Firebase/Google verarbeitet Authentifizierungs- und Profildaten, Vercel stellt die Webanwendung bereit, Contentful liefert redaktionelle Inhalte, Mux stellt geschützte Videos bereit, Stripe verarbeitet Zahlungsdaten und Vercel Analytics verarbeitet technische Nutzungsdaten. Mit eingesetzten Auftragsverarbeitern sind die erforderlichen Datenschutzvereinbarungen abzuschließen.",
+          body: "Firebase/Google verarbeitet Authentifizierungs- und Profildaten, Vercel stellt die Webanwendung bereit, Contentful liefert redaktionelle Inhalte, Mux stellt geschützte Videos bereit, Stripe verarbeitet Zahlungsdaten, Resend verarbeitet Kontakt- und Newsletter-E-Mail-Adressen und Vercel Analytics verarbeitet technische Nutzungsdaten. Mit eingesetzten Auftragsverarbeitern sind die erforderlichen Datenschutzvereinbarungen abzuschließen.",
+        },
+        {
+          title: "Newsletter",
+          body: "Wenn du dich für den Newsletter anmeldest, verarbeiten wir deine E-Mail-Adresse auf Grundlage deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), um dich über den Launch, neue Programme und Neuigkeiten zu informieren. Resend speichert die Adresse für den Versand. Du kannst dich jederzeit über den Abmeldelink in einer Newsletter-E-Mail abmelden; die Rechtmäßigkeit der vorherigen Verarbeitung bleibt unberührt.",
         },
         {
           title: "Google Health und Wearable-Daten",
@@ -63,7 +67,11 @@ export default async function DatenschutzPage({
         },
         {
           title: "Processors and recipients",
-          body: "Firebase/Google processes authentication and profile data, Vercel hosts the application, Contentful supplies editorial content, Mux provides protected video, Stripe processes payment data, and Vercel Analytics processes technical usage data. Required data-processing agreements must be maintained with service providers.",
+          body: "Firebase/Google processes authentication and profile data, Vercel hosts the application, Contentful supplies editorial content, Mux provides protected video, Stripe processes payment data, Resend processes contact and newsletter email addresses, and Vercel Analytics processes technical usage data. Required data-processing agreements must be maintained with service providers.",
+        },
+        {
+          title: "Newsletter",
+          body: "When you subscribe to the newsletter, we process your email address with your consent (GDPR Art. 6(1)(a)) to send launch information, new programs, and other news. Resend stores the address for delivery. You can withdraw your consent at any time through the unsubscribe link in a newsletter email without affecting the lawfulness of prior processing.",
         },
         {
           title: "Google Health and wearable data",
@@ -96,7 +104,7 @@ export default async function DatenschutzPage({
           : "Information provided under GDPR Article 13."
       }
       sections={sections}
-      note={isGerman ? "Stand: Juni 2026" : "Last updated: June 2026"}
+      note={isGerman ? "Stand: September 2026" : "Last updated: September 2026"}
     />
   );
 }

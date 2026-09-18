@@ -1,0 +1,196 @@
+# Extracted source from Kviz pitanja i odgovori.pdf. Do not import this file directly into app quizzes.
+# App-facing quiz documents must be localized through health-quiz-translations.tsv or another de/en translation file.
+# number	prompt	correctOptionId	a	b	c
+1	Kako se, prema nauci, najlakše uvodi nova zdrava navika u život?	b	Čekanjem prave motivacije i jačanjem snage volje	Spajanjem nove navike sa nekom već postojećom rutinom	Pokretanjem više različitih promena istovremeno
+2	Zašto su složeni ugljeni hidrati (poput onih u integralnim žitaricama) bolji izvor energije od običnog šećera?	a	Sporije se razlažu i ne izazivaju nagle skokove šećera u krvi	Zato što imaju znatno veću kalorijsku vrednost po gramu od prostih šećera	Zato što ih organizam direktno pretvara u mišićnu masu bez uticaja na insulin
+3	Šta u našem telu služi kao "građevinski materijal" za obnovu mišića, kože i kose?	b	Masti koje unosimo kroz hranu	Proteini (belančevine)	Vitamini i minerali
+4	Koja je glavna opasnost brzih dijeta u kojima se danima piju samo sokovi?	b	Može doći do prebrzog i opasnog topljenja masnih naslaga	Gubimo uglavnom vodu i mišiće, a usporavamo metabolizam	Telo počinje da zadržava preveliku količinu toksina u crevima
+5	Šta znači kada za neku hranu kažemo da ima "prazne kalorije"?	b	Da ta hrana ima vrlo malo kalorija i da ne goji	Da daje dosta energije, ali nema vitamine, minerale niti hranljive materije	Da se te kalorije troše same od sebe tokom varenja
+6	Zašto je hrana bogata vlaknima (poput povrća i jabuka) važna za mršavljenje?	b	Zato što vlakna ubrzavaju topljenje masti u telu tokom spavanja	Zato što daju dugotrajan osećaj sitosti i poboljšavaju varenje	Zato što vlakna sprečavaju telo da uopšte upije kalorije iz obroka
+7	Zašto nas sokovi i slatkiši sa industrijskim sirupima ne mogu zasititi kao prava hrana?	a	Zato što ti sirupi ne stvaraju pravi osećaj sitosti, pa mozak misli da smo i dalje gladni	Zato što ti sirupi sadrže znatno manje kalorija od običnog belog šećera	Zato što ti sirupi blokiraju rad želuca i potpuno zaustavljaju varenje
+8	Šta je takozvani "jo-jo efekat" kod držanja dijeta?	a	brzi gubitak kilograma na rigoroznoj dijeti, a zatim još brži povratak svih kila čim se vratimo starim navikama	proces u kojem telo u toku dijete prvo gubi vodu pa tek onda masti	pojava da na svakih nekoliko meseci vaga pokazuje različitu težinu zbog promene godišnjih doba
+9	Koje masti se smatraju "dobrim" mastima koje štite srce i krvne sudove?	b	Trans-masti koje se nalaze u margarinu, čipsu i kupovnim lisnatim testima	Nezasićene masne kiseline (npr. iz maslinovog ulja, avokada i koštunjavog voća)	Zasićene masti koje se nalaze isključivo u svinjskoj masti i crvenom mesu
+10	Šta je primarni izvor energije za ljudski mozak u normalnim uslovima ishrane?	a	Glukoza (šećer)	Slobodne masne kiseline	Aminokiseline razgranatog lanca
+11	Kako takozvani "kalorijski deficit" utiče na gubitak kilograma?	b	To je stanje u kom jedemo više nego što trošimo, pa se težina smanjuje	To je osnovni fiziološki uslov za gubitak kilograma – unosite manje kalorija nego što vaše telo potroši	Označava deficit vitamina u ishrani
+12	Šta od navedenog sadrži takozvane "kompletne proteine" (sve esencijalne aminokiseline)?	a	Belo meso, jaja i riba	Krastavac i zelena salata	Beli hleb i peciva
+13	Koji mineral je najvažniji za regulaciju tečnosti u telu i održavanje krvnog pritiska?	b	Kalcijum	Natrijum (kuhinjska so)	Gvožđe
+14	Šta se dešava sa organizmom kada uđemo u stanje "ketoze" na dijetama sa ekstremno malo ugljenih hidrata?	b	Telo počinje da pretvara vodu u mišiće	Jetra počinje da proizvodi ketone iz masti, koje telo tada koristi kao primarni izvor energije umesto glukoze	Telo potpuno prestaje da troši energiju
+15	Koja je glavna uloga "dobrih bakterija" (probiotika) u našem digestivnom traktu?	b	Oni sprečavaju da se ugojimo kada pojedemo previše slatkiša	Pomažu varenju hrane, jačaju imunitet i direktno utiču na proizvodnju hormona sreće (serotonina)	Služe isključivo za lečenje gorušice i viška kiseline u želucu
+16	Koji od ovih glavnih sastojaka hrane sadrži najviše kalorija (energije) po jednom gramu?	c	Proteini	Ugljeni hidrati	Masti
+17	Zašto je opasno potpuno izbaciti zdrave masti (poput onih iz maslinovog ulja, koštunjavog voća i ribe) iz ishrane?	a	One su neophodne za upijanje ključnih vitamina (A, D, E, K) i za pravilan rad hormona	Bez njih telo odmah počinje da troši isključivo mišiće, pa gubimo svu fizičku snagu	Bez tih masti organizam gubi sposobnost da uopšte vari i koristi ugljene hidrate
+18	Koja je glavna razlika između belog i integralnog (smeđeg) pirinča?	b	Beli pirinač se brže kvari i zbog toga ima znatno kraći rok trajanja od integralnog	Integralni pirinač zadržava spoljašnji omotač bogat vlaknima i vitaminima, dok je sa belog taj hranljivi sloj skinut obradom	Beli pirinač se dobija od potpuno druge, genetski modifikovane vrste biljke
+19	Kako prekomeran unos soli utiče na krvni pritisak kod većine ljudi?	a	Zadržava vodu u telu, što povećava količinu krvi u sudovima i tako podiže pritisak	Širi krvne sudove i tako naglo obara pritisak, zbog čega nam se spava nakon slane hrane	Privremeno podiže pritisak samo zato što nas tera da pijemo više gaziranih pića
+20	Šta se dešava u telu ubrzo nakon što pojedemo obrok prebogat šećerima (npr. kolač i slatko piće)?	b	Šećer se odmah vezuje za vodu u mišićima, što nam daje osećaj nadutosti i težine u celom telu	Dolazi do naglog skoka šećera u krvi, nakon čega sledi brzo lučenje insulina, a to ubrzo dovodi do naglog pada energije i umora	Telo ulazi u stanje ubrzanog sagorevanja masti jer pokušava da potroši višak unetih kalorija
+21	Koji nutrijent je najviše odgovoran za obnavljanje zaliha energije (glikogena) u mišićima nakon teškog treninga?	b	Proteini	Ugljeni hidrati	Masti
+22	Šta je to zapravo "intolerancija na laktozu"?	a	Nemogućnost tela da svari mlečni šećer zbog nedostatka enzima laktaze, što izaziva stomačne tegobe	Opasna alergijska reakcija imunog sistema na proteine iz kravljeg mleka	Stanje u kojem želudac ne može da podnese kiselinu iz fermentisanih mlečnih proizvoda poput jogurta
+23	Zašto su trans-masti (iz margarina, lisnatog testa i brze hrane) proglašene najštetnijim mastima za ljudsko zdravlje?	b	Zato što se u želucu vare znatno duže od drugih masti, što dovodi do hroničnog nadimanja i bolova	Dokazano podižu loš (LDL), a spuštaju dobar (HDL) holesterol, čime direktno oštećuju krvne sudove i srce	Zato što se skladište isključivo u predelu stomaka i jetre, pa ih je fizički nemoguće sagoreti treningom
+24	Koji vitamin se rastvara u mastima, što znači da se lako nagomilava u jetri i može biti opasno toksičan ako se pretera sa suplementima?	c	Vitamin C	Vitamin B12	Vitamin A
+25	Šta se dešava sa metabolizmom kada čovek ode u ekstremno gladovanje (unos ispod 800 kcal dnevno)?	b	Telo troši isključivo masne naslage, dok mišićna masa ostaje potpuno zaštićena	Ulazi u režim preživljavanja i usporava se kako bi sačuvao energiju, što otežava dalji gubitak kilograma	Privremeno se zaustavlja varenje kako bi se energija usmerila na izbacivanje toksina iz jetre
+26	Ako radite kancelarijski posao i sedite 8 sati dnevno, šta je najbolji lek protiv bolova u donjem delu leđa?	c	Izbegavanje bilo kakve fizičke aktivnosti i strogo ležanje dok bol ne prođe	Kupovina što mekše i anatomski prilagođene fotelje sa masažerima	Jačanje mišića stomaka i zadnjice uz redovno istezanje zategnutih mišića kukova
+27	Šta je zapravo "upala mišića" (DOMS) koju osetimo dan ili dva nakon jakog treninga?	b	Nagomilana mlečna kiselina koja je ostala zarobljena u mišićima i blokira protok krvi	Mikro-oštećenja na mišićnim vlaknima koja kroz odmor i ishranu zaceljuju i čine mišić jačim	Bezopasno rastezanje tetiva i zglobova koje nema nikakve veze sa samim mišićima
+28	Šta se smatra najefikasnijim treningom za očuvanje mišićne mase i gustine kostiju tokom starenja?	b	Dugotrajni kardio trenizni niskog intenziteta (poput lagane šetnje ili vožnje bicikla)	Trening sa opterećenjem i otporom (vežbe snage u teretani ili sa sopstvenom težinom)	Vežbe joge i statičkog istezanja
+29	Koja je najveća zabluda u vezi sa "topljenjem sala" oko stomaka rađenjem trbušnjaka?	b	Da ta vežba topi salo isključivo sa stomaka jer se ti mišići najviše naprežu	Ne postoji lokalizovano gubljenje masti – trbušnjaci jačaju mišiće ispod sala, ali se salo topi sa celog tela kroz kalorijski deficit	Trbušnjaci tope salo sa stomaka jedino ako se rade u plastičnoj foliji ili pod pojasevima koji podstiču znojenje
+30	Šta zapravo označava pojam "kardiovaskularni trening" (kardio)?	b	Trening namenjen topljenju masnih naslaga kroz pojačano znojenje	Svaku fizičku aktivnost (poput bržeg hodanja, trčanja ili vožnje bicikla) koja podstiče telo da efikasnije koristi kiseonik, čime se jačaju srce, pluća i krvotok	Lagane vežbe disanja i istezanja koje pomažu u usporavanju i smirivanju pulsa nakon napora
+31	Koja je glavna funkcija "jezgra" (core) našeg tela, koje čine mišići stomaka, leđa i karlice?	b	Da omogućava maksimalno savijanje trupa i fleksibilnost kičme pri naglim pokretima	Da stabilizuje kičmu, prenosi silu između gornjeg i donjeg dela tela i štiti unutrašnje organe	Da drži telo u savršeno uspravnom položaju tokom sedenja i sprečava zamor vratnih mišića
+32	Koji mišić je najveći u ljudskom telu i igra ključnu ulogu u uspravnom hodu, trčanju i stabilnosti karlice?	b	Četvoroglavi mišić butine (kvadriceps)	Veliki sedalni mišić (gluteus)	Najširi mišić leđa (latisimus)
+33	Šta je to "aerobni" trening?	b	Trening visokog intenziteta u kojem telo troši zalihe energije bez prisustva kiseonika (poput sprinta ili teških dizanja)	Aktivnost umerenog intenziteta gde telo koristi kiseonik za proizvodnju energije (poput laganog trčanja na duge staze)	Set statičkih vežbi istezanja i oblikovanja tela koje se izvode u mestu radi opuštanja mišića
+34	Šta je to "anaerobni" trening?	a	Kratkotrajna aktivnost visokog intenziteta gde telo stvara energiju bez prisustva kiseonika (poput sprinta ili teškog dizanja tegova)	Dugotrajna aktivnost umerenog tempa koja poboljšava kapacitet pluća i opštu izdržljivost pri trčanju na duge staze	Set vežbi istezanja i mobilnosti zglobova koje služe za ubrzavanje oporavka mišića nakon napornog fizičkog rada Nema nikakvih linkova, evo potpuno očišćenog pitanja spremnog za kviz:
+35	Koja kiselina se stvara u mišićima tokom intenzivnog treninga, pri čemu njeno razlaganje izaziva privremeni osećaj "pečenja"?	b	Limunska kiselina	Mlečna kiselina	Fosforna kiselina
+36	Zašto je odmor (san i dani pauze) ključan za rast mišića?	a	Na treningu se troše energetske zalihe i umaraju mišići, dok se njihova stvarna izgradnja dešava tokom odmora	Pauza sprečava skraćivanje tetiva i trajno kočenje zglobova	Bez odmora telo gubi sposobnost da vari hranu i izvlači energiju
+37	Kako nedovoljan unos vode i elektrolita utiče na pojavu grčeva u mišićima tokom ili nakon treninga?	b	Nedostatak vode i minerala usporava krvotok, što izaziva brže zamaranje celog tela, ali ne stvara lokalne grčeve	Dehidratacija i gubitak minerala kroz znoj remete prenos nervnih signala, što izaziva naglo i bolno grčenje mišića	Bez dovoljno tečnosti, zglobovi gube podmazivanje, pa se mišić blokira pri svakom pokretu
+38	Šta pokazuje broj otkucaja srca u minuti (puls) u stanju mirovanja?	a	Kod zdravih ljudi niži puls uglavnom znači da je srčani mišić jači, utreniraniji i efikasniji	Visok puls znači da srce sa manje napora i lakše šalje krv kroz telo	Nizak puls znači da osoba ima nizak krvni pritisak
+39	Šta je "hipertrofija" mišića?	b	Smanjenje mišićne mase usled bolesti	Rast i povećanje veličine mišićnih ćelija	Grčenje mišića tokom noći
+40	Zašto preterivanje sa kardio treninzima (bez vežbi snage) tokom dijete može dovesti do gubitka mišića?	b	Nemaju nikakav uticaj jer se na dijeti troše isključivo masti	Zato što telo u nedostatku druge energije počinje da razgrađuje sopstvene mišiće	Zato što kardio pretvara mišićno tkivo u masne naslage
+41	Koji zglob u ljudskom telu je najpokretljiviji, ali je zbog toga ujedno i najpodložniji povredama i iščašenjima?	b	Zglob kolena	Zglob ramena	Skočni zglob
+42	Koji organ u ljudskom telu ima jedinstvenu sposobnost da se skoro potpuno regeneriše nakon oštećenja ili odstranjivanja dela tkiva?	a	Jetra	Bubreg	Pluća
+43	Koja je najveća i najjača kost u ljudskom telu, sposobna da izdrži ogroman pritisak i težinu?	b	Ključna kost	Butna kost	Rebro
+44	Koji mišić u ljudskom telu je najaktivniji i neprekidno radi tokom celog života bez ijednog trenutka odmora?	a	Srčani mišić	Dvodelni mišić nadlaktice (biceps)	Najširi mišić leđa (latissimus)
+45	Koji organ troši najviše kiseonika i energije u ljudskom telu (oko 20% od ukupne potrošnje), iako čini samo oko 2% ukupne telesne mase?	b	Skeletni mišići	Mozak	Srce
+46	Gde se u ljudskom telu nalazi ubedljivo najveći deo imunog sistema i odbrambenih ćelija?	b	U koštanoj srži	U crevima	U slezini
+47	Koji deo tela ima najtanju i najosetljiviju kožu, zbog čega se tu najbrže vide prvi znaci starenja i umora?	b	Dlanovi	Očni kapci	Usne
+48	Koja tetiva u ljudskom telu je najjača i najdeblja, ali ujedno i najčešće puca kod sportista pri naglim pokretima?	a	Ahilova tetiva	Tetiva bicepsa	Patelarna tetiva (tetiva kolena)
+49	Koji mineral je najzastupljeniji u ljudskom telu, gde se preko 99% njegovih zaliha nalazi u kostima i zubima?	b	Gvožđe	Kalcijum	Magnezijum
+50	Koji deo oka je najodgovorniji za prelamanje svetlosti i fokusiranje slike, a nema sopstvene krvne sudove već se hrani direktno iz vazduha i očne vodice?	a	Rožnjača	Zenica	Mrežnjača
+51	Koji unutrašnji organ je najveći po površini i težini, a obavlja preko 500 ključnih funkcija, uključujući prečišćavanje krvi i varenje masti?	b	Pluća	Jetra	Želudac
+52	Šta se dešava sa gustinom kostiju kada redovno radimo vežbe sa opterećenjem?	b	Postaju krhke i lakše se lome	Postaju gušće, jače i otpornije na osteoporozu	Gube formu i krive se
+53	Koja je osnovna uloga tetiva u našem telu?	b	Spajaju jednu kost sa drugom kosti	Spajaju mišić sa kosti i omogućavaju pokret	Služe kao amortizeri koji sprečavaju trenje između zglobnih hrskavica
+54	Šta su "ligamenti"?	a	Trake koje spajaju kost sa kosti i stabilizuju zglob	Delovi mišića koji ih spajaju sa kostima	Jastučići u zglobu koji ublažavaju udarce
+55	Šta označava pojam "aktivni oporavak"?	b	Istezanje mišića do granice bola odmah nakon treninga	Laganu aktivnost koja podstiče cirkulaciju i oporavak mišića	Unos visoke količine proteina i suplemenata u prvih sat vremena
+56	Zašto se javlja upala mišića dan-dva nakon treninga?	b	Zbog prevelikog nakupljanja mlečne kiseline	Zbog reakcije tela na mikro-oštećenja vlakana	Zbog naglog nedostatka kiseonika u mišiću
+57	Šta je "mišićna atrofija"?	b	Hronična upala zbog preteškog treninga	Gubljenje mase i slabljenje mišića zbog neaktivnosti	Iznenadni i bolan grč tokom napora
+58	Koji deo tela ima najviše znojnih žlezda po kvadratnom centimetru, iako ih retko povezujemo sa znojenjem od toplote?	b	Pazuh	Dlanovi i tabani	Čelo
+59	Gde se u ljudskom telu stvara najveći deo serotonina, poznatog kao "hormon sreće"?	b	U mozgu	U crevima	U nadbubrežnim žlezdama
+60	Koja kiselina u ljudskom telu je toliko jaka da može da rastvori čak i metal, a štiti nas od bakterija u hrani?	b	Žučna kiselina	Želudačna kiselina	Mlečna kiselina
+61	Koji hormon se luči u mozgu kada postignemo mali cilj (poput završenog treninga) i tera nas da želimo još uspeha?	b	Kortizol	Dopamin	Melatonin
+62	Koji organ je jedini u telu koji može da pluta na vodi jer u sebi uvek sadrži određenu količinu vazduha?	a	Pluća	Želudac	Bešika
+63	Koji je najveći pojedinačni nerv u ljudskom telu, koji se proteže od donjeg dela leđa pa sve do stopala?	b	Optički nerv	Išijadični nerv	Vagus nerv
+64	Ako tokom radnog dana osetiš mentalnu blokadu i stres, šta je dokazano najbrži "reset" za mozak?	c	Potpuni odmor očiju žmurenjem u mraku 10 minuta	Rešavanje brze logičke puzle ili igrice na telefonu	Kratka pauza uz lagano istezanje ili šetnju na vazduhu
+65	Šta je to "emocionalno prejedanje"?	b	Biološki nagon za preteranim unosom hrane nakon dugog perioda gladovanja	Unos hrane kao reakcija na stres, tugu ili dosadu umesto na fizičku glad	Povećan apetit izazvan hormonima tokom naglih promena temperature
+66	Šta se dešava sa našim nivoom hormona stresa kada hronično ne spavamo dovoljno?	c	Telo blokira njegovo lučenje kako bi sprečilo sagorevanje, pa osećamo apatiju	Nivo ostaje stabilan, ali mozak gubi osetljivost na njegove signale budnosti	Drastično skače, što pojačava želju za nezdravom, masnom i slatkom hranom
+67	Šta se dešava sa pulsom dobro treniranog sportiste u stanju mirovanja?	b	Ostaje prosečan, ali brže skače pod naporom	Znatno je niži nego kod prosečne osobe	Blago je povišen jer srce stalno radi jače
+68	Šta zapravo znači reč "holistički" pristup zdravlju?	b	Lečenje isključivo pomoću egzotičnih čajeva i biljaka	Posmatranje čoveka kao celine – gde su fizičko zdravlje, ishrana, mentalno stanje i san međusobno povezani	Fokusiranje isključivo na izolovanje i lečenje pojedinačnog obolelog organa
+69	Šta je zapravo neuroplastičnost mozga?	a	Sposobnost mozga da se fizički obnavlja i menja kroz učenje i nova iskustva	Genetska otpornost mozga na starenje i Alchajmerovu bolest	Ubrzano odumiranje nervnih ćelija usled hroničnog stresa i umora
+70	Koji hormon telo luči u mraku da nas pripremi za spavanje?	b	Kortizol	Melatonin	Adrenalin
+71	Zašto maraton iznosi tačno 42.195 kilometara?	b	To je tačna razdaljina od Atine do Sparte	Da bi trka na Olimpijadi 1908. završila tačno ispred kraljevske lože	To je maksimalna distanca koju čovek može da pretrči bez vode
+72	Koji sport koristi najtežu loptu na Olimpijskim igrama?	b	Kuglanje	Košarka	Vaterpolo
+73	Koji je najgledaniji sport na svetu sa preko 4 milijarde fanova?	b	Košarka	Fudbal	Tenis
+74	Koja država je osvojila najviše zlatnih medalja na Letnjim olimpijskim igrama u istoriji?	a	SAD	Kina	Sovjetski Savez
+75	Koji borilački sport u prevodu sa japanskog bukvalno znači "prazna ruka"?	b	Džudo	Karate	Aikido
+76	Šta vozači Formule 1 izgube tokom samo jedne trke od sat i po vremena?	a	Oko 3 do 4 kilograma telesne težine kroz znoj	Oko 10% ukupnog volumena krvi u telu	Sposobnost jasnog vida na daljinu tokom narednih 12 sati
+77	Kako plavo svetlo sa ekrana utiče na naš san?	b	Pomaže nam da brže utonemo u dubok san	Blokira melatonin i kvari kvalitet i dubinu sna	Čisti oči od bakterija tokom noći
+78	Šta se dešava tokom REM faze sna?	b	Telo ubrzano obnavlja kosti	Mozak procesuira emocije i pamćenje	Temperatura tela naglo raste
+79	Šta je zapravo hronični stres?	b	Brza reakcija tela na trenutnu opasnost koja prođe za par minuta	Dugotrajna, tiha napetost koja stalno troši organizam i ruši imunitet	Urođeni strah od mraka, visine i zatvorenog prostora
+80	Koji sport je bio najveća strast čuvenom fizičaru Albertu Ajnštajnu, iako nije znao da pliva?	b	Veslanje	Jedrenje	Vaterpolo
+81	Kojim borilačkim sportom se aktivno bavio čuveni pisac Ernest Hemingvej i čak imao ring u svom dvorištu?	c	Karateom	Džudoom	Boksom
+82	Kako meditacija (mindfulness) utiče na amigdalu – centar za strah u mozgu?	b	Povećava je i čini nas uplašenijim	Smanjuje je, čime se smanjuje naša reakcija na stres i anksioznost	Potpuno isključuje rad mozga na nekoliko sati
+83	Zašto je usamljenost (socijalna izolacija) opasna po zdravlje?	b	Nije opasna, čoveku je najbolje kada je potpuno sam	Aktivira hormone stresa koji izazivaju hronične upale i slabe srce	Smanjuje visinu čoveka za nekoliko centimetara
+84	Šta je to "sindrom izgaranja" (Burnout)?	b	Fizičko pregrevanje tela tokom napornog treninga	Totalna iscrpljenost uma i tela zbog stalnog stresa na poslu	Kratka nervoza koja prolazi čim vikend počne
+85	Koja namirnica ima više proteina?	a	Kikiriki	Orah	
+86	Koje voće u proseku sadrži više vitamina C?	a	Kivi	Limun	
+87	Šta ima više prirodnog šećera?	a	Banana	Limun	
+88	Koja namirnica je bogatija omega-3 masnim kiselinama?	a	Losos	Pileće belo meso	
+89	Koja namirnica sadrži više proteina po 100 g?	a	Tunjevina	Jaje	
+90	Kako fizička aktivnost pomaže protiv depresije i anksioznosti?	a	Popravlja raspoloženje i prirodno smanjuje osećaj napetosti	Ne pomaže, jer samo skreće misli na kratko vreme	Pogoršava stanje jer telu troši svu preostalu snagu
+91	Kako kofein blokira osećaj umora u mozgu?	b	Daje nam stvarnu energiju jer sadrži puno kalorija	Blokira receptore adenozina (molekula koji javlja telu da je umorno)	Uništava sve ćelije u telu koje su umorne
+92	Zašto je važno leći i buditi se uvek u isto vreme?	b	To pomaže telu da brže sagoreva kalorije tokom noći	Stabilizuje naš biološki sat, pa lakše zaspimo i imamo dublji san	Jedino tako možemo osigurati da san traje tačno osam sati
+93	Koji mineral je poznat kao "anti-stres mineral" jer pomaže opuštanju mišića i nervnog sistema?	b	Kalcijum	Magnezijum	Gvožđe
+94	Koji vitamin naše telo samo proizvodi kada nam je koža izložena suncu?	b	Vitamin C	Vitamin D	Vitamin B12
+95	Kako nedovoljan unos vode (dehidratacija) utiče na naš fokus i energiju?	a	Brzo prazni energiju, kvari koncentraciju i može izazvati glavobolju	Zapravo poboljšava pamćenje jer mozak radi brže	Nema nikakav uticaj na mozak, utiče samo na osećaj žeđi u grlu
+96	Zašto je za uspeh važnije fokusirati se na sutrašnji mali korak nego na konačan izgled tela za godinu dana?	b	Zato što se metabolizam drastično menja na svakih nekoliko meseci	Zato što preveliki ciljevi lako demotivišu, dok mali koraci grade stabilnu naviku	Zato što dugoročno planiranje sprečava telo da efikasno troši masti
+97	Koliko je u proseku potrebno dana stalnog ponavljanja da bi neka radnja prerasla u automatsku naviku?	b	oko 20 dana	Oko 2 meseca (zavisno od težine navike i same osobe)	Oko 365 dana
+98	Šta je glavni uzrok razvoja dijabetesa tipa 2 kod većine odraslih?	b	Nagli pad imuniteta usled preležane teške virusne infekcije	Dugotrajno loša ishrana, višak kilograma i manjak kretanja	Preterano slana hrana i zadržavanje vode u organizmu
+99	Kako možemo podići nivo dobrog (HDL) holesterola u telu?	b	Potpunim izbacivanjem svih masti iz ishrane	Unosom zdravih masti poput maslinovog ulja	Izbegavanjem bilo kakvog secera pa i voca
+100	Kako se najčešće nakuplja loš (LDL) holesterol u krvi?	a	Dugotrajnim unosom brze hrane, industrijskih masti i manjkom kretanja	Ovo je najcesce genetski, bez obzira na to šta jedemo	Svakodnevnim pijenjem previše gaziranih pića bez šećera
+101	Koji vitamin je ključan za stvaranje kolagena i imunitet, a ljudsko telo ne može samo da ga proizvede?	b	Vitamin D	Vitamin C	Vitamin K
+102	Koji je najbezbedniji način izlaganja suncu radi stvaranja vitamina D?	b	Sunčanje pre i posle podne bar dva do tri sata dnevno	Kratko i umereno izlaganje, bez dopuštanja da koža pocrveni	Redovan odlazak u solarijum tokom zime kada nema dovoljno sunca
+103	Šta je najbolji pokazatelj da unosite dovoljno vode tokom dana?	b	Stalni osećaj nadutosti u stomaku	Svetložuta boja urina i odsustvo suvoće u ustima	Tamna boja urina i česte blage glavobolje
+104	Moram da pijem 8 čaša vode dnevno.	b	ISTINA	MIT	
+105	Mišići su gušći od sala.	a	ISTINA	MIT	
+106	Kasna večera goji više nego ručak.	b	ISTINA	MIT	
+107	Sirovo povrće je uvek zdravije od kuvanog.	b	ISTINA	MIT	
+108	Znojenje znači da sagorevam masne naslage.	b	ISTINA	MIT	
+109	Vitamin C leči prehladu.	b	ISTINA	MIT	
+110	Doručak je najvažniji obrok u danu.	b	ISTINA	MIT	
+113	Gluten je loš za svakoga.	b	ISTINA	MIT	
+114	Spavanje sa upaljenim svetlom utiče na san.	a	ISTINA	MIT	
+115	Jaja podižu nivo holesterola.	b	ISTINA	MIT	
+116	Ne treba trenirati ako imaš upalu mišića.	b	ISTINA	MIT	
+117	Možeš da promeniš oblik mišića vežbanjem.	b	ISTINA	MIT	
+118	Šećer izaziva hiperaktivnost kod dece.	b	ISTINA	MIT	
+119	Korišćenje mobilnog telefona pred spavanje šteti vidu.	b	ISTINA	MIT	
+120	Istezanje pre treninga smanjuje rizik od povreda.	b	ISTINA	MIT	
+121	Margarin je zdraviji od putera.	b	ISTINA	MIT	
+122	Detoks čajevi čiste jetru.	b	ISTINA	MIT	
+123	Što duže treniraš, to bolje.	b	ISTINA	MIT	
+124	Beli hleb je otrov.	b	ISTINA	MIT	
+125	Siva kosa je posledica stresa.	a	ISTINA	MIT	
+126	Vežbanje uveče kvari san.	b	ISTINA	MIT	
+127	Masna hrana je glavni uzrok gojaznosti.	b	ISTINA	MIT	
+128	Proteini su potrebni samo bodibilderima.	b	ISTINA	MIT	
+129	Vežbe za stomak skidaju samo masne naslage sa stomaka.	b	ISTINA	MIT	
+130	Šargarepa popravlja vid.	b	ISTINA	MIT	
+131	Uglavnom svi vitamini se mogu uneti hranom.	a	ISTINA	MIT	
+132	Konzumiranje voća uveče goji.	b	ISTINA	MIT	
+133	Zeleni čaj sagoreva masti.	b	ISTINA	MIT	
+134	Kompjuter ne zrači dovoljno da bi izazvao bolest.	a	ISTINA	MIT	
+135	Treba jesti na svaka 3 sata za ubrzan metabolizam.	b	ISTINA	MIT	
+136	Šećer u voću je štetan kao i beli šećer.	b	ISTINA	MIT	
+137	Kada prestaneš da treniraš, mišići se pretvaraju u salo.	b	ISTINA	MIT	
+138	Alkohol zagreva telo.	b	ISTINA	MIT	
+139	Čokolada izaziva bubuljice.	b	ISTINA	MIT	
+140	Plivanje je najbolja vežba za mršavljenje.	b	ISTINA	MIT	
+141	Kofein izaziva dehidrataciju.	b	ISTINA	MIT	
+142	Možemo da koristimo samo 10% mozga.	b	ISTINA	MIT	
+143	Zdravlje creva utiče na imunitet i celokupno zdravlje organizma.	a	ISTINA	MIT	
+144	Vežbe sa tegovima čine žene glomaznim.	b	ISTINA	MIT	
+145	Čitanje u pokretu kvari vid.	b	ISTINA	MIT	
+146	Med je zdraviji od belog šećera.	a	ISTINA	MIT	
+147	Hladan tuš ubrzava metabolizam.	a	ISTINA	MIT	
+148	Mleko jača kosti kod odraslih.	b	ISTINA	MIT	
+149	Stariji ljudi ne treba da dižu tegove.	b	ISTINA	MIT	
+150	Vežbanje ujutru sagoreva više masti nego vežbanje uveče.	b	ISTINA	MIT	
+151	Šta je teže kod odrasle osobe?	b	Mozak	Jetra	
+152	Koja mišićna grupa ima veću ukupnu masu kod odrasle osobe?	b	Grudni mišići	Leđni mišići	
+153	Šta ima veću ukupnu dužinu u sistemu za varenje?	a	Tanka creva	Debelo crevo	
+154	Koji je najduži mišić u ljudskom telu?	a	Krojački mišić (sartorius)	Mišići duž kičme	
+155	Koji je najveći mišić po zapremini i masi?	a	Veliki sedalni mišić (gluteus maximus)	Kvadriceps	
+156	Koji je najveći organ ljudskog tela?	a	Koža	Jetra	
+157	Koja je najduža i najjača kost u ljudskom telu?	a	Butna kost (femur)	Golenjača	
+158	Koje plućno krilo je veće?	a	Desno plućno krilo	Levo plućno krilo	
+159	Koji je najveći zglob u ljudskom telu?	a	Zglob kolena	Zglob kuka	
+160	Čega ima više po telesnoj masi?	b	Kosti	Mišići	
+161	Koliko procenata ukupne mase mozga čini veliki mozak?	a	Oko 80–85%	Oko 40–45%	
+162	Koji bubreg je obično postavljen niže?	a	Desni bubreg	Levi bubreg	
+163	Koja je najmanja kost u ljudskom telu?	a	Kost u uhu (stapes/stremen)	Kost malog prsta	
+164	Koji je najmanji mišić u ljudskom telu?	a	Mišić u uhu (stapedius)	Mišić koji podiže dlaku	
+165	Koji delovi tela nastavljaju da se menjaju tokom života?	a	Uši i nos	Očne jabučice	
+166	Gde je koža najtanja?	a	Na očnim kapcima	Na nadlanici	
+167	Gde se nalazi više mišića?	a	Na licu	Na stopalu	
+168	Gde ima više kostiju?	a	U obe šake zajedno	U celoj kičmi odraslog čoveka	
+169	Ko ima više kostiju?	a	Novorođenče	Odrasla osoba	
+170	Čega ima više u odraslom ljudskom telu?	a	Pršljenova u kičmi	Rebara	
+171	Čega ima više u krvi?	a	Crvenih krvnih zrnaca	Belih krvnih zrnaca	
+172	Gde ima više kostiju?	a	U ljudskoj šaci	U ljudskom stopalu	
+173	Koliko vratnih pršljenova imaju čovek i žirafa?	a	Isto – 7	Žirafa ima više	
+174	Koliko delova ima ljudsko srce?	a	4 dela	2 dela	
+175	Gde je veća gustina znojnih žlezda?	a	Na dlanovima	Ispod pazuha	
+176	Koliko glavnih slojeva ima ljudska koža?	a	3 glavna sloja	5 glavnih slojeva	
+177	Koliko litara krvi ima prosečan odrasli čovek?	a	Oko 5 litara	Oko 10 litara	
+178	Koliki procenat tela odrasle osobe čini voda?	a	Oko 60%	Oko 35%	
+179	Koliko mišića pokreće jednu očnu jabučicu?	a	6 mišića	1 mišić	
+180	Koliko pljuvačke prosečna odrasla osoba proizvede dnevno?	a	Oko 1–1,5 litara	Oko 200-300 mililitara	
+181	Koliko u proseku živi jedno crveno krvno zrnce?	a	Oko 4 meseca	Onoliko koliko i čovek, dakle nema rok trajanja.	
+182	Koji mišić može da razvije najveću silu u odnosu na svoju veličinu?	a	Žvakaći mišić (masseter)	Mišić lista	
+183	Šta je otpornije na pritisak?	a	Butna kost	Beton iste mase	
+184	Koji prst najviše doprinosi snazi stiska šake?	a	Mali prst	Palac	
+185	Koji mišići najviše pomažu da stojimo uspravno?	a	Opružači kičme	Trbušni mišići	
+186	Šta koži daje čvrstinu i elastičnost?	a	Kolagen i elastin	Keratin	
+187	Koje čulo najbrže šalje informacije mozgu?	a	Sluh	Vid	
+188	Šta se obično brže oporavlja nakon povrede?	a	Mišić	Tetiva	
+189	Koje čulo je najdirektnije povezano sa centrima za emocije i pamćenje?	a	Čulo mirisa	Čulo sluha	
+190	Koji nokti rastu brže?	a	Nokti na rukama	Nokti na nogama	
+191	Koja namirnica sadrži najviše proteina na 100 g?	a	Parmezan	Jaje	
+192	Koja namirnica ima više vitamina C na 100 g?	a	Paprika	Pomorandža	
+193	Šta daje osećaj sitosti na duži period?	a	Proteini	Prosti šećeri	
+194	Ko ima više vode?	a	Krastavac	Lubenica	
+195	Koja namirnica ima više prirodnog šećera?	a	Grožđe	Jagode	
