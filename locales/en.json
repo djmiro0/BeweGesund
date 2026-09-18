@@ -62,6 +62,16 @@
           "title": "Relaxation & mental balance",
           "description": "Breathing, meditation, and recovery.",
           "imageAlt": "Woman practicing a calm breathing exercise"
+        },
+        {
+          "title": "Corporate fitness & workplace health",
+          "description": "Movement and prevention for healthier teams.",
+          "imageAlt": "Coworkers taking part in a shared office mobility session"
+        },
+        {
+          "title": "Workshops & health seminars",
+          "description": "Practical knowledge for everyday and working life.",
+          "imageAlt": "Health expert leading an interactive movement seminar"
         }
       ]
     },

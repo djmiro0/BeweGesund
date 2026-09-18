@@ -39,6 +39,8 @@ const pillarImages = [
   "/launch/home-posture.png",
   "/food.jpg",
   "/launch/mindful-recovery.png",
+  "/launch/corporate-fitness.jpg",
+  "/launch/health-workshop.jpg",
 ] as const;
 
 const reveal: Variants = {
